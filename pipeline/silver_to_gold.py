@@ -147,3 +147,33 @@ def write_wiki_page(page: WikiPage, wiki_root: str, exist_ok: bool = False):
     fm_yaml = yaml.dump(page.frontmatter, allow_unicode=True, default_flow_style=False)
     content = f"---\n{fm_yaml}---\n\n{page.body}\n"
     out_path.write_text(content, encoding="utf-8")
+
+
+def load_existing_body(page_path: str) -> str:
+    content = Path(page_path).read_text(encoding="utf-8")
+    # strip YAML frontmatter block (--- ... ---)
+    parts = content.split("---\n", 2)
+    if len(parts) >= 3:
+        body = parts[2]
+        # remove the single blank-line separator between frontmatter and body
+        if body.startswith("\n"):
+            body = body[1:]
+        return body
+    return content
+
+
+def append_to_wiki_page(page_path: str, new_content: str, source_uuid: str):
+    path = Path(page_path)
+    content = path.read_text(encoding="utf-8")
+    updated = content.rstrip("\n") + "\n" + new_content
+    path.write_text(updated, encoding="utf-8")
+
+
+def verify_existing_body_unchanged(page_path: str, expected_original_body: str):
+    current_body = load_existing_body(page_path)
+    if not current_body.startswith(expected_original_body):
+        raise ValueError(
+            f"existing body was modified in {page_path}.\n"
+            f"Expected start:\n{expected_original_body[:200]}\n"
+            f"Got start:\n{current_body[:200]}"
+        )
