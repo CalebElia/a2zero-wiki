@@ -1,3 +1,4 @@
+import hashlib
 from dataclasses import dataclass, field
 from typing import Optional, Literal
 
@@ -41,3 +42,34 @@ class WikiPage:
     slug: str         # e.g. "actors/missy-stults"
     frontmatter: dict
     body: str
+
+
+REQUIRED_QUAD_FIELDS = [
+    "id", "date", "date_precision", "subject", "relation", "object",
+    "sources", "source_types", "confidence", "status", "dark_matter",
+    "topics", "locations", "strategies", "actors", "keywords",
+    "fund_type", "commitment_status", "last_updated",
+]
+
+VALID_DATE_PRECISIONS = {"year", "month", "day"}
+VALID_STATUSES = {"confirmed", "unverified"}
+VALID_CONFIDENCES = {1, 2}
+
+
+def make_quad_id(subject: str, relation: str, obj: str, date: str) -> str:
+    raw = f"{subject}|{relation}|{obj}|{date}"
+    return "sha256-" + hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+
+def validate_quad(quad: dict) -> list[str]:
+    errors = []
+    for field in REQUIRED_QUAD_FIELDS:
+        if field not in quad:
+            errors.append(f"missing required field: {field}")
+    if "confidence" in quad and quad["confidence"] not in VALID_CONFIDENCES:
+        errors.append(f"confidence must be 1 or 2, got: {quad['confidence']}")
+    if "status" in quad and quad["status"] not in VALID_STATUSES:
+        errors.append(f"status must be 'confirmed' or 'unverified', got: {quad['status']}")
+    if "date_precision" in quad and quad["date_precision"] not in VALID_DATE_PRECISIONS:
+        errors.append(f"date_precision must be year/month/day, got: {quad['date_precision']}")
+    return errors
