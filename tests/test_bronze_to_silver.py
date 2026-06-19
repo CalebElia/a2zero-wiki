@@ -2,7 +2,7 @@ import pytest
 import yaml
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from pipeline.bronze_to_silver import extract_pdf_text, write_silver, build_frontmatter
+from pipeline.bronze_to_silver import write_silver, build_frontmatter
 
 
 def test_build_frontmatter_annual_report():
@@ -63,7 +63,9 @@ def test_clean_with_llm_calls_anthropic(mock_anthropic_class):
     mock_client.messages.create.return_value = MagicMock(
         content=[MagicMock(text="## Cleaned content")]
     )
+    import pipeline.bronze_to_silver as bts
     from pipeline.bronze_to_silver import clean_with_llm
+    bts._DEFAULT_CLIENT = None  # reset singleton so mock is picked up
     result = clean_with_llm("Raw extracted text", uuid="test-year1")
     assert mock_client.messages.create.called
     assert "Cleaned content" in result

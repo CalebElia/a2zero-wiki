@@ -18,8 +18,11 @@ Return only the cleaned Markdown body, no frontmatter."""
 
 
 def extract_pdf_text(pdf_path: str) -> str:
+    path = Path(pdf_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Bronze PDF not found: {pdf_path}")
     pages = []
-    with pdfplumber.open(pdf_path) as pdf:
+    with pdfplumber.open(str(path)) as pdf:
         for page in pdf.pages:
             text = page.extract_text()
             if text:
@@ -27,12 +30,21 @@ def extract_pdf_text(pdf_path: str) -> str:
     return "\n\n".join(pages)
 
 
-def clean_with_llm(raw_text: str, uuid: str) -> str:
-    client = anthropic.Anthropic()
-    response = client.messages.create(
+_DEFAULT_CLIENT: anthropic.Anthropic | None = None
+
+
+def _get_client() -> anthropic.Anthropic:
+    global _DEFAULT_CLIENT
+    if _DEFAULT_CLIENT is None:
+        _DEFAULT_CLIENT = anthropic.Anthropic()
+    return _DEFAULT_CLIENT
+
+
+def clean_with_llm(raw_text: str, uuid: str, client: anthropic.Anthropic | None = None) -> str:
+    c = client or _get_client()
+    response = c.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=8192,
-        temperature=0,
         system=CLEAN_SYSTEM,
         messages=[
             {
