@@ -1,8 +1,9 @@
 import anthropic
 import json
 import re
+import yaml
 from pathlib import Path
-from pipeline.models import validate_quad
+from pipeline.models import validate_quad, WikiPage
 
 
 QUADS_SYSTEM = """You are a temporal fact extractor for the A2Zero climate wiki.
@@ -113,3 +114,21 @@ def extract_quads_from_silver(
     quads = parse_llm_quads_response(raw)
     append_quads(quads, out_path)
     return quads
+
+
+def build_wiki_page(
+    page_type: str,
+    slug: str,
+    frontmatter: dict,
+    body: str,
+) -> WikiPage:
+    return WikiPage(page_type=page_type, slug=slug, frontmatter=frontmatter, body=body)
+
+
+def write_wiki_page(page: WikiPage, wiki_root: str):
+    # slug format: "actors/missy-stults" → wiki_root/actors/missy-stults.md
+    out_path = Path(wiki_root) / (page.slug + ".md")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fm_yaml = yaml.dump(page.frontmatter, allow_unicode=True, default_flow_style=False)
+    content = f"---\n{fm_yaml}---\n\n{page.body}\n"
+    out_path.write_text(content, encoding="utf-8")
