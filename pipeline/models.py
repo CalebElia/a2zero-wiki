@@ -63,9 +63,9 @@ def make_quad_id(subject: str, relation: str, obj: str, date: str) -> str:
 
 def validate_quad(quad: dict) -> list[str]:
     errors = []
-    for field in REQUIRED_QUAD_FIELDS:
-        if field not in quad:
-            errors.append(f"missing required field: {field}")
+    for key in REQUIRED_QUAD_FIELDS:
+        if key not in quad:
+            errors.append(f"missing required field: {key}")
     if "confidence" in quad and quad["confidence"] not in VALID_CONFIDENCES:
         errors.append(f"confidence must be 1 or 2, got: {quad['confidence']}")
     if "status" in quad and quad["status"] not in VALID_STATUSES:

@@ -83,3 +83,18 @@ def test_validate_quad_rejects_bad_status():
     }
     errors = validate_quad(quad)
     assert any("status" in e for e in errors)
+
+
+def test_validate_quad_rejects_bad_date_precision():
+    quad = {
+        "id": "sha256-x", "date": "2021", "date_precision": "quarter",  # invalid
+        "subject": "a", "relation": "b", "object": "c",
+        "sources": ["s"], "source_types": ["annual-report"],
+        "confidence": 2, "status": "confirmed",
+        "dark_matter": False, "topics": [], "locations": [],
+        "strategies": [], "actors": [], "keywords": [],
+        "fund_type": None, "commitment_status": None,
+        "last_updated": "2026-06-18",
+    }
+    errors = validate_quad(quad)
+    assert any("date_precision" in e for e in errors)
