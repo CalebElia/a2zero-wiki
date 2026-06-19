@@ -25,7 +25,10 @@ TYPE_PREFIX = {
 class EntityRegistry:
     def __init__(self, path: str):
         self.path = Path(path)
-        self._data: dict = json.loads(self.path.read_text())
+        if self.path.exists():
+            self._data: dict = json.loads(self.path.read_text())
+        else:
+            self._data: dict = {}
 
     def _save(self):
         self.path.write_text(json.dumps(self._data, indent=2))
@@ -35,7 +38,17 @@ class EntityRegistry:
         if existing:
             return existing
         prefix = TYPE_PREFIX.get(entity_type, entity_type + "s")
-        slug = f"{prefix}/{slugify(name)}"
+        slug_part = slugify(name)
+        if not slug_part:
+            raise ValueError(f"name '{name}' slugifies to empty string")
+        slug = f"{prefix}/{slug_part}"
+        # check if this canonical slug already exists under a different name
+        for entry in self._data.values():
+            if entry["canonical"] == slug:
+                if name not in entry["aliases"]:
+                    entry["aliases"].append(name)
+                self._save()
+                return slug
         self._data[name] = {
             "canonical": slug,
             "type": entity_type,

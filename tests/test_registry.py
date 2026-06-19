@@ -1,6 +1,4 @@
 import json
-import tempfile
-import os
 import pytest
 from pipeline.registry import EntityRegistry
 
@@ -52,3 +50,23 @@ def test_registry_persists_to_disk(tmp_path):
 def test_slugify_handles_special_chars(tmp_registry):
     slug = tmp_registry.register("U.S. DOE", entity_type="organization")
     assert slug == "organizations/us-doe"
+
+
+def test_register_slug_collision_merges_as_alias(tmp_registry):
+    slug1 = tmp_registry.register("OSI", entity_type="organization")
+    slug2 = tmp_registry.register("O.S.I.", entity_type="organization")
+    assert slug1 == slug2 == "organizations/osi"
+    # O.S.I. should now resolve via alias
+    assert tmp_registry.resolve("O.S.I.") == "organizations/osi"
+
+
+def test_register_empty_slug_raises(tmp_registry):
+    with pytest.raises(ValueError, match="slugifies to empty string"):
+        tmp_registry.register("...", entity_type="organization")
+
+
+def test_registry_init_creates_empty_when_file_absent(tmp_path):
+    path = tmp_path / "nonexistent.json"
+    reg = EntityRegistry(str(path))
+    slug = reg.register("OSI", entity_type="organization")
+    assert slug == "organizations/osi"
