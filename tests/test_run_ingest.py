@@ -1,6 +1,5 @@
 import json
 import pytest
-import yaml
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -41,7 +40,6 @@ MOCK_QUADS = [
 def test_run_ingest_creates_silver_file(
     mock_anthropic_class, mock_extract, tmp_path
 ):
-    import json
     import pipeline.bronze_to_silver as b2s
     b2s._DEFAULT_CLIENT = None
 

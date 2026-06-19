@@ -1,4 +1,3 @@
-import json
 from datetime import date
 from pathlib import Path
 from pipeline.bronze_to_silver import convert_annual_report
@@ -13,7 +12,7 @@ def run_annual_report_ingest(
     title: str,
     silver_dir: str,
     quads_path: str,
-    wiki_root: str,
+    wiki_root: str,          # Plan 2: wiki page writing not yet wired
     review_queue_path: str,
     run_date: str | None = None,
 ):
