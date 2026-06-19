@@ -16,9 +16,11 @@ class LintReport:
 
 def lint_quads(quads_path: str) -> LintReport:
     report = LintReport()
+    p = Path(quads_path)
+    if not p.exists():
+        raise FileNotFoundError(f"quad_linter: quads file not found: {quads_path}")
     seen_ids: dict[str, int] = {}
-
-    lines = Path(quads_path).read_text(encoding="utf-8").splitlines()
+    lines = p.read_text(encoding="utf-8").splitlines()
     for line_num, line in enumerate(lines, start=1):
         line = line.strip()
         if not line:
@@ -40,13 +42,13 @@ def lint_quads(quads_path: str) -> LintReport:
             })
 
         qid = quad.get("id", "")
-        if qid in seen_ids:
-            if qid not in report.duplicate_ids:
-                report.duplicate_ids.append(qid)
-        seen_ids[qid] = line_num
-
-        if quad.get("dark_matter"):
-            report.dark_matter_ids.append(qid)
+        if qid:
+            if qid in seen_ids:
+                if qid not in report.duplicate_ids:
+                    report.duplicate_ids.append(qid)
+            seen_ids[qid] = line_num
+            if quad.get("dark_matter") and qid not in report.dark_matter_ids:
+                report.dark_matter_ids.append(qid)
 
         if quad.get("status") == "confirmed":
             report.confirmed_count += 1

@@ -67,3 +67,18 @@ def test_lint_report_summary_counts(tmp_path):
     assert report.total_quads == 1
     assert report.confirmed_count == 1
     assert report.unverified_count == 0
+
+
+def test_lint_dark_matter_ids_no_duplicates(tmp_path):
+    dark_quad = {**VALID_QUAD, "id": "sha256-dark", "dark_matter": True}
+    qf = tmp_path / "quads.jsonl"
+    # same dark-matter quad twice
+    qf.write_text(json.dumps(dark_quad) + "\n" + json.dumps(dark_quad) + "\n")
+    report = lint_quads(str(qf))
+    assert report.dark_matter_ids.count("sha256-dark") == 1
+
+
+def test_lint_raises_on_missing_file():
+    import pytest
+    with pytest.raises(FileNotFoundError, match="quads file not found"):
+        lint_quads("/nonexistent/path/quads.jsonl")
