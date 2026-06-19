@@ -54,7 +54,12 @@ def parse_llm_quads_response(raw: str) -> list[dict]:
     # strip markdown code fence if present
     cleaned = re.sub(r"^```(?:json)?\n?", "", raw.strip())
     cleaned = re.sub(r"\n?```$", "", cleaned)
-    quads = json.loads(cleaned)
+    try:
+        quads = json.loads(cleaned)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"LLM response is not valid JSON. Raw response: {raw!r}") from e
+    if not isinstance(quads, list):
+        raise ValueError(f"LLM response must be a JSON array, got {type(quads).__name__}. Raw: {raw!r}")
     for q in quads:
         errors = validate_quad(q)
         if errors:
@@ -69,8 +74,13 @@ def append_quads(quads: list[dict], out_path: str):
         for line in path.read_text().splitlines():
             line = line.strip()
             if line:
-                existing_ids.add(json.loads(line)["id"])
+                try:
+                    existing_ids.add(json.loads(line)["id"])
+                except (json.JSONDecodeError, KeyError):
+                    # skip corrupt or incomplete lines (e.g. from interrupted write)
+                    pass
 
+    # not safe for concurrent writers — no file lock
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as f:
         for q in quads:

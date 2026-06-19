@@ -11,7 +11,7 @@ from pipeline.silver_to_gold import (
 from pipeline.models import validate_quad
 
 
-FIXTURE_SILVER = Path("tests/fixtures/sample_annual_report.md").read_text()
+FIXTURE_SILVER = (Path(__file__).parent / "fixtures" / "sample_annual_report.md").read_text()
 
 
 def test_parse_llm_quads_response_returns_list():
@@ -120,6 +120,12 @@ def test_append_quads_skips_duplicate_ids(tmp_path):
 def test_build_quads_prompt_includes_source_uuid():
     prompt = build_quads_prompt(silver_body="Some text.", source_uuid="a2zero-year1")
     assert "a2zero-year1" in prompt
+
+
+def test_parse_llm_quads_response_raises_on_prose_prefix():
+    raw = "Here are the quads you requested:\n[{\"id\": \"sha256-x\"}]"
+    with pytest.raises(ValueError):
+        parse_llm_quads_response(raw)
 
 
 @pytest.mark.skipif(
