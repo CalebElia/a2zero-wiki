@@ -151,25 +151,24 @@ def write_wiki_page(page: WikiPage, wiki_root: str, exist_ok: bool = False):
 
 def load_existing_body(page_path: str) -> str:
     content = Path(page_path).read_text(encoding="utf-8")
-    # strip YAML frontmatter block (--- ... ---)
-    parts = content.split("---\n", 2)
-    if len(parts) >= 3:
-        body = parts[2]
-        # remove the single blank-line separator between frontmatter and body
-        if body.startswith("\n"):
-            body = body[1:]
-        return body
+    m = re.match(r"^---\n.*?\n---\n\n?(.*)", content, re.DOTALL)
+    if m:
+        return m.group(1)
     return content
 
 
 def append_to_wiki_page(page_path: str, new_content: str, source_uuid: str):
     path = Path(page_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Wiki page not found for append: {page_path}")
     content = path.read_text(encoding="utf-8")
     updated = content.rstrip("\n") + "\n" + new_content
     path.write_text(updated, encoding="utf-8")
 
 
 def verify_existing_body_unchanged(page_path: str, expected_original_body: str):
+    if not expected_original_body:
+        raise ValueError("expected_original_body must not be empty; call load_existing_body before any LLM append")
     current_body = load_existing_body(page_path)
     if not current_body.startswith(expected_original_body):
         raise ValueError(

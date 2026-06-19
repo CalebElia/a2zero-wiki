@@ -77,3 +77,14 @@ def test_verify_existing_body_raises_when_changed(tmp_path):
             page_path=str(page_file),
             expected_original_body=original_body,
         )
+
+
+def test_verify_existing_body_raises_on_empty_expected(tmp_path):
+    page_file = tmp_path / "actors" / "test.md"
+    page_file.parent.mkdir()
+    page_file.write_text("---\ntype: actor\n---\n\nSome body.\n")
+    with pytest.raises(ValueError, match="must not be empty"):
+        verify_existing_body_unchanged(
+            page_path=str(page_file),
+            expected_original_body="",
+        )
