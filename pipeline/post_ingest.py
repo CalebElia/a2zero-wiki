@@ -8,6 +8,8 @@ def generate_review_queue(
     out_path: str,
     run_date: str,
 ):
+    if not run_date:
+        raise ValueError("run_date must be a non-empty ISO date string (e.g. '2026-06-18')")
     lines = [
         f"# Review Queue — {source_uuid} — {run_date}",
         "",
@@ -48,7 +50,7 @@ def generate_review_queue(
             normal.append(f"- `{qid}`")
     if report.unverified_count > 0:
         normal.append(f"### Unverified Quads ({report.unverified_count})")
-        normal.append("_Run DuckDB query: `SELECT * FROM quads WHERE status = 'unverified'`_")
+        normal.append("_Run: `duckdb -c \"SELECT id, subject, relation, object FROM read_ndjson('blackboard/quads.jsonl') WHERE status = 'unverified' ORDER BY date\"`_")
 
     if normal:
         lines.append("## 🟡 Normal — Review This Week")
