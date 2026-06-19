@@ -72,3 +72,39 @@ def test_write_wiki_page_frontmatter_is_valid_yaml(tmp_path):
     parts = content.split("---\n")
     parsed = yaml.safe_load(parts[1])
     assert parsed["type"] == "actor"
+
+
+def test_write_wiki_page_raises_if_exists(tmp_path):
+    from pipeline.silver_to_gold import build_wiki_page, write_wiki_page
+    page = build_wiki_page(
+        page_type="actor",
+        slug="actors/test-actor",
+        frontmatter={"type": "actor", "title": "Test Actor", "first-seen": "s", "last-updated": "2026-06-18", "tags": []},
+        body="Body.",
+    )
+    write_wiki_page(page, wiki_root=str(tmp_path))
+    with pytest.raises(FileExistsError):
+        write_wiki_page(page, wiki_root=str(tmp_path))  # second write should raise
+
+
+def test_write_wiki_page_exist_ok_allows_overwrite(tmp_path):
+    from pipeline.silver_to_gold import build_wiki_page, write_wiki_page
+    page = build_wiki_page(
+        page_type="actor",
+        slug="actors/test-actor",
+        frontmatter={"type": "actor", "title": "Test Actor", "first-seen": "s", "last-updated": "2026-06-18", "tags": []},
+        body="Body.",
+    )
+    write_wiki_page(page, wiki_root=str(tmp_path))
+    write_wiki_page(page, wiki_root=str(tmp_path), exist_ok=True)  # should not raise
+
+
+def test_build_wiki_page_raises_on_invalid_page_type():
+    from pipeline.silver_to_gold import build_wiki_page
+    with pytest.raises(ValueError, match="Invalid page_type"):
+        build_wiki_page(
+            page_type="garbage",
+            slug="actors/test",
+            frontmatter={},
+            body="",
+        )

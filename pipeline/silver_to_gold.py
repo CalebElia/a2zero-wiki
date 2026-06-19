@@ -116,18 +116,33 @@ def extract_quads_from_silver(
     return quads
 
 
+VALID_PAGE_TYPES = frozenset({
+    "actor", "initiative", "commitment", "funding", "meeting",
+    "framing", "political-event", "technology",
+})
+
+
 def build_wiki_page(
     page_type: str,
     slug: str,
     frontmatter: dict,
     body: str,
 ) -> WikiPage:
+    if page_type not in VALID_PAGE_TYPES:
+        raise ValueError(f"Invalid page_type {page_type!r}. Must be one of {sorted(VALID_PAGE_TYPES)}")
     return WikiPage(page_type=page_type, slug=slug, frontmatter=frontmatter, body=body)
 
 
-def write_wiki_page(page: WikiPage, wiki_root: str):
+def write_wiki_page(page: WikiPage, wiki_root: str, exist_ok: bool = False):
     # slug format: "actors/missy-stults" → wiki_root/actors/missy-stults.md
     out_path = Path(wiki_root) / (page.slug + ".md")
+    # guard against path traversal
+    resolved = out_path.resolve()
+    wiki_root_resolved = Path(wiki_root).resolve()
+    if not str(resolved).startswith(str(wiki_root_resolved)):
+        raise ValueError(f"Slug escapes wiki_root: {page.slug!r}")
+    if not exist_ok and out_path.exists():
+        raise FileExistsError(f"Wiki page already exists: {out_path}. Use exist_ok=True to overwrite.")
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fm_yaml = yaml.dump(page.frontmatter, allow_unicode=True, default_flow_style=False)
     content = f"---\n{fm_yaml}---\n\n{page.body}\n"
