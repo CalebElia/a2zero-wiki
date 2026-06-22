@@ -132,6 +132,7 @@ def test_write_or_append_page_appends_to_existing(tmp_path):
     assert "commits to implementing" in new_content   # original preserved
     assert "Additional context from year1" in new_content  # new content added
     assert new_content.startswith(original_content[:50])  # frontmatter unchanged
+    assert "<!-- source: a2zero-year1 -->" in new_content
 
 
 def test_write_or_append_page_frontmatter_is_valid_yaml(tmp_path):

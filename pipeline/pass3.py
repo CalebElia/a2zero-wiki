@@ -1,7 +1,6 @@
 import anthropic
 import json
 import re
-import yaml
 from pathlib import Path
 from pipeline.silver_to_gold import (
     VALID_PAGE_TYPES,
@@ -78,10 +77,19 @@ Extract page specs for these entity types:
 RULES:
 - Extract ONLY what the text explicitly states — never invent details
 - Body prose: 2-4 factual sentences drawn entirely from the section text
-- Slugify: lowercase, hyphens only, no special chars ("Office of Sustainability" → "osi")
+- Slugify names: lowercase, hyphens for spaces, drop special chars ("Office of Sustainability and Innovations" → "office-of-sustainability-and-innovations", "DTE Energy" → "dte-energy")
+- Exception: use standard acronyms for well-known bodies where the acronym IS the canonical name (e.g. "osi" for the Office of Sustainability and Innovations, "dte" for DTE Energy)
 - One page spec per entity — do not duplicate the same entity
 - Return [] if no qualifying entities are found in this section
-- Return ONLY a valid JSON array, no prose, no markdown fence"""
+
+OUTPUT SCHEMA — every element of the returned JSON array must have exactly these four keys:
+{
+  "page_type": "<commitment|initiative|actor|funding>",
+  "slug": "<category/kebab-name>",
+  "frontmatter": { <required fields per type listed above> },
+  "body": "<2-4 sentence factual prose from section text>"
+}
+Return ONLY the JSON array. No prose, no markdown fence, no explanation."""
 
 
 def parse_llm_pages_response(raw: str) -> list[dict]:
@@ -98,6 +106,8 @@ def validate_page_spec(spec: dict) -> list[str]:
     for field in ("page_type", "slug", "frontmatter", "body"):
         if field not in spec:
             errors.append(f"missing required field: {field}")
+    if "body" in spec and not spec.get("body"):
+        errors.append("body must not be empty")
     if "page_type" in spec and spec["page_type"] not in VALID_PAGE_TYPES:
         errors.append(f"invalid page_type: {spec['page_type']!r} — must be one of {sorted(VALID_PAGE_TYPES)}")
     return errors
@@ -146,6 +156,9 @@ def extract_wiki_pages_from_chunk(
             system=WIKI_PAGES_SYSTEM,
             messages=[{"role": "user", "content": prompt}],
         )
+        if response.stop_reason == "max_tokens":
+            print(f"[pass3] WARNING: response truncated for chunk (max_tokens hit). Chunk skipped.")
+            return []
         raw = response.content[0].text
         specs = parse_llm_pages_response(raw)
     except Exception as e:
