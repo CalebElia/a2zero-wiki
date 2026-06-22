@@ -176,7 +176,7 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class, mock_pa
     mock_pass3_extract.return_value = []
     from pipeline.ldp import parse_section_map, extract_quads_chunked
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
-    quads = extract_quads_chunked(
+    quads, pages_written = extract_quads_chunked(
         silver_content=SAMPLE_SILVER,
         section_map=sm,
         source_uuid="test-cap",
@@ -184,6 +184,7 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class, mock_pa
     )
     assert mock_anthropic_class.return_value.messages.create.call_count >= 1
     assert len(quads) >= 1
+    assert isinstance(pages_written, int)
 
 
 def test_run_silver_ingest_routes_to_ldp_when_flagged(tmp_path):

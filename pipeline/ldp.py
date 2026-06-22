@@ -185,9 +185,15 @@ def extract_quads_chunked(
     source_type: str = "cap",
     wiki_root: str = "wiki",
     run_date: str | None = None,
-) -> list[dict]:
-    """Extract quads from all depth-1 and depth-2 chunks with context headers."""
+) -> tuple[list[dict], int]:
+    """Extract quads from all depth-1 and depth-2 chunks with context headers.
+
+    Returns a tuple of (all_quads, total_pages_written).
+    """
     from datetime import date as _date
+    # Function-level import to avoid circular-import risk at module load time.
+    from pipeline.pass3 import extract_wiki_pages_from_chunk
+
     if run_date is None:
         run_date = _date.today().isoformat()
 
@@ -195,6 +201,7 @@ def extract_quads_chunked(
     all_lines = silver_content.splitlines()
     chunks = get_chunks(section_map)
     all_quads: list[dict] = []
+    total_pages_written = 0
 
     for i, chunk in enumerate(chunks):
         parent_title = _find_parent_title(chunk, section_map["sections"])
@@ -229,8 +236,7 @@ def extract_quads_chunked(
         all_quads.extend(quads)
 
         # Pass 3: wiki pages
-        from pipeline.pass3 import extract_wiki_pages_from_chunk
-        extract_wiki_pages_from_chunk(
+        pages_written = extract_wiki_pages_from_chunk(
             chunk_text=chunk_text,
             source_uuid=source_uuid,
             context_header=context_header,
@@ -238,8 +244,9 @@ def extract_quads_chunked(
             wiki_root=wiki_root,
             run_date=run_date,
         )
+        total_pages_written += len(pages_written)
 
-    return all_quads
+    return (all_quads, total_pages_written)
 
 
 def run_ldp_ingest(
@@ -257,7 +264,7 @@ def run_ldp_ingest(
     save_section_map(section_map, section_maps_dir)
     print(f"[ldp] {uuid}: {len(section_map['sections'])} sections, "
           f"{len(get_chunks(section_map))} chunks to extract")
-    quads = extract_quads_chunked(
+    quads, pages_written = extract_quads_chunked(
         silver_content=silver_content,
         section_map=section_map,
         source_uuid=uuid,
@@ -267,4 +274,5 @@ def run_ldp_ingest(
         run_date=run_date,
     )
     append_quads(quads, quads_path)
+    print(f"[ldp] {uuid}: {len(quads)} quads, {pages_written} wiki pages written")
     return quads

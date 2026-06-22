@@ -38,18 +38,18 @@ def run_silver_ingest(
 
     silver_content = Path(silver_path).read_text(encoding="utf-8")
 
+    # Extract source_type from frontmatter once, before routing.
+    source_type = "unknown"
+    m = re.match(r"^---\n(.*?)\n---\n", silver_content, re.DOTALL)
+    if m:
+        try:
+            fm = yaml.safe_load(m.group(1))
+            if fm:
+                source_type = fm.get("source_type", "unknown")
+        except Exception:
+            pass
+
     if _should_use_ldp(silver_content):
-        # read source_type from frontmatter if available
-        import re as _re, yaml as _yaml
-        source_type = "unknown"
-        m = _re.match(r"^---\n(.*?)\n---\n", silver_content, _re.DOTALL)
-        if m:
-            try:
-                fm = _yaml.safe_load(m.group(1))
-                if fm:
-                    source_type = fm.get("source_type", "unknown")
-            except Exception:
-                pass
         run_ldp_ingest(
             silver_content=silver_content,
             uuid=uuid,
@@ -68,13 +68,12 @@ def run_silver_ingest(
         )
         # Pass 3 for short docs
         from pipeline.pass3 import extract_wiki_pages_from_chunk
-        import re as _re
-        body = _re.sub(r"^---\n.*?\n---\n", "", silver_content, flags=_re.DOTALL).strip()
+        body = re.sub(r"^---\n.*?\n---\n", "", silver_content, flags=re.DOTALL).strip()
         extract_wiki_pages_from_chunk(
             chunk_text=body,
             source_uuid=uuid,
-            context_header="",
-            source_type="unknown",
+            context_header="",  # short doc: no section context available
+            source_type=source_type,
             wiki_root=wiki_root,
             run_date=run_date,
         )
@@ -123,6 +122,8 @@ def run_annual_report_ingest(
         source_uuid=uuid,
         out_path=quads_path,
     )
+    # TODO: Pass 3 (wiki page extraction) not yet wired for PDF ingest path.
+    # Wire it here once the annual report silver files are confirmed stable.
 
     # Steps 3-6: Post-ingest (lint + review queue)
     report = run_post_ingest(
