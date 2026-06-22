@@ -9,13 +9,12 @@ from pipeline.ldp import run_ldp_ingest
 
 
 def _should_use_ldp(silver_content: str) -> bool:
-    """Use LDP if frontmatter has ldp:true, or if doc is large and heavily structured."""
     m = re.match(r"^---\n(.*?)\n---\n", silver_content, re.DOTALL)
     if m:
         try:
             fm = yaml.safe_load(m.group(1))
-            if fm and fm.get("ldp"):
-                return True
+            if fm is not None and "ldp" in fm:
+                return bool(fm["ldp"])
         except Exception:
             pass
     lines = silver_content.splitlines()

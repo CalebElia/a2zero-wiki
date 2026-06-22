@@ -5,7 +5,6 @@ from pathlib import Path
 from pipeline.silver_to_gold import (
     parse_llm_quads_response,
     append_quads,
-    QUADS_SYSTEM,
 )
 
 # CAP-specific override: source_type is "cap", actions are unverified commitments
@@ -41,6 +40,7 @@ Each quad has this exact schema:
 
 Rules:
 - Extract ALL facts — do not filter by perceived importance
+- One fact per quad; do not bundle multiple facts into one object field
 - For CAP "Actions" (numbered program actions), set commitment_status: "unverified"
   and use relation: "committed to" or "planned to implement"
 - For cost estimates and GHG figures, extract as separate quads
@@ -132,7 +132,11 @@ def save_section_map(section_map: dict, maps_dir: str) -> str:
 
 
 def get_chunks(section_map: dict) -> list[dict]:
-    """Return only depth-1 and depth-2 sections as chunk boundaries."""
+    # Chunk at depth 1 (# sections) and depth 2 (## sections).
+    # A depth-1 section's text overlaps with its depth-2 children — this is
+    # intentional: the parent chunk gives the LLM strategy-level context, and
+    # the child chunk provides action-level detail. append_quads deduplicates
+    # by quad ID so overlapping extraction does not corrupt the fact store.
     return [s for s in section_map["sections"] if s["depth"] <= 2]
 
 
@@ -217,7 +221,7 @@ def extract_quads_chunked(
         raw = response.content[0].text
         try:
             quads = parse_llm_quads_response(raw)
-        except (ValueError, Exception) as e:
+        except Exception as e:
             print(f"[ldp] WARNING: chunk {i} ({chunk['title']!r}) extraction failed: {e}")
             quads = []
         all_quads.extend(quads)
