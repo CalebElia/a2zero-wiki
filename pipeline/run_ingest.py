@@ -39,11 +39,24 @@ def run_silver_ingest(
     silver_content = Path(silver_path).read_text(encoding="utf-8")
 
     if _should_use_ldp(silver_content):
+        # read source_type from frontmatter if available
+        import re as _re, yaml as _yaml
+        source_type = "unknown"
+        m = _re.match(r"^---\n(.*?)\n---\n", silver_content, _re.DOTALL)
+        if m:
+            try:
+                fm = _yaml.safe_load(m.group(1))
+                if fm:
+                    source_type = fm.get("source_type", "unknown")
+            except Exception:
+                pass
         run_ldp_ingest(
             silver_content=silver_content,
             uuid=uuid,
             title=title,
             quads_path=quads_path,
+            wiki_root=wiki_root,
+            source_type=source_type,
             section_maps_dir=section_maps_dir,
             run_date=run_date,
         )
@@ -52,6 +65,18 @@ def run_silver_ingest(
             silver_content=silver_content,
             source_uuid=uuid,
             out_path=quads_path,
+        )
+        # Pass 3 for short docs
+        from pipeline.pass3 import extract_wiki_pages_from_chunk
+        import re as _re
+        body = _re.sub(r"^---\n.*?\n---\n", "", silver_content, flags=_re.DOTALL).strip()
+        extract_wiki_pages_from_chunk(
+            chunk_text=body,
+            source_uuid=uuid,
+            context_header="",
+            source_type="unknown",
+            wiki_root=wiki_root,
+            run_date=run_date,
         )
 
     report = run_post_ingest(

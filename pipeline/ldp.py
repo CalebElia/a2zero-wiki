@@ -182,6 +182,8 @@ def extract_quads_chunked(
     section_map: dict,
     source_uuid: str,
     document_title: str,
+    source_type: str = "cap",
+    wiki_root: str = "wiki",
     run_date: str | None = None,
 ) -> list[dict]:
     """Extract quads from all depth-1 and depth-2 chunks with context headers."""
@@ -226,6 +228,17 @@ def extract_quads_chunked(
             quads = []
         all_quads.extend(quads)
 
+        # Pass 3: wiki pages
+        from pipeline.pass3 import extract_wiki_pages_from_chunk
+        extract_wiki_pages_from_chunk(
+            chunk_text=chunk_text,
+            source_uuid=source_uuid,
+            context_header=context_header,
+            source_type=source_type,
+            wiki_root=wiki_root,
+            run_date=run_date,
+        )
+
     return all_quads
 
 
@@ -234,6 +247,8 @@ def run_ldp_ingest(
     uuid: str,
     title: str,
     quads_path: str,
+    wiki_root: str = "wiki",
+    source_type: str = "cap",
     section_maps_dir: str = "blackboard/section_maps",
     run_date: str | None = None,
 ):
@@ -247,6 +262,8 @@ def run_ldp_ingest(
         section_map=section_map,
         source_uuid=uuid,
         document_title=title,
+        source_type=source_type,
+        wiki_root=wiki_root,
         run_date=run_date,
     )
     append_quads(quads, quads_path)

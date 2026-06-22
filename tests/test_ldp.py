@@ -144,11 +144,10 @@ def test_extract_chunk_lines_returns_correct_text():
     assert "---" in text
 
 
+@patch("pipeline.pass3.extract_wiki_pages_from_chunk")
 @patch("pipeline.ldp.anthropic.Anthropic")
-def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class):
+def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class, mock_pass3_extract):
     import json
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
     valid_quad = {
         "id": "sha256-abc001",
         "date": "2021",
@@ -170,9 +169,11 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class):
         "commitment_status": "unverified",
         "last_updated": "2026-06-22",
     }
-    mock_client.messages.create.return_value = MagicMock(
+    mock_anthropic_class.return_value.messages.create.return_value = MagicMock(
         content=[MagicMock(text=json.dumps([valid_quad]))]
     )
+    # Pass 3 is stubbed out entirely — not under test here
+    mock_pass3_extract.return_value = []
     from pipeline.ldp import parse_section_map, extract_quads_chunked
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     quads = extract_quads_chunked(
@@ -181,7 +182,7 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class):
         source_uuid="test-cap",
         document_title="Test CAP",
     )
-    assert mock_client.messages.create.call_count >= 1
+    assert mock_anthropic_class.return_value.messages.create.call_count >= 1
     assert len(quads) >= 1
 
 
@@ -217,10 +218,17 @@ def test_run_silver_ingest_uses_single_pass_without_ldp_flag(tmp_path):
     queue_file = tmp_path / "review-queue.md"
 
     with patch("pipeline.run_ingest.extract_quads_from_silver") as mock_extract, \
-         patch("pipeline.run_ingest.run_post_ingest") as mock_post:
+         patch("pipeline.run_ingest.run_post_ingest") as mock_post, \
+         patch("pipeline.pass3.anthropic.Anthropic") as mock_pass3_anthropic:
         mock_extract.return_value = []
         mock_post.return_value = MagicMock(
             total_quads=0, schema_errors=[], dark_matter_ids=[]
+        )
+        mock_pass3_client = MagicMock()
+        mock_pass3_anthropic.return_value = mock_pass3_client
+        mock_pass3_client.messages.create.return_value = MagicMock(
+            stop_reason="end_turn",
+            content=[MagicMock(text="[]")],
         )
         from pipeline.run_ingest import run_silver_ingest
         run_silver_ingest(
