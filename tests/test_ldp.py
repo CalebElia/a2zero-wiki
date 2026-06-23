@@ -194,7 +194,8 @@ def test_run_silver_ingest_routes_to_ldp_when_flagged(tmp_path):
     quads_file = tmp_path / "quads.jsonl"
     queue_file = tmp_path / "review-queue.md"
 
-    with patch("pipeline.run_ingest.run_ldp_ingest") as mock_ldp, \
+    with patch("pipeline.run_ingest.extract_plan_page") as mock_plan, \
+         patch("pipeline.run_ingest.run_ldp_ingest") as mock_ldp, \
          patch("pipeline.run_ingest.run_post_ingest") as mock_post:
         mock_post.return_value = MagicMock(
             total_quads=0, schema_errors=[], dark_matter_ids=[]
@@ -218,7 +219,8 @@ def test_run_silver_ingest_uses_single_pass_without_ldp_flag(tmp_path):
     quads_file = tmp_path / "quads.jsonl"
     queue_file = tmp_path / "review-queue.md"
 
-    with patch("pipeline.run_ingest.extract_quads_from_silver") as mock_extract, \
+    with patch("pipeline.run_ingest.extract_plan_page") as mock_plan, \
+         patch("pipeline.run_ingest.extract_quads_from_silver") as mock_extract, \
          patch("pipeline.run_ingest.run_post_ingest") as mock_post, \
          patch("pipeline.wiki_writer.anthropic.Anthropic") as mock_wiki_writer_anthropic:
         mock_extract.return_value = []

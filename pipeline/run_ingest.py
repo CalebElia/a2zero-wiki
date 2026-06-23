@@ -6,6 +6,7 @@ from pipeline.bronze_to_silver import convert_annual_report
 from pipeline.silver_to_gold import extract_quads_from_silver
 from pipeline.post_ingest import run_post_ingest
 from pipeline.ldp import run_ldp_ingest
+from pipeline.plan_extractor import extract_plan_page
 
 
 def _should_use_ldp(silver_content: str) -> bool:
@@ -41,6 +42,15 @@ def run_silver_ingest(
     # Derive vault-relative path without extension for wikilink citations.
     # e.g. "silver/cap/cap-2020.md" → "silver/cap/cap-2020"
     silver_relative_path = str(Path(silver_path).with_suffix(""))
+
+    # First pass: extract plan page (idempotent — skips if already exists).
+    extract_plan_page(
+        silver_content=silver_content,
+        source_uuid=uuid,
+        silver_relative_path=silver_relative_path,
+        wiki_root=wiki_root,
+        run_date=run_date,
+    )
 
     # Extract source_type from frontmatter once, before routing.
     source_type = "unknown"
