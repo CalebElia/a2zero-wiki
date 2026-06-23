@@ -263,3 +263,50 @@ def test_extract_wiki_pages_from_chunk_handles_max_tokens(mock_anthropic_class, 
         run_date="2026-06-22",
     )
     assert pages == []
+
+
+def test_validate_page_spec_rejects_unknown_strategy_slug():
+    """A strategy slug not in the pre-existing set must be rejected."""
+    from pipeline.wiki_writer import validate_page_spec
+    spec = {
+        "page_type": "strategy",
+        "slug": "strategies/strategy-8-invented",
+        "frontmatter": {"type": "strategy"},
+        "body": "This strategy does not exist. ([[silver/cap/cap-2020|cap-2020]])",
+    }
+    allowed = frozenset({"strategies/strategy-1-renewable-grid",
+                         "strategies/strategy-2-electrification"})
+    errors = validate_page_spec(spec, allowed_strategy_slugs=allowed)
+    assert any("strategy" in e and "not a pre-existing" in e for e in errors), (
+        f"Expected whitelist error, got: {errors}"
+    )
+
+
+def test_validate_page_spec_accepts_known_strategy_slug():
+    """A strategy slug in the pre-existing set must be accepted."""
+    from pipeline.wiki_writer import validate_page_spec
+    spec = {
+        "page_type": "strategy",
+        "slug": "strategies/strategy-1-renewable-grid",
+        "frontmatter": {"type": "strategy"},
+        "body": "Strategy 1 focuses on renewable energy. ([[silver/cap/cap-2020|cap-2020]])",
+    }
+    allowed = frozenset({"strategies/strategy-1-renewable-grid",
+                         "strategies/strategy-2-electrification"})
+    errors = validate_page_spec(spec, allowed_strategy_slugs=allowed)
+    type_errors = [e for e in errors if "strategy" in e and "not a pre-existing" in e]
+    assert type_errors == [], f"Unexpected whitelist error: {type_errors}"
+
+
+def test_validate_page_spec_skips_whitelist_when_not_provided():
+    """If allowed_strategy_slugs is None, skip the whitelist check (test mode)."""
+    from pipeline.wiki_writer import validate_page_spec
+    spec = {
+        "page_type": "strategy",
+        "slug": "strategies/strategy-99-unknown",
+        "frontmatter": {"type": "strategy"},
+        "body": "Some strategy content. ([[silver/cap/cap-2020|cap-2020]])",
+    }
+    errors = validate_page_spec(spec, allowed_strategy_slugs=None)
+    type_errors = [e for e in errors if "not a pre-existing" in e]
+    assert type_errors == [], f"Unexpected error with no whitelist: {type_errors}"
