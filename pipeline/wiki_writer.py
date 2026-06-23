@@ -306,6 +306,7 @@ def write_or_append_page(spec: dict, wiki_root: str, source_uuid: str):
 def extract_wiki_pages_from_chunk(
     chunk_text: str,
     source_uuid: str,
+    silver_relative_path: str,
     context_header: str,
     source_type: str,
     wiki_root: str,
@@ -317,6 +318,7 @@ def extract_wiki_pages_from_chunk(
             f"{context_header}\n\n"
             f"[SECTION CONTENT]\n{chunk_text}\n[END SECTION]\n\n"
             f"Source UUID: {source_uuid}\n"
+            f"Silver path: {silver_relative_path}\n"
             f"Source type: {source_type}\n"
             f"Today's date: {run_date}"
         )

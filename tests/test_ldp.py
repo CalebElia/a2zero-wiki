@@ -144,9 +144,9 @@ def test_extract_chunk_lines_returns_correct_text():
     assert "---" in text
 
 
-@patch("pipeline.pass3.extract_wiki_pages_from_chunk")
+@patch("pipeline.wiki_writer.extract_wiki_pages_from_chunk")
 @patch("pipeline.ldp.anthropic.Anthropic")
-def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class, mock_pass3_extract):
+def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class, mock_wiki_writer_extract):
     import json
     valid_quad = {
         "id": "sha256-abc001",
@@ -173,7 +173,7 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class, mock_pa
         content=[MagicMock(text=json.dumps([valid_quad]))]
     )
     # Pass 3 is stubbed out entirely — not under test here
-    mock_pass3_extract.return_value = []
+    mock_wiki_writer_extract.return_value = []
     from pipeline.ldp import parse_section_map, extract_quads_chunked
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     quads, pages_written = extract_quads_chunked(
@@ -220,14 +220,14 @@ def test_run_silver_ingest_uses_single_pass_without_ldp_flag(tmp_path):
 
     with patch("pipeline.run_ingest.extract_quads_from_silver") as mock_extract, \
          patch("pipeline.run_ingest.run_post_ingest") as mock_post, \
-         patch("pipeline.pass3.anthropic.Anthropic") as mock_pass3_anthropic:
+         patch("pipeline.wiki_writer.anthropic.Anthropic") as mock_wiki_writer_anthropic:
         mock_extract.return_value = []
         mock_post.return_value = MagicMock(
             total_quads=0, schema_errors=[], dark_matter_ids=[]
         )
-        mock_pass3_client = MagicMock()
-        mock_pass3_anthropic.return_value = mock_pass3_client
-        mock_pass3_client.messages.create.return_value = MagicMock(
+        mock_wiki_writer_client = MagicMock()
+        mock_wiki_writer_anthropic.return_value = mock_wiki_writer_client
+        mock_wiki_writer_client.messages.create.return_value = MagicMock(
             stop_reason="end_turn",
             content=[MagicMock(text="[]")],
         )

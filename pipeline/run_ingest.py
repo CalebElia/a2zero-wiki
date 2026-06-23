@@ -38,6 +38,10 @@ def run_silver_ingest(
 
     silver_content = Path(silver_path).read_text(encoding="utf-8")
 
+    # Derive vault-relative path without extension for wikilink citations.
+    # e.g. "silver/cap/cap-2020.md" → "silver/cap/cap-2020"
+    silver_relative_path = str(Path(silver_path).with_suffix(""))
+
     # Extract source_type from frontmatter once, before routing.
     source_type = "unknown"
     m = re.match(r"^---\n(.*?)\n---\n", silver_content, re.DOTALL)
@@ -55,6 +59,7 @@ def run_silver_ingest(
             uuid=uuid,
             title=title,
             quads_path=quads_path,
+            silver_relative_path=silver_relative_path,
             wiki_root=wiki_root,
             source_type=source_type,
             section_maps_dir=section_maps_dir,
@@ -67,11 +72,12 @@ def run_silver_ingest(
             out_path=quads_path,
         )
         # Pass 3 for short docs
-        from pipeline.pass3 import extract_wiki_pages_from_chunk
+        from pipeline.wiki_writer import extract_wiki_pages_from_chunk
         body = re.sub(r"^---\n.*?\n---\n", "", silver_content, flags=re.DOTALL).strip()
         extract_wiki_pages_from_chunk(
             chunk_text=body,
             source_uuid=uuid,
+            silver_relative_path=silver_relative_path,
             context_header="",  # short doc: no section context available
             source_type=source_type,
             wiki_root=wiki_root,

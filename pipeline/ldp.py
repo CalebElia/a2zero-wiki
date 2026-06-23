@@ -182,6 +182,7 @@ def extract_quads_chunked(
     section_map: dict,
     source_uuid: str,
     document_title: str,
+    silver_relative_path: str = "",
     source_type: str = "cap",
     wiki_root: str = "wiki",
     run_date: str | None = None,
@@ -192,7 +193,7 @@ def extract_quads_chunked(
     """
     from datetime import date as _date
     # Function-level import to avoid circular-import risk at module load time.
-    from pipeline.pass3 import extract_wiki_pages_from_chunk
+    from pipeline.wiki_writer import extract_wiki_pages_from_chunk
 
     if run_date is None:
         run_date = _date.today().isoformat()
@@ -239,6 +240,7 @@ def extract_quads_chunked(
         pages_written = extract_wiki_pages_from_chunk(
             chunk_text=chunk_text,
             source_uuid=source_uuid,
+            silver_relative_path=silver_relative_path,
             context_header=context_header,
             source_type=source_type,
             wiki_root=wiki_root,
@@ -254,6 +256,7 @@ def run_ldp_ingest(
     uuid: str,
     title: str,
     quads_path: str,
+    silver_relative_path: str = "",
     wiki_root: str = "wiki",
     source_type: str = "cap",
     section_maps_dir: str = "blackboard/section_maps",
@@ -269,6 +272,7 @@ def run_ldp_ingest(
         section_map=section_map,
         source_uuid=uuid,
         document_title=title,
+        silver_relative_path=silver_relative_path,
         source_type=source_type,
         wiki_root=wiki_root,
         run_date=run_date,
