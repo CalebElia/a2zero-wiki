@@ -9,8 +9,8 @@ from pipeline.ldp import run_ldp_ingest
 from pipeline.plan_extractor import extract_plan_page
 
 
-def _should_use_ldp(silver_content: str) -> bool:
-    m = re.match(r"^---\n(.*?)\n---\n", silver_content, re.DOTALL)
+def _should_use_ldp(source_content: str) -> bool:
+    m = re.match(r"^---\n(.*?)\n---\n", source_content, re.DOTALL)
     if m:
         try:
             fm = yaml.safe_load(m.group(1))
@@ -18,7 +18,7 @@ def _should_use_ldp(silver_content: str) -> bool:
                 return bool(fm["ldp"])
         except Exception:
             pass
-    lines = silver_content.splitlines()
+    lines = source_content.splitlines()
     headings = sum(1 for line in lines if re.match(r"^#{1,4}\s", line))
     return len(lines) > 1000 and headings > 10
 
