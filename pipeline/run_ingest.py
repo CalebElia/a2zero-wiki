@@ -54,7 +54,7 @@ def run_silver_ingest(
     extract_plan_page(
         silver_content=source_content,
         source_uuid=uuid,
-        silver_relative_path=source_rel_path,
+        source_rel_path=source_rel_path,
         wiki_root=wiki_root,
         run_date=run_date,
     )
@@ -72,11 +72,11 @@ def run_silver_ingest(
 
     if _should_use_ldp(source_content):
         run_ldp_ingest(
-            silver_content=source_content,
+            source_content=source_content,
             uuid=uuid,
             title=title,
             quads_path=quads_path,
-            silver_relative_path=source_rel_path,
+            source_rel_path=source_rel_path,
             wiki_root=wiki_root,
             source_type=source_type,
             section_maps_dir=section_maps_dir,
@@ -96,7 +96,7 @@ def run_silver_ingest(
         extract_wiki_pages_from_chunk(
             chunk_text=body,
             source_uuid=uuid,
-            silver_relative_path=source_rel_path,
+            source_rel_path=source_rel_path,
             context_header="",  # short doc: no section context available
             source_type=source_type,
             wiki_root=wiki_root,

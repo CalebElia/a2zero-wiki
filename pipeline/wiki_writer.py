@@ -48,8 +48,8 @@ The "Source path" in the user message gives the vault-relative path for citation
   Source citation (REQUIRED):  ([[sources/cap/cap-2020|cap-2020]])
 
 CITATIONS: Every factual sentence in "body" must end with a source citation in this exact format:
-  ([[{silver_path}|{source_uuid}]])
-where {silver_path} = the Silver path value from the user message, and {source_uuid} = the Source UUID value.
+  ([[{source_path}|{source_uuid}]])
+where {source_path} = the Silver path value from the user message, and {source_uuid} = the Source UUID value.
 Exceptions: transitional sentences, section headers, cross-references to other wiki pages.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -101,7 +101,7 @@ PAGE TYPES TO CREATE:
      parent-plan: "[[plans/cap-2020]]"
      goal: (1-sentence goal statement for this strategy, from source)
      initiatives: ["[[initiatives/slug1]]", "[[initiatives/slug2]]"]
-     source-first-seen: "[[{silver_path}]]"
+     source-first-seen: "[[{source_path}]]"
      tags: [3-5 keywords]
      last-updated: (today's date YYYY-MM-DD)
 
@@ -125,8 +125,8 @@ PAGE TYPES TO CREATE:
        - year: (integer)
          target: (string describing the milestone — extract from timelines or Next Steps)
          status: unverified
-         source: "[[{silver_path}]]"
-     source-first-seen: "[[{silver_path}]]"
+         source: "[[{source_path}]]"
+     source-first-seen: "[[{source_path}]]"
      tags: [3-6 keywords]
      last-updated: (today's date YYYY-MM-DD)
 
@@ -143,7 +143,7 @@ PAGE TYPES TO CREATE:
      active-years: [list of integer years, or []]
      programs-involved: ["[[initiatives/{slug}]]"]
      tags: [3-5 keywords]
-     source-first-seen: "[[{silver_path}]]"
+     source-first-seen: "[[{source_path}]]"
      last-updated: (today's date YYYY-MM-DD)
 
 4. FUNDING-EVENT — a specific dollar allocation with named source AND recipient.
@@ -162,7 +162,7 @@ PAGE TYPES TO CREATE:
      status: (announced | awarded | disbursed | completed | terminated | on-hold)
      transferable: (true | false)
      tags: [3-5 keywords]
-     source-first-seen: "[[{silver_path}]]"
+     source-first-seen: "[[{source_path}]]"
      last-updated: (today's date YYYY-MM-DD)
 
 5. TECHNOLOGY — a technology type Ann Arbor is deploying in A2Zero programs.
@@ -183,7 +183,7 @@ PAGE TYPES TO CREATE:
      barriers-encountered: [list of barrier keyword strings, or []]
      transferability: (high | medium | low)
      tags: [3-6 keywords]
-     source-first-seen: "[[{silver_path}]]"
+     source-first-seen: "[[{source_path}]]"
      last-updated: (today's date YYYY-MM-DD)
 
 6. LOCATION — a specific named site of A2Zero program activity.
@@ -197,7 +197,7 @@ PAGE TYPES TO CREATE:
      owned-by: (city | county | nonprofit | university | school-district | private | null)
      initiatives: ["[[initiatives/{slug}]]"]
      tags: [3-5 keywords]
-     source-first-seen: "[[{silver_path}]]"
+     source-first-seen: "[[{source_path}]]"
      last-updated: (today's date YYYY-MM-DD)
 
 7. CONTRADICTION — conflicting claims about the same fact, broadly interpreted.
@@ -207,12 +207,12 @@ PAGE TYPES TO CREATE:
    Frontmatter:
      type: contradiction
      title: (brief description of the conflict)
-     sources: ["[[{silver_path}]]"]
+     sources: ["[[{source_path}]]"]
      cross-source: (true if conflict spans different source documents; false if within same source)
      status: unresolved
      related-initiatives: ["[[initiatives/{slug}]]"]
      tags: [3-5 keywords]
-     source-first-seen: "[[{silver_path}]]"
+     source-first-seen: "[[{source_path}]]"
      last-updated: (today's date YYYY-MM-DD)
    Body: document both conflicting claims side by side, each ending with a citation.
 
@@ -230,7 +230,7 @@ PAGE TYPES TO CREATE:
      decisions: [list of decision strings, or []]
      actors: ["[[actors/{slug}]]"]
      tags: [3-5 keywords]
-     source-first-seen: "[[{silver_path}]]"
+     source-first-seen: "[[{source_path}]]"
      last-updated: (today's date YYYY-MM-DD)
 
 9. FRAMING — how an A2Zero issue is deliberately talked about by stakeholders.
@@ -246,7 +246,7 @@ PAGE TYPES TO CREATE:
      audiences: [list of audience strings]
      evolution: (true | false)
      tags: [3-5 keywords]
-     source-first-seen: "[[{silver_path}]]"
+     source-first-seen: "[[{source_path}]]"
      last-updated: (today's date YYYY-MM-DD)
 
 10. POLITICAL-EVENT — a discrete political outcome with lasting legal or political effect.
@@ -263,7 +263,7 @@ PAGE TYPES TO CREATE:
       programs-authorized: ["[[initiatives/{slug}]]"]
       actors: ["[[actors/{slug}]]"]
       tags: [3-5 keywords]
-      source-first-seen: "[[{silver_path}]]"
+      source-first-seen: "[[{source_path}]]"
       last-updated: (today's date YYYY-MM-DD)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -341,7 +341,7 @@ def write_or_append_page(spec: dict, wiki_root: str, source_uuid: str):
 def extract_wiki_pages_from_chunk(
     chunk_text: str,
     source_uuid: str,
-    silver_relative_path: str,
+    source_rel_path: str,
     context_header: str,
     source_type: str,
     wiki_root: str,
@@ -353,7 +353,7 @@ def extract_wiki_pages_from_chunk(
             f"{context_header}\n\n"
             f"[SECTION CONTENT]\n{chunk_text}\n[END SECTION]\n\n"
             f"Source UUID: {source_uuid}\n"
-            f"Source path: {silver_relative_path}\n"
+            f"Source path: {source_rel_path}\n"
             f"Source type: {source_type}\n"
             f"Today's date: {run_date}"
         )

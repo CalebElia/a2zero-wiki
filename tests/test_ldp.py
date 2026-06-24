@@ -177,7 +177,7 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class, mock_wi
     from pipeline.ldp import parse_section_map, extract_quads_chunked
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     quads, pages_written = extract_quads_chunked(
-        silver_content=SAMPLE_SILVER,
+        source_content=SAMPLE_SILVER,
         section_map=sm,
         source_uuid="test-cap",
         document_title="Test CAP",

@@ -62,9 +62,9 @@ def _strip_frontmatter(content: str) -> tuple[str, int]:
     return content, 1
 
 
-def parse_section_map(silver_content: str, document_uuid: str) -> dict:
+def parse_section_map(source_content: str, document_uuid: str) -> dict:
     """Parse heading structure into a section map using regex (no LLM needed)."""
-    lines = silver_content.splitlines()
+    lines = source_content.splitlines()
     total_lines = len(lines)
 
     # find body start (skip frontmatter)
@@ -208,7 +208,7 @@ def _find_parent_title(section: dict, all_sections: list[dict]) -> str | None:
 
 
 def extract_quads_chunked(
-    silver_content: str,
+    source_content: str,
     section_map: dict,
     source_uuid: str,
     document_title: str,
@@ -230,7 +230,7 @@ def extract_quads_chunked(
     if run_date is None:
         run_date = _date.today().isoformat()
 
-    all_lines = silver_content.splitlines()
+    all_lines = source_content.splitlines()
     chunks = get_chunks(section_map)
     all_quads: list[dict] = []
     total_pages_written = 0
@@ -275,7 +275,7 @@ def extract_quads_chunked(
         pages_written = extract_wiki_pages_from_chunk(
             chunk_text=chunk_text,
             source_uuid=source_uuid,
-            silver_relative_path=source_rel_path,
+            source_rel_path=source_rel_path,
             context_header=context_header,
             source_type=source_type,
             wiki_root=wiki_root,
@@ -287,11 +287,11 @@ def extract_quads_chunked(
 
 
 def run_ldp_ingest(
-    silver_content: str,
+    source_content: str,
     uuid: str,
     title: str,
     quads_path: str,
-    silver_relative_path: str = "",
+    source_rel_path: str = "",
     wiki_root: str = "wiki",
     source_type: str = "cap",
     section_maps_dir: str = "blackboard/section_maps",
@@ -302,17 +302,17 @@ def run_ldp_ingest(
 
     wiki_only=True runs only Pass 3 wiki generation; quads_path is untouched.
     """
-    section_map = parse_section_map(silver_content, uuid)
+    section_map = parse_section_map(source_content, uuid)
     save_section_map(section_map, section_maps_dir)
     mode = "wiki-only" if wiki_only else "quads+wiki"
     print(f"[ldp] {uuid}: {len(section_map['sections'])} sections, "
           f"{len(get_chunks(section_map))} chunks to extract [{mode}]")
     quads, pages_written = extract_quads_chunked(
-        silver_content=silver_content,
+        source_content=source_content,
         section_map=section_map,
         source_uuid=uuid,
         document_title=title,
-        source_rel_path=silver_relative_path,
+        source_rel_path=source_rel_path,
         source_type=source_type,
         wiki_root=wiki_root,
         run_date=run_date,
