@@ -49,7 +49,7 @@ _PLAN_INTRO_LINES = 200
 def extract_plan_page(
     silver_content: str,
     source_uuid: str,
-    silver_relative_path: str,
+    source_rel_path: str,
     wiki_root: str,
     run_date: str,
 ) -> dict | None:
@@ -78,7 +78,7 @@ def extract_plan_page(
                 "role": "user",
                 "content": (
                     f"Source UUID: {source_uuid}\n"
-                    f"Silver path: {silver_relative_path}\n"
+                    f"Source path: {source_rel_path}\n"
                     f"Today's date: {run_date}\n\n"
                     f"[DOCUMENT INTRO]\n{intro}\n[END INTRO]"
                 ),

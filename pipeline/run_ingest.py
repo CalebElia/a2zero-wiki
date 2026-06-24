@@ -124,7 +124,7 @@ def run_annual_report_ingest(
     uuid: str,
     year: str,
     title: str,
-    silver_dir: str,
+    source_dir: str,
     quads_path: str,
     wiki_root: str,
     review_queue_path: str,
@@ -134,7 +134,7 @@ def run_annual_report_ingest(
         run_date = date.today().isoformat()
 
     # Step 1: Raw → Sources
-    source_path = str(Path(silver_dir) / f"{uuid}.md")
+    source_path = str(Path(source_dir) / f"{uuid}.md")
     convert_annual_report(
         pdf_path=pdf_path,
         uuid=uuid,
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     p_pdf.add_argument("--uuid", required=True)
     p_pdf.add_argument("--year", required=True)
     p_pdf.add_argument("--title", required=True)
-    p_pdf.add_argument("--silver-dir", default="sources/annual-reports")
+    p_pdf.add_argument("--source-dir", default="sources/annual-reports")
     p_pdf.add_argument("--quads-path", default="blackboard/quads.jsonl")
     p_pdf.add_argument("--wiki-root", default="wiki")
     p_pdf.add_argument("--review-queue", default="review-queue.md")
@@ -217,7 +217,7 @@ if __name__ == "__main__":
             uuid=args.uuid,
             year=args.year,
             title=args.title,
-            silver_dir=args.silver_dir,
+            source_dir=args.source_dir,
             quads_path=args.quads_path,
             wiki_root=args.wiki_root,
             review_queue_path=args.review_queue,

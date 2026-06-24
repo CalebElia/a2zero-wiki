@@ -56,7 +56,7 @@ def test_extract_plan_page_writes_file(mock_anthropic_class, tmp_path):
     result = extract_plan_page(
         silver_content=SAMPLE_SILVER,
         source_uuid="cap-2020",
-        silver_relative_path="silver/cap/cap-2020",
+        source_rel_path="silver/cap/cap-2020",
         wiki_root=str(tmp_path),
         run_date="2026-06-23",
     )
@@ -86,7 +86,7 @@ def test_extract_plan_page_skips_if_exists(mock_anthropic_class, tmp_path):
     result = extract_plan_page(
         silver_content=SAMPLE_SILVER,
         source_uuid="cap-2020",
-        silver_relative_path="silver/cap/cap-2020",
+        source_rel_path="silver/cap/cap-2020",
         wiki_root=str(tmp_path),
         run_date="2026-06-23",
     )
@@ -105,7 +105,7 @@ def test_extract_plan_page_returns_none_on_api_failure(mock_anthropic_class, tmp
     result = extract_plan_page(
         silver_content=SAMPLE_SILVER,
         source_uuid="cap-2020",
-        silver_relative_path="silver/cap/cap-2020",
+        source_rel_path="silver/cap/cap-2020",
         wiki_root=str(tmp_path),
         run_date="2026-06-23",
     )
@@ -127,7 +127,7 @@ def test_extract_plan_page_rejects_wrong_type(mock_anthropic_class, tmp_path):
     result = extract_plan_page(
         silver_content=SAMPLE_SILVER,
         source_uuid="cap-2020",
-        silver_relative_path="silver/cap/cap-2020",
+        source_rel_path="silver/cap/cap-2020",
         wiki_root=str(tmp_path),
         run_date="2026-06-23",
     )
