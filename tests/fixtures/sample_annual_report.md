@@ -4,7 +4,7 @@ source_type: annual-report
 title: "A2Zero Year 1 Annual Report (Test Fixture)"
 year: "year1"
 ingest_date: "2026-06-18"
-bronze_path: "bronze/annual-reports/test-year1.pdf"
+raw_path: "raw/annual-reports/test-year1.pdf"
 ---
 
 # A2Zero Year 1 Annual Report

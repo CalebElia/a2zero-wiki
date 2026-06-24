@@ -35,13 +35,13 @@ MOCK_QUADS = [
 ]
 
 
-@patch("pipeline.bronze_to_silver.extract_pdf_text", return_value="Raw PDF text")
+@patch("pipeline.raw_to_sources.extract_pdf_text", return_value="Raw PDF text")
 @patch("anthropic.Anthropic")
 def test_run_ingest_creates_silver_file(
     mock_anthropic_class, mock_extract, tmp_path
 ):
-    import pipeline.bronze_to_silver as b2s
-    b2s._DEFAULT_CLIENT = None
+    import pipeline.raw_to_sources as rts
+    rts._DEFAULT_CLIENT = None
 
     mock_silver_client = MagicMock()
     mock_silver_client.messages.create.return_value = MagicMock(
@@ -51,7 +51,7 @@ def test_run_ingest_creates_silver_file(
     mock_gold_client.messages.create.return_value = MagicMock(
         content=[MagicMock(text=json.dumps(MOCK_QUADS))]
     )
-    # First Anthropic() call → silver client (bronze_to_silver); second → gold client (silver_to_gold)
+    # First Anthropic() call → source client (raw_to_sources); second → gold client (silver_to_gold)
     mock_anthropic_class.side_effect = [mock_silver_client, mock_gold_client]
 
     silver_dir = tmp_path / "silver" / "annual-reports"
@@ -61,7 +61,7 @@ def test_run_ingest_creates_silver_file(
 
     from pipeline.run_ingest import run_annual_report_ingest
     run_annual_report_ingest(
-        pdf_path="bronze/annual-reports/a2zero-year1.pdf",
+        pdf_path="raw/annual-reports/a2zero-year1.pdf",
         uuid="a2zero-year1",
         year="year1",
         title="A2Zero Year 1 Annual Report",

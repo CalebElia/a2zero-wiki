@@ -202,7 +202,7 @@ def test_run_silver_ingest_routes_to_ldp_when_flagged(tmp_path):
         )
         from pipeline.run_ingest import run_silver_ingest
         run_silver_ingest(
-            silver_path=str(silver_file),
+            source_path=str(silver_file),
             uuid="test-cap",
             title="Test CAP",
             quads_path=str(quads_file),
@@ -235,7 +235,7 @@ def test_run_silver_ingest_uses_single_pass_without_ldp_flag(tmp_path):
         )
         from pipeline.run_ingest import run_silver_ingest
         run_silver_ingest(
-            silver_path=str(silver_file),
+            source_path=str(silver_file),
             uuid="short-doc",
             title="Short Doc",
             quads_path=str(quads_file),

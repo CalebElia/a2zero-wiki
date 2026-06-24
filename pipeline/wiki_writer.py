@@ -39,13 +39,13 @@ NEVER CREATE these page types:
 WIKILINK FORMAT — mandatory everywhere:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 All entity references MUST use Obsidian wikilink format.
-The "Silver path" in the user message gives the vault-relative path for citations.
+The "Source path" in the user message gives the vault-relative path for citations.
 
   Single frontmatter value:    "[[actors/osi]]"
   Frontmatter list item:       "[[actors/osi]]"  ← each list item is a quoted wikilink string
   Body first mention:          [[actors/osi|Office of Sustainability and Innovations]]
   Body later mentions:         [[actors/osi|OSI]]
-  Source citation (REQUIRED):  ([[silver/cap/cap-2020|cap-2020]])
+  Source citation (REQUIRED):  ([[sources/cap/cap-2020|cap-2020]])
 
 CITATIONS: Every factual sentence in "body" must end with a source citation in this exact format:
   ([[{silver_path}|{source_uuid}]])
@@ -274,7 +274,7 @@ Every element of the returned JSON array must have exactly these four keys:
   "page_type": "<one of the 10 types above>",
   "slug": "<category/kebab-name>",
   "frontmatter": { <required fields per type; all entity refs as "[[wikilinks]]"> },
-  "body": "<2-4 factual sentences; every factual sentence ends with ([[silver/path|uuid]])>"
+  "body": "<2-4 factual sentences; every factual sentence ends with ([[sources/path|uuid]])>"
 }
 Return ONLY the JSON array. No prose, no markdown fence, no explanation."""
 
@@ -353,13 +353,13 @@ def extract_wiki_pages_from_chunk(
             f"{context_header}\n\n"
             f"[SECTION CONTENT]\n{chunk_text}\n[END SECTION]\n\n"
             f"Source UUID: {source_uuid}\n"
-            f"Silver path: {silver_relative_path}\n"
+            f"Source path: {silver_relative_path}\n"
             f"Source type: {source_type}\n"
             f"Today's date: {run_date}"
         )
         response = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=8192,
+            max_tokens=16384,
             temperature=0.2,
             system=WIKI_PAGES_SYSTEM,
             messages=[{"role": "user", "content": prompt}],

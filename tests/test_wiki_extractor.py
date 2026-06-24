@@ -47,14 +47,14 @@ MOCK_PAGES = [
                     "year": 2027,
                     "target": "CCA program launched",
                     "status": "unverified",
-                    "source": "[[silver/cap/cap-2020]]",
+                    "source": "[[sources/cap/cap-2020]]",
                 }
             ],
             "tags": ["cca", "renewable-energy", "strategy-1"],
-            "source-first-seen": "[[silver/cap/cap-2020]]",
+            "source-first-seen": "[[sources/cap/cap-2020]]",
             "last-updated": "2026-06-23",
         },
-        "body": "Community Choice Aggregation allows Ann Arbor to procure renewable electricity for all residents. ([[silver/cap/cap-2020|cap-2020]])",
+        "body": "Community Choice Aggregation allows Ann Arbor to procure renewable electricity for all residents. ([[sources/cap/cap-2020|cap-2020]])",
     },
     {
         "page_type": "actor",
@@ -69,10 +69,10 @@ MOCK_PAGES = [
             "active-years": [2020],
             "programs-involved": ["[[initiatives/community-choice-aggregation]]"],
             "tags": ["osi", "city-staff", "leadership"],
-            "source-first-seen": "[[silver/cap/cap-2020]]",
+            "source-first-seen": "[[sources/cap/cap-2020]]",
             "last-updated": "2026-06-23",
         },
-        "body": "OSI is the primary city department responsible for implementing A2Zero. ([[silver/cap/cap-2020|cap-2020]])",
+        "body": "OSI is the primary city department responsible for implementing A2Zero. ([[sources/cap/cap-2020|cap-2020]])",
     },
 ]
 
@@ -149,7 +149,7 @@ def test_validate_page_spec_accepts_all_llm_writable_types():
             "page_type": pt,
             "slug": f"test/{pt}-slug",
             "frontmatter": {"type": pt},
-            "body": "Test body. ([[silver/cap/cap-2020|cap-2020]])",
+            "body": "Test body. ([[sources/cap/cap-2020|cap-2020]])",
         }
         errors = validate_page_spec(spec)
         type_errors = [e for e in errors if "page_type" in e or "forbidden" in e]
@@ -216,7 +216,7 @@ def test_extract_wiki_pages_from_chunk_calls_llm(mock_anthropic_class, tmp_path)
     pages = extract_wiki_pages_from_chunk(
         chunk_text=SAMPLE_CHUNK,
         source_uuid="cap-2020",
-        silver_relative_path="silver/cap/cap-2020",
+        silver_relative_path="sources/cap/cap-2020",
         context_header="[DOCUMENT CONTEXT]\nDocument: Test CAP\n[END CONTEXT]",
         source_type="cap",
         wiki_root=str(tmp_path),
@@ -238,7 +238,7 @@ def test_extract_wiki_pages_from_chunk_handles_llm_failure(mock_anthropic_class,
     pages = extract_wiki_pages_from_chunk(
         chunk_text=SAMPLE_CHUNK,
         source_uuid="cap-2020",
-        silver_relative_path="silver/cap/cap-2020",
+        silver_relative_path="sources/cap/cap-2020",
         context_header="",
         source_type="cap",
         wiki_root=str(tmp_path),
@@ -259,7 +259,7 @@ def test_extract_wiki_pages_from_chunk_handles_max_tokens(mock_anthropic_class, 
     pages = extract_wiki_pages_from_chunk(
         chunk_text=SAMPLE_CHUNK,
         source_uuid="cap-2020",
-        silver_relative_path="silver/cap/cap-2020",
+        silver_relative_path="sources/cap/cap-2020",
         context_header="",
         source_type="cap",
         wiki_root=str(tmp_path),
@@ -275,7 +275,7 @@ def test_validate_page_spec_rejects_unknown_strategy_slug():
         "page_type": "strategy",
         "slug": "strategies/strategy-8-invented",
         "frontmatter": {"type": "strategy"},
-        "body": "This strategy does not exist. ([[silver/cap/cap-2020|cap-2020]])",
+        "body": "This strategy does not exist. ([[sources/cap/cap-2020|cap-2020]])",
     }
     allowed = frozenset({"strategies/strategy-1-renewable-grid",
                          "strategies/strategy-2-electrification"})
@@ -292,7 +292,7 @@ def test_validate_page_spec_accepts_known_strategy_slug():
         "page_type": "strategy",
         "slug": "strategies/strategy-1-renewable-grid",
         "frontmatter": {"type": "strategy"},
-        "body": "Strategy 1 focuses on renewable energy. ([[silver/cap/cap-2020|cap-2020]])",
+        "body": "Strategy 1 focuses on renewable energy. ([[sources/cap/cap-2020|cap-2020]])",
     }
     allowed = frozenset({"strategies/strategy-1-renewable-grid",
                          "strategies/strategy-2-electrification"})
@@ -308,7 +308,7 @@ def test_validate_page_spec_skips_whitelist_when_not_provided():
         "page_type": "strategy",
         "slug": "strategies/strategy-99-unknown",
         "frontmatter": {"type": "strategy"},
-        "body": "Some strategy content. ([[silver/cap/cap-2020|cap-2020]])",
+        "body": "Some strategy content. ([[sources/cap/cap-2020|cap-2020]])",
     }
     errors = validate_page_spec(spec, allowed_strategy_slugs=None)
     type_errors = [e for e in errors if "not a pre-existing" in e]

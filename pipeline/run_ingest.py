@@ -2,7 +2,7 @@ import re
 import yaml
 from datetime import date
 from pathlib import Path
-from pipeline.bronze_to_silver import convert_annual_report
+from pipeline.raw_to_sources import convert_annual_report
 from pipeline.silver_to_gold import extract_quads_from_silver
 from pipeline.post_ingest import run_post_ingest
 from pipeline.ldp import run_ldp_ingest
@@ -24,7 +24,7 @@ def _should_use_ldp(silver_content: str) -> bool:
 
 
 def run_silver_ingest(
-    silver_path: str,
+    source_path: str,
     uuid: str,
     title: str,
     quads_path: str,
@@ -32,29 +32,36 @@ def run_silver_ingest(
     review_queue_path: str,
     section_maps_dir: str = "blackboard/section_maps",
     run_date: str | None = None,
+    wiki_only: bool = False,
 ):
-    """Ingest a pre-built Silver markdown file, auto-routing to LDP for long docs."""
+    """Ingest a pre-built source markdown file, auto-routing to LDP for long docs.
+
+    wiki_only=True skips Pass 2 quad extraction and post-ingest reporting;
+    only the plan extractor (Pass 1) and wiki writer (Pass 3) run.
+    quads_path and review_queue_path are left completely untouched.
+    """
     if run_date is None:
         run_date = date.today().isoformat()
 
-    silver_content = Path(silver_path).read_text(encoding="utf-8")
+    source_content = Path(source_path).read_text(encoding="utf-8")
 
     # Derive vault-relative path without extension for wikilink citations.
-    # e.g. "silver/cap/cap-2020.md" → "silver/cap/cap-2020"
-    silver_relative_path = str(Path(silver_path).with_suffix(""))
+    # e.g. "sources/cap/cap-2020.md" → "sources/cap/cap-2020"
+    source_rel_path = str(Path(source_path).with_suffix(""))
 
     # First pass: extract plan page (idempotent — skips if already exists).
+    # Runs even in wiki_only mode: cheap, idempotent, needed for a clean vault.
     extract_plan_page(
-        silver_content=silver_content,
+        silver_content=source_content,
         source_uuid=uuid,
-        silver_relative_path=silver_relative_path,
+        silver_relative_path=source_rel_path,
         wiki_root=wiki_root,
         run_date=run_date,
     )
 
     # Extract source_type from frontmatter once, before routing.
     source_type = "unknown"
-    m = re.match(r"^---\n(.*?)\n---\n", silver_content, re.DOTALL)
+    m = re.match(r"^---\n(.*?)\n---\n", source_content, re.DOTALL)
     if m:
         try:
             fm = yaml.safe_load(m.group(1))
@@ -63,36 +70,42 @@ def run_silver_ingest(
         except Exception:
             pass
 
-    if _should_use_ldp(silver_content):
+    if _should_use_ldp(source_content):
         run_ldp_ingest(
-            silver_content=silver_content,
+            silver_content=source_content,
             uuid=uuid,
             title=title,
             quads_path=quads_path,
-            silver_relative_path=silver_relative_path,
+            silver_relative_path=source_rel_path,
             wiki_root=wiki_root,
             source_type=source_type,
             section_maps_dir=section_maps_dir,
             run_date=run_date,
+            wiki_only=wiki_only,
         )
     else:
-        extract_quads_from_silver(
-            silver_content=silver_content,
-            source_uuid=uuid,
-            out_path=quads_path,
-        )
-        # Pass 3 for short docs
+        if not wiki_only:
+            extract_quads_from_silver(
+                silver_content=source_content,
+                source_uuid=uuid,
+                out_path=quads_path,
+            )
+        # Pass 3 for short docs (always runs)
         from pipeline.wiki_writer import extract_wiki_pages_from_chunk
-        body = re.sub(r"^---\n.*?\n---\n", "", silver_content, flags=re.DOTALL).strip()
+        body = re.sub(r"^---\n.*?\n---\n", "", source_content, flags=re.DOTALL).strip()
         extract_wiki_pages_from_chunk(
             chunk_text=body,
             source_uuid=uuid,
-            silver_relative_path=silver_relative_path,
+            silver_relative_path=source_rel_path,
             context_header="",  # short doc: no section context available
             source_type=source_type,
             wiki_root=wiki_root,
             run_date=run_date,
         )
+
+    if wiki_only:
+        print(f"[ingest] {uuid}: wiki-only run complete — quads and review-queue untouched")
+        return None
 
     report = run_post_ingest(
         quads_path=quads_path,
@@ -120,21 +133,21 @@ def run_annual_report_ingest(
     if run_date is None:
         run_date = date.today().isoformat()
 
-    # Step 1: Bronze → Silver
-    silver_path = str(Path(silver_dir) / f"{uuid}.md")
+    # Step 1: Raw → Sources
+    source_path = str(Path(silver_dir) / f"{uuid}.md")
     convert_annual_report(
         pdf_path=pdf_path,
         uuid=uuid,
         year=year,
-        out_path=silver_path,
+        out_path=source_path,
         title=title,
         ingest_date=run_date,
     )
 
-    # Step 2: Silver → Quads (Pass 2)
-    silver_content = Path(silver_path).read_text(encoding="utf-8")
+    # Step 2: Sources → Quads (Pass 2)
+    source_content = Path(source_path).read_text(encoding="utf-8")
     extract_quads_from_silver(
-        silver_content=silver_content,
+        silver_content=source_content,
         source_uuid=uuid,
         out_path=quads_path,
     )
@@ -160,15 +173,19 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A2Zero ingest pipeline")
     sub = parser.add_subparsers(dest="command")
 
-    # Silver-first ingest (CAP, annual reports already in markdown)
-    p_silver = sub.add_parser("silver", help="Ingest a pre-built Silver markdown file")
-    p_silver.add_argument("--silver", required=True, help="Path to Silver .md file")
+    # Source-first ingest (CAP, annual reports already in markdown)
+    p_silver = sub.add_parser("silver", help="Ingest a pre-built source markdown file")
+    p_silver.add_argument("--source", required=True, help="Path to source .md file (e.g. sources/cap/cap-2020.md)")
     p_silver.add_argument("--uuid", required=True)
     p_silver.add_argument("--title", required=True)
     p_silver.add_argument("--quads-path", default="blackboard/quads.jsonl")
     p_silver.add_argument("--wiki-root", default="wiki")
     p_silver.add_argument("--review-queue", default="review-queue.md")
     p_silver.add_argument("--section-maps-dir", default="blackboard/section_maps")
+    p_silver.add_argument(
+        "--wiki-only", action="store_true", default=False,
+        help="Run only Pass 1 (plan extractor) + Pass 3 (wiki writer); skip quad extraction and review-queue update",
+    )
 
     # PDF-first ingest (future use when Bronze→Silver pipeline is complete)
     p_pdf = sub.add_parser("pdf", help="Ingest from PDF (Bronze→Silver→Gold)")
@@ -176,7 +193,7 @@ if __name__ == "__main__":
     p_pdf.add_argument("--uuid", required=True)
     p_pdf.add_argument("--year", required=True)
     p_pdf.add_argument("--title", required=True)
-    p_pdf.add_argument("--silver-dir", default="silver/annual-reports")
+    p_pdf.add_argument("--silver-dir", default="sources/annual-reports")
     p_pdf.add_argument("--quads-path", default="blackboard/quads.jsonl")
     p_pdf.add_argument("--wiki-root", default="wiki")
     p_pdf.add_argument("--review-queue", default="review-queue.md")
@@ -185,13 +202,14 @@ if __name__ == "__main__":
 
     if args.command == "silver":
         run_silver_ingest(
-            silver_path=args.silver,
+            source_path=args.source,
             uuid=args.uuid,
             title=args.title,
             quads_path=args.quads_path,
             wiki_root=args.wiki_root,
             review_queue_path=args.review_queue,
             section_maps_dir=args.section_maps_dir,
+            wiki_only=args.wiki_only,
         )
     elif args.command == "pdf":
         run_annual_report_ingest(

@@ -132,12 +132,42 @@ def save_section_map(section_map: dict, maps_dir: str) -> str:
 
 
 def get_chunks(section_map: dict) -> list[dict]:
-    # Chunk at depth 1 (# sections) and depth 2 (## sections).
-    # A depth-1 section's text overlaps with its depth-2 children — this is
-    # intentional: the parent chunk gives the LLM strategy-level context, and
-    # the child chunk provides action-level detail. append_quads deduplicates
-    # by quad ID so overlapping extraction does not corrupt the fact store.
-    return [s for s in section_map["sections"] if s["depth"] <= 2]
+    """Return chunks for LLM extraction at depth 1 and depth 2.
+
+    Depth-2 sections are included as-is (they contain the action-level detail).
+    Depth-1 sections are clipped to end just before their first depth-2 child,
+    so the LLM only sees the intro prose for that section — not a re-send of all
+    descendant content that the depth-2 chunks already cover. If clipping leaves
+    no content (heading immediately followed by a child), the depth-1 chunk is
+    dropped entirely.
+    """
+    all_sections = section_map["sections"]
+    chunks = []
+
+    for s in all_sections:
+        if s["depth"] == 2:
+            chunks.append(s)
+        elif s["depth"] == 1:
+            # Find the first depth-2 child that falls inside this section.
+            first_child = next(
+                (c for c in all_sections
+                 if c["depth"] == 2
+                 and s["line_start"] < c["line_start"] <= s["line_end"]),
+                None,
+            )
+            if first_child is None:
+                # No depth-2 children — use the full range unchanged.
+                chunks.append(s)
+            else:
+                clipped_end = first_child["line_start"] - 1
+                if clipped_end > s["line_start"]:
+                    # There is at least one line of prose between the heading
+                    # and the first child — worth sending to the LLM.
+                    chunks.append({**s, "line_end": clipped_end})
+                # else: heading is immediately followed by a child; skip.
+
+    chunks.sort(key=lambda c: c["line_start"])
+    return chunks
 
 
 def build_chunk_context_header(
@@ -182,13 +212,15 @@ def extract_quads_chunked(
     section_map: dict,
     source_uuid: str,
     document_title: str,
-    silver_relative_path: str = "",
+    source_rel_path: str = "",
     source_type: str = "cap",
     wiki_root: str = "wiki",
     run_date: str | None = None,
+    wiki_only: bool = False,
 ) -> tuple[list[dict], int]:
-    """Extract quads from all depth-1 and depth-2 chunks with context headers.
+    """Extract quads and/or wiki pages from all depth-1 and depth-2 chunks.
 
+    wiki_only=True skips Pass 2 quad extraction and runs only Pass 3 wiki pages.
     Returns a tuple of (all_quads, total_pages_written).
     """
     from datetime import date as _date
@@ -198,11 +230,13 @@ def extract_quads_chunked(
     if run_date is None:
         run_date = _date.today().isoformat()
 
-    client = anthropic.Anthropic()
     all_lines = silver_content.splitlines()
     chunks = get_chunks(section_map)
     all_quads: list[dict] = []
     total_pages_written = 0
+
+    # Only instantiate the quads client when we actually need it.
+    client = None if wiki_only else anthropic.Anthropic()
 
     for i, chunk in enumerate(chunks):
         parent_title = _find_parent_title(chunk, section_map["sections"])
@@ -215,32 +249,33 @@ def extract_quads_chunked(
             parent_title=parent_title,
         )
         chunk_text = extract_chunk_lines(all_lines, chunk["line_start"], chunk["line_end"])
-        prompt = (
-            f"{context_header}\n"
-            f"[SECTION CONTENT]\n{chunk_text}\n[END SECTION]\n\n"
-            f"Source UUID: {source_uuid}\nToday's date: {run_date}"
-        )
 
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=8192,
-            temperature=0,
-            system=CAP_QUADS_SYSTEM,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        raw = response.content[0].text
-        try:
-            quads = parse_llm_quads_response(raw)
-        except Exception as e:
-            print(f"[ldp] WARNING: chunk {i} ({chunk['title']!r}) extraction failed: {e}")
-            quads = []
-        all_quads.extend(quads)
+        if not wiki_only:
+            prompt = (
+                f"{context_header}\n"
+                f"[SECTION CONTENT]\n{chunk_text}\n[END SECTION]\n\n"
+                f"Source UUID: {source_uuid}\nToday's date: {run_date}"
+            )
+            response = client.messages.create(
+                model="claude-sonnet-4-6",
+                max_tokens=8192,
+                temperature=0,
+                system=CAP_QUADS_SYSTEM,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            raw = response.content[0].text
+            try:
+                quads = parse_llm_quads_response(raw)
+            except Exception as e:
+                print(f"[ldp] WARNING: chunk {i} ({chunk['title']!r}) extraction failed: {e}")
+                quads = []
+            all_quads.extend(quads)
 
-        # Pass 3: wiki pages
+        # Pass 3: wiki pages (always runs unless explicitly disabled)
         pages_written = extract_wiki_pages_from_chunk(
             chunk_text=chunk_text,
             source_uuid=source_uuid,
-            silver_relative_path=silver_relative_path,
+            silver_relative_path=source_rel_path,
             context_header=context_header,
             source_type=source_type,
             wiki_root=wiki_root,
@@ -261,22 +296,29 @@ def run_ldp_ingest(
     source_type: str = "cap",
     section_maps_dir: str = "blackboard/section_maps",
     run_date: str | None = None,
+    wiki_only: bool = False,
 ):
-    """Full LDP pipeline: parse section map → chunked extraction → append quads."""
+    """Full LDP pipeline: parse section map → chunked extraction → append quads.
+
+    wiki_only=True runs only Pass 3 wiki generation; quads_path is untouched.
+    """
     section_map = parse_section_map(silver_content, uuid)
     save_section_map(section_map, section_maps_dir)
+    mode = "wiki-only" if wiki_only else "quads+wiki"
     print(f"[ldp] {uuid}: {len(section_map['sections'])} sections, "
-          f"{len(get_chunks(section_map))} chunks to extract")
+          f"{len(get_chunks(section_map))} chunks to extract [{mode}]")
     quads, pages_written = extract_quads_chunked(
         silver_content=silver_content,
         section_map=section_map,
         source_uuid=uuid,
         document_title=title,
-        silver_relative_path=silver_relative_path,
+        source_rel_path=silver_relative_path,
         source_type=source_type,
         wiki_root=wiki_root,
         run_date=run_date,
+        wiki_only=wiki_only,
     )
-    append_quads(quads, quads_path)
+    if not wiki_only:
+        append_quads(quads, quads_path)
     print(f"[ldp] {uuid}: {len(quads)} quads, {pages_written} wiki pages written")
     return quads
