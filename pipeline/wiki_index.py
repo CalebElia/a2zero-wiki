@@ -1,6 +1,6 @@
 import re
 import yaml
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -57,7 +57,7 @@ def append_log(
     log = _log_path(wiki_root)
     log.parent.mkdir(parents=True, exist_ok=True)
 
-    ts = run_date or datetime.utcnow().strftime("%Y-%m-%d")
+    ts = run_date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
     parts = [ts]
     if source_uuid:
         parts.append(source_uuid)
@@ -100,7 +100,7 @@ def rebuild_index(wiki_root: str) -> None:
             pass
 
     total = sum(len(v) for v in entries.values())
-    today = datetime.utcnow().strftime("%Y-%m-%d")
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     lines = [
         "# Wiki Index\n\n",
         f"_{total} pages — last updated {today}_\n",
