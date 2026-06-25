@@ -11,7 +11,8 @@
       "our work in Bryant",
       "Bryant project",
       "Bryant initiative"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "sustainable-energy-utility": {
     "canonical": "topics/sustainable-energy-utility",
@@ -26,7 +27,8 @@
       "community-owned supplemental utility",
       "supplemental utility",
       "SEU ballot measure"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "federal-funding-a2zero": {
     "canonical": "topics/federal-funding-a2zero",
@@ -41,7 +43,8 @@
       "federal funding",
       "A2Zero federal funding",
       "federal climate investment"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "philanthropic-funding-a2zero": {
     "canonical": "topics/philanthropic-funding-a2zero",
@@ -55,7 +58,8 @@
       "private grants",
       "foundation grants",
       "A2Zero philanthropy"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "local-state-funding-a2zero": {
     "canonical": "topics/local-state-funding-a2zero",
@@ -73,7 +77,8 @@
       "Community Climate Action Millage",
       "Climate Action Millage",
       "local climate funding"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "osi": {
     "canonical": "actors/osi",
@@ -86,7 +91,8 @@
       "city sustainability office",
       "A2Zero office",
       "the sustainability office"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "city-of-ann-arbor": {
     "canonical": "actors/city-of-ann-arbor",
@@ -96,7 +102,8 @@
       "the City",
       "Ann Arbor",
       "city government"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "ann-arbor-city-council": {
     "canonical": "actors/ann-arbor-city-council",
@@ -107,7 +114,8 @@
       "the Council",
       "council members",
       "city council"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "dte-energy": {
     "canonical": "actors/dte-energy",
@@ -118,7 +126,8 @@
       "DTE Electric",
       "DTE Electric Company",
       "Detroit Edison"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "us-doe": {
     "canonical": "actors/us-doe",
@@ -128,7 +137,8 @@
       "Department of Energy",
       "DOE",
       "U.S. DOE"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "us-epa": {
     "canonical": "actors/us-epa",
@@ -138,7 +148,8 @@
       "Environmental Protection Agency",
       "EPA",
       "U.S. EPA"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "university-of-michigan": {
     "canonical": "actors/university-of-michigan",
@@ -149,7 +160,8 @@
       "UM",
       "the University",
       "U-M"
-    ]
+    ],
+    "relationship": "name-variant"
   },
   "michigan-public-service-commission": {
     "canonical": "actors/michigan-public-service-commission",
@@ -159,6 +171,25 @@
       "MPSC",
       "the Commission",
       "Public Service Commission"
-    ]
+    ],
+    "relationship": "name-variant"
+  },
+  "sustainable-energy-utility-seu": {
+    "canonical": "actors/office-of-sustainability-and-innovations",
+    "type": "actor",
+    "aliases": [
+      "Sustainable Energy Utility",
+      "SEU",
+      "community energy utility",
+      "Ann Arbor SEU",
+      "A2Zero SEU",
+      "the SEU",
+      "community-owned supplemental utility",
+      "supplemental utility",
+      "SEU ballot measure"
+    ],
+    "relationship": "predecessor",
+    "as-of": "2022",
+    "notes": "SEU was the proposed community energy utility; restructured/renamed into OSI scope per Year 2 annual report"
   }
 }
