@@ -497,7 +497,8 @@ def _write_synthesis(
         existing_body = re.sub(r"^---\n.*?\n---\n", "", existing, flags=re.DOTALL).strip()
         is_stub_only = not bool(re.sub(r"<!--.*?-->", "", existing_body, flags=re.DOTALL).strip())
         if is_stub_only:
-            append_to_wiki_page(str(strat_path), sb["body"], source_uuid=source_uuid)
+            # First ingest: replace the stub comment entirely with the synthesis body
+            _replace_wiki_page_body(str(strat_path), sb["body"])
             print(f"[holistic] Strategy body written: {strat_path.name}")
         else:
             _replace_wiki_page_body(str(strat_path), sb["body"])
