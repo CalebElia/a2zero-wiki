@@ -225,13 +225,14 @@ def _llm_call(
 ) -> dict | None:
     """Single LLM call with JSON parsing. Returns parsed dict or None on failure."""
     try:
-        response = client.messages.create(
+        with client.messages.stream(
             model=model,
             max_tokens=max_tokens,
             temperature=0,
             system=system,
             messages=[{"role": "user", "content": user_content}],
-        )
+        ) as stream:
+            response = stream.get_final_message()
         if response.stop_reason == "max_tokens":
             print(f"[holistic:{step_name}] WARNING: response truncated for {source_uuid}")
             return None
