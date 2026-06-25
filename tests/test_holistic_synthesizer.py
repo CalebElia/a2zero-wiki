@@ -367,3 +367,65 @@ def test_validate_synthesis_output_catches_unknown_strategy_slug(tmp_path):
     }
     errors = _validate_synthesis_output(result, source_uuid="cap-2020", wiki_root=str(tmp_path))
     assert any("strategy-8-invented" in e for e in errors)
+
+
+def test_stub_creation_redirects_known_alias(tmp_path):
+    """Pass 1.5: a stub whose slug is a known alias should write to the canonical path."""
+    import json
+    from unittest.mock import patch
+    from pipeline.holistic_synthesizer import _write_synthesis
+
+    # Set up minimal wiki structure
+    (tmp_path / "strategies").mkdir()
+    (tmp_path / "actors").mkdir()
+    (tmp_path / "overviews").mkdir()
+
+    # Set up alias registry: "office-of-sustainability" → canonical "actors/osi"
+    aliases_path = tmp_path / "aliases.json"
+    aliases = {
+        "office-of-sustainability": {
+            "canonical": "actors/osi",
+            "type": "actor",
+            "aliases": ["Office of Sustainability"],
+            "relationship": "name-variant",
+        }
+    }
+    aliases_path.write_text(json.dumps(aliases), encoding="utf-8")
+
+    # Synthesis result proposing the alias slug
+    result = {
+        "overview": {
+            "slug": "overviews/test-source",
+            "frontmatter": {
+                "type": "overview",
+                "title": "Test Source",
+                "source-ref": "[[sources/cap/cap-2020]]",
+                "source-first-seen": "[[sources/cap/cap-2020]]",
+            },
+            "body": "Overview body.",
+        },
+        "strategy_bodies": [],
+        "stub_pages": [
+            {
+                "slug": "actors/office-of-sustainability",
+                "type": "actor",
+                "title": "Office of Sustainability",
+                "one-liner": "Leads A2Zero.",
+            }
+        ],
+        "topic_candidates": [],
+        "log_summary": "Test run.",
+    }
+
+    with patch("pipeline.holistic_synthesizer.alias_registry_path", str(aliases_path)):
+        _write_synthesis(
+            result=result,
+            wiki_root=str(tmp_path),
+            source_uuid="cap-2020",
+            source_rel_path="sources/cap/cap-2020",
+            run_date="2026-06-25",
+        )
+
+    # Stub should be written at the canonical path, NOT the alias path
+    assert (tmp_path / "actors" / "osi.md").exists(), "Canonical osi.md should have been created"
+    assert not (tmp_path / "actors" / "office-of-sustainability.md").exists(), "Alias path should not exist"
