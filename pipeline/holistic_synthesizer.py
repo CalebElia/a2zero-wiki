@@ -220,7 +220,7 @@ def _llm_call(
     user_content: "str | list",
     step_name: str,
     source_uuid: str,
-    max_tokens: int = 8192,
+    max_tokens: int = 64000,
     model: str = "claude-sonnet-4-6",
 ) -> dict | None:
     """Single LLM call with JSON parsing. Returns parsed dict or None on failure."""
@@ -376,7 +376,7 @@ def synthesize_source(
     draft = _llm_call(
         client, writer_system,
         [cached_document_block],
-        "writer", source_uuid, max_tokens=16384,
+        "writer", source_uuid, max_tokens=64000,
     )
     if draft is None:
         print(f"[holistic] ERROR: writer call failed for {source_uuid}")
@@ -390,7 +390,7 @@ def synthesize_source(
     ]
     critique = _llm_call(
         client, HOLISTIC_EVALUATOR_SYSTEM, eval_content,
-        "evaluator", source_uuid, max_tokens=8192,
+        "evaluator", source_uuid, max_tokens=64000,
     )
 
     if critique is None or not critique.get("proceed_to_edit", True):
@@ -411,7 +411,7 @@ def synthesize_source(
         ]
         draft = _llm_call(
             client, writer_system, retry_content,
-            "writer-retry", source_uuid, max_tokens=16384,
+            "writer-retry", source_uuid, max_tokens=64000,
         )
         if draft is None:
             print(f"[holistic] ERROR: writer retry failed for {source_uuid}")
@@ -431,7 +431,7 @@ def synthesize_source(
         print(f"[holistic:editor] {source_uuid} attempt {attempt + 1}")
         final = _llm_call(
             client, HOLISTIC_EDITOR_SYSTEM, editor_content,
-            f"editor-{attempt}", source_uuid, max_tokens=16384,
+            f"editor-{attempt}", source_uuid, max_tokens=64000,
         )
         if final is None:
             continue
