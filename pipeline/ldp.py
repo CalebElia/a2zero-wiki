@@ -217,6 +217,7 @@ def extract_quads_chunked(
     wiki_root: str = "wiki",
     run_date: str | None = None,
     wiki_only: bool = False,
+    entity_context: str = "",
 ) -> tuple[list[dict], int]:
     """Extract quads and/or wiki pages from all depth-1 and depth-2 chunks.
 
@@ -272,11 +273,13 @@ def extract_quads_chunked(
             all_quads.extend(quads)
 
         # Pass 3: wiki pages (always runs unless explicitly disabled)
+        # Prepend entity_context (from Pass 1 holistic read) before section context header.
+        combined_context = entity_context + context_header if entity_context else context_header
         pages_written = extract_wiki_pages_from_chunk(
             chunk_text=chunk_text,
             source_uuid=source_uuid,
             source_rel_path=source_rel_path,
-            context_header=context_header,
+            context_header=combined_context,
             source_type=source_type,
             wiki_root=wiki_root,
             run_date=run_date,
@@ -297,10 +300,12 @@ def run_ldp_ingest(
     section_maps_dir: str = "blackboard/section_maps",
     run_date: str | None = None,
     wiki_only: bool = False,
+    entity_context: str = "",
 ):
     """Full LDP pipeline: parse section map → chunked extraction → append quads.
 
     wiki_only=True runs only Pass 3 wiki generation; quads_path is untouched.
+    entity_context: known-entity block from Pass 1 holistic read, prepended to each chunk header.
     """
     section_map = parse_section_map(source_content, uuid)
     save_section_map(section_map, section_maps_dir)
@@ -317,6 +322,7 @@ def run_ldp_ingest(
         wiki_root=wiki_root,
         run_date=run_date,
         wiki_only=wiki_only,
+        entity_context=entity_context,
     )
     if not wiki_only:
         append_quads(quads, quads_path)

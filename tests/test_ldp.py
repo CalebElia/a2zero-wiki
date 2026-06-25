@@ -194,9 +194,12 @@ def test_run_silver_ingest_routes_to_ldp_when_flagged(tmp_path):
     quads_file = tmp_path / "quads.jsonl"
     queue_file = tmp_path / "review-queue.md"
 
-    with patch("pipeline.run_ingest.extract_plan_page") as mock_plan, \
+    with patch("pipeline.run_ingest.synthesize_source") as mock_synth, \
          patch("pipeline.run_ingest.run_ldp_ingest") as mock_ldp, \
+         patch("pipeline.run_ingest.rebuild_index") as mock_rebuild, \
+         patch("pipeline.run_ingest.wiki_append_log") as mock_log, \
          patch("pipeline.run_ingest.run_post_ingest") as mock_post:
+        mock_synth.return_value = {"stub_pages": []}
         mock_post.return_value = MagicMock(
             total_quads=0, schema_errors=[], dark_matter_ids=[]
         )
@@ -209,7 +212,10 @@ def test_run_silver_ingest_routes_to_ldp_when_flagged(tmp_path):
             wiki_root=str(tmp_path / "wiki"),
             review_queue_path=str(queue_file),
         )
+        mock_synth.assert_called_once()
         mock_ldp.assert_called_once()
+        mock_rebuild.assert_called_once()
+        mock_log.assert_called_once()
 
 
 def test_run_silver_ingest_uses_single_pass_without_ldp_flag(tmp_path):
@@ -219,10 +225,13 @@ def test_run_silver_ingest_uses_single_pass_without_ldp_flag(tmp_path):
     quads_file = tmp_path / "quads.jsonl"
     queue_file = tmp_path / "review-queue.md"
 
-    with patch("pipeline.run_ingest.extract_plan_page") as mock_plan, \
+    with patch("pipeline.run_ingest.synthesize_source") as mock_synth, \
          patch("pipeline.run_ingest.extract_quads_from_silver") as mock_extract, \
+         patch("pipeline.run_ingest.rebuild_index") as mock_rebuild, \
+         patch("pipeline.run_ingest.wiki_append_log") as mock_log, \
          patch("pipeline.run_ingest.run_post_ingest") as mock_post, \
          patch("pipeline.wiki_writer.anthropic.Anthropic") as mock_wiki_writer_anthropic:
+        mock_synth.return_value = {"stub_pages": []}
         mock_extract.return_value = []
         mock_post.return_value = MagicMock(
             total_quads=0, schema_errors=[], dark_matter_ids=[]
@@ -242,4 +251,7 @@ def test_run_silver_ingest_uses_single_pass_without_ldp_flag(tmp_path):
             wiki_root=str(tmp_path / "wiki"),
             review_queue_path=str(queue_file),
         )
+        mock_synth.assert_called_once()
         mock_extract.assert_called_once()
+        mock_rebuild.assert_called_once()
+        mock_log.assert_called_once()

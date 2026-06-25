@@ -6,7 +6,8 @@ from pipeline.raw_to_sources import convert_annual_report
 from pipeline.silver_to_gold import extract_quads_from_silver
 from pipeline.post_ingest import run_post_ingest
 from pipeline.ldp import run_ldp_ingest
-from pipeline.plan_extractor import extract_plan_page
+from pipeline.holistic_synthesizer import synthesize_source
+from pipeline.wiki_index import rebuild_index, append_log as wiki_append_log
 
 
 def _should_use_ldp(source_content: str) -> bool:
@@ -34,32 +35,19 @@ def run_silver_ingest(
     run_date: str | None = None,
     wiki_only: bool = False,
 ):
-    """Ingest a pre-built source markdown file, auto-routing to LDP for long docs.
+    """Ingest a source markdown file through the three-pass wiki pipeline.
 
-    wiki_only=True skips Pass 2 quad extraction and post-ingest reporting;
-    only the plan extractor (Pass 1) and wiki writer (Pass 3) run.
-    quads_path and review_queue_path are left completely untouched.
+    Pass 1 (holistic): full-document read → overview + strategy synthesis + index seed
+    Pass 2 (chunked, conditional): section-by-section → initiative/actor/location pages
+    Pass 3 (finalize): rebuild index.md; seal log.md
     """
     if run_date is None:
         run_date = date.today().isoformat()
 
     source_content = Path(source_path).read_text(encoding="utf-8")
+    source_rel_path = str(Path(source_path).with_suffix(""))  # e.g. "sources/cap/cap-2020"
 
-    # Derive vault-relative path without extension for wikilink citations.
-    # e.g. "sources/cap/cap-2020.md" → "sources/cap/cap-2020"
-    source_rel_path = str(Path(source_path).with_suffix(""))
-
-    # First pass: extract plan page (idempotent — skips if already exists).
-    # Runs even in wiki_only mode: cheap, idempotent, needed for a clean vault.
-    extract_plan_page(
-        silver_content=source_content,
-        source_uuid=uuid,
-        source_rel_path=source_rel_path,
-        wiki_root=wiki_root,
-        run_date=run_date,
-    )
-
-    # Extract source_type from frontmatter once, before routing.
+    # Extract source_type from frontmatter
     source_type = "unknown"
     m = re.match(r"^---\n(.*?)\n---\n", source_content, re.DOTALL)
     if m:
@@ -70,6 +58,71 @@ def run_silver_ingest(
         except Exception:
             pass
 
+    # ── Pass 1: Holistic synthesis (always runs) ──────────────────────────────
+    synthesis_result = synthesize_source(
+        source_content=source_content,
+        source_uuid=uuid,
+        source_rel_path=source_rel_path,
+        source_type=source_type,
+        wiki_root=wiki_root,
+        run_date=run_date,
+    )
+
+    # Collect stub descriptors from Pass 1 for Pass 2 entity context.
+    known_entities: list[dict] = []
+    if synthesis_result:
+        known_entities = [
+            sp for sp in synthesis_result.get("stub_pages", [])
+            if sp.get("slug") and sp.get("title")
+        ]
+
+    def _build_entity_context(entities: list[dict]) -> str:
+        """Build the known-entity + existing-page-body block for Pass 2 chunk headers."""
+        if not entities:
+            return ""
+        lines = [
+            "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+            "KNOWN ENTITIES FROM HOLISTIC READ",
+            "These entities were identified from the full document by a prior holistic read.",
+            "When you encounter any of them — even under a different name or abbreviation —",
+            "populate the existing stub rather than creating a duplicate page.",
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        ]
+        for e in entities:
+            lines.append(
+                f"  [[{e['slug']}|{e['title']}]] — {e.get('one-liner', '')}"
+            )
+        lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+
+        # Include existing page bodies for READ-UNDERSTAND-INTEGRATE (Amendment A).
+        # When a known entity already has real wiki content from a prior ingest,
+        # show it in [EXISTING: slug] blocks so the LLM integrates rather than duplicates.
+        existing_pages_block = ""
+        for e in entities:
+            slug = e.get("slug", "")
+            if not slug:
+                continue
+            page_path = Path(wiki_root) / (slug + ".md")
+            if not page_path.exists():
+                continue
+            try:
+                content = page_path.read_text(encoding="utf-8")
+                body = re.sub(r"^---\n.*?\n---\n", "", content, flags=re.DOTALL).strip()
+                if body and not body.startswith("<!--"):
+                    existing_pages_block += f"\n[EXISTING: {slug}]\n{body}\n[END EXISTING]\n"
+            except OSError:
+                pass
+
+        if existing_pages_block:
+            lines.append("\nEXISTING PAGE CONTENT — READ-UNDERSTAND-INTEGRATE:")
+            lines.append(existing_pages_block)
+
+        lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+        return "\n".join(lines)
+
+    entity_context = _build_entity_context(known_entities)
+
+    # ── Pass 2: Extraction (conditional on document complexity) ───────────────
     if _should_use_ldp(source_content):
         run_ldp_ingest(
             source_content=source_content,
@@ -82,6 +135,7 @@ def run_silver_ingest(
             section_maps_dir=section_maps_dir,
             run_date=run_date,
             wiki_only=wiki_only,
+            entity_context=entity_context,
         )
     else:
         if not wiki_only:
@@ -90,18 +144,26 @@ def run_silver_ingest(
                 source_uuid=uuid,
                 out_path=quads_path,
             )
-        # Pass 3 for short docs (always runs)
         from pipeline.wiki_writer import extract_wiki_pages_from_chunk
         body = re.sub(r"^---\n.*?\n---\n", "", source_content, flags=re.DOTALL).strip()
         extract_wiki_pages_from_chunk(
             chunk_text=body,
             source_uuid=uuid,
             source_rel_path=source_rel_path,
-            context_header="",  # short doc: no section context available
+            context_header=entity_context,
             source_type=source_type,
             wiki_root=wiki_root,
             run_date=run_date,
         )
+
+    # ── Pass 3: Finalize index + log ──────────────────────────────────────────
+    rebuild_index(wiki_root)
+    wiki_append_log(
+        wiki_root=wiki_root,
+        message="Pass 3 complete — index rebuilt.",
+        source_uuid=uuid,
+        run_date=run_date,
+    )
 
     if wiki_only:
         print(f"[ingest] {uuid}: wiki-only run complete — quads and review-queue untouched")
