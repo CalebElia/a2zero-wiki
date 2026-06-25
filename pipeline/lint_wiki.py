@@ -9,6 +9,7 @@ Usage:
 import re
 import json
 import argparse
+import anthropic
 from datetime import date
 from pathlib import Path
 
@@ -122,7 +123,6 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
     Returns list of proposal dicts with keys:
       type, page_a, page_b, confidence, reasoning
     """
-    import anthropic
     from pipeline.alias_registry import fuzzy_candidates
 
     root = Path(wiki_root)
