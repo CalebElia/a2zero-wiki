@@ -6,7 +6,7 @@ from pipeline.silver_to_gold import build_wiki_page, write_wiki_page
 
 PLAN_EXTRACTION_SYSTEM = """You are a wiki page generator for the A2Zero climate wiki.
 You receive the introductory section of a strategic planning document and generate
-a single "plan" wiki page spec as a JSON object.
+a single "overview" wiki page spec as a JSON object.
 
 WIKILINK FORMAT — use everywhere:
 - Source citation in body: ([[{silver_path}|{source_uuid}]])  ← use values from user message
@@ -24,10 +24,10 @@ A2ZERO STRATEGY SLUGS (use exactly these in the strategies list):
 
 OUTPUT: Return a single JSON object with exactly these four keys:
 {
-  "page_type": "plan",
-  "slug": "plans/{source_uuid}",
+  "page_type": "overview",
+  "slug": "overviews/{source_uuid}",
   "frontmatter": {
-    "type": "plan",
+    "type": "overview",
     "title": "(exact document title)",
     "published": "(YYYY-MM or YYYY)",
     "jurisdiction": "(city slug, e.g. 'ann-arbor')",
@@ -58,10 +58,10 @@ def extract_plan_page(
     Idempotent: returns None without calling the API if the plan page already exists.
     Returns the page spec dict on success, None on failure or skip.
     """
-    plan_slug = f"plans/{source_uuid}"
+    plan_slug = f"overviews/{source_uuid}"
     plan_path = Path(wiki_root) / (plan_slug + ".md")
     if plan_path.exists():
-        print(f"[plan_extractor] Plan page already exists: {plan_path} — skipping")
+        print(f"[plan_extractor] Overview page already exists: {plan_path} — skipping")
         return None
 
     body = re.sub(r"^---\n.*?\n---\n", "", silver_content, flags=re.DOTALL).strip()
@@ -97,22 +97,22 @@ def extract_plan_page(
         print(f"[plan_extractor] WARNING: invalid JSON from LLM for {source_uuid}: {e}")
         return None
 
-    if spec.get("page_type") != "plan":
+    if spec.get("page_type") != "overview":
         print(
-            f"[plan_extractor] WARNING: expected page_type 'plan', "
+            f"[plan_extractor] WARNING: expected page_type 'overview', "
             f"got {spec.get('page_type')!r} — skipping"
         )
         return None
 
     try:
         page = build_wiki_page(
-            page_type="plan",
+            page_type="overview",
             slug=plan_slug,
             frontmatter=spec["frontmatter"],
             body=spec["body"],
         )
         write_wiki_page(page, wiki_root=wiki_root, exist_ok=False)
-        print(f"[plan_extractor] Plan page written: {plan_path}")
+        print(f"[plan_extractor] Overview page written: {plan_path}")
     except Exception as e:
         print(f"[plan_extractor] WARNING: failed to write plan page: {e}")
         return None

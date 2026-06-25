@@ -129,9 +129,9 @@ def test_validate_page_spec_rejects_funding_legacy_name():
 
 
 def test_validate_page_spec_rejects_forbidden_types():
-    """Plan, topic, mechanism, synthesis must never be created by Pass 3."""
+    """Overview, topic, mechanism, synthesis must never be created by chunked extraction (Pass 2)."""
     from pipeline.wiki_writer import validate_page_spec
-    for forbidden in ("plan", "topic", "synthesis", "mechanism"):
+    for forbidden in ("overview", "topic", "synthesis", "mechanism"):
         spec = {**MOCK_PAGES[0], "page_type": forbidden}
         errors = validate_page_spec(spec)
         assert any("forbidden" in e for e in errors), (

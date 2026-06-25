@@ -4,10 +4,10 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 MOCK_PLAN_RESPONSE = {
-    "page_type": "plan",
-    "slug": "plans/cap-2020",
+    "page_type": "overview",
+    "slug": "overviews/cap-2020",
     "frontmatter": {
-        "type": "plan",
+        "type": "overview",
         "title": "Ann Arbor A2Zero Living Carbon Neutrality Plan",
         "published": "2020-04",
         "jurisdiction": "ann-arbor",
@@ -62,25 +62,25 @@ def test_extract_plan_page_writes_file(mock_anthropic_class, tmp_path):
     )
 
     assert result is not None
-    assert result["page_type"] == "plan"
-    plan_file = tmp_path / "plans" / "cap-2020.md"
-    assert plan_file.exists()
-    content = plan_file.read_text()
-    assert "type: plan" in content
+    assert result["page_type"] == "overview"
+    overview_file = tmp_path / "overviews" / "cap-2020.md"
+    assert overview_file.exists()
+    content = overview_file.read_text()
+    assert "type: overview" in content
     assert "A2Zero Living Carbon Neutrality Plan" in content
     assert "[[silver/cap/cap-2020]]" in content
 
 
 @patch("pipeline.plan_extractor.anthropic.Anthropic")
 def test_extract_plan_page_skips_if_exists(mock_anthropic_class, tmp_path):
-    """Plan extractor is idempotent — skip if plan page already exists."""
+    """Plan extractor is idempotent — skip if overview page already exists."""
     mock_client = MagicMock()
     mock_anthropic_class.return_value = mock_client
 
-    # Pre-create the plan file
-    plan_dir = tmp_path / "plans"
-    plan_dir.mkdir(parents=True)
-    (plan_dir / "cap-2020.md").write_text("---\ntype: plan\n---\n\nExisting plan.\n")
+    # Pre-create the overview file
+    overview_dir = tmp_path / "overviews"
+    overview_dir.mkdir(parents=True)
+    (overview_dir / "cap-2020.md").write_text("---\ntype: overview\n---\n\nExisting overview.\n")
 
     from pipeline.plan_extractor import extract_plan_page
     result = extract_plan_page(
@@ -132,4 +132,4 @@ def test_extract_plan_page_rejects_wrong_type(mock_anthropic_class, tmp_path):
         run_date="2026-06-23",
     )
     assert result is None
-    assert not (tmp_path / "plans" / "cap-2020.md").exists()
+    assert not (tmp_path / "overviews" / "cap-2020.md").exists()
