@@ -231,7 +231,6 @@ def _llm_call(
             temperature=0,
             system=system,
             messages=[{"role": "user", "content": user_content}],
-            betas=["prompt-caching-2024-07-31"],
         )
         if response.stop_reason == "max_tokens":
             print(f"[holistic:{step_name}] WARNING: response truncated for {source_uuid}")
