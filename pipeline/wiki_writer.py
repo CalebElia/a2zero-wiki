@@ -2,6 +2,8 @@ import anthropic
 import json
 import re
 from pathlib import Path
+from pipeline.alias_registry import load_aliases, resolve_slug, resolve_slug_for_title
+from pipeline.merge_pages import merge_pages as _merge_pages
 from pipeline.silver_to_gold import (
     VALID_PAGE_TYPES,
     build_wiki_page,
@@ -371,6 +373,7 @@ def extract_wiki_pages_from_chunk(
     source_type: str,
     wiki_root: str,
     run_date: str,
+    aliases: dict | None = None,
 ) -> list[dict]:
     try:
         client = anthropic.Anthropic()
@@ -398,6 +401,9 @@ def extract_wiki_pages_from_chunk(
         print(f"[wiki_writer] WARNING: page extraction failed for chunk: {e}")
         return []
 
+    if aliases is None:
+        aliases = load_aliases(str(Path(wiki_root).parent / "registry" / "entity_aliases.json"))
+
     written = []
     for spec in specs:
         errors = validate_page_spec(spec, wiki_root=wiki_root)
@@ -408,15 +414,37 @@ def extract_wiki_pages_from_chunk(
             )
             continue
         try:
-            page_path = Path(wiki_root) / (spec["slug"] + ".md")
+            proposed_slug = spec["slug"]
+
+            # Pass 1.5: resolve through alias registry
+            bare_key = proposed_slug.split("/")[-1]
+            title = spec.get("frontmatter", {}).get("title", "")
+            canonical_path = (
+                resolve_slug(bare_key, aliases)
+                or resolve_slug_for_title(title, aliases)
+            )
+            if canonical_path:
+                effective_slug = canonical_path
+                print(f"[wiki_writer:pass1.5] {proposed_slug!r} → canonical {canonical_path!r}")
+                spec = {**spec, "slug": effective_slug}
+            else:
+                effective_slug = proposed_slug
+
+            page_path = Path(wiki_root) / (effective_slug + ".md")
             if page_path.exists():
                 existing = page_path.read_text(encoding="utf-8")
                 existing_body = re.sub(r"^---\n.*?\n---\n", "", existing, flags=re.DOTALL).strip()
                 if re.sub(r"<!--.*?-->", "", existing_body, flags=re.DOTALL).strip():
-                    # Page has real content from a prior ingest — replace with integrated body
-                    _replace_wiki_page_body(str(page_path), spec["body"])
+                    # Page has real content — merge new body in via LLM
+                    merged = _merge_pages(
+                        canonical_slug=effective_slug,
+                        existing_body=existing_body,
+                        new_body=spec["body"],
+                        source_uuid=source_uuid,
+                    )
+                    _replace_wiki_page_body(str(page_path), merged)
                     written.append(spec)
-                    continue  # skip write_or_append_page
+                    continue
             # Normal write path (new page or stub-only existing page):
             write_or_append_page(spec, wiki_root=wiki_root, source_uuid=source_uuid)
             written.append(spec)
