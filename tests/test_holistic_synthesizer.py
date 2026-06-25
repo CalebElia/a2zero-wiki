@@ -25,6 +25,30 @@ MOCK_SYNTHESIS = {
             "slug": "strategies/strategy-1-renewable-grid",
             "body": "Strategy 1 focuses on 100% renewable electricity via CCA and solar programs. ([[sources/cap/cap-2020|cap-2020]])",
         },
+        {
+            "slug": "strategies/strategy-2-electrification",
+            "body": "Strategy 2 covers electric vehicle adoption and charging infrastructure. ([[sources/cap/cap-2020|cap-2020]])",
+        },
+        {
+            "slug": "strategies/strategy-3-building-efficiency",
+            "body": "Strategy 3 addresses building energy efficiency and retrofits. ([[sources/cap/cap-2020|cap-2020]])",
+        },
+        {
+            "slug": "strategies/strategy-4-vmt-reduction",
+            "body": "Strategy 4 focuses on reducing vehicle miles traveled through transit and active transportation. ([[sources/cap/cap-2020|cap-2020]])",
+        },
+        {
+            "slug": "strategies/strategy-5-materials-waste",
+            "body": "Strategy 5 addresses materials management, waste reduction, and circular economy. ([[sources/cap/cap-2020|cap-2020]])",
+        },
+        {
+            "slug": "strategies/strategy-6-resilience",
+            "body": "Strategy 6 builds climate resilience and adaptability. ([[sources/cap/cap-2020|cap-2020]])",
+        },
+        {
+            "slug": "strategies/strategy-7-engagement",
+            "body": "Strategy 7 promotes community engagement and behavior change. ([[sources/cap/cap-2020|cap-2020]])",
+        },
     ],
     "stub_pages": [
         {
@@ -62,6 +86,24 @@ def _strategy_stub(tmp_path):
     (tmp_path / "strategies").mkdir(exist_ok=True)
     (tmp_path / "strategies" / "strategy-1-renewable-grid.md").write_text(
         "---\ntype: strategy\ntitle: Strategy 1\n---\n\n<!-- stub -->\n"
+    )
+    (tmp_path / "strategies" / "strategy-2-electrification.md").write_text(
+        "---\ntype: strategy\ntitle: Strategy 2\n---\n\n<!-- stub -->\n"
+    )
+    (tmp_path / "strategies" / "strategy-3-building-efficiency.md").write_text(
+        "---\ntype: strategy\ntitle: Strategy 3\n---\n\n<!-- stub -->\n"
+    )
+    (tmp_path / "strategies" / "strategy-4-vmt-reduction.md").write_text(
+        "---\ntype: strategy\ntitle: Strategy 4\n---\n\n<!-- stub -->\n"
+    )
+    (tmp_path / "strategies" / "strategy-5-materials-waste.md").write_text(
+        "---\ntype: strategy\ntitle: Strategy 5\n---\n\n<!-- stub -->\n"
+    )
+    (tmp_path / "strategies" / "strategy-6-resilience.md").write_text(
+        "---\ntype: strategy\ntitle: Strategy 6\n---\n\n<!-- stub -->\n"
+    )
+    (tmp_path / "strategies" / "strategy-7-engagement.md").write_text(
+        "---\ntype: strategy\ntitle: Strategy 7\n---\n\n<!-- stub -->\n"
     )
     (tmp_path / "overviews").mkdir(exist_ok=True)
 

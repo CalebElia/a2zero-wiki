@@ -7,6 +7,19 @@ from pipeline.silver_to_gold import build_wiki_page, write_wiki_page, append_to_
 from pipeline.wiki_index import append_index_entry, append_log
 
 
+# ── Constants ─────────────────────────────────────────────────────────────────
+
+_REQUIRED_STRATEGY_SLUGS = frozenset({
+    "strategies/strategy-1-renewable-grid",
+    "strategies/strategy-2-electrification",
+    "strategies/strategy-3-building-efficiency",
+    "strategies/strategy-4-vmt-reduction",
+    "strategies/strategy-5-materials-waste",
+    "strategies/strategy-6-resilience",
+    "strategies/strategy-7-engagement",
+})
+
+
 # ── System prompts ────────────────────────────────────────────────────────────
 
 HOLISTIC_WRITER_SYSTEM = """You are a policy intelligence curator building the A2Zero knowledge wiki for the City of Ann Arbor.
@@ -289,6 +302,10 @@ def _validate_synthesis_output(
         if not sb.get("body", "").strip():
             errors.append(f"strategy_bodies body is empty for slug: {s!r}")
 
+    returned_slugs = {sb.get("slug") for sb in result.get("strategy_bodies", [])}
+    for missing in sorted(_REQUIRED_STRATEGY_SLUGS - returned_slugs):
+        errors.append(f"strategy_bodies missing required slug: {missing!r}")
+
     return errors
 
 
@@ -381,11 +398,13 @@ def synthesize_source(
         score = (critique or {}).get("overall_score", "?")
         accuracy_issues = (critique or {}).get("accuracy_issues", [])
         print(f"[holistic:evaluator] Low quality score ({score}) — re-running writer with feedback")
-        retry_suffix = ""
+        retry_suffix = (
+            "\n\nIMPORTANT: A previous draft was rejected for low quality. "
+            "Take extra care to be accurate, complete, and correctly formatted."
+        )
         if accuracy_issues:
-            retry_suffix = (
-                "\n\nIMPORTANT: A previous draft of this synthesis contained these accuracy problems. "
-                "Avoid repeating them:\n" + "\n".join(f"- {i}" for i in accuracy_issues)
+            retry_suffix += "\n\nSpecific accuracy problems to avoid:\n" + "\n".join(
+                f"- {i}" for i in accuracy_issues
             )
         retry_content = [
             cached_document_block,
