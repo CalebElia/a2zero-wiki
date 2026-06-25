@@ -1,1 +1,164 @@
-{}
+{
+  "bryant-neighborhood-decarbonization": {
+    "canonical": "topics/bryant-neighborhood-decarbonization",
+    "type": "topic",
+    "aliases": [
+      "Bryant Neighborhood Decarbonization",
+      "Bryant Decarbonization",
+      "Bryant neighborhood project",
+      "Bryant decarb",
+      "Bryant community decarbonization",
+      "our work in Bryant",
+      "Bryant project",
+      "Bryant initiative"
+    ]
+  },
+  "sustainable-energy-utility": {
+    "canonical": "topics/sustainable-energy-utility",
+    "type": "topic",
+    "aliases": [
+      "Sustainable Energy Utility",
+      "SEU",
+      "community energy utility",
+      "Ann Arbor SEU",
+      "A2Zero SEU",
+      "the SEU",
+      "community-owned supplemental utility",
+      "supplemental utility",
+      "SEU ballot measure"
+    ]
+  },
+  "federal-funding-a2zero": {
+    "canonical": "topics/federal-funding-a2zero",
+    "type": "topic",
+    "aliases": [
+      "Federal Funding for A2Zero",
+      "federal grants",
+      "federal climate funding",
+      "IRA funding",
+      "DOE grants",
+      "EPA grants",
+      "federal funding",
+      "A2Zero federal funding",
+      "federal climate investment"
+    ]
+  },
+  "philanthropic-funding-a2zero": {
+    "canonical": "topics/philanthropic-funding-a2zero",
+    "type": "topic",
+    "aliases": [
+      "Philanthropic Funding for A2Zero",
+      "Kresge funding",
+      "philanthropic grants",
+      "foundation funding",
+      "philanthropic support",
+      "private grants",
+      "foundation grants",
+      "A2Zero philanthropy"
+    ]
+  },
+  "local-state-funding-a2zero": {
+    "canonical": "topics/local-state-funding-a2zero",
+    "type": "topic",
+    "aliases": [
+      "Local and State Government Funding for A2Zero",
+      "millage funding",
+      "local funding",
+      "state funding",
+      "county funding",
+      "OCED funding",
+      "Michigan grants",
+      "EGLE funding",
+      "the millage",
+      "Community Climate Action Millage",
+      "Climate Action Millage",
+      "local climate funding"
+    ]
+  },
+  "osi": {
+    "canonical": "actors/osi",
+    "type": "actor",
+    "aliases": [
+      "OSI",
+      "Office of Sustainability and Innovations",
+      "Office of Sustainability and Innovation",
+      "Office of Sustainability & Innovations",
+      "city sustainability office",
+      "A2Zero office",
+      "the sustainability office"
+    ]
+  },
+  "city-of-ann-arbor": {
+    "canonical": "actors/city-of-ann-arbor",
+    "type": "actor",
+    "aliases": [
+      "City of Ann Arbor",
+      "the City",
+      "Ann Arbor",
+      "city government"
+    ]
+  },
+  "ann-arbor-city-council": {
+    "canonical": "actors/ann-arbor-city-council",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor City Council",
+      "City Council",
+      "the Council",
+      "council members",
+      "city council"
+    ]
+  },
+  "dte-energy": {
+    "canonical": "actors/dte-energy",
+    "type": "actor",
+    "aliases": [
+      "DTE Energy",
+      "DTE",
+      "DTE Electric",
+      "DTE Electric Company",
+      "Detroit Edison"
+    ]
+  },
+  "us-doe": {
+    "canonical": "actors/us-doe",
+    "type": "actor",
+    "aliases": [
+      "U.S. Department of Energy",
+      "Department of Energy",
+      "DOE",
+      "U.S. DOE"
+    ]
+  },
+  "us-epa": {
+    "canonical": "actors/us-epa",
+    "type": "actor",
+    "aliases": [
+      "U.S. Environmental Protection Agency",
+      "Environmental Protection Agency",
+      "EPA",
+      "U.S. EPA"
+    ]
+  },
+  "university-of-michigan": {
+    "canonical": "actors/university-of-michigan",
+    "type": "actor",
+    "aliases": [
+      "University of Michigan",
+      "U of M",
+      "UM",
+      "the University",
+      "U-M"
+    ]
+  },
+  "michigan-public-service-commission": {
+    "canonical": "actors/michigan-public-service-commission",
+    "type": "actor",
+    "aliases": [
+      "Michigan Public Service Commission",
+      "MPSC",
+      "the Commission",
+      "Public Service Commission"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "cap-2020": {
+    "uuid": "cap-2020",
+    "title": "Ann Arbor A2Zero Living Carbon Neutrality Plan",
+    "date_published": "2020-04",
+    "source_type": "cap",
+    "jurisdiction": "ann-arbor",
+    "bronze_path": "bronze/cap/cap-2020.pdf",
+    "silver_path": "silver/cap/cap-2020.md",
+    "excerpt_map": {}
+  }
+}

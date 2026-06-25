@@ -4,11 +4,10 @@ active-years:
 actor-type: nonprofit
 affiliation: null
 elected: false
-last-updated: '2026-06-23'
+last-updated: '2026-06-24'
 programs-involved:
 - '[[initiatives/forth-mobility-education-outreach]]'
-role: Education and outreach partner for electric vehicle and sustainable mobility
-  adoption
+role: Education and outreach partner for electric and sustainable transportation
 source-first-seen: '[[sources/cap/cap-2020]]'
 tags:
 - ev
@@ -20,4 +19,4 @@ title: Forth Mobility
 type: actor
 ---
 
-[[actors/forth-mobility|Forth Mobility]] is identified in the A2Zero plan as a partner organization to be leveraged for education and outreach on electric vehicles and sustainable transportation ([[sources/cap/cap-2020|cap-2020]]). The organization is listed among policy, funding, and public outreach ideas considered for the mobility strategy ([[sources/cap/cap-2020|cap-2020]]).
+[[actors/forth-mobility|Forth Mobility]] is identified in the A2Zero plan as a resource to leverage for education and outreach related to electric transportation ([[sources/cap/cap-2020|cap-2020]]). The organization is proposed as a partner to support community awareness and adoption of EV and sustainable mobility options in Ann Arbor ([[sources/cap/cap-2020|cap-2020]]).

@@ -1,0 +1,233 @@
+{
+  "main": {
+    "id": "4ef8bb7c46c1fdc3",
+    "type": "split",
+    "children": [
+      {
+        "id": "dcb0d158aaed4df8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f34eda3d87866d08",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "781ab43a402c55a1",
+    "type": "split",
+    "children": [
+      {
+        "id": "91a3462dcb8454cc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fa70612a802bf7f6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "183a0c85c81c6d51",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "341bddce7576af6f",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "b7968fc57ebb11aa",
+    "type": "split",
+    "children": [
+      {
+        "id": "657d426fadcba46d",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3f4e5a89cf4f855a",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "wiki/topics/bryant-neighborhood-decarbonization.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for bryant-neighborhood-decarbonization"
+            }
+          },
+          {
+            "id": "28a113be8ee1dade",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "wiki/topics/bryant-neighborhood-decarbonization.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from bryant-neighborhood-decarbonization"
+            }
+          },
+          {
+            "id": "1768e68fb94a3286",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "c26e523adb1a29d4",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "1a62642b96881923",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "wiki/topics/bryant-neighborhood-decarbonization.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of bryant-neighborhood-decarbonization"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "f34eda3d87866d08",
+  "lastOpenFiles": [
+    "wiki/actors/common-cycle.md",
+    "wiki/initiatives/common-cycle-bike-program.md",
+    "wiki/actors/americorps.md",
+    "wiki/actors/american-red-cross.md",
+    "wiki/initiatives/city-bus-evacuation-disaster-response.md",
+    "wiki/initiatives/resilience-fund-equity.md",
+    "wiki/initiatives/decentralized-energy-microgrids.md",
+    "wiki/initiatives/floodplain-stormwater-management.md",
+    "wiki/initiatives/natural-area-preservation-carbon-sequestration.md",
+    "wiki/initiatives/green-streets-program.md",
+    "wiki/initiatives/environmental-monitoring-sensors.md",
+    "wiki/initiatives/urban-heat-island-mitigation.md",
+    "wiki/initiatives/neighborhood-resiliency-plans.md",
+    "wiki/initiatives/community-emergency-preparedness-training.md",
+    "wiki/initiatives/neighborhood-climate-ambassadors.md",
+    "wiki/initiatives/waste-truck-fleet-electrification.md",
+    "wiki/initiatives/sustainable-purchasing-policy.md",
+    "wiki/initiatives/circular-economy-program.md",
+    "wiki/initiatives/local-food-production-expansion.md",
+    "wiki/initiatives/plant-based-diet-program.md",
+    "wiki/initiatives/composting-expansion.md",
+    "wiki/initiatives/materials-recovery-facility-renovation.md",
+    "wiki/initiatives/zero-waste-plan.md",
+    "wiki/technology/permeable-pavement.md",
+    "wiki/technology/autonomous-vehicle.md",
+    "wiki/actors/forth-mobility.md",
+    "wiki/meetings",
+    "wiki/technology",
+    "wiki/locations",
+    "wiki/initiatives",
+    "wiki/political-events",
+    "wiki/actors",
+    "wiki/overviews",
+    "archive/wiki-v3-pre-ingest/plans",
+    "archive/wiki-v3-pre-ingest/technology",
+    "archive/wiki-v3-pre-ingest/political-events",
+    "wiki/Untitled.canvas",
+    "AA_a2zero-CAP/junk_bin/image_000000_29eaa47834935c9dc19dcdc53ab2b7d034cd0bec17fcc4299bb8e4fc07686046.png",
+    "AA_a2zero-CAP/junk_bin/image_000000_0980b4d506ab4191f7daf357a15b9037f3fe2f3b5af713762a338c882f48f00c.png",
+    "AA_a2zero-CAP/junk_bin/image_000002_e7e8e93e50ff117ea30a528ddcd8b19fb6db15e9dc3cf6a84fe78212e22499b8.png",
+    "AA_a2zero-CAP/junk_bin/image_000002_359c6d56b0b135ec3d9fa45162e9c4635725af988501974e0ca8117838d5a91f.png",
+    "AA_a2zero-CAP/junk_bin/image_000002_35c6f9783dc99eef25e736f85eb1feed8dbbf163f34aefc43e2dc52eeff1fcef.png",
+    "AA_a2zero-CAP/junk_bin/image_000000_a5f75101b2d98b6c91dc80119a5d5aced5be8528bca83abf8122e88cb5e57bb4.png",
+    "AA_a2zero-CAP/junk_bin/image_000003_45987bca033936c114ddf4bd1ec0cd29589c260ef68597fb9e0d6c6060848d19.png",
+    "AA_a2zero-CAP/junk_bin/image_000000_b32a8f02507c7b592ddaed945150702a14bffa197245acd074fbc7e4386506f4.png",
+    "AA_a2zero-CAP/junk_bin/image_000000_9d9124af10b0255fa97297b0f394accaf6f2e78677bbbf37d42c8943f91df817.png",
+    "AA_a2zero-CAP/junk_bin/image_000003_5e1812ed09b24b1b6719398830ce81478ceeb4ea3b1ce4e7c321806bc7a1cd2c.png",
+    "Untitled.canvas"
+  ]
+}

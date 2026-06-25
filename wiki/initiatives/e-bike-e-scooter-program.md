@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-23'
+last-updated: '2026-06-24'
 launched: null
 locations: []
 milestones: []
@@ -16,10 +16,10 @@ tags:
 - e-bike
 - e-scooter
 - active-transportation
+- micromobility
 - electrification
-- short-distance
 title: E-Bike and E-Scooter Program
 type: initiative
 ---
 
-The plan proposes implementing an e-bike and e-scooter program to electrify short-distance travel and offer safe riding options throughout the city ([[sources/cap/cap-2020|cap-2020]]). Mobility hubs dispersed through the city are envisioned as home-bases for e-bikes, e-scooters, and other transit options ([[sources/cap/cap-2020|cap-2020]]).
+The A2Zero plan proposes implementing an e-bike and e-scooter program to electrify short-distance travel and offer safe riding options for residents ([[sources/cap/cap-2020|cap-2020]]). This initiative is envisioned as part of a broader "mobility hubs" concept that would serve as home-bases dispersed throughout the city, combining e-bikes, e-scooters, car-share, bus stops, EV chargers, and other transit options ([[sources/cap/cap-2020|cap-2020]]).

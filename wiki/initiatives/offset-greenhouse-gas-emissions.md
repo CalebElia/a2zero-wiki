@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-23'
+last-updated: '2026-06-24'
 launched: null
 locations: []
 milestones:
@@ -20,8 +20,8 @@ milestones:
   year: 2028
 - source: '[[sources/cap/cap-2020]]'
   status: unverified
-  target: Offset Greenhouse Gas Emissions strategy achieves all potential greenhouse
-    gas emissions reductions
+  target: All offset greenhouse gas emissions reductions achieved; offset purchases
+    decline to zero as local actions close the gap
   year: 2030
 parent-strategy: '[[strategies/strategy-7-engagement]]'
 partners:
@@ -43,4 +43,4 @@ title: Offset Greenhouse Gas Emissions
 type: initiative
 ---
 
-The Offset Greenhouse Gas Emissions initiative allows Ann Arbor to purchase carbon offsets and retire renewable energy credits to address emissions that cannot currently be reduced locally due to lack of technically or financially feasible solutions. ([[sources/cap/cap-2020|cap-2020]]) The greenhouse gas reduction potential is 13.6% of community-wide emissions, equivalent to 298,500 metric tons of CO2e if the University of Michigan participates in all programs. ([[sources/cap/cap-2020|cap-2020]]) The 10-year estimated cost is $9,440,000, based on two years of purchasing offsets and staffing support to set up the purchase. ([[sources/cap/cap-2020|cap-2020]]) The City will aim to invest offset funds in programs that decrease income and racial justice inequities, including potentially in the global south. ([[sources/cap/cap-2020|cap-2020]])
+The Offset Greenhouse Gas Emissions initiative is designed to close the gap between what Ann Arbor can reduce locally and what is needed to achieve community-wide carbon neutrality by 2030, using carbon offset purchases and retirement of renewable energy credits for activities where technical or financially feasible local solutions do not yet exist ([[sources/cap/cap-2020|cap-2020]]). The initiative accounts for approximately 13.6% of community-wide emissions reductions — equivalent to 298,500 metric tons of CO₂e — if the University of Michigan participates in all A2Zero programs, with a higher offset burden (~925,000 MTCO₂e annually) if UM does not participate ([[sources/cap/cap-2020|cap-2020]]). The program assumes all offsets are additional, that preference is given to projects in low-income and frontline communities including potentially the global south, and that any renewable energy credits generated will be retired ([[sources/cap/cap-2020|cap-2020]]). The 10-year estimated cost is $9,440,000, based on two years of purchasing offsets and the staffing support required to set up the purchase ([[sources/cap/cap-2020|cap-2020]]).

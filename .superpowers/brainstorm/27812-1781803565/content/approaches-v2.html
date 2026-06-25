@@ -1,0 +1,226 @@
+<style>
+  .approach-card {
+    border: 1.5px solid #3a4055;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+    background: #1a2035;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .approach-card:hover { border-color: #7b93fd; }
+  .approach-card.selected { border-color: #68d391; box-shadow: 0 0 0 1px #68d391; }
+  .approach-card.recommended { border-color: #68d391; }
+
+  .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .badge {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 15px; flex-shrink: 0;
+    background: #2d3748; color: #a0aec0;
+  }
+  .badge.rec { background: #68d391; color: #0f1628; }
+  .card-title { font-size: 15px; font-weight: 700; color: #e2e8f0; }
+  .card-sub { font-size: 11px; color: #76e4f7; margin-top: 2px; }
+
+  .rec-tag {
+    margin-left: auto; font-size: 10px; font-weight: 700;
+    background: #68d391; color: #0f1628;
+    padding: 2px 8px; border-radius: 20px; letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+
+  .artifacts-label {
+    font-size: 10px; font-weight: 700; color: #7b93fd;
+    letter-spacing: 1px; text-transform: uppercase;
+    margin: 12px 0 6px;
+  }
+  .artifact-list {
+    background: #0f1a2e; border-radius: 6px;
+    padding: 10px 12px; margin-bottom: 12px;
+    font-size: 11px; line-height: 1.9; color: #cbd5e0;
+  }
+  .artifact-list code {
+    background: #2d3748; color: #76e4f7;
+    padding: 1px 5px; border-radius: 3px; font-size: 10px;
+  }
+
+  .pc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .pc-box { background: #0f1a2e; border-radius: 6px; padding: 10px 12px; }
+  .pc-head { font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px; }
+  .pc-head.pro { color: #68d391; }
+  .pc-head.con { color: #f6ad55; }
+  .pc-list { list-style: none; padding: 0; margin: 0; }
+  .pc-list li { font-size: 11px; color: #a0aec0; padding: 2px 0 2px 14px; position: relative; line-height: 1.5; }
+  .pc-list.pros li::before { content: "✓"; position: absolute; left: 0; color: #68d391; }
+  .pc-list.cons li::before { content: "—"; position: absolute; left: 0; color: #f6ad55; }
+
+  .verdict { font-size: 11px; margin-top: 12px; padding: 8px 12px; border-radius: 6px; }
+  .verdict.green { background: #0d2b1a; color: #68d391; border-left: 3px solid #68d391; }
+  .verdict.gray  { background: #1a2035; color: #a0aec0; border-left: 3px solid #3a4055; }
+
+  .provenance-bar {
+    margin-top: 20px; padding: 16px;
+    background: #0f1628; border-radius: 8px; border-left: 3px solid #76e4f7;
+  }
+  .provenance-bar .label { font-size: 10px; font-weight: 700; color: #76e4f7; letter-spacing: 1px; margin-bottom: 8px; }
+  .prov-chain { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .prov-step {
+    background: #1a2035; border: 1px solid #3a4055;
+    color: #e2e8f0; font-size: 10px; padding: 4px 10px; border-radius: 4px;
+  }
+  .prov-arrow { color: #7b93fd; font-size: 14px; }
+  .prov-note { font-size: 10px; color: #718096; margin-top: 8px; }
+</style>
+
+<h2 style="color:#e2e8f0;">Three Architectural Approaches</h2>
+<p style="color:#94a3b8;margin-bottom:20px;">All three share the same medallion structure and markdown wiki. The difference is in what structured sidecar the Gold layer produces — and how queryable it is for your data engineer.</p>
+
+<!-- OPTION A -->
+<div class="approach-card" onclick="toggleSelect(this)" data-choice="a">
+  <div class="card-header">
+    <div class="badge">A</div>
+    <div>
+      <div class="card-title">Markdown-Only Gold</div>
+      <div class="card-sub">Wiki pages + timeline.md + sources.json — no structured sidecar</div>
+    </div>
+  </div>
+
+  <div class="artifacts-label">Gold Artifacts</div>
+  <div class="artifact-list">
+    📄 <code>wiki/</code> — markdown pages with inline <code>(source: uuid)</code> citations<br>
+    📄 <code>timeline.md</code> — human-readable dated event list<br>
+    📄 <code>sources.json</code> — maps uuid → bronze file path
+  </div>
+
+  <div class="pc-grid">
+    <div class="pc-box">
+      <div class="pc-head pro">STRENGTHS</div>
+      <ul class="pc-list pros">
+        <li>Zero new infrastructure</li>
+        <li>LLM chat works immediately</li>
+        <li>Fully human-readable</li>
+        <li>Buildable today, solo</li>
+      </ul>
+    </div>
+    <div class="pc-box">
+      <div class="pc-head con">LIMITS</div>
+      <ul class="pc-list cons">
+        <li>Data engineer has nothing queryable for viz</li>
+        <li>Timeline filtering requires LLM scan of all files</li>
+        <li>Provenance is text-only, not clickable structure</li>
+        <li>Dead-end for dashboard v2</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="verdict gray">Best for solo concept validation only. You'll hit the wall fast once the data engineer needs structured data.</div>
+</div>
+
+<!-- OPTION B — RECOMMENDED -->
+<div class="approach-card recommended" onclick="toggleSelect(this)" data-choice="b">
+  <div class="card-header">
+    <div class="badge rec">B</div>
+    <div>
+      <div class="card-title">Markdown + JSONL Quads Sidecar</div>
+      <div class="card-sub">Wiki pages + quads.jsonl + sources_index.json — structured but zero infrastructure</div>
+    </div>
+    <div class="rec-tag">★ RECOMMENDED</div>
+  </div>
+
+  <div class="artifacts-label">Gold Artifacts</div>
+  <div class="artifact-list">
+    📄 <code>wiki/</code> — markdown pages with inline citations<br>
+    📄 <code>blackboard/quads.jsonl</code> — one quad per line:<br>
+    &nbsp;&nbsp;&nbsp;<code>{"date", "subject", "relation", "object", "source_uuid", "confidence", "status"}</code><br>
+    📄 <code>blackboard/sources_index.json</code> — uuid → bronze path + silver path + excerpt highlight<br>
+    📄 <code>blackboard/dark_matter.md</code> — auto-generated gap dossier
+  </div>
+
+  <div class="pc-grid">
+    <div class="pc-box">
+      <div class="pc-head pro">STRENGTHS</div>
+      <ul class="pc-list pros">
+        <li>Data engineer queries JSONL with Python/pandas/DuckDB today</li>
+        <li>Full provenance chain — every citation resolves to Bronze</li>
+        <li>JSONL → SQLite migration is one script when ready</li>
+        <li>Dark matter detection: scan for date gaps in quads</li>
+        <li>Confidence = citation count, automatic from duplicates</li>
+        <li>No running services required</li>
+      </ul>
+    </div>
+    <div class="pc-box">
+      <div class="pc-head con">LIMITS</div>
+      <ul class="pc-list cons">
+        <li>Cross-entity queries (all events by actor X) require file scanning</li>
+        <li>Deduplication logic needs a helper script</li>
+        <li>Migration to SQLite needed at scale (100+ source files)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="verdict green">Best for this team and this prototype. Zero infrastructure overhead now, clean migration path later. The data engineer can start building dashboard queries the day the first ingest runs.</div>
+</div>
+
+<!-- OPTION C -->
+<div class="approach-card" onclick="toggleSelect(this)" data-choice="c">
+  <div class="card-header">
+    <div class="badge">C</div>
+    <div>
+      <div class="card-title">Markdown + SQLite from Day One</div>
+      <div class="card-sub">Wiki pages + blackboard.db — invest slightly more upfront, avoid migration later</div>
+    </div>
+  </div>
+
+  <div class="artifacts-label">Gold Artifacts</div>
+  <div class="artifact-list">
+    📄 <code>wiki/</code> — markdown pages with inline citations<br>
+    🗄️ <code>blackboard/blackboard.db</code> — SQLite with three tables:<br>
+    &nbsp;&nbsp;&nbsp;<code>quads(id, date, subject, relation, object, source_uuid, confidence, status)</code><br>
+    &nbsp;&nbsp;&nbsp;<code>sources(uuid, title, date, source_type, bronze_path, silver_path, excerpt)</code><br>
+    &nbsp;&nbsp;&nbsp;<code>actors(id, name, role, affiliation)</code>
+  </div>
+
+  <div class="pc-grid">
+    <div class="pc-box">
+      <div class="pc-head pro">STRENGTHS</div>
+      <ul class="pc-list pros">
+        <li>SQL queries from day one — familiar to data engineers</li>
+        <li>Cross-entity queries trivial (JOIN quads on actor)</li>
+        <li>Provenance is relational — citations are foreign keys</li>
+        <li>Dark matter = one SQL gap detection query</li>
+        <li>No migration needed later</li>
+      </ul>
+    </div>
+    <div class="pc-box">
+      <div class="pc-head con">LIMITS</div>
+      <ul class="pc-list cons">
+        <li>Schema must be defined before first ingest — brittle if design changes</li>
+        <li>Not human-readable (git diff on .db is useless)</li>
+        <li>LLM ingest script must maintain both markdown + DB simultaneously</li>
+        <li>Adds setup time before first useful output</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="verdict gray">Best if your data engineer prefers SQL and wants to run JOIN queries across actors and quads from week one. Worth asking them before deciding.</div>
+</div>
+
+<!-- PROVENANCE CHAIN -->
+<div class="provenance-bar">
+  <div class="label">PROVENANCE CHAIN — ALL THREE OPTIONS</div>
+  <div class="prov-chain">
+    <div class="prov-step">Dashboard citation badge</div>
+    <div class="prov-arrow">→</div>
+    <div class="prov-step"><code style="color:#76e4f7;font-size:10px;">source_uuid</code></div>
+    <div class="prov-arrow">→</div>
+    <div class="prov-step">sources_index lookup</div>
+    <div class="prov-arrow">→</div>
+    <div class="prov-step">Silver excerpt + highlight</div>
+    <div class="prov-arrow">→</div>
+    <div class="prov-step">Bronze raw file link</div>
+  </div>
+  <div class="prov-note">Every claim in the wiki traces to a specific passage in a specific raw document. Clickable at every step. Decision-makers see the full chain of evidence.</div>
+</div>
+
+<p style="color:#94a3b8;text-align:center;margin-top:20px;font-size:12px;">Click your preference above, or tell me in the terminal. One question worth asking your data engineer first: does "queryable" mean Python/pandas or SQL?</p>

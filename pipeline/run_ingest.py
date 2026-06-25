@@ -45,7 +45,14 @@ def run_silver_ingest(
         run_date = date.today().isoformat()
 
     source_content = Path(source_path).read_text(encoding="utf-8")
-    source_rel_path = str(Path(source_path).with_suffix(""))  # e.g. "sources/cap/cap-2020"
+    # Wikilink path is vault-relative (strip wiki_root prefix + .md extension).
+    # Handles sources inside the vault (wiki/sources/cap/cap-2020.md → sources/cap/cap-2020)
+    # and legacy paths outside it (sources/cap/cap-2020.md → sources/cap/cap-2020).
+    _src = Path(source_path)
+    try:
+        source_rel_path = str(_src.relative_to(wiki_root).with_suffix(""))
+    except ValueError:
+        source_rel_path = str(_src.with_suffix(""))
 
     # Extract source_type from frontmatter
     source_type = "unknown"
@@ -237,7 +244,7 @@ if __name__ == "__main__":
 
     # Source-first ingest (CAP, annual reports already in markdown)
     p_silver = sub.add_parser("silver", help="Ingest a pre-built source markdown file")
-    p_silver.add_argument("--source", required=True, help="Path to source .md file (e.g. sources/cap/cap-2020.md)")
+    p_silver.add_argument("--source", required=True, help="Path to source .md file (e.g. wiki/sources/cap/cap-2020.md)")
     p_silver.add_argument("--uuid", required=True)
     p_silver.add_argument("--title", required=True)
     p_silver.add_argument("--quads-path", default="blackboard/quads.jsonl")
@@ -255,7 +262,7 @@ if __name__ == "__main__":
     p_pdf.add_argument("--uuid", required=True)
     p_pdf.add_argument("--year", required=True)
     p_pdf.add_argument("--title", required=True)
-    p_pdf.add_argument("--source-dir", default="sources/annual-reports")
+    p_pdf.add_argument("--source-dir", default="wiki/sources/annual-reports")
     p_pdf.add_argument("--quads-path", default="blackboard/quads.jsonl")
     p_pdf.add_argument("--wiki-root", default="wiki")
     p_pdf.add_argument("--review-queue", default="review-queue.md")

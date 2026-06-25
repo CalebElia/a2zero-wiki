@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-23'
+last-updated: '2026-06-24'
 launched: null
 locations: []
 milestones: []
@@ -12,13 +12,13 @@ related-strategies:
 source-first-seen: '[[sources/cap/cap-2020]]'
 status: planned
 tags:
-- parking
+- parking-reform
+- parking-minimums
 - vmt-reduction
-- zoning
 - congestion
 - land-use
-title: Parking Reform
+title: Parking Reform and Reduction
 type: initiative
 ---
 
-The plan proposes reducing the availability of parking, eliminating parking minimums, taxing vacant lots and new parking lot development, and working toward a parking-space-free campus ([[sources/cap/cap-2020|cap-2020]]). Enacting car-free or petrol-free zones and making downtown pedestrian-only on weekends linked with shuttles from Park-and-Rides are also proposed ([[sources/cap/cap-2020|cap-2020]]).
+The A2Zero plan proposes reducing the availability of parking, reducing or eliminating parking minimums, working toward a parking-space-free campus, and taxing vacant lots and development of new parking lots ([[sources/cap/cap-2020|cap-2020]]). The plan also considers enacting car-free or petrol-free zones and making downtown pedestrian-only on weekends linked with shuttles from Park-and-Ride lots ([[sources/cap/cap-2020|cap-2020]]).

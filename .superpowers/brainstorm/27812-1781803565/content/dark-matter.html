@@ -1,0 +1,186 @@
+<style>
+  body-equiv { font-family: inherit; }
+  h2 { color: #e2e8f0; }
+  .subtitle-text { color: #94a3b8; margin-bottom: 24px; font-size: 13px; }
+
+  .dm-stage { margin-bottom: 32px; }
+  .stage-label {
+    font-size: 10px; font-weight: 700; color: #7b93fd;
+    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+  }
+  .timeline-row {
+    display: flex; align-items: center;
+    background: #0f1628; border-radius: 8px;
+    padding: 14px 16px; gap: 0; position: relative; overflow: hidden;
+  }
+  .tl-node {
+    display: flex; flex-direction: column; align-items: center;
+    flex-shrink: 0; z-index: 1;
+  }
+  .tl-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid; flex-shrink: 0;
+  }
+  .dot-confirmed  { background: #68d391; border-color: #68d391; }
+  .dot-new        { background: #76e4f7; border-color: #76e4f7; }
+  .dot-dark       { background: #2d2010; border-color: #f6ad55; }
+  .tl-label {
+    font-size: 9px; color: #94a3b8; margin-top: 4px;
+    text-align: center; max-width: 80px; line-height: 1.3;
+  }
+  .tl-label.new-label { color: #76e4f7; }
+  .tl-label.dark-label { color: #f6ad55; }
+
+  .tl-gap {
+    flex: 1; height: 2px; background: #2d3748; position: relative;
+    margin: 0 4px; align-self: center; top: -10px;
+  }
+  .tl-gap.has-dark { background: repeating-linear-gradient(90deg,#f6ad55,#f6ad55 4px,transparent 4px,transparent 8px); }
+  .tl-gap.filled { background: #4a5568; }
+
+  .gap-question {
+    position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+    font-size: 9px; color: #f6ad55; white-space: nowrap; font-style: italic;
+  }
+
+  .legend { display: flex; gap: 20px; margin: 12px 0 4px; flex-wrap: wrap; }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #94a3b8; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid; flex-shrink: 0; }
+
+  .dossier-box {
+    background: #0f1628; border: 1.5px solid #f6ad55; border-radius: 8px;
+    padding: 16px; margin-top: 8px;
+  }
+  .dossier-title { font-size: 12px; font-weight: 700; color: #f6ad55; margin-bottom: 12px; }
+  .dossier-entry {
+    background: #1a2035; border-radius: 6px; padding: 12px;
+    margin-bottom: 10px; border-left: 3px solid #f6ad55;
+  }
+  .entry-head { font-size: 11px; font-weight: 700; color: #e2e8f0; margin-bottom: 6px; }
+  .entry-field { font-size: 10px; color: #94a3b8; margin: 3px 0; line-height: 1.5; }
+  .entry-field span { color: #cbd5e0; }
+  .entry-sources { font-size: 10px; color: #76e4f7; margin: 6px 0 3px; }
+  .entry-q {
+    font-size: 11px; color: #f6ad55; font-style: italic;
+    background: #2d2010; padding: 6px 10px; border-radius: 4px; margin-top: 6px;
+  }
+
+  .loop-note {
+    background: #0d2b1a; border: 1px solid #68d391; border-radius: 8px;
+    padding: 14px; margin-top: 20px; font-size: 11px; color: #a0aec0; line-height: 1.7;
+  }
+  .loop-note strong { color: #68d391; }
+</style>
+
+<h2>Progressive Timeline Densification + Dark Matter</h2>
+<p class="subtitle-text">The recursive loop you described: sparse timeline → exhaust Silver data → new nodes appear → new gaps emerge → repeat until Silver is exhausted → remaining gaps are dark matter → trigger new source discovery.</p>
+
+<!-- STAGE 0: Original sparse -->
+<div class="dm-stage">
+  <div class="stage-label">Stage 0 — Initial State (2 source documents ingested)</div>
+  <div class="timeline-row">
+    <div class="tl-node">
+      <div class="tl-dot dot-confirmed"></div>
+      <div class="tl-label">Apr 2020<br>CAP published</div>
+    </div>
+    <div class="tl-gap has-dark" style="flex:10;">
+      <span class="gap-question">← 5 years, nothing between →</span>
+    </div>
+    <div class="tl-node">
+      <div class="tl-dot dot-dark"></div>
+      <div class="tl-label dark-label">⬛ ??? <br>dark matter</div>
+    </div>
+    <div class="tl-gap has-dark" style="flex:1;"></div>
+    <div class="tl-node">
+      <div class="tl-dot dot-confirmed"></div>
+      <div class="tl-label">Mar 2025<br>SEU launches Bryant</div>
+    </div>
+  </div>
+</div>
+
+<!-- STAGE 1: Annual reports ingested -->
+<div class="dm-stage">
+  <div class="stage-label">Stage 1 — After ingesting 5 annual reports (+ 15 quads)</div>
+  <div class="timeline-row">
+    <div class="tl-node"><div class="tl-dot dot-confirmed"></div><div class="tl-label">Apr 2020<br>CAP</div></div>
+    <div class="tl-gap filled" style="flex:2;"></div>
+    <div class="tl-node"><div class="tl-dot dot-new"></div><div class="tl-label new-label">Jun 2022<br>SEU concept advanced</div></div>
+    <div class="tl-gap filled" style="flex:2;"></div>
+    <div class="tl-node"><div class="tl-dot dot-new"></div><div class="tl-label new-label">Nov 2024<br>Voters approve SEU 79%</div></div>
+    <div class="tl-gap has-dark" style="flex:1;">
+      <span class="gap-question">⬛ gap</span>
+    </div>
+    <div class="tl-node"><div class="tl-dot dot-dark"></div><div class="tl-label dark-label">⬛ ???<br>how did SEU get built?</div></div>
+    <div class="tl-gap has-dark" style="flex:1;"></div>
+    <div class="tl-node"><div class="tl-dot dot-confirmed"></div><div class="tl-label">Mar 2025<br>SEU launches</div></div>
+  </div>
+</div>
+
+<!-- STAGE 2: Council meetings + press releases -->
+<div class="dm-stage">
+  <div class="stage-label">Stage 2 — After ingesting 4 council meetings + 6 press releases (+ 22 more quads)</div>
+  <div class="timeline-row">
+    <div class="tl-node"><div class="tl-dot dot-confirmed"></div><div class="tl-label">Apr 2020<br>CAP</div></div>
+    <div class="tl-gap filled" style="flex:1;"></div>
+    <div class="tl-node"><div class="tl-dot dot-confirmed"></div><div class="tl-label">Jun 2022<br>SEU concept</div></div>
+    <div class="tl-gap filled" style="flex:1;"></div>
+    <div class="tl-node"><div class="tl-dot dot-new"></div><div class="tl-label new-label">May 2024<br>Council: Phase II study authorized</div></div>
+    <div class="tl-gap filled" style="flex:1;"></div>
+    <div class="tl-node"><div class="tl-dot dot-confirmed"></div><div class="tl-label">Nov 2024<br>Voters 79%</div></div>
+    <div class="tl-gap filled" style="flex:1;"></div>
+    <div class="tl-node"><div class="tl-dot dot-new"></div><div class="tl-label new-label">Dec 2024<br>SEU Board formed</div></div>
+    <div class="tl-gap has-dark" style="flex:1;">
+      <span class="gap-question">⬛ contractor?</span>
+    </div>
+    <div class="tl-node"><div class="tl-dot dot-dark"></div><div class="tl-label dark-label">⬛ ???<br>RFP + vendor selection</div></div>
+    <div class="tl-gap has-dark" style="flex:1;"></div>
+    <div class="tl-node"><div class="tl-dot dot-confirmed"></div><div class="tl-label">Mar 2025<br>SEU launches</div></div>
+  </div>
+</div>
+
+<!-- STAGE 3: Silver exhausted, dark matter crystallizes -->
+<div class="dm-stage">
+  <div class="stage-label">Stage 3 — Silver exhausted. Dark matter crystallizes → dossier generated</div>
+  <div class="dossier-box">
+    <div class="dossier-title">⬛ Dark Matter Dossier — Generated 2026-06-18 · 3 gaps · 47 quads in blackboard</div>
+
+    <div class="dossier-entry">
+      <div class="entry-head">Gap 1: SEU Board formed → SEU Bryant launch [4 months, HIGH PRIORITY]</div>
+      <div class="entry-field">Period: <span>Dec 2024 – Mar 2025</span></div>
+      <div class="entry-field">Bounding events: <span>SEU Board formed (Dec 2024, council-2024-12-09) → SEU launches solar+storage Bryant (Mar 2025, annual-report-y5)</span></div>
+      <div class="entry-field">What domain logic says should be here: <span>RFP issuance, contractor selection, council contract approval vote, permitting, construction start</span></div>
+      <div class="entry-sources">🔍 Suggested sources: Ann Arbor RFP database · City Council contract approval resolutions · Building permits</div>
+      <div class="entry-q">"Who was awarded the contract for SEU Bryant installation and when did Council vote to approve it?"</div>
+    </div>
+
+    <div class="dossier-entry">
+      <div class="entry-head">Gap 2: DOE Bryant grant awarded → geothermal construction begins [3 months, MEDIUM]</div>
+      <div class="entry-field">Period: <span>Sep 2024 – Dec 2024</span></div>
+      <div class="entry-field">Bounding events: <span>$10M DOE grant won (Sep 2024, annual-report-y5) → geothermal installed at Bryant CC (Dec 2024, annual-report-y5)</span></div>
+      <div class="entry-field">What should be here: <span>grant agreement signed, subcontractor selection, OSI/Groundwork USA coordination memo</span></div>
+      <div class="entry-sources">🔍 Suggested sources: OSI press releases · Groundwork USA project updates · Federal grant award records</div>
+      <div class="entry-q">"What was the timeline between the DOE grant award and construction start? Who did OSI partner with on implementation?"</div>
+    </div>
+
+    <div class="dossier-entry">
+      <div class="entry-head">Gap 3: Sustainability Commission hears SEU proposal → Council ballot vote [18 months, MEDIUM]</div>
+      <div class="entry-field">Period: <span>May 2023 – Nov 2024</span></div>
+      <div class="entry-field">Bounding events: <span>SEU DOE grant application submitted (May 2023, annual-report-y3) → Council approves SEU for ballot (Sep 2024, press-release-2024-09)</span></div>
+      <div class="entry-field">What should be here: <span>DOE grant decision, Energy Options Analysis completion, Sustainability Commission deliberations, ballot language drafting</span></div>
+      <div class="entry-sources">🔍 Suggested sources: Sustainability Commission meeting minutes · DOE grant decision records · City Attorney ballot language memo</div>
+      <div class="entry-q">"What were the main arguments made at the Sustainability Commission before Council voted to put SEU on the ballot?"</div>
+    </div>
+  </div>
+</div>
+
+<!-- LOOP NOTE -->
+<div class="loop-note">
+  <strong>The loop:</strong> Each dossier entry produces a specific search task. Finding the Ann Arbor RFP database and ingesting the relevant RFPs adds new Bronze → Silver → Gold quads. Those new quads collapse Gap 1 or reveal a finer-grained gap within it. The dossier regenerates. The process repeats until gaps are either filled or confirmed as requiring primary human interviews. <br><br>
+  <strong>What makes this powerful:</strong> The dossier is not written by hand — it is <em>generated</em> by a script that scans <code>quads.jsonl</code> for pairs of causally-connected events with unexplained temporal distance, and asks the LLM to reason about what domain logic says should be between them. Every ingest run regenerates it. The dossier is always current.
+</div>
+
+<div class="legend">
+  <div class="leg-item"><div class="leg-dot" style="background:#68d391;border-color:#68d391;"></div>Confirmed (Tier 1)</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#76e4f7;border-color:#76e4f7;"></div>New node (this ingest)</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#2d2010;border-color:#f6ad55;"></div>Dark matter — Silver exhausted</div>
+</div>

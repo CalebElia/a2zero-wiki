@@ -4,21 +4,19 @@ active-years:
 actor-type: government-office
 affiliation: null
 elected: false
-last-updated: '2026-06-23'
-programs-involved:
-- '[[initiatives/a2zero-carbon-neutrality-plan]]'
-role: Lead implementing entity for the A2Zero Carbon Neutrality Plan
+last-updated: '2026-06-24'
+programs-involved: []
+role: Lead governmental body responsible for implementing A2Zero Carbon Neutrality
+  Plan
 source-first-seen: '[[sources/cap/cap-2020]]'
 tags:
-- municipal-government
+- municipality
 - ann-arbor
-- climate-action
+- a2zero
 - carbon-neutrality
+- climate-emergency
 title: City of Ann Arbor
 type: actor
 ---
 
-The City of Ann Arbor is the lead entity responsible for implementing the A2Zero Living Carbon Neutrality Plan, working alongside 60+ partner organizations to achieve community-wide carbon neutrality by 2030. ([[sources/cap/cap-2020|cap-2020]])
-
-<!-- source: cap-2020 -->
-The City of Ann Arbor's mission is to deliver exceptional services that sustain and enhance a vibrant, safe, and diverse community ([[sources/cap/cap-2020|cap-2020]]). The city is the lead authority behind the A2Zero plan, which pursues a just transition to community-wide carbon neutrality by 2030 ([[sources/cap/cap-2020|cap-2020]]).
+The City of Ann Arbor is the lead governmental body responsible for implementing the A2Zero Living Carbon Neutrality Plan, which targets community-wide carbon neutrality by 2030 ([[sources/cap/cap-2020|cap-2020]]). The City coordinates with 60+ partner organizations to work with community members and stakeholders toward this goal ([[sources/cap/cap-2020|cap-2020]]). The Ann Arbor City Council unanimously declared a climate emergency, directing the City to immediately begin crafting an aggressive and living strategy to achieve carbon neutrality ([[sources/cap/cap-2020|cap-2020]]).

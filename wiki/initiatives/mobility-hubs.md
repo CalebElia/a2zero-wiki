@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-23'
+last-updated: '2026-06-24'
 launched: null
 locations: []
 milestones: []
@@ -17,9 +17,9 @@ tags:
 - multimodal
 - transit
 - ev-charging
-- e-scooter
-title: Mobility Hubs
+- micromobility
+title: Mobility Hubs Program
 type: initiative
 ---
 
-The plan proposes creating mobility hubs dispersed throughout the city that serve as home-bases for multiple transit options including e-bikes, e-scooters, zip cars, bus stops, EV chargers, autonomous delivery vehicles, and carpools ([[sources/cap/cap-2020|cap-2020]]). These hubs are intended to integrate multiple modes of transportation in a single accessible location ([[sources/cap/cap-2020|cap-2020]]).
+The A2Zero plan proposes creating "mobility hubs" dispersed throughout the city that would serve as home-bases for multiple transit options including e-bikes, e-scooters, zip cars, bus stops, EV chargers, autonomous delivery vehicles, and carpools ([[sources/cap/cap-2020|cap-2020]]). This concept is intended to integrate multiple sustainable transportation modes at single accessible locations to reduce reliance on single-occupancy vehicles ([[sources/cap/cap-2020|cap-2020]]).

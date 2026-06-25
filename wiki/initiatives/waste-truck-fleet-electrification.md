@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-23'
+last-updated: '2026-06-24'
 launched: null
 locations: []
 milestones: []
@@ -14,11 +14,12 @@ source-first-seen: '[[sources/cap/cap-2020]]'
 status: planned
 tags:
 - fleet-electrification
-- waste
+- waste-trucks
 - ev
-- municipal-operations
+- municipal-fleet
+- emissions-reduction
 title: Waste Truck Fleet Electrification
 type: initiative
 ---
 
-The A2Zero plan identifies electrification of the waste truck fleet as a resource reduction action, connecting waste operations to the broader building and fleet electrification strategy ([[sources/cap/cap-2020|cap-2020]]).
+The A2Zero Living Carbon Neutrality Plan identifies electrification of the waste truck fleet as an idea considered under the resource reduction topic ([[sources/cap/cap-2020|cap-2020]]). This initiative connects the materials and waste strategy with the broader building and fleet electrification strategy, targeting direct emissions from municipal solid waste collection operations ([[sources/cap/cap-2020|cap-2020]]).

@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-23'
+last-updated: '2026-06-24'
 launched: null
 locations: []
 milestones: []
@@ -12,13 +12,13 @@ related-strategies:
 source-first-seen: '[[sources/cap/cap-2020]]'
 status: planned
 tags:
-- biking
+- bike-repair
 - active-transportation
 - volunteer
-- bike-repair
 - community
-title: Common Cycle Expansion
+- cycling
+title: Common Cycle Volunteer Bike Repair Clinic Expansion
 type: initiative
 ---
 
-The plan proposes expanding services like Common Cycle, a volunteer-based bike repair clinic, as part of active transportation support ([[sources/cap/cap-2020|cap-2020]]). Encouraging bike banks and bike sharing are identified as complementary actions ([[sources/cap/cap-2020|cap-2020]]).
+The A2Zero plan proposes expanding services like "Common Cycle," described as a volunteer-based bike repair clinic, as part of the broader active transportation strategy ([[sources/cap/cap-2020|cap-2020]]). The plan also encourages bike banks and bike-sharing programs to complement infrastructure improvements ([[sources/cap/cap-2020|cap-2020]]).

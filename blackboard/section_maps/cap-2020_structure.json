@@ -1,0 +1,1043 @@
+{
+  "document_uuid": "cap-2020",
+  "total_lines": 4284,
+  "ldp_version": "1.0",
+  "sections": [
+    {
+      "id": "welcome-letter",
+      "title": "WELCOME LETTER",
+      "depth": 1,
+      "line_start": 21,
+      "line_end": 40
+    },
+    {
+      "id": "executive-summary",
+      "title": "EXECUTIVE SUMMARY",
+      "depth": 1,
+      "line_start": 41,
+      "line_end": 98
+    },
+    {
+      "id": "executive-summary",
+      "title": "Executive Summary",
+      "depth": 1,
+      "line_start": 99,
+      "line_end": 196
+    },
+    {
+      "id": "introduction",
+      "title": "Introduction",
+      "depth": 1,
+      "line_start": 197,
+      "line_end": 300
+    },
+    {
+      "id": "a²zero-values",
+      "title": "A²ZERO Values",
+      "depth": 2,
+      "line_start": 246,
+      "line_end": 254
+    },
+    {
+      "id": "a²zero-mission",
+      "title": "A²ZERO Mission",
+      "depth": 2,
+      "line_start": 255,
+      "line_end": 286
+    },
+    {
+      "id": "a²zero-strategy",
+      "title": "A²ZERO Strategy",
+      "depth": 2,
+      "line_start": 287,
+      "line_end": 300
+    },
+    {
+      "id": "a²zero-planning-process",
+      "title": "A²ZERO Planning Process",
+      "depth": 1,
+      "line_start": 301,
+      "line_end": 392
+    },
+    {
+      "id": "a²zero-five-pillars-of-planning",
+      "title": "A²ZERO Five Pillars of Planning",
+      "depth": 2,
+      "line_start": 326,
+      "line_end": 392
+    },
+    {
+      "id": "public-engagement",
+      "title": "Public Engagement",
+      "depth": 3,
+      "line_start": 336,
+      "line_end": 344
+    },
+    {
+      "id": "technical-advisory-committees",
+      "title": "Technical Advisory Committees",
+      "depth": 3,
+      "line_start": 345,
+      "line_end": 348
+    },
+    {
+      "id": "partner-organizations",
+      "title": "Partner Organizations",
+      "depth": 3,
+      "line_start": 349,
+      "line_end": 356
+    },
+    {
+      "id": "staff-expertise",
+      "title": "Staff Expertise",
+      "depth": 3,
+      "line_start": 357,
+      "line_end": 362
+    },
+    {
+      "id": "other",
+      "title": "Other",
+      "depth": 3,
+      "line_start": 363,
+      "line_end": 392
+    },
+    {
+      "id": "the-living-carbon-neutrality-strategy",
+      "title": "The Living Carbon Neutrality Strategy",
+      "depth": 1,
+      "line_start": 393,
+      "line_end": 3758
+    },
+    {
+      "id": "strategy-1-power-our-electrical-grid-with-100-renewable-energy",
+      "title": "Strategy 1: Power Our Electrical Grid with 100% Renewable Energy",
+      "depth": 2,
+      "line_start": 407,
+      "line_end": 744
+    },
+    {
+      "id": "implement-community-choice-aggregation",
+      "title": "Implement Community Choice Aggregation",
+      "depth": 3,
+      "line_start": 418,
+      "line_end": 509
+    },
+    {
+      "id": "support-onsite-renewable-energy-generation-with-battery-storage-bulk-buys",
+      "title": "Support Onsite Renewable Energy Generation with Battery Storage (Bulk Buys)",
+      "depth": 3,
+      "line_start": 510,
+      "line_end": 592
+    },
+    {
+      "id": "develop-community-solar-program",
+      "title": "Develop Community Solar Program",
+      "depth": 3,
+      "line_start": 593,
+      "line_end": 667
+    },
+    {
+      "id": "launch-landfill-solar-project",
+      "title": "Launch Landfill Solar Project",
+      "depth": 3,
+      "line_start": 668,
+      "line_end": 744
+    },
+    {
+      "id": "strategy-2-switch-our-appliances-and-vehicles-from-gasoline-diesel-propane-coal-and-natural-gas-to-electric",
+      "title": "Strategy 2: Switch our Appliances and Vehicles from Gasoline, Diesel, Propane, Coal, and Natural Gas to Electric",
+      "depth": 2,
+      "line_start": 745,
+      "line_end": 1241
+    },
+    {
+      "id": "promote-home-business-electrification",
+      "title": "Promote Home & Business Electrification",
+      "depth": 3,
+      "line_start": 757,
+      "line_end": 850
+    },
+    {
+      "id": "electrify-buses",
+      "title": "Electrify Buses",
+      "depth": 3,
+      "line_start": 851,
+      "line_end": 938
+    },
+    {
+      "id": "support-community-electric-vehicle-and-solar-bulk-buys",
+      "title": "Support Community Electric Vehicle and Solar Bulk Buys",
+      "depth": 3,
+      "line_start": 939,
+      "line_end": 1039
+    },
+    {
+      "id": "electrify-city-fleet",
+      "title": "Electrify City Fleet",
+      "depth": 3,
+      "line_start": 1040,
+      "line_end": 1115
+    },
+    {
+      "id": "electrify-private-fleets",
+      "title": "Electrify Private Fleets",
+      "depth": 3,
+      "line_start": 1116,
+      "line_end": 1179
+    },
+    {
+      "id": "electrify-private-fleets",
+      "title": "Electrify Private Fleets",
+      "depth": 3,
+      "line_start": 1180,
+      "line_end": 1182
+    },
+    {
+      "id": "expand-electric-vehicle-charging-infrastructure",
+      "title": "Expand Electric Vehicle Charging Infrastructure",
+      "depth": 3,
+      "line_start": 1183,
+      "line_end": 1241
+    },
+    {
+      "id": "strategy-3-significantly-improve-the-energy-efficiency-in-our-homes-businesses-schools-places-of-worship-recreational-sites-and-goverment-facilities",
+      "title": "Strategy 3: Significantly Improve the Energy Efficiency in our Homes, Businesses, Schools, Places of Worship, Recreational Sites and Goverment Facilities",
+      "depth": 2,
+      "line_start": 1242,
+      "line_end": 2039
+    },
+    {
+      "id": "transition-to-more-energy-efficient-homes-and-businesses",
+      "title": "Transition to More Energy Efficient Homes and Businesses",
+      "depth": 3,
+      "line_start": 1260,
+      "line_end": 1331
+    },
+    {
+      "id": "update-building-codes",
+      "title": "Update Building Codes",
+      "depth": 3,
+      "line_start": 1332,
+      "line_end": 1405
+    },
+    {
+      "id": "power-street-lighting-and-traffic-signals-with-led",
+      "title": "Power Street Lighting and Traffic Signals with LED",
+      "depth": 3,
+      "line_start": 1406,
+      "line_end": 1490
+    },
+    {
+      "id": "benchmark-and-disclose-energy-usage",
+      "title": "Benchmark and Disclose Energy Usage",
+      "depth": 3,
+      "line_start": 1491,
+      "line_end": 1565
+    },
+    {
+      "id": "establish-loan-loss-reserve",
+      "title": "Establish Loan Loss Reserve",
+      "depth": 3,
+      "line_start": 1566,
+      "line_end": 1627
+    },
+    {
+      "id": "develop-energy-concierge-and-community-engagement-program",
+      "title": "Develop Energy Concierge and Community Engagement Program",
+      "depth": 3,
+      "line_start": 1628,
+      "line_end": 1681
+    },
+    {
+      "id": "develop-energy-concierge-and-community-engagement-program",
+      "title": "Develop Energy Concierge and Community Engagement Program",
+      "depth": 3,
+      "line_start": 1682,
+      "line_end": 1683
+    },
+    {
+      "id": "transition-affordable-housing-sites-to-net-zero-energy",
+      "title": "Transition Affordable Housing Sites to Net Zero Energy",
+      "depth": 3,
+      "line_start": 1684,
+      "line_end": 1765
+    },
+    {
+      "id": "promote-green-rental-housing-program",
+      "title": "Promote Green Rental Housing Program",
+      "depth": 3,
+      "line_start": 1766,
+      "line_end": 1833
+    },
+    {
+      "id": "launch-green-business-challenge",
+      "title": "Launch Green Business Challenge",
+      "depth": 3,
+      "line_start": 1834,
+      "line_end": 1899
+    },
+    {
+      "id": "support-aging-in-place-efficiently",
+      "title": "Support Aging in Place Efficiently",
+      "depth": 3,
+      "line_start": 1900,
+      "line_end": 1970
+    },
+    {
+      "id": "support-aging-in-place-efficiently",
+      "title": "Support Aging in Place Efficiently",
+      "depth": 3,
+      "line_start": 1971,
+      "line_end": 1972
+    },
+    {
+      "id": "expand-weatherization-program",
+      "title": "Expand Weatherization Program",
+      "depth": 3,
+      "line_start": 1973,
+      "line_end": 2039
+    },
+    {
+      "id": "strategy-4-reduce-the-miles-we-travel-in-our-vehicles-by-at-least-50",
+      "title": "Strategy 4: Reduce the Miles we Travel in our Vehicles by at least 50%",
+      "depth": 2,
+      "line_start": 2040,
+      "line_end": 2637
+    },
+    {
+      "id": "implement-non-motorized-transportation-plan",
+      "title": "Implement Non-Motorized Transportation Plan",
+      "depth": 3,
+      "line_start": 2054,
+      "line_end": 2140
+    },
+    {
+      "id": "expand-and-improve-local-transit",
+      "title": "Expand and Improve Local Transit",
+      "depth": 3,
+      "line_start": 2141,
+      "line_end": 2236
+    },
+    {
+      "id": "assumptions",
+      "title": "Assumptions",
+      "depth": 4,
+      "line_start": 2225,
+      "line_end": 2236
+    },
+    {
+      "id": "expand-and-improve-regional-transit",
+      "title": "Expand and Improve Regional Transit",
+      "depth": 3,
+      "line_start": 2237,
+      "line_end": 2320
+    },
+    {
+      "id": "vision-for-expanding-and-improving-regional-transit",
+      "title": "Vision for Expanding and Improving Regional Transit",
+      "depth": 4,
+      "line_start": 2241,
+      "line_end": 2244
+    },
+    {
+      "id": "party-responsible-for-implementation",
+      "title": "Party Responsible for Implementation",
+      "depth": 4,
+      "line_start": 2245,
+      "line_end": 2248
+    },
+    {
+      "id": "collaborators-project-co-designers",
+      "title": "Collaborators / Project Co-Designers",
+      "depth": 4,
+      "line_start": 2249,
+      "line_end": 2262
+    },
+    {
+      "id": "assumptions",
+      "title": "Assumptions",
+      "depth": 4,
+      "line_start": 2263,
+      "line_end": 2271
+    },
+    {
+      "id": "target-demographic",
+      "title": "Target Demographic",
+      "depth": 4,
+      "line_start": 2272,
+      "line_end": 2275
+    },
+    {
+      "id": "timeline-and-initial-actions",
+      "title": "Timeline and Initial Actions",
+      "depth": 4,
+      "line_start": 2276,
+      "line_end": 2281
+    },
+    {
+      "id": "equity-impacts",
+      "title": "Equity Impacts",
+      "depth": 4,
+      "line_start": 2282,
+      "line_end": 2285
+    },
+    {
+      "id": "indicators-of-success-goals",
+      "title": "Indicators of Success / Goals",
+      "depth": 4,
+      "line_start": 2286,
+      "line_end": 2320
+    },
+    {
+      "id": "increase-number-of-park-and-rides-and-ensure-seamless-connection-to-transit",
+      "title": "Increase Number of Park and Rides and Ensure Seamless Connection to Transit",
+      "depth": 3,
+      "line_start": 2321,
+      "line_end": 2393
+    },
+    {
+      "id": "vision-for-increasing-park-and-rides-with-seamless-connection-to-transit",
+      "title": "Vision for Increasing Park and Rides with Seamless Connection to Transit",
+      "depth": 4,
+      "line_start": 2325,
+      "line_end": 2328
+    },
+    {
+      "id": "party-responsible-for-implementation",
+      "title": "Party Responsible for Implementation",
+      "depth": 4,
+      "line_start": 2329,
+      "line_end": 2332
+    },
+    {
+      "id": "collaborators-project-co-designers",
+      "title": "Collaborators / Project Co-Designers",
+      "depth": 4,
+      "line_start": 2333,
+      "line_end": 2340
+    },
+    {
+      "id": "assumptions",
+      "title": "Assumptions",
+      "depth": 4,
+      "line_start": 2341,
+      "line_end": 2346
+    },
+    {
+      "id": "target-demographic",
+      "title": "Target Demographic",
+      "depth": 4,
+      "line_start": 2347,
+      "line_end": 2350
+    },
+    {
+      "id": "timeline-and-initial-actions",
+      "title": "Timeline and Initial Actions",
+      "depth": 4,
+      "line_start": 2351,
+      "line_end": 2358
+    },
+    {
+      "id": "equity-impacts",
+      "title": "Equity Impacts",
+      "depth": 4,
+      "line_start": 2359,
+      "line_end": 2361
+    },
+    {
+      "id": "indicators-of-success-goals",
+      "title": "Indicators of Success / Goals",
+      "depth": 4,
+      "line_start": 2362,
+      "line_end": 2393
+    },
+    {
+      "id": "increase-diversity-of-housing",
+      "title": "Increase Diversity of Housing",
+      "depth": 3,
+      "line_start": 2394,
+      "line_end": 2469
+    },
+    {
+      "id": "vision-for-increasing-the-diversity-of-housing",
+      "title": "Vision for Increasing the Diversity of Housing",
+      "depth": 4,
+      "line_start": 2398,
+      "line_end": 2401
+    },
+    {
+      "id": "party-responsible-for-implementation",
+      "title": "Party Responsible for Implementation",
+      "depth": 4,
+      "line_start": 2402,
+      "line_end": 2405
+    },
+    {
+      "id": "collaborators-project-co-designers",
+      "title": "Collaborators / Project Co-Designers",
+      "depth": 4,
+      "line_start": 2406,
+      "line_end": 2411
+    },
+    {
+      "id": "assumptions",
+      "title": "Assumptions",
+      "depth": 4,
+      "line_start": 2412,
+      "line_end": 2418
+    },
+    {
+      "id": "target-demographic",
+      "title": "Target Demographic",
+      "depth": 4,
+      "line_start": 2419,
+      "line_end": 2422
+    },
+    {
+      "id": "timeline-and-initial-actions",
+      "title": "Timeline and Initial Actions",
+      "depth": 4,
+      "line_start": 2423,
+      "line_end": 2430
+    },
+    {
+      "id": "equity-impacts",
+      "title": "Equity Impacts",
+      "depth": 4,
+      "line_start": 2431,
+      "line_end": 2434
+    },
+    {
+      "id": "indicators-of-success-goals",
+      "title": "Indicators of Success / Goals",
+      "depth": 4,
+      "line_start": 2435,
+      "line_end": 2469
+    },
+    {
+      "id": "develop-mixed-use-neighborhoods",
+      "title": "Develop Mixed-Use Neighborhoods",
+      "depth": 3,
+      "line_start": 2470,
+      "line_end": 2539
+    },
+    {
+      "id": "vision-for-developing-mixed-use-neighborhoods",
+      "title": "Vision for Developing Mixed-Use Neighborhoods",
+      "depth": 4,
+      "line_start": 2474,
+      "line_end": 2477
+    },
+    {
+      "id": "party-responsible-for-implementation",
+      "title": "Party Responsible for Implementation",
+      "depth": 4,
+      "line_start": 2478,
+      "line_end": 2481
+    },
+    {
+      "id": "collaborators-project-co-designers",
+      "title": "Collaborators / Project Co-Designers",
+      "depth": 4,
+      "line_start": 2482,
+      "line_end": 2487
+    },
+    {
+      "id": "assumptions",
+      "title": "Assumptions",
+      "depth": 4,
+      "line_start": 2488,
+      "line_end": 2493
+    },
+    {
+      "id": "target-demographic",
+      "title": "Target Demographic",
+      "depth": 4,
+      "line_start": 2494,
+      "line_end": 2497
+    },
+    {
+      "id": "timeline-and-initial-actions",
+      "title": "Timeline and Initial Actions",
+      "depth": 4,
+      "line_start": 2498,
+      "line_end": 2501
+    },
+    {
+      "id": "equity-impacts",
+      "title": "Equity Impacts",
+      "depth": 4,
+      "line_start": 2502,
+      "line_end": 2505
+    },
+    {
+      "id": "indicators-of-success-goals",
+      "title": "Indicators of Success / Goals",
+      "depth": 4,
+      "line_start": 2506,
+      "line_end": 2539
+    },
+    {
+      "id": "develop-mixed-use-neighborhoods",
+      "title": "Develop Mixed-Use Neighborhoods",
+      "depth": 3,
+      "line_start": 2540,
+      "line_end": 2550
+    },
+    {
+      "id": "establish-tiered-parking-rates",
+      "title": "Establish Tiered Parking Rates",
+      "depth": 3,
+      "line_start": 2551,
+      "line_end": 2637
+    },
+    {
+      "id": "strategy-5-change-the-way-we-use-reuse-and-dispose-of-materials",
+      "title": "Strategy 5: Change the Way We Use, Reuse, and Dispose of Materials",
+      "depth": 2,
+      "line_start": 2638,
+      "line_end": 3023
+    },
+    {
+      "id": "expand-composting-program",
+      "title": "Expand Composting Program",
+      "depth": 3,
+      "line_start": 2651,
+      "line_end": 2732
+    },
+    {
+      "id": "expand-commercial-recycling",
+      "title": "Expand Commercial Recycling",
+      "depth": 3,
+      "line_start": 2733,
+      "line_end": 2811
+    },
+    {
+      "id": "require-sustainable-materials-in-new-and-existing-developments",
+      "title": "Require Sustainable Materials in New and Existing Developments",
+      "depth": 3,
+      "line_start": 2812,
+      "line_end": 2865
+    },
+    {
+      "id": "move-toward-a-circular-economy",
+      "title": "Move Toward a Circular Economy",
+      "depth": 3,
+      "line_start": 2866,
+      "line_end": 2920
+    },
+    {
+      "id": "support-a-plant-rich-diet",
+      "title": "Support a Plant Rich Diet",
+      "depth": 3,
+      "line_start": 2921,
+      "line_end": 2974
+    },
+    {
+      "id": "enhance-refrigerant-recycling-and-reuse-program",
+      "title": "Enhance Refrigerant Recycling and Reuse Program",
+      "depth": 3,
+      "line_start": 2975,
+      "line_end": 3013
+    },
+    {
+      "id": "enhance-refrigerant-recycling-and-reuse-program",
+      "title": "Enhance Refrigerant Recycling and Reuse Program",
+      "depth": 3,
+      "line_start": 3014,
+      "line_end": 3023
+    },
+    {
+      "id": "strategy-6-enhance-the-resilience-of-our-people-and-our-place",
+      "title": "Strategy 6: Enhance the Resilience of Our People and Our Place",
+      "depth": 2,
+      "line_start": 3024,
+      "line_end": 3471
+    },
+    {
+      "id": "invest-in-resilience-hubs",
+      "title": "Invest in Resilience Hubs",
+      "depth": 3,
+      "line_start": 3037,
+      "line_end": 3138
+    },
+    {
+      "id": "foster-neighborhood-and-youth-ambassador-programs",
+      "title": "Foster Neighborhood and Youth Ambassador Programs",
+      "depth": 3,
+      "line_start": 3139,
+      "line_end": 3200
+    },
+    {
+      "id": "preserve-and-enhance-the-local-tree-canopy",
+      "title": "Preserve and Enhance the Local Tree Canopy",
+      "depth": 3,
+      "line_start": 3201,
+      "line_end": 3246
+    },
+    {
+      "id": "preserve-and-enhance-the-local-tree-canopy",
+      "title": "Preserve and Enhance the Local Tree Canopy",
+      "depth": 3,
+      "line_start": 3247,
+      "line_end": 3278
+    },
+    {
+      "id": "conduct-asset-and-needs-mapping-of-neighborhoods",
+      "title": "Conduct Asset and Needs Mapping of Neighborhoods",
+      "depth": 3,
+      "line_start": 3279,
+      "line_end": 3341
+    },
+    {
+      "id": "assist-in-assembling-and-distributing-emergency-preparedness-kits",
+      "title": "Assist in Assembling and Distributing Emergency Preparedness Kits",
+      "depth": 3,
+      "line_start": 3342,
+      "line_end": 3409
+    },
+    {
+      "id": "implement-sensors-to-monitor-and-manage-heat-air-quality-waterways-and-flooding",
+      "title": "Implement Sensors to Monitor and Manage Heat, Air Quality, Waterways, and Flooding",
+      "depth": 3,
+      "line_start": 3410,
+      "line_end": 3471
+    },
+    {
+      "id": "other-actions",
+      "title": "Other Actions",
+      "depth": 2,
+      "line_start": 3472,
+      "line_end": 3758
+    },
+    {
+      "id": "advance-equity-programs",
+      "title": "Advance Equity Programs",
+      "depth": 3,
+      "line_start": 3483,
+      "line_end": 3551
+    },
+    {
+      "id": "promote-sustaining-ann-arbor-together-grant-program",
+      "title": "Promote Sustaining Ann Arbor Together Grant Program",
+      "depth": 3,
+      "line_start": 3552,
+      "line_end": 3604
+    },
+    {
+      "id": "establish-internal-carbon-price",
+      "title": "Establish Internal Carbon Price",
+      "depth": 3,
+      "line_start": 3605,
+      "line_end": 3676
+    },
+    {
+      "id": "offset-greenhouse-gas-emissions",
+      "title": "Offset Greenhouse Gas Emissions",
+      "depth": 3,
+      "line_start": 3677,
+      "line_end": 3758
+    },
+    {
+      "id": "closing",
+      "title": "Closing",
+      "depth": 1,
+      "line_start": 3759,
+      "line_end": 3772
+    },
+    {
+      "id": "appendix-1-list-of-public-events",
+      "title": "Appendix 1 – List of Public Events",
+      "depth": 1,
+      "line_start": 3773,
+      "line_end": 3859
+    },
+    {
+      "id": "postponed-or-delayed-events",
+      "title": "Postponed or Delayed Events",
+      "depth": 2,
+      "line_start": 3846,
+      "line_end": 3859
+    },
+    {
+      "id": "appendix-2-list-of-technical-advisory-committee-meetings",
+      "title": "Appendix 2 – List of Technical Advisory Committee Meetings",
+      "depth": 1,
+      "line_start": 3860,
+      "line_end": 3876
+    },
+    {
+      "id": "appendix-3-list-of-a²zero-partner-events",
+      "title": "Appendix 3 – List of A²ZERO Partner Events",
+      "depth": 1,
+      "line_start": 3877,
+      "line_end": 3882
+    },
+    {
+      "id": "appendix-4-council-resolution-in-support-of-creating-a-plan-to-achieve-ann-arbor-community-wide-climate-neutrality-by-2030",
+      "title": "Appendix 4 – Council Resolution in Support of Creating a Plan to Achieve Ann Arbor Community-Wide Climate Neutrality by 2030",
+      "depth": 1,
+      "line_start": 3883,
+      "line_end": 3924
+    },
+    {
+      "id": "appendix-5---list-of-ideas-considered-for-a²zero",
+      "title": "Appendix 5 - List of Ideas Considered for A²ZERO",
+      "depth": 1,
+      "line_start": 3925,
+      "line_end": 4284
+    },
+    {
+      "id": "topic-energy",
+      "title": "TOPIC: ENERGY",
+      "depth": 2,
+      "line_start": 3929,
+      "line_end": 3982
+    },
+    {
+      "id": "energy-production",
+      "title": "Energy Production",
+      "depth": 3,
+      "line_start": 3931,
+      "line_end": 3942
+    },
+    {
+      "id": "energy-efficiency",
+      "title": "Energy Efficiency",
+      "depth": 3,
+      "line_start": 3943,
+      "line_end": 3953
+    },
+    {
+      "id": "electrification",
+      "title": "Electrification",
+      "depth": 3,
+      "line_start": 3954,
+      "line_end": 3958
+    },
+    {
+      "id": "financing",
+      "title": "Financing",
+      "depth": 3,
+      "line_start": 3959,
+      "line_end": 3964
+    },
+    {
+      "id": "sequestration",
+      "title": "Sequestration",
+      "depth": 3,
+      "line_start": 3965,
+      "line_end": 3968
+    },
+    {
+      "id": "offsets",
+      "title": "Offsets",
+      "depth": 3,
+      "line_start": 3969,
+      "line_end": 3972
+    },
+    {
+      "id": "education-outreach-and-marketing",
+      "title": "Education, Outreach, and Marketing",
+      "depth": 3,
+      "line_start": 3973,
+      "line_end": 3982
+    },
+    {
+      "id": "topic-mobility",
+      "title": "TOPIC: MOBILITY",
+      "depth": 2,
+      "line_start": 3983,
+      "line_end": 4072
+    },
+    {
+      "id": "motor-vehicle-electrification",
+      "title": "Motor Vehicle Electrification",
+      "depth": 3,
+      "line_start": 3985,
+      "line_end": 4002
+    },
+    {
+      "id": "active-transportation",
+      "title": "Active Transportation",
+      "depth": 3,
+      "line_start": 4003,
+      "line_end": 4017
+    },
+    {
+      "id": "transit-and-paratransit",
+      "title": "Transit and Paratransit",
+      "depth": 3,
+      "line_start": 4018,
+      "line_end": 4036
+    },
+    {
+      "id": "policies-funding-public-outreach-and-education",
+      "title": "Policies, Funding, Public Outreach, and Education",
+      "depth": 3,
+      "line_start": 4037,
+      "line_end": 4053
+    },
+    {
+      "id": "transportation-strategies",
+      "title": "Transportation Strategies",
+      "depth": 3,
+      "line_start": 4054,
+      "line_end": 4062
+    },
+    {
+      "id": "process-related",
+      "title": "Process-Related",
+      "depth": 3,
+      "line_start": 4063,
+      "line_end": 4072
+    },
+    {
+      "id": "topic-resource-reduction",
+      "title": "TOPIC: RESOURCE REDUCTION",
+      "depth": 2,
+      "line_start": 4073,
+      "line_end": 4192
+    },
+    {
+      "id": "waste-reduction",
+      "title": "Waste Reduction",
+      "depth": 3,
+      "line_start": 4075,
+      "line_end": 4095
+    },
+    {
+      "id": "recycling",
+      "title": "Recycling",
+      "depth": 3,
+      "line_start": 4096,
+      "line_end": 4106
+    },
+    {
+      "id": "organics",
+      "title": "Organics",
+      "depth": 3,
+      "line_start": 4107,
+      "line_end": 4122
+    },
+    {
+      "id": "plant-based-diets",
+      "title": "Plant Based Diets",
+      "depth": 3,
+      "line_start": 4123,
+      "line_end": 4129
+    },
+    {
+      "id": "local-food-production",
+      "title": "Local Food Production",
+      "depth": 3,
+      "line_start": 4130,
+      "line_end": 4141
+    },
+    {
+      "id": "circular-economy",
+      "title": "Circular Economy",
+      "depth": 3,
+      "line_start": 4142,
+      "line_end": 4149
+    },
+    {
+      "id": "sustainable-purchasing",
+      "title": "Sustainable Purchasing",
+      "depth": 3,
+      "line_start": 4150,
+      "line_end": 4163
+    },
+    {
+      "id": "construction-and-development",
+      "title": "Construction and Development",
+      "depth": 3,
+      "line_start": 4164,
+      "line_end": 4167
+    },
+    {
+      "id": "community-engagement",
+      "title": "Community Engagement",
+      "depth": 3,
+      "line_start": 4168,
+      "line_end": 4176
+    },
+    {
+      "id": "communityeducation",
+      "title": "Community/Education",
+      "depth": 3,
+      "line_start": 4177,
+      "line_end": 4192
+    },
+    {
+      "id": "topic-resource-reduction",
+      "title": "TOPIC: RESOURCE REDUCTION",
+      "depth": 2,
+      "line_start": 4193,
+      "line_end": 4284
+    },
+    {
+      "id": "preparation",
+      "title": "Preparation",
+      "depth": 3,
+      "line_start": 4195,
+      "line_end": 4212
+    },
+    {
+      "id": "community-cohesion",
+      "title": "Community cohesion",
+      "depth": 3,
+      "line_start": 4213,
+      "line_end": 4225
+    },
+    {
+      "id": "response",
+      "title": "Response",
+      "depth": 3,
+      "line_start": 4226,
+      "line_end": 4230
+    },
+    {
+      "id": "urban-planning",
+      "title": "Urban Planning",
+      "depth": 3,
+      "line_start": 4231,
+      "line_end": 4244
+    },
+    {
+      "id": "energy",
+      "title": "Energy",
+      "depth": 3,
+      "line_start": 4245,
+      "line_end": 4253
+    },
+    {
+      "id": "green-spaces",
+      "title": "Green Spaces",
+      "depth": 3,
+      "line_start": 4254,
+      "line_end": 4261
+    },
+    {
+      "id": "water",
+      "title": "Water",
+      "depth": 3,
+      "line_start": 4262,
+      "line_end": 4270
+    },
+    {
+      "id": "transportation",
+      "title": "Transportation",
+      "depth": 3,
+      "line_start": 4271,
+      "line_end": 4278
+    },
+    {
+      "id": "residentialcommercial-support",
+      "title": "Residential/Commercial Support",
+      "depth": 3,
+      "line_start": 4279,
+      "line_end": 4284
+    }
+  ]
+}

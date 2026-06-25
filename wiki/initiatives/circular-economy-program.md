@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-23'
+last-updated: '2026-06-24'
 launched: null
 locations: []
 milestones: []
@@ -13,11 +13,12 @@ source-first-seen: '[[sources/cap/cap-2020]]'
 status: planned
 tags:
 - circular-economy
-- reuse
 - repair
+- reuse
 - sharing-economy
-title: Circular Economy Program
+- waste-reduction
+title: Circular Economy and Repair Program
 type: initiative
 ---
 
-The A2Zero plan identifies a suite of circular economy actions including reskilling and skill-sharing opportunities, repair centers for bikes and appliances, toy and tool libraries, support for thrift stores and reuse centers, and creation of a time bank or local currency ([[sources/cap/cap-2020|cap-2020]]).
+The A2Zero plan envisions a suite of circular economy initiatives including reskilling and skill-sharing opportunities, repair centers for bikes and appliances, toy and tool libraries with shared play areas, and support for thrift stores, reuse centers, and flea markets ([[sources/cap/cap-2020|cap-2020]]). Creation of a time bank or local currency is also identified as a mechanism to support circular economic activity in Ann Arbor ([[sources/cap/cap-2020|cap-2020]]). These ideas are framed as part of the broader resource reduction strategy under the A2Zero Living Carbon Neutrality Plan ([[sources/cap/cap-2020|cap-2020]]).
