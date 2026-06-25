@@ -334,7 +334,7 @@ def synthesize_source(
         for strat_file in sorted(strategies_dir.glob("*.md")):
             content = strat_file.read_text(encoding="utf-8")
             body = re.sub(r"^---\n.*?\n---\n", "", content, flags=re.DOTALL).strip()
-            if body and not body.startswith("<!--"):
+            if re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL).strip():
                 existing_strategy_content[f"strategies/{strat_file.stem}"] = body
 
     integration_block = ""
@@ -495,7 +495,7 @@ def _write_synthesis(
             continue
         existing = strat_path.read_text(encoding="utf-8")
         existing_body = re.sub(r"^---\n.*?\n---\n", "", existing, flags=re.DOTALL).strip()
-        is_stub_only = not existing_body or existing_body.startswith("<!--")
+        is_stub_only = not bool(re.sub(r"<!--.*?-->", "", existing_body, flags=re.DOTALL).strip())
         if is_stub_only:
             append_to_wiki_page(str(strat_path), sb["body"], source_uuid=source_uuid)
             print(f"[holistic] Strategy body written: {strat_path.name}")

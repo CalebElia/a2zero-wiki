@@ -412,7 +412,7 @@ def extract_wiki_pages_from_chunk(
             if page_path.exists():
                 existing = page_path.read_text(encoding="utf-8")
                 existing_body = re.sub(r"^---\n.*?\n---\n", "", existing, flags=re.DOTALL).strip()
-                if existing_body and not existing_body.startswith("<!--"):
+                if re.sub(r"<!--.*?-->", "", existing_body, flags=re.DOTALL).strip():
                     # Page has real content from a prior ingest — replace with integrated body
                     _replace_wiki_page_body(str(page_path), spec["body"])
                     written.append(spec)

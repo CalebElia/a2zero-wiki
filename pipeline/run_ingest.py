@@ -108,7 +108,7 @@ def run_silver_ingest(
             try:
                 content = page_path.read_text(encoding="utf-8")
                 body = re.sub(r"^---\n.*?\n---\n", "", content, flags=re.DOTALL).strip()
-                if body and not body.startswith("<!--"):
+                if re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL).strip():
                     existing_pages_block += f"\n[EXISTING: {slug}]\n{body}\n[END EXISTING]\n"
             except (OSError, UnicodeDecodeError):
                 pass
