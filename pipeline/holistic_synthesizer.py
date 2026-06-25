@@ -439,7 +439,7 @@ def synthesize_source(
 
         errors = _validate_synthesis_output(final, source_uuid=source_uuid, wiki_root=wiki_root)
         if not errors:
-            _write_synthesis(final, wiki_root=wiki_root, source_uuid=source_uuid, run_date=run_date)
+            _write_synthesis(final, wiki_root=wiki_root, source_uuid=source_uuid, source_rel_path=source_rel_path, run_date=run_date)
             return final
 
         print(f"[holistic:editor] Validation failed (attempt {attempt + 1}): {errors}")
@@ -464,6 +464,7 @@ def _write_synthesis(
     result: dict,
     wiki_root: str,
     source_uuid: str,
+    source_rel_path: str,
     run_date: str,
 ) -> None:
     """Write validated synthesis to disk. Only called after _validate_synthesis_output passes."""
@@ -516,7 +517,7 @@ def _write_synthesis(
         stub_fm = {
             "type": sp.get("type", "initiative"),
             "title": sp.get("title", ""),
-            "source-first-seen": f"[[sources/{source_uuid}]]",
+            "source-first-seen": f"[[{source_rel_path}]]",
             "last-updated": run_date,
         }
         if sp.get("parent-strategy"):

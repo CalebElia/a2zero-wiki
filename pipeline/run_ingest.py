@@ -1,4 +1,5 @@
 import re
+import shutil
 import yaml
 from datetime import date
 from pathlib import Path
@@ -44,11 +45,25 @@ def run_silver_ingest(
     if run_date is None:
         run_date = date.today().isoformat()
 
-    source_content = Path(source_path).read_text(encoding="utf-8")
+    # ── Step 0: Copy source from prepared/ into wiki/sources/ ────────────────
+    # Source files live in prepared/<type>/<uuid>.md (outside vault) until ingested.
+    # Ingest is the gate: copying the file into wiki/sources/ makes it a vault node.
+    _prepared = Path(source_path)
+    _src_parts = _prepared.parts
+    # Infer destination: replace leading "prepared/" with wiki_root/sources/
+    # e.g. prepared/cap/cap-2020.md → wiki/sources/cap/cap-2020.md
+    if _src_parts[0] == "prepared":
+        _dest = Path(wiki_root) / "sources" / Path(*_src_parts[1:])
+        _dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(_prepared, _dest)
+        vault_source_path = str(_dest)
+    else:
+        # Caller passed a path already inside the vault; use it directly.
+        vault_source_path = source_path
+
+    source_content = Path(vault_source_path).read_text(encoding="utf-8")
     # Wikilink path is vault-relative (strip wiki_root prefix + .md extension).
-    # Handles sources inside the vault (wiki/sources/cap/cap-2020.md → sources/cap/cap-2020)
-    # and legacy paths outside it (sources/cap/cap-2020.md → sources/cap/cap-2020).
-    _src = Path(source_path)
+    _src = Path(vault_source_path)
     try:
         source_rel_path = str(_src.relative_to(wiki_root).with_suffix(""))
     except ValueError:
@@ -244,7 +259,7 @@ if __name__ == "__main__":
 
     # Source-first ingest (CAP, annual reports already in markdown)
     p_silver = sub.add_parser("silver", help="Ingest a pre-built source markdown file")
-    p_silver.add_argument("--source", required=True, help="Path to source .md file (e.g. wiki/sources/cap/cap-2020.md)")
+    p_silver.add_argument("--source", required=True, help="Path to source .md file in prepared/ (e.g. prepared/cap/cap-2020.md). Ingest copies it into wiki/sources/ automatically.")
     p_silver.add_argument("--uuid", required=True)
     p_silver.add_argument("--title", required=True)
     p_silver.add_argument("--quads-path", default="blackboard/quads.jsonl")
@@ -262,7 +277,7 @@ if __name__ == "__main__":
     p_pdf.add_argument("--uuid", required=True)
     p_pdf.add_argument("--year", required=True)
     p_pdf.add_argument("--title", required=True)
-    p_pdf.add_argument("--source-dir", default="wiki/sources/annual-reports")
+    p_pdf.add_argument("--source-dir", default="prepared/annual-reports")
     p_pdf.add_argument("--quads-path", default="blackboard/quads.jsonl")
     p_pdf.add_argument("--wiki-root", default="wiki")
     p_pdf.add_argument("--review-queue", default="review-queue.md")
