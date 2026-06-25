@@ -110,7 +110,7 @@ def run_silver_ingest(
                 body = re.sub(r"^---\n.*?\n---\n", "", content, flags=re.DOTALL).strip()
                 if body and not body.startswith("<!--"):
                     existing_pages_block += f"\n[EXISTING: {slug}]\n{body}\n[END EXISTING]\n"
-            except OSError:
+            except (OSError, UnicodeDecodeError):
                 pass
 
         if existing_pages_block:
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     p_silver.add_argument("--section-maps-dir", default="blackboard/section_maps")
     p_silver.add_argument(
         "--wiki-only", action="store_true", default=False,
-        help="Run only Pass 1 (plan extractor) + Pass 3 (wiki writer); skip quad extraction and review-queue update",
+        help="Run only Pass 1 (holistic synthesizer) + Pass 2 wiki extraction; skip quad extraction and review-queue",
     )
 
     # PDF-first ingest (future use when Bronze→Silver pipeline is complete)
