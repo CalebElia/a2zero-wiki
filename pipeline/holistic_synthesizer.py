@@ -390,7 +390,7 @@ def synthesize_source(
     ]
     critique = _llm_call(
         client, HOLISTIC_EVALUATOR_SYSTEM, eval_content,
-        "evaluator", source_uuid, max_tokens=4096,
+        "evaluator", source_uuid, max_tokens=8192,
     )
 
     if critique is None or not critique.get("proceed_to_edit", True):
