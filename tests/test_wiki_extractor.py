@@ -129,9 +129,9 @@ def test_validate_page_spec_rejects_funding_legacy_name():
 
 
 def test_validate_page_spec_rejects_forbidden_types():
-    """Overview, topic, mechanism, synthesis must never be created by chunked extraction (Pass 2)."""
+    """Overview, strategy, topic, mechanism, synthesis must never be created by Pass 2."""
     from pipeline.wiki_writer import validate_page_spec
-    for forbidden in ("overview", "topic", "synthesis", "mechanism"):
+    for forbidden in ("overview", "strategy", "topic", "synthesis", "mechanism"):
         spec = {**MOCK_PAGES[0], "page_type": forbidden}
         errors = validate_page_spec(spec)
         assert any("forbidden" in e for e in errors), (
@@ -140,11 +140,10 @@ def test_validate_page_spec_rejects_forbidden_types():
 
 
 def test_validate_page_spec_accepts_all_llm_writable_types():
-    """All 10 LLM-writable types pass type validation (commitment removed, strategy added)."""
+    """All Pass 2 LLM-writable types pass type validation (strategy removed — now Pass 1 only)."""
     from pipeline.wiki_writer import validate_page_spec
-    for pt in ("strategy", "initiative", "actor", "funding-event",
-               "technology", "location", "meeting", "framing",
-               "political-event", "contradiction"):
+    for pt in ("initiative", "actor", "funding-event", "technology",
+               "location", "meeting", "framing", "political-event", "contradiction"):
         spec = {
             "page_type": pt,
             "slug": f"test/{pt}-slug",
@@ -156,14 +155,15 @@ def test_validate_page_spec_accepts_all_llm_writable_types():
         assert type_errors == [], f"Unexpected type error for {pt!r}: {type_errors}"
 
 
-def test_validate_page_spec_rejects_commitment_type():
-    """The 'commitment' type is eliminated in V2 — all actions are initiatives."""
+def test_validate_page_spec_rejects_strategy_and_commitment_types():
+    """strategy and commitment are forbidden in Pass 2."""
     from pipeline.wiki_writer import validate_page_spec
-    spec = {**MOCK_PAGES[0], "page_type": "commitment"}
-    errors = validate_page_spec(spec)
-    assert any("page_type" in e for e in errors), (
-        f"Expected invalid page_type error for 'commitment', got: {errors}"
-    )
+    for pt in ("commitment", "strategy"):
+        spec = {**MOCK_PAGES[0], "page_type": pt}
+        errors = validate_page_spec(spec)
+        assert any("page_type" in e or "forbidden" in e for e in errors), (
+            f"Expected error for {pt!r}, got: {errors}"
+        )
 
 
 def test_write_or_append_page_creates_new_file(tmp_path):
@@ -266,50 +266,3 @@ def test_extract_wiki_pages_from_chunk_handles_max_tokens(mock_anthropic_class, 
         run_date="2026-06-22",
     )
     assert pages == []
-
-
-def test_validate_page_spec_rejects_unknown_strategy_slug():
-    """A strategy slug not in the pre-existing set must be rejected."""
-    from pipeline.wiki_writer import validate_page_spec
-    spec = {
-        "page_type": "strategy",
-        "slug": "strategies/strategy-8-invented",
-        "frontmatter": {"type": "strategy"},
-        "body": "This strategy does not exist. ([[sources/cap/cap-2020|cap-2020]])",
-    }
-    allowed = frozenset({"strategies/strategy-1-renewable-grid",
-                         "strategies/strategy-2-electrification"})
-    errors = validate_page_spec(spec, allowed_strategy_slugs=allowed)
-    assert any("strategy" in e and "not a pre-existing" in e for e in errors), (
-        f"Expected whitelist error, got: {errors}"
-    )
-
-
-def test_validate_page_spec_accepts_known_strategy_slug():
-    """A strategy slug in the pre-existing set must be accepted."""
-    from pipeline.wiki_writer import validate_page_spec
-    spec = {
-        "page_type": "strategy",
-        "slug": "strategies/strategy-1-renewable-grid",
-        "frontmatter": {"type": "strategy"},
-        "body": "Strategy 1 focuses on renewable energy. ([[sources/cap/cap-2020|cap-2020]])",
-    }
-    allowed = frozenset({"strategies/strategy-1-renewable-grid",
-                         "strategies/strategy-2-electrification"})
-    errors = validate_page_spec(spec, allowed_strategy_slugs=allowed)
-    type_errors = [e for e in errors if "strategy" in e and "not a pre-existing" in e]
-    assert type_errors == [], f"Unexpected whitelist error: {type_errors}"
-
-
-def test_validate_page_spec_skips_whitelist_when_not_provided():
-    """If allowed_strategy_slugs is None, skip the whitelist check (test mode)."""
-    from pipeline.wiki_writer import validate_page_spec
-    spec = {
-        "page_type": "strategy",
-        "slug": "strategies/strategy-99-unknown",
-        "frontmatter": {"type": "strategy"},
-        "body": "Some strategy content. ([[sources/cap/cap-2020|cap-2020]])",
-    }
-    errors = validate_page_spec(spec, allowed_strategy_slugs=None)
-    type_errors = [e for e in errors if "not a pre-existing" in e]
-    assert type_errors == [], f"Unexpected error with no whitelist: {type_errors}"
