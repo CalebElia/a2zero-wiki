@@ -95,3 +95,36 @@ def test_semantic_lint_calls_llm_for_candidates(tmp_path):
     assert len(proposals) == 1
     assert proposals[0]["type"] == "MERGE_PROPOSED"
     assert proposals[0]["confidence"] == 0.92
+
+
+def test_parse_approved_proposals_finds_checked_merge(tmp_path):
+    from pipeline.lint_wiki import _parse_approved_proposals
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "## Semantic Lint — 2026-06-25\n\n"
+        "### [MERGE_PROPOSED] actors/osi.md + actors/office-of-sustainability.md\n"
+        "- Confidence: 0.91\n"
+        "- Reasoning: Same office.\n"
+        "- Action: [x] APPROVE_MERGE  [ ] APPROVE_TEMPORAL_SUCCESSION  [ ] KEEP_SEPARATE  [ ] DEFER\n",
+        encoding="utf-8",
+    )
+    proposals = _parse_approved_proposals(str(rq))
+    assert len(proposals) == 1
+    assert proposals[0]["approved_action"] == "MERGE"
+    assert proposals[0]["page_a"] == "actors/osi.md"
+
+
+def test_rewrite_inbound_links(tmp_path):
+    from pipeline.lint_wiki import _rewrite_inbound_links
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    (wiki / "actors").mkdir()
+    (wiki / "actors" / "page.md").write_text(
+        "See [[actors/old-slug]] and [[actors/old-slug|Old Name]].\n",
+        encoding="utf-8",
+    )
+    n = _rewrite_inbound_links(str(wiki), "actors/old-slug.md", "actors/new-slug.md")
+    assert n == 2
+    content = (wiki / "actors" / "page.md").read_text()
+    assert "actors/new-slug" in content
+    assert "actors/old-slug" not in content

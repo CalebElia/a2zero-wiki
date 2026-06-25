@@ -209,3 +209,186 @@ def append_semantic_proposals(wiki_root: str, proposals: list[dict]) -> None:
     with rq_path.open("a", encoding="utf-8") as fh:
         fh.write("\n".join(lines))
     print(f"[lint_wiki:semantic] {len(proposals)} proposals written to review-queue.md")
+
+
+APPROVED_MERGE_RE = re.compile(r"\[x\] APPROVE_MERGE", re.IGNORECASE)
+APPROVED_SUCCESSION_RE = re.compile(r"\[x\] APPROVE_TEMPORAL_SUCCESSION", re.IGNORECASE)
+PROPOSAL_HEADER_RE = re.compile(
+    r"### \[(MERGE_PROPOSED|TEMPORAL_SUCCESSION_PROPOSED)\] (.+?) \+ (.+)"
+)
+
+
+def _replace_wiki_page_body(page_path: str, new_body: str) -> None:
+    """Replace the body section of a wiki page, preserving frontmatter intact."""
+    content = Path(page_path).read_text(encoding="utf-8")
+    m = re.match(r"^(---\n.*?\n---\n)", content, re.DOTALL)
+    frontmatter = m.group(1) if m else ""
+    Path(page_path).write_text(frontmatter + "\n" + new_body.strip() + "\n", encoding="utf-8")
+
+
+def _parse_approved_proposals(review_queue_path: str) -> list[dict]:
+    """Parse review-queue.md for checked (approved) proposals."""
+    text = Path(review_queue_path).read_text(encoding="utf-8", errors="replace")
+    proposals = []
+    current = None
+    for line in text.splitlines():
+        m = PROPOSAL_HEADER_RE.match(line.strip())
+        if m:
+            current = {
+                "type": m.group(1),
+                "page_a": m.group(2).strip(),
+                "page_b": m.group(3).strip(),
+            }
+        elif current and APPROVED_MERGE_RE.search(line):
+            proposals.append({**current, "approved_action": "MERGE"})
+            current = None
+        elif current and APPROVED_SUCCESSION_RE.search(line):
+            proposals.append({**current, "approved_action": "TEMPORAL_SUCCESSION"})
+            current = None
+    return proposals
+
+
+def _rewrite_inbound_links(wiki_root: str, old_slug: str, new_slug: str) -> int:
+    """Rewrite all [[old_slug]] wikilinks to [[new_slug]] across the vault. Returns count."""
+    old_bare = old_slug.removesuffix(".md")
+    new_bare = new_slug.removesuffix(".md")
+    pattern = re.compile(r"\[\[" + re.escape(old_bare) + r"(\|[^\]]+)?\]\]")
+    count = 0
+    for md_file in Path(wiki_root).rglob("*.md"):
+        text = md_file.read_text(encoding="utf-8", errors="replace")
+        def _replace(m):
+            alias_part = m.group(1) or ""
+            return f"[[{new_bare}{alias_part}]]"
+        new_text, n = pattern.subn(_replace, text)
+        if n > 0:
+            md_file.write_text(new_text, encoding="utf-8")
+            count += n
+    return count
+
+
+def _append_merge_log(merge_log_path: str, entry: dict) -> None:
+    """Append one JSON entry to registry/merge-log.jsonl."""
+    with open(merge_log_path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+
+def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> None:
+    """Execute approved proposals from review-queue.md."""
+    from pipeline.merge_pages import merge_pages as _merge_pages
+    from pipeline.alias_registry import add_alias
+
+    rq_path = str(Path(wiki_root).parent / "review-queue.md")
+    if not Path(rq_path).exists():
+        print("[lint_wiki:apply] No review-queue.md found.")
+        return
+
+    proposals = _parse_approved_proposals(rq_path)
+    if not proposals:
+        print("[lint_wiki:apply] No approved proposals found.")
+        return
+
+    today = date.today().isoformat()
+    root = Path(wiki_root)
+
+    for p in proposals:
+        page_a_rel = p["page_a"]
+        page_b_rel = p["page_b"]
+        path_a = root / page_a_rel
+        path_b = root / page_b_rel
+
+        if p["approved_action"] == "MERGE":
+            if not path_a.exists() or not path_b.exists():
+                print(f"[lint_wiki:apply] WARNING: page not found for merge: {page_a_rel} + {page_b_rel}")
+                continue
+
+            body_a = re.sub(r"^---\n.*?\n---\n", "", path_a.read_text(encoding="utf-8"), flags=re.DOTALL).strip()
+            body_b = re.sub(r"^---\n.*?\n---\n", "", path_b.read_text(encoding="utf-8"), flags=re.DOTALL).strip()
+            merged = _merge_pages(
+                canonical_slug=page_a_rel.removesuffix(".md"),
+                existing_body=body_a,
+                new_body=body_b,
+                source_uuid="lint-merge",
+            )
+            _replace_wiki_page_body(str(path_a), merged)
+            path_b.unlink()
+
+            n = _rewrite_inbound_links(wiki_root, page_b_rel, page_a_rel)
+            print(f"[lint_wiki:apply] MERGE: {page_b_rel} → {page_a_rel} ({n} links rewritten)")
+
+            slug_b = page_b_rel.removesuffix(".md").split("/")[-1]
+            canonical_full = page_a_rel.removesuffix(".md")
+            entity_type = page_a_rel.split("/")[0].rstrip("s")
+            add_alias(
+                slug=slug_b,
+                canonical=canonical_full,
+                entity_type=entity_type,
+                alias_labels=[path_b.stem.replace("-", " ").title()],
+                relationship="name-variant",
+                aliases_path=aliases_path,
+            )
+            _append_merge_log(merge_log_path, {
+                "date": today,
+                "action": "MERGE",
+                "from": page_b_rel,
+                "into": page_a_rel,
+                "approved-by": "manual",
+            })
+
+        elif p["approved_action"] == "TEMPORAL_SUCCESSION":
+            if not path_b.exists():
+                print(f"[lint_wiki:apply] WARNING: predecessor page not found: {page_b_rel}")
+                continue
+
+            content = path_b.read_text(encoding="utf-8")
+            m = re.match(r"^(---\n)(.*?)(\n---\n)(.*)", content, re.DOTALL)
+            if m:
+                fm_text = m.group(2)
+                canonical_link = page_a_rel.removesuffix(".md")
+                fm_text += f"\nsuperseded-by: '[[{canonical_link}]]'"
+                fm_text += f"\nsuperseded-date: '{today}'"
+                path_b.write_text(m.group(1) + fm_text + m.group(3) + m.group(4), encoding="utf-8")
+
+            slug_b = page_b_rel.removesuffix(".md").split("/")[-1]
+            entity_type = page_a_rel.split("/")[0].rstrip("s")
+            add_alias(
+                slug=slug_b,
+                canonical=page_a_rel.removesuffix(".md"),
+                entity_type=entity_type,
+                alias_labels=[path_b.stem.replace("-", " ").title()],
+                relationship="predecessor",
+                aliases_path=aliases_path,
+                as_of=today,
+            )
+            _append_merge_log(merge_log_path, {
+                "date": today,
+                "action": "TEMPORAL_SUCCESSION",
+                "predecessor": page_b_rel,
+                "successor": page_a_rel,
+                "approved-by": "manual",
+            })
+            print(f"[lint_wiki:apply] TEMPORAL_SUCCESSION: {page_b_rel} → {page_a_rel}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="A2Zero wiki linter")
+    parser.add_argument("--wiki-root", default="wiki")
+    parser.add_argument("--structural", action="store_true")
+    parser.add_argument("--semantic", action="store_true")
+    parser.add_argument("--apply", action="store_true")
+    parser.add_argument("--aliases-path", default="registry/entity_aliases.json")
+    parser.add_argument("--merge-log", default="registry/merge-log.jsonl")
+    args = parser.parse_args()
+
+    if args.structural:
+        findings = structural_lint(args.wiki_root)
+        append_lint_report(args.wiki_root, findings, "structural")
+
+    if args.semantic:
+        proposals = semantic_lint(args.wiki_root)
+        append_semantic_proposals(args.wiki_root, proposals)
+
+    if args.apply:
+        apply_proposals(args.wiki_root, args.aliases_path, args.merge_log)
+
+    if not any([args.structural, args.semantic, args.apply]):
+        print("Specify at least one mode: --structural, --semantic, --apply")
