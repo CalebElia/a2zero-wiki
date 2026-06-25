@@ -25,7 +25,7 @@ def save_aliases(aliases: dict, path: str = DEFAULT_ALIASES_PATH) -> None:
 def resolve_slug(slug: str, aliases: dict) -> str | None:
     """Return canonical vault path if slug is a known alias key, else None."""
     entry = aliases.get(slug)
-    if entry:
+    if entry is not None:
         return entry["canonical"]
     return None
 

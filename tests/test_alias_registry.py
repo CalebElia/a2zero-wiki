@@ -31,7 +31,7 @@ SAMPLE_ALIASES = {
 
 def test_load_aliases(tmp_path):
     p = tmp_path / "aliases.json"
-    p.write_text(json.dumps(SAMPLE_ALIASES))
+    p.write_text(json.dumps(SAMPLE_ALIASES), encoding="utf-8")
     result = load_aliases(str(p))
     assert "osi" in result
     assert result["osi"]["canonical"] == "actors/osi"
