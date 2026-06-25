@@ -63,3 +63,35 @@ def test_structural_skips_exempt_pages(tmp_path):
     findings = structural_lint(str(wiki))
     orphans = [f for f in findings if f["type"] == "ORPHAN"]
     assert not any(f["page"].endswith("index.md") for f in orphans)
+
+
+def test_semantic_lint_calls_llm_for_candidates(tmp_path):
+    """Stage 2 LLM verdict is called when Stage 1 fuzzy match finds candidates."""
+    import json
+    from unittest.mock import patch, MagicMock
+
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    actors = wiki / "actors"
+    actors.mkdir()
+
+    # Two pages with very similar titles — should trigger fuzzy candidate
+    (actors / "osi.md").write_text(
+        "---\ntype: actor\ntitle: Office of Sustainability and Innovations\n---\nLeads A2Zero.\n"
+    )
+    (actors / "office-of-sustainability.md").write_text(
+        "---\ntype: actor\ntitle: Office of Sustainability\n---\nCity sustainability office.\n"
+    )
+
+    verdict = {"relationship": "same", "confidence": 0.92, "reasoning": "Same office."}
+    mock_response = MagicMock()
+    mock_response.content = [MagicMock(text=json.dumps(verdict))]
+
+    with patch("anthropic.Anthropic") as MockClient:
+        MockClient.return_value.messages.create.return_value = mock_response
+        from pipeline.lint_wiki import semantic_lint
+        proposals = semantic_lint(str(wiki))
+
+    assert len(proposals) == 1
+    assert proposals[0]["type"] == "MERGE_PROPOSED"
+    assert proposals[0]["confidence"] == 0.92
