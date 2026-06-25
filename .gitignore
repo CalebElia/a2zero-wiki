@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Obsidian local config (workspace state, not vault settings)
+wiki/.obsidian/workspace.json
+wiki/.obsidian/workspace-mobile.json
+
+# Claude Code / superpowers session artifacts
+.superpowers/brainstorm/
+.superpowers/*/state/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Environment
+.env
