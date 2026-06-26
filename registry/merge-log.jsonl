@@ -13,3 +13,4 @@
 {"date": "2026-06-26", "action": "TEMPORAL_SUCCESSION", "predecessor": "initiatives/neighborhood-climate-ambassadors-program.md", "successor": "initiatives/a2zero-ambassadors-program.md", "approved-by": "manual"}
 {"date": "2026-06-26", "action": "TEMPORAL_SUCCESSION", "predecessor": "initiatives/community-solar-program.md", "successor": "initiatives/community-solar-pilot.md", "approved-by": "manual"}
 {"date": "2026-06-26", "action": "MERGE", "from": "technology/direct-current-fast-charger.md", "into": "technology/dc-fast-charger.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "initiatives/neighborhood-and-youth-ambassador-program.md", "into": "initiatives/a2zero-ambassadors-program.md", "approved-by": "manual", "notes": "CAP 2020 planned program merged into Year 1 active program; semantic lint missed pair due to title distance. Flagged by spot-check."}

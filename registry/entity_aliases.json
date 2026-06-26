@@ -368,5 +368,14 @@
       "Direct Current Fast Charger"
     ],
     "relationship": "name-variant"
+  },
+  "neighborhood-and-youth-ambassador-program": {
+    "canonical": "initiatives/a2zero-ambassadors-program",
+    "type": "initiative",
+    "aliases": [
+      "Foster Neighborhood and Youth Ambassador Programs",
+      "Neighborhood and Youth Ambassador Program"
+    ],
+    "relationship": "name-variant"
   }
 }
