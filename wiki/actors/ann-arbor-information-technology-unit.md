@@ -20,3 +20,5 @@ type: actor
 ---
 
 The Ann Arbor Information Technology Unit serves as the party responsible for implementing the [[initiatives/environmental-sensors-monitoring|Implement Sensors to Monitor and Manage Heat, Air Quality, Waterways, and Flooding]] initiative under A2Zero Strategy 6 ([[sources/cap/cap-2020|cap-2020]]). The unit is tasked with completing the Smart City Strategy, piloting sensors with the [[actors/university-of-michigan|University of Michigan]], and ultimately deploying an interconnected network of monitors throughout the city by 2024 ([[sources/cap/cap-2020|cap-2020]]).
+
+The unit also serves as a project co-designer for the [[initiatives/benchmark-and-disclose-energy-usage|Benchmark and Disclose Energy Usage]] initiative, responsible for helping build the back-end portal to automatically report energy usage between utilities and the City ([[sources/cap/cap-2020|cap-2020]]).

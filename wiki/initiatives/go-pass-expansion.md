@@ -7,7 +7,7 @@ milestones: []
 parent-strategy: '[[strategies/strategy-4-vmt-reduction]]'
 partners:
 - '[[actors/city-of-ann-arbor]]'
-party-responsible: '[[actors/theride]]'
+party-responsible: '[[actors/ann-arbor-area-transit-authority]]'
 related-strategies:
 - '[[strategies/strategy-4-vmt-reduction]]'
 source-first-seen: '[[sources/cap/cap-2020]]'

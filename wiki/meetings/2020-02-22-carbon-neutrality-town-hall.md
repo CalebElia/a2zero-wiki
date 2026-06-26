@@ -1,7 +1,7 @@
 ---
 actors: []
 agenda-items:
-- '[[initiatives/a2zero-public-engagement-campaign]]'
+- '[[initiatives/a2zero-public-engagement-process]]'
 body: other
 date: '2020-02-22'
 decisions: []

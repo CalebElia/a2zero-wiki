@@ -20,7 +20,7 @@ milestones:
   year: 2025
 parent-strategy: '[[strategies/strategy-3-building-efficiency]]'
 partners:
-- '[[actors/ann-arbor-information-technology-department]]'
+- '[[actors/ann-arbor-information-technology-unit]]'
 - '[[actors/dte-energy]]'
 - '[[actors/consumers-energy]]'
 - '[[actors/ann-arbor-2030-district]]'

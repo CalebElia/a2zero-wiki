@@ -19,4 +19,4 @@ title: Red Cross
 type: actor
 ---
 
-The Red Cross is listed as a collaborator on both the [[initiatives/asset-and-needs-mapping-of-neighborhoods|Asset and Needs Mapping of Neighborhoods]] and [[initiatives/emergency-preparedness-kits|Emergency Preparedness Kits]] initiatives under A2Zero Strategy 6 ([[sources/cap/cap-2020|cap-2020]]).
+The Red Cross is listed as a collaborator on both the [[initiatives/asset-and-needs-mapping-of-neighborhoods|Asset and Needs Mapping of Neighborhoods]] and [[initiatives/emergency-preparedness-kits|Emergency Preparedness Kits]] initiatives under A2Zero Strategy 6 ([[sources/cap/cap-2020|cap-2020]]). The American Red Cross is also identified in the A2Zero plan as a partner for enabling and organizing ongoing emergency preparedness training and for coordination across disaster response organizations ([[sources/cap/cap-2020|cap-2020]]).

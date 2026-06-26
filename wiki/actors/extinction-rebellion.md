@@ -6,7 +6,7 @@ affiliation: null
 elected: false
 last-updated: '2026-06-24'
 programs-involved:
-- '[[initiatives/a2zero-public-engagement-campaign]]'
+- '[[initiatives/a2zero-public-engagement-process]]'
 role: Climate activist group that provided feedback on A2Zero during plan development
 source-first-seen: '[[sources/cap/cap-2020]]'
 tags:

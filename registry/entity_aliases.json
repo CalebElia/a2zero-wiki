@@ -191,5 +191,93 @@
     "relationship": "predecessor",
     "as-of": "2022",
     "notes": "SEU was the proposed community energy utility; restructured/renamed into OSI scope per Year 2 annual report"
+  },
+  "washtenaw-county-department-of-community-and-economic-development": {
+    "canonical": "actors/washtenaw-county-office-of-community-and-economic-development",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw County Department Of Community And Economic Development"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-information-technology-department": {
+    "canonical": "actors/ann-arbor-information-technology-unit",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Information Technology Department"
+    ],
+    "relationship": "name-variant"
+  },
+  "american-red-cross": {
+    "canonical": "actors/red-cross",
+    "type": "actor",
+    "aliases": [
+      "American Red Cross"
+    ],
+    "relationship": "name-variant"
+  },
+  "theride": {
+    "canonical": "actors/ann-arbor-area-transit-authority",
+    "type": "actor",
+    "aliases": [
+      "Theride"
+    ],
+    "relationship": "name-variant"
+  },
+  "net-zero-affordable-housing": {
+    "canonical": "initiatives/net-zero-energy-affordable-housing",
+    "type": "initiative",
+    "aliases": [
+      "Net Zero Affordable Housing"
+    ],
+    "relationship": "name-variant"
+  },
+  "expand-commercial-recycling": {
+    "canonical": "initiatives/commercial-recycling",
+    "type": "initiative",
+    "aliases": [
+      "Expand Commercial Recycling"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-public-engagement-campaign": {
+    "canonical": "initiatives/a2zero-public-engagement-process",
+    "type": "initiative",
+    "aliases": [
+      "A2Zero Public Engagement Campaign"
+    ],
+    "relationship": "name-variant"
+  },
+  "promote-home-business-electrification": {
+    "canonical": "initiatives/home-and-business-electrification",
+    "type": "initiative",
+    "aliases": [
+      "Promote Home Business Electrification"
+    ],
+    "relationship": "name-variant"
+  },
+  "expand-composting-program": {
+    "canonical": "initiatives/year-round-composting",
+    "type": "initiative",
+    "aliases": [
+      "Expand Composting Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "2020-ann-arbor-climate-emergency-declaration": {
+    "canonical": "political-events/2019-11-04-climate-emergency-declaration-and-carbon-neutrality-plan-resolution",
+    "type": "political-event",
+    "aliases": [
+      "2020 Ann Arbor Climate Emergency Declaration"
+    ],
+    "relationship": "name-variant"
+  },
+  "2019-11-04-ann-arbor-climate-emergency-declaration": {
+    "canonical": "political-events/2019-11-04-climate-emergency-declaration-and-carbon-neutrality-plan-resolution",
+    "type": "political-event",
+    "aliases": [
+      "2019 11 04 Ann Arbor Climate Emergency Declaration"
+    ],
+    "relationship": "name-variant"
   }
 }

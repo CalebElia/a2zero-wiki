@@ -8,8 +8,8 @@ affiliation: '[[actors/city-of-ann-arbor]]'
 elected: false
 last-updated: '2026-06-24'
 programs-involved:
-- '[[initiatives/expand-composting-program]]'
-- '[[initiatives/expand-commercial-recycling]]'
+- '[[initiatives/year-round-composting]]'
+- '[[initiatives/commercial-recycling]]'
 - '[[initiatives/require-sustainable-materials-in-developments]]'
 - '[[initiatives/move-toward-circular-economy]]'
 - '[[initiatives/enhance-refrigerant-recycling-reuse-program]]'

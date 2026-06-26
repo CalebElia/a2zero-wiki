@@ -6,7 +6,7 @@ locations: []
 milestones: []
 parent-strategy: '[[strategies/strategy-6-resilience]]'
 partners:
-- '[[actors/american-red-cross]]'
+- '[[actors/red-cross]]'
 - '[[actors/americorps]]'
 party-responsible: '[[actors/city-of-ann-arbor]]'
 related-strategies: []

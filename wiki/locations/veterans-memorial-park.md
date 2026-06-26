@@ -1,6 +1,6 @@
 ---
 initiatives:
-- '[[initiatives/a2zero-public-engagement-campaign]]'
+- '[[initiatives/a2zero-public-engagement-process]]'
 last-updated: '2026-06-24'
 location-type: park
 owned-by: city

@@ -28,7 +28,7 @@ milestones:
   year: 2025
 parent-strategy: '[[strategies/strategy-3-building-efficiency]]'
 partners:
-- '[[actors/washtenaw-county-department-of-community-and-economic-development]]'
+- '[[actors/washtenaw-county-office-of-community-and-economic-development]]'
 - '[[actors/meals-on-wheels]]'
 - '[[actors/michigan-saves]]'
 - '[[actors/dte-energy]]'

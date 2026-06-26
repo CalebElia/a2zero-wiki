@@ -28,4 +28,4 @@ transferability: high
 type: technology
 ---
 
-The A2Zero plan proposes electrifying [[actors/theride|TheRide]] bus vehicles as part of the broader strategy to decarbonize public transportation in Ann Arbor ([[sources/cap/cap-2020|cap-2020]]). The plan also identifies a battery recycling program concept in which utility batteries would be repurposed for use in school and public buses, suggesting interest in circular economy approaches to electric bus deployment ([[sources/cap/cap-2020|cap-2020]]).
+The A2Zero plan proposes electrifying [[actors/ann-arbor-area-transit-authority|TheRide]] bus vehicles as part of the broader strategy to decarbonize public transportation in Ann Arbor ([[sources/cap/cap-2020|cap-2020]]). The plan also identifies a battery recycling program concept in which utility batteries would be repurposed for use in school and public buses, suggesting interest in circular economy approaches to electric bus deployment ([[sources/cap/cap-2020|cap-2020]]).
