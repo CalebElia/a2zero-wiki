@@ -290,5 +290,14 @@
     ],
     "relationship": "name-variant",
     "notes": "Nov 1 date was a hallucination; correct date is Nov 4, 2019"
+  },
+  "ann-arbor": {
+    "canonical": "actors/city-of-ann-arbor",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor",
+      "the City of Ann Arbor"
+    ],
+    "relationship": "name-variant"
   }
 }

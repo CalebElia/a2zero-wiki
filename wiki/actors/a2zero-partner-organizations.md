@@ -16,7 +16,7 @@ tags:
 
 As of early March 2020, 67 organizations had signed up as A²ZERO partners. Partner organizations agreed to co-host at least one carbon neutrality event with OSI, share information about the initiative with their membership and networks, and display their logo on partner materials. Partners span environmental advocacy, higher education, housing, faith, business, government, and youth sectors — representing the breadth of stakeholder engagement the plan required for legitimacy and implementation reach. ([[sources/cap/cap-2020|cap-2020]])
 
-A separate partner events log is captured in Appendix 3 of the CAP (3 partner-only meetings: Dec 13 2019 first partner meeting, Dec 19 2019 equity/climate training, Mar 20 2020 final strategy unveiling).
+A separate partner events log is captured in Appendix 3 of the [[overviews/cap-2020|A²ZERO CAP]] (3 partner-only meetings: Dec 13 2019 first partner meeting, Dec 19 2019 equity/climate training, [[political-events/2020-03-20-a2zero-partners-strategy-unveiling|Mar 20 2020 final strategy unveiling]]).
 
 ## Partner Organization List (67 organizations)
 

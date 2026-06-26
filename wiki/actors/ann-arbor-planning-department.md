@@ -2,7 +2,7 @@
 active-years:
 - 2020
 actor-type: government-office
-affiliation: '[[actors/ann-arbor]]'
+affiliation: '[[actors/city-of-ann-arbor]]'
 elected: false
 last-updated: '2026-06-24'
 programs-involved:
