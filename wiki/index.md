@@ -242,7 +242,7 @@ _243 pages — last updated 2026-06-25_
 
 ## political-event
 
-- [[political-events/2019-11-01-resolution-19-2103|Ann Arbor City Council Resolution 19-2103 — Carbon Neutrality Plan by 2030]]
+- [[political-events/2019-11-04-climate-emergency-declaration-and-carbon-neutrality-plan-resolution|Ann Arbor City Council — Climate Emergency Declaration and Carbon Neutrality Plan Resolution (2019-11-04)]]
 - [[political-events/2019-11-04-climate-emergency-declaration-and-carbon-neutrality-plan-resolution|Ann Arbor City Council — Climate Emergency Declaration (2019-11-04)]]
 - [[political-events/2019-11-04-climate-emergency-declaration-and-carbon-neutrality-plan-resolution|Ann Arbor City Council — Climate Emergency Declaration (unanimous)]]
 - [[political-events/2019-11-04-climate-emergency-declaration-and-carbon-neutrality-plan-resolution|Ann Arbor City Council — Climate Emergency Declaration and Resolution to Create 2030 Carbon Neutrality Plan (2019-11-04)]]

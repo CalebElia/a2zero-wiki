@@ -279,5 +279,16 @@
       "2019 11 04 Ann Arbor Climate Emergency Declaration"
     ],
     "relationship": "name-variant"
+  },
+  "2019-11-01-resolution-19-2103": {
+    "canonical": "political-events/2019-11-04-climate-emergency-declaration-and-carbon-neutrality-plan-resolution",
+    "type": "political-event",
+    "aliases": [
+      "Resolution 19-2103",
+      "Ann Arbor City Council Resolution 19-2103",
+      "2019-11-01 Resolution 19-2103"
+    ],
+    "relationship": "name-variant",
+    "notes": "Nov 1 date was a hallucination; correct date is Nov 4, 2019"
   }
 }
