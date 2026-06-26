@@ -144,6 +144,226 @@ def test_structural_exempt_pages_skip_empty_check(tmp_path):
     assert not any(f["page"].endswith("index.md") for f in empty)
 
 
+def test_write_structural_findings_replaces_existing_section(tmp_path):
+    from pipeline.lint_wiki import write_structural_findings
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "# Queue\n"
+        "\n## Structural Lint — 2026-06-20\n"
+        "- [BROKEN_LINK] `actors/foo.md` — [[actors/old]] not found\n\n"
+        "\n## Semantic Lint — 2026-06-20\n"
+        "### [MERGE_PROPOSED] actors/a.md + actors/b.md\n",
+        encoding="utf-8",
+    )
+    findings = [{"type": "BROKEN_LINK", "page": "actors/bar.md", "detail": "[[actors/new]] not found"}]
+    write_structural_findings(str(wiki), findings)
+    content = rq.read_text()
+    assert "actors/old" not in content
+    assert "actors/new" in content
+    assert content.count("## Structural Lint") == 1
+    assert "## Semantic Lint" in content
+
+
+def test_write_structural_findings_clears_section_when_no_findings(tmp_path):
+    from pipeline.lint_wiki import write_structural_findings
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "# Queue\n"
+        "\n## Structural Lint — 2026-06-20\n"
+        "- [BROKEN_LINK] `actors/foo.md` — stale finding\n",
+        encoding="utf-8",
+    )
+    write_structural_findings(str(wiki), [])
+    content = rq.read_text()
+    assert "## Structural Lint" not in content
+    assert "stale finding" not in content
+
+
+def test_write_semantic_proposals_replaces_unannotated_section(tmp_path):
+    from pipeline.lint_wiki import write_semantic_proposals
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "# Queue\n"
+        "\n## Semantic Lint — 2026-06-20\n"
+        "### [MERGE_PROPOSED] actors/old-a.md + actors/old-b.md\n"
+        "- Confidence: 0.80\n"
+        "- Reasoning: Old stale pair.\n"
+        "- Action: [ ] APPROVE_MERGE  [ ] APPROVE_TEMPORAL_SUCCESSION  [ ] KEEP_SEPARATE  [ ] DEFER\n"
+        "- Notes: _Add any notes before approving_\n\n",
+        encoding="utf-8",
+    )
+    proposals = [{
+        "type": "MERGE_PROPOSED",
+        "page_a": "actors/new-a.md",
+        "page_b": "actors/new-b.md",
+        "confidence": 0.92,
+        "reasoning": "Same entity.",
+    }]
+    write_semantic_proposals(str(wiki), proposals)
+    content = rq.read_text()
+    assert "actors/old-a.md" not in content
+    assert "actors/new-a.md" in content
+    assert content.count("## Semantic Lint") == 1
+
+
+def test_write_semantic_proposals_appends_when_annotations_present(tmp_path):
+    from pipeline.lint_wiki import write_semantic_proposals
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "# Queue\n"
+        "\n## Semantic Lint — 2026-06-20\n"
+        "### [MERGE_PROPOSED] actors/old-a.md + actors/old-b.md\n"
+        "- Action: [x] APPROVE_MERGE  [ ] APPROVE_TEMPORAL_SUCCESSION  [ ] KEEP_SEPARATE  [ ] DEFER\n"
+        "- Notes: _Add any notes before approving_\n\n",
+        encoding="utf-8",
+    )
+    proposals = [{
+        "type": "MERGE_PROPOSED",
+        "page_a": "actors/new-a.md",
+        "page_b": "actors/new-b.md",
+        "confidence": 0.90,
+        "reasoning": "Same entity.",
+    }]
+    write_semantic_proposals(str(wiki), proposals)
+    content = rq.read_text()
+    # Both sections preserved — old annotated one + new proposals
+    assert "actors/old-a.md" in content
+    assert "actors/new-a.md" in content
+
+
+def test_cleanup_review_queue_removes_approved_keeps_deferred(tmp_path):
+    from pipeline.lint_wiki import _cleanup_review_queue
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "# Queue\n"
+        "\n## Semantic Lint — 2026-06-26\n\n"
+        "### [MERGE_PROPOSED] actors/a.md + actors/b.md\n"
+        "- Confidence: 0.95\n"
+        "- Reasoning: Same entity.\n"
+        "- Action: [x] APPROVE_MERGE  [ ] APPROVE_TEMPORAL_SUCCESSION  [ ] KEEP_SEPARATE  [ ] DEFER\n"
+        "- Notes: _Add any notes before approving_\n\n"
+        "### [MERGE_PROPOSED] actors/c.md + actors/d.md\n"
+        "- Confidence: 0.90\n"
+        "- Reasoning: Revisit later.\n"
+        "- Action: [ ] APPROVE_MERGE  [ ] APPROVE_TEMPORAL_SUCCESSION  [ ] KEEP_SEPARATE  [x] DEFER\n"
+        "- Notes: _Add any notes before approving_\n\n"
+        "### [MERGE_PROPOSED] actors/e.md + actors/f.md\n"
+        "- Confidence: 0.85\n"
+        "- Reasoning: Distinct.\n"
+        "- Action: [ ] APPROVE_MERGE  [ ] APPROVE_TEMPORAL_SUCCESSION  [x] KEEP_SEPARATE  [ ] DEFER\n"
+        "- Notes: _Add any notes before approving_\n\n",
+        encoding="utf-8",
+    )
+    _cleanup_review_queue(str(rq))
+    content = rq.read_text()
+    assert "actors/a.md" not in content   # APPROVE_MERGE → removed
+    assert "actors/c.md" in content       # DEFER → kept
+    assert "actors/e.md" not in content   # KEEP_SEPARATE → removed
+
+
+def test_build_entity_catalogue(tmp_path):
+    from pipeline.lint_wiki import _build_entity_catalogue
+    from pathlib import Path
+    wiki = tmp_path / "wiki"
+    (wiki / "actors").mkdir(parents=True)
+    (wiki / "actors" / "osi.md").write_text(
+        "---\ntype: actor\ntitle: Office of Sustainability and Innovations\n---\nBody.\n",
+        encoding="utf-8",
+    )
+    catalogue = _build_entity_catalogue(wiki)
+    assert "Office of Sustainability and Innovations" in catalogue
+    assert catalogue["Office of Sustainability and Innovations"] == "actors/osi"
+
+
+def test_find_unlinked_candidates_returns_match(tmp_path):
+    from pipeline.lint_wiki import _find_unlinked_candidates
+    catalogue = {"Solarize Ann Arbor": "initiatives/solarize-ann-arbor"}
+    body = "The Solarize Ann Arbor program installed 1.3 MW of solar in Year One."
+    candidates = _find_unlinked_candidates(body, catalogue)
+    assert any(c["slug"] == "initiatives/solarize-ann-arbor" for c in candidates)
+
+
+def test_find_unlinked_candidates_skips_already_linked(tmp_path):
+    from pipeline.lint_wiki import _find_unlinked_candidates
+    catalogue = {"Solarize Ann Arbor": "initiatives/solarize-ann-arbor"}
+    body = "The [[initiatives/solarize-ann-arbor|Solarize Ann Arbor]] program runs city-wide."
+    candidates = _find_unlinked_candidates(body, catalogue)
+    assert not any(c["slug"] == "initiatives/solarize-ann-arbor" for c in candidates)
+
+
+def test_find_unlinked_candidates_skips_short_titles(tmp_path):
+    from pipeline.lint_wiki import _find_unlinked_candidates
+    catalogue = {"EV": "technology/ev", "OSI": "actors/osi"}
+    body = "The EV program is run by OSI."
+    candidates = _find_unlinked_candidates(body, catalogue)
+    # Both titles are < 5 chars — should be excluded
+    assert not candidates
+
+
+def test_parse_approved_proposals_finds_link(tmp_path):
+    from pipeline.lint_wiki import _parse_approved_proposals
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "## Backlink Lint — 2026-06-26\n\n"
+        "### [LINK_PROPOSED] strategies/strategy-1-renewable-grid.md ← initiatives/solarize-ann-arbor\n"
+        '- Display text: "Solarize Ann Arbor"\n'
+        "- Context: …the Solarize Ann Arbor program…\n"
+        "- Action: [x] APPROVE_LINK  [ ] KEEP_UNLINKED  [ ] DEFER\n",
+        encoding="utf-8",
+    )
+    proposals = _parse_approved_proposals(str(rq))
+    assert len(proposals) == 1
+    p = proposals[0]
+    assert p["approved_action"] == "LINK"
+    assert p["page"] == "strategies/strategy-1-renewable-grid.md"
+    assert p["slug"] == "initiatives/solarize-ann-arbor"
+    assert p["display_text"] == "Solarize Ann Arbor"
+
+
+def test_cleanup_removes_approved_link(tmp_path):
+    from pipeline.lint_wiki import _cleanup_review_queue
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "## Backlink Lint — 2026-06-26\n\n"
+        "### [LINK_PROPOSED] strategies/strategy-1.md ← initiatives/solarize\n"
+        '- Display text: "Solarize"\n'
+        "- Action: [x] APPROVE_LINK  [ ] KEEP_UNLINKED  [ ] DEFER\n\n"
+        "### [LINK_PROPOSED] strategies/strategy-2.md ← actors/osi\n"
+        '- Display text: "OSI"\n'
+        "- Action: [ ] APPROVE_LINK  [x] KEEP_UNLINKED  [ ] DEFER\n\n",
+        encoding="utf-8",
+    )
+    _cleanup_review_queue(str(rq))
+    content = rq.read_text()
+    assert "strategy-1.md" not in content   # APPROVE_LINK → removed
+    assert "strategy-2.md" not in content   # KEEP_UNLINKED → removed
+
+
+def test_cleanup_review_queue_keeps_unannotated_blocks(tmp_path):
+    from pipeline.lint_wiki import _cleanup_review_queue
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "\n## Semantic Lint — 2026-06-26\n\n"
+        "### [MERGE_PROPOSED] actors/x.md + actors/y.md\n"
+        "- Confidence: 0.88\n"
+        "- Reasoning: Possible duplicate.\n"
+        "- Action: [ ] APPROVE_MERGE  [ ] APPROVE_TEMPORAL_SUCCESSION  [ ] KEEP_SEPARATE  [ ] DEFER\n"
+        "- Notes: _Add any notes before approving_\n\n",
+        encoding="utf-8",
+    )
+    _cleanup_review_queue(str(rq))
+    content = rq.read_text()
+    assert "actors/x.md" in content  # unannotated → still pending, kept
+
+
 def test_rewrite_inbound_links(tmp_path):
     from pipeline.lint_wiki import _rewrite_inbound_links
     wiki = tmp_path / "wiki"

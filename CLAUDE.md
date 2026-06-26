@@ -20,10 +20,13 @@ wiki/                 ← Obsidian vault (everything here is intentionally inges
   sources/              ← Source documents copied here by ingest step 0
   strategies/           ← 7 strategy pages (strategy-1 through strategy-7)
   overviews/            ← One per source document
-  actors/               ← Organizations, agencies, commissions
+  actors/               ← Organizations, agencies, commissions, people
   initiatives/          ← Programs, projects, policies
   locations/            ← Geographic entities
   political-events/     ← Council votes, elections, public hearings
+  technology/           ← Technology types with deployment/barrier details
+  funding-events/       ← Specific grant awards and dollar allocations
+  meetings/             ← Deliberative body meetings where A2Zero items were discussed
   topics/               ← Aggregate/curated pages (not pipeline-generated)
   index.md              ← Auto-rebuilt by Pass 3
   log.md                ← Append-only ingest log
@@ -44,7 +47,7 @@ Run with: `python -m pipeline.run_ingest silver --source prepared/<type>/<uuid>.
 
 **Pass 1 (holistic synthesis):** Full-document read. Writer → Evaluator → Editor loop. Produces: overview page, strategy body text, stub pages for all entities mentioned in the document. Uses streaming API (`max_tokens=64000`).
 
-**Pass 2 (chunked LDP):** Section-by-section extraction. Each chunk produces actor/initiative/location/political-event pages. Integrates into existing stubs from Pass 1.
+**Pass 2 (chunked LDP):** Section-by-section extraction. Each chunk produces actor/initiative/location/political-event/technology/funding-event/meeting pages. Integrates into existing stubs from Pass 1.
 
 **Pass 3 (finalize):** Rebuilds `index.md`, seals `log.md`.
 

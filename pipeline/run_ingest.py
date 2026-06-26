@@ -57,6 +57,30 @@ def run_silver_ingest(
         _dest = Path(wiki_root) / "sources" / Path(*_src_parts[1:])
         _dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(_prepared, _dest)
+
+        # Inject YAML frontmatter if the prepared file doesn't have it.
+        # Sources that were manually prepared with frontmatter (e.g. cap-2020) pass through unchanged.
+        _copied = _dest.read_text(encoding="utf-8")
+        if not _copied.startswith("---"):
+            _type_dir = _src_parts[1]
+            _source_type_map = {
+                "annual-reports": "annual-report",
+                "cap": "cap",
+                "transcripts": "council-transcript",
+                "news": "news",
+                "research": "research",
+            }
+            _inferred_type = _source_type_map.get(_type_dir, _type_dir.rstrip("s"))
+            _injected = (
+                f"---\n"
+                f"uuid: {uuid}\n"
+                f"source_type: {_inferred_type}\n"
+                f'title: "{title}"\n'
+                f'ingest_date: "{run_date}"\n'
+                f"---\n\n"
+            )
+            _dest.write_text(_injected + _copied, encoding="utf-8")
+
         vault_source_path = str(_dest)
     else:
         # Caller passed a path already inside the vault; use it directly.

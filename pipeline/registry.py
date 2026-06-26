@@ -13,12 +13,15 @@ def slugify(name: str) -> str:
 
 TYPE_PREFIX = {
     "actor": "actors",
-    "organization": "organizations",
     "initiative": "initiatives",
-    "funding": "funding",
-    "topic": "topics",
+    "funding-event": "funding-events",
+    "technology": "technology",
     "location": "locations",
-    "technology": "technologies",
+    "meeting": "meetings",
+    "framing": "framing",
+    "political-event": "political-events",
+    "contradiction": "contradictions",
+    "topic": "topics",
 }
 
 

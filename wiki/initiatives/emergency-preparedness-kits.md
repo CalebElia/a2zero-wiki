@@ -28,7 +28,7 @@ parent-strategy: '[[strategies/strategy-6-resilience]]'
 partners:
 - '[[actors/emergency-management]]'
 - '[[actors/red-cross]]'
-- '[[actors/meals-on-wheels]]'
+- '[[actors/ann-arbor-meals-on-wheels]]'
 - '[[actors/ann-arbor-public-schools]]'
 party-responsible: '[[actors/office-of-sustainability-and-innovations]]'
 related-strategies:

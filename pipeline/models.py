@@ -38,7 +38,8 @@ class Quad:
 
 @dataclass
 class WikiPage:
-    page_type: Literal["actor", "initiative", "commitment", "funding", "meeting", "framing", "political-event", "technology"]
+    page_type: Literal["actor", "initiative", "funding-event", "technology",
+                       "location", "meeting", "framing", "political-event", "contradiction", "mechanism"]
     slug: str         # e.g. "actors/missy-stults"
     frontmatter: dict
     body: str

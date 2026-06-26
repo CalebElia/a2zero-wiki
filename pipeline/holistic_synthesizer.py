@@ -61,7 +61,12 @@ STRATEGY BODY RULES:
   what are projected GHG reductions or costs? what dependencies exist?
 - If the document says little about a strategy, write one honest sentence
 - Cite with inline wikilinks: ([[{source_path}|{source_uuid}]])
-- Reference named initiatives where possible: [[initiatives/community-choice-aggregation]]
+- REQUIRED — entity wikilinks: Every initiative, actor, organization, location, and technology
+  you name MUST be linked using the slug you assigned it in stub_pages.
+  Link on FIRST MENTION of each entity; subsequent mentions may be plain text.
+  Example: "the Solarize program ([[initiatives/solarize-ann-arbor]]) installed..."
+  Example: "[[actors/office-of-sustainability-and-innovations|OSI]] led outreach..."
+  Do NOT name an entity in strategy bodies without linking it.
 - Include all 7 strategy slugs in strategy_bodies, even if coverage is thin
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -4,6 +4,7 @@ On-demand post-ingest wiki linter.
 Usage:
   python -m pipeline.lint_wiki --wiki-root wiki --structural
   python -m pipeline.lint_wiki --wiki-root wiki --semantic
+  python -m pipeline.lint_wiki --wiki-root wiki --backlink [--scope strategies overviews]
   python -m pipeline.lint_wiki --wiki-root wiki --apply
 """
 import re
@@ -20,6 +21,48 @@ ORPHAN_EXEMPT_DIRS = frozenset({"strategies", "sources", "overviews", "topics", 
 FRONTMATTER_RE = re.compile(r"^---\n.*?\n---\n?", re.DOTALL)
 
 WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)(?:\|[^\]]*)?\]\]")
+
+# Matches the start of any proposal block header — used as a block-boundary detector.
+# Specialised header regexes below handle per-type parsing.
+PROPOSAL_HEADER_RE = re.compile(
+    r"### \[(MERGE_PROPOSED|TEMPORAL_SUCCESSION_PROPOSED|LINK_PROPOSED)\] (.+)"
+)
+
+# Per-type proposal header parsers
+_MERGE_HEADER_RE = re.compile(
+    r"### \[(MERGE_PROPOSED|TEMPORAL_SUCCESSION_PROPOSED)\] (.+?) \+ (.+)"
+)
+_LINK_HEADER_RE = re.compile(
+    r"### \[LINK_PROPOSED\] (.+?) ← (.+)"
+)
+_DISPLAY_TEXT_RE = re.compile(r'^- Display text: "(.+)"')
+
+# Patterns for approved/resolved actions
+_RESOLVED_RE = re.compile(
+    r"\[x\]\s+(?:APPROVE_MERGE|APPROVE_TEMPORAL_SUCCESSION|KEEP_SEPARATE|APPROVE_LINK|KEEP_UNLINKED)",
+    re.IGNORECASE,
+)
+_DEFER_RE = re.compile(r"\[x\]\s+DEFER", re.IGNORECASE)
+
+# Section header patterns — each lint run owns exactly one slot in the file
+_STRUCTURAL_SECTION_RE = re.compile(
+    r"\n## Structural Lint —[^\n]*\n.*?(?=\n## |\Z)", re.DOTALL
+)
+_SEMANTIC_SECTION_RE = re.compile(
+    r"\n## Semantic Lint —[^\n]*\n.*?(?=\n## |\Z)", re.DOTALL
+)
+_BACKLINK_SECTION_RE = re.compile(
+    r"\n## Backlink Lint —[^\n]*\n.*?(?=\n## |\Z)", re.DOTALL
+)
+
+# Directories scanned for entity catalogue (all typed entity pages)
+_ENTITY_DIRS = frozenset({
+    "actors", "initiatives", "locations", "technology",
+    "funding-events", "meetings", "political-events",
+})
+
+# Default scope for backlink scan — navigation layer first
+_BACKLINK_DEFAULT_SCOPE = ["strategies", "overviews"]
 
 
 def _all_md_files(wiki_root: str) -> list[Path]:
@@ -99,20 +142,228 @@ def structural_lint(wiki_root: str) -> list[dict]:
     return findings
 
 
-def append_lint_report(wiki_root: str, findings: list[dict], mode: str) -> None:
-    """Append a lint report section to review-queue.md."""
-    if not findings:
-        print(f"[lint_wiki:{mode}] No issues found.")
+BACKLINK_FILTER_SYSTEM = """You are a wiki curator for Ann Arbor's A2Zero carbon neutrality plan.
+
+You will receive a wiki page body and a list of candidate entity mentions found by string matching.
+For each candidate decide: is this mention a specific, deliberate reference to that named entity
+where a wikilink would help a reader navigate to learn more about it?
+
+Return ONLY valid JSON — no prose, no markdown fence:
+{"confirmed": [{"title": "...", "slug": "...", "display_text": "..."}, ...]}
+
+Include a candidate when:
+- The text is specifically referring to this entity in the A2Zero context
+- A wikilink would meaningfully help navigation or research
+
+Exclude a candidate when:
+- The match is incidental or generic (e.g. "solar" matching a long initiative name)
+- The entity name is used as a common adjective rather than a proper reference
+- The page is already about this entity (no need for a self-link)
+- The mention is inside a source citation like ([[sources/...]])
+"""
+
+
+def _build_entity_catalogue(wiki_root: Path) -> dict[str, str]:
+    """Return {display_title: vault-relative-slug} for all typed entity pages."""
+    catalogue: dict[str, str] = {}
+    for type_dir in _ENTITY_DIRS:
+        dir_path = wiki_root / type_dir
+        if not dir_path.exists():
+            continue
+        for page in dir_path.glob("*.md"):
+            text = page.read_text(encoding="utf-8", errors="replace")
+            m = re.match(r"^---\n(.*?)\n---\n", text, re.DOTALL)
+            title = page.stem.replace("-", " ").title()
+            if m:
+                for line in m.group(1).splitlines():
+                    if line.startswith("title:"):
+                        title = line.split(":", 1)[1].strip().strip("'\"")
+                        break
+            slug = str(page.relative_to(wiki_root)).removesuffix(".md")
+            catalogue[title] = slug
+    return catalogue
+
+
+def _find_unlinked_candidates(body: str, catalogue: dict[str, str]) -> list[dict]:
+    """Stage 1: string-match entity titles against page body, skipping already-linked text.
+
+    Strips existing [[...]] wikilink markup before matching so we never re-propose
+    an entity that is already linked.  Returns candidates sorted longest-title-first
+    to prevent short names masking longer ones.
+    """
+    # Remove all wikilink markup so already-linked text is invisible to matching
+    body_stripped = re.sub(r"\[\[[^\]]*\]\]", "", body)
+
+    candidates = []
+    for title, slug in sorted(catalogue.items(), key=lambda kv: -len(kv[0])):
+        if len(title) < 5:
+            # Very short titles (< 5 chars) produce too many false positives
+            continue
+        pattern = re.compile(
+            r"(?<![A-Za-z0-9\[\]])" + re.escape(title) + r"(?![A-Za-z0-9\[\]])",
+            re.IGNORECASE,
+        )
+        m = pattern.search(body_stripped)
+        if not m:
+            continue
+        # Find match position in original body for context extraction
+        orig_m = re.search(re.escape(m.group(0)), body, re.IGNORECASE)
+        if not orig_m:
+            continue
+        start = max(0, orig_m.start() - 70)
+        end = min(len(body), orig_m.end() + 70)
+        context = "…" + body[start:end].replace("\n", " ") + "…"
+        candidates.append({
+            "title": title,
+            "slug": slug,
+            "display_text": orig_m.group(0),  # exact case as it appears
+            "context": context,
+        })
+    return candidates
+
+
+def _llm_filter_candidates(
+    page_rel: str,
+    body: str,
+    candidates: list[dict],
+    client: anthropic.Anthropic,
+) -> list[dict]:
+    """Stage 2: ask the LLM which string-matched candidates are genuine entity references."""
+    catalogue_lines = "\n".join(
+        f'  "{c["title"]}" → [[{c["slug"]}]]  |  context: {c["context"]}'
+        for c in candidates
+    )
+    user_msg = (
+        f"PAGE: {page_rel}\n\n"
+        f"CANDIDATES:\n{catalogue_lines}\n\n"
+        f"BODY:\n{body}"
+    )
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=1024,
+            temperature=0,
+            system=BACKLINK_FILTER_SYSTEM,
+            messages=[{"role": "user", "content": user_msg}],
+        )
+        result = json.loads(response.content[0].text)
+        return result.get("confirmed", [])
+    except Exception as e:
+        print(f"[lint_wiki:backlink] WARNING: LLM filter failed for {page_rel}: {e}")
+        return []
+
+
+def backlink_lint(wiki_root: str, scope: list[str] | None = None) -> list[dict]:
+    """Librarian lint: find entity mentions in page bodies that lack wikilinks.
+
+    Stage 1 (fast): string-match entity catalogue against each page body.
+    Stage 2 (LLM): filter out incidental / false-positive matches.
+
+    Returns proposal dicts with keys: page, entity_title, entity_slug, display_text, context.
+    """
+    root = Path(wiki_root)
+    catalogue = _build_entity_catalogue(root)
+    scan_dirs = scope or _BACKLINK_DEFAULT_SCOPE
+    client = anthropic.Anthropic()
+    proposals = []
+
+    for type_dir in scan_dirs:
+        dir_path = root / type_dir
+        if not dir_path.exists():
+            continue
+        for page in sorted(dir_path.glob("*.md")):
+            raw = page.read_text(encoding="utf-8", errors="replace")
+            body = FRONTMATTER_RE.sub("", raw).strip()
+            if not body:
+                continue
+
+            candidates = _find_unlinked_candidates(body, catalogue)
+            if not candidates:
+                continue
+
+            page_rel = str(page.relative_to(root))
+            print(f"[lint_wiki:backlink] {page_rel}: {len(candidates)} candidates → LLM filter…")
+            confirmed = _llm_filter_candidates(page_rel, body, candidates, client)
+
+            for c in confirmed:
+                proposals.append({
+                    "page": page_rel,
+                    "entity_title": c.get("title", ""),
+                    "entity_slug": c.get("slug", ""),
+                    "display_text": c.get("display_text", c.get("title", "")),
+                    "context": next(
+                        (x["context"] for x in candidates if x["title"] == c.get("title")), ""
+                    ),
+                })
+
+    return proposals
+
+
+def write_backlink_proposals(wiki_root: str, proposals: list[dict]) -> None:
+    """Write backlink lint proposals to review-queue.md, replacing any unannotated backlink section."""
+    if not proposals:
+        print("[lint_wiki:backlink] No unlinked entity mentions found.")
         return
+
     rq_path = Path(wiki_root).parent / "review-queue.md"
     today = date.today().isoformat()
-    lines = [f"\n## {mode.title()} Lint — {today}\n"]
-    for f in findings:
-        lines.append(f"- [{f['type']}] `{f['page']}` — {f['detail']}")
-    lines.append("")
-    with rq_path.open("a", encoding="utf-8") as fh:
-        fh.write("\n".join(lines))
-    print(f"[lint_wiki:{mode}] {len(findings)} findings written to review-queue.md")
+
+    lines = [f"\n## Backlink Lint — {today}\n"]
+    for p in proposals:
+        lines.append(
+            f"### [LINK_PROPOSED] {p['page']} ← {p['entity_slug']}"
+        )
+        lines.append(f'- Display text: "{p["display_text"]}"')
+        lines.append(f"- Context: {p['context']}")
+        lines.append("- Action: [ ] APPROVE_LINK  [ ] KEEP_UNLINKED  [ ] DEFER")
+        lines.append("- Notes: _Add any notes_\n")
+    new_section = "\n".join(lines)
+
+    if rq_path.exists():
+        text = rq_path.read_text(encoding="utf-8")
+        m = _BACKLINK_SECTION_RE.search(text)
+        if m and re.search(r"\[x\]", m.group(0), re.IGNORECASE):
+            print("[lint_wiki:backlink] WARNING: existing backlink section has annotations — appending.")
+            text = text.rstrip() + new_section
+        else:
+            text = _BACKLINK_SECTION_RE.sub("", text)
+            text = text.rstrip() + new_section
+        rq_path.write_text(text, encoding="utf-8")
+    else:
+        rq_path.write_text(new_section.lstrip(), encoding="utf-8")
+
+    print(f"[lint_wiki:backlink] {len(proposals)} proposals written to review-queue.md")
+
+
+def write_structural_findings(wiki_root: str, findings: list[dict]) -> None:
+    """Write structural lint findings to review-queue.md, replacing any existing structural section.
+
+    Each run owns exactly one slot — old findings are never left alongside new ones.
+    """
+    rq_path = Path(wiki_root).parent / "review-queue.md"
+    today = date.today().isoformat()
+
+    if findings:
+        lines = [f"\n## Structural Lint — {today}\n"]
+        for f in findings:
+            lines.append(f"- [{f['type']}] `{f['page']}` — {f['detail']}")
+        lines.append("")
+        new_section = "\n".join(lines)
+    else:
+        new_section = ""  # empty = erase old section
+
+    if rq_path.exists():
+        text = rq_path.read_text(encoding="utf-8")
+        text = _STRUCTURAL_SECTION_RE.sub("", text)  # remove all old structural sections
+        text = text.rstrip() + new_section
+        rq_path.write_text(text, encoding="utf-8")
+    elif new_section:
+        rq_path.write_text(new_section.lstrip(), encoding="utf-8")
+
+    if findings:
+        print(f"[lint_wiki:structural] {len(findings)} findings written to review-queue.md")
+    else:
+        print("[lint_wiki:structural] No issues found.")
 
 
 SEMANTIC_VERDICT_SYSTEM = """You are comparing two wiki page entries to determine if they refer to the same real-world entity.
@@ -154,7 +405,8 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
     proposals = []
     client = anthropic.Anthropic()
 
-    for type_dir in ["actors", "initiatives", "locations", "political-events"]:
+    for type_dir in ["actors", "initiatives", "locations", "political-events",
+                     "technology", "funding-events", "meetings"]:
         dir_path = root / type_dir
         if not dir_path.exists():
             continue
@@ -217,13 +469,19 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
     return proposals
 
 
-def append_semantic_proposals(wiki_root: str, proposals: list[dict]) -> None:
-    """Append semantic lint proposals to review-queue.md."""
+def write_semantic_proposals(wiki_root: str, proposals: list[dict]) -> None:
+    """Write semantic proposals to review-queue.md, replacing any unannotated semantic section.
+
+    If the existing semantic section already has user annotations ([x] checked), the new
+    proposals are appended rather than replacing — preserving work in progress.
+    """
     if not proposals:
         print("[lint_wiki:semantic] No near-duplicate proposals.")
         return
+
     rq_path = Path(wiki_root).parent / "review-queue.md"
     today = date.today().isoformat()
+
     lines = [f"\n## Semantic Lint — {today}\n"]
     for p in proposals:
         lines.append(f"### [{p['type']}] {p['page_a']} + {p['page_b']}")
@@ -231,16 +489,74 @@ def append_semantic_proposals(wiki_root: str, proposals: list[dict]) -> None:
         lines.append(f"- Reasoning: {p['reasoning']}")
         lines.append("- Action: [ ] APPROVE_MERGE  [ ] APPROVE_TEMPORAL_SUCCESSION  [ ] KEEP_SEPARATE  [ ] DEFER")
         lines.append("- Notes: _Add any notes before approving_\n")
-    with rq_path.open("a", encoding="utf-8") as fh:
-        fh.write("\n".join(lines))
+    new_section = "\n".join(lines)
+
+    if rq_path.exists():
+        text = rq_path.read_text(encoding="utf-8")
+        m = _SEMANTIC_SECTION_RE.search(text)
+        if m:
+            existing_block = m.group(0)
+            if re.search(r"\[x\]", existing_block, re.IGNORECASE):
+                # User has unresolved annotations — append rather than clobber
+                print("[lint_wiki:semantic] WARNING: existing semantic section has annotations — appending new proposals.")
+                text = text.rstrip() + new_section
+            else:
+                # No annotations yet — safe to replace
+                text = _SEMANTIC_SECTION_RE.sub("", text)
+                text = text.rstrip() + new_section
+        else:
+            text = text.rstrip() + new_section
+        rq_path.write_text(text, encoding="utf-8")
+    else:
+        rq_path.write_text(new_section.lstrip(), encoding="utf-8")
+
     print(f"[lint_wiki:semantic] {len(proposals)} proposals written to review-queue.md")
 
 
-APPROVED_MERGE_RE = re.compile(r"\[x\] APPROVE_MERGE", re.IGNORECASE)
-APPROVED_SUCCESSION_RE = re.compile(r"\[x\] APPROVE_TEMPORAL_SUCCESSION", re.IGNORECASE)
-PROPOSAL_HEADER_RE = re.compile(
-    r"### \[(MERGE_PROPOSED|TEMPORAL_SUCCESSION_PROPOSED)\] (.+?) \+ (.+)"
-)
+def _cleanup_review_queue(rq_path_str: str) -> None:
+    """Remove resolved proposal blocks from review-queue.md after apply.
+
+    Drops blocks where the user checked APPROVE_MERGE, APPROVE_TEMPORAL_SUCCESSION,
+    or KEEP_SEPARATE. Keeps DEFER'd blocks and any unannotated (still-pending) blocks.
+    Also removes empty semantic section headers left behind after all proposals are cleared.
+    """
+    path = Path(rq_path_str)
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines(keepends=True)
+
+    result: list[str] = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if PROPOSAL_HEADER_RE.match(line.strip()):
+            # Collect the entire proposal block (until next proposal header, section header, or EOF)
+            block: list[str] = [line]
+            i += 1
+            while i < len(lines):
+                if PROPOSAL_HEADER_RE.match(lines[i].strip()) or lines[i].startswith("## "):
+                    break
+                block.append(lines[i])
+                i += 1
+            block_text = "".join(block)
+            if _DEFER_RE.search(block_text):
+                result.extend(block)  # keep: user explicitly deferred
+            elif _RESOLVED_RE.search(block_text):
+                pass  # drop: resolved (approved or keep-separate)
+            else:
+                result.extend(block)  # keep: unannotated / still pending
+        else:
+            result.append(line)
+            i += 1
+
+    output = "".join(result)
+    # Remove empty semantic lint section headers left behind when all proposals were cleared
+    output = re.sub(
+        r"\n## Semantic Lint — [^\n]+\n\s*(?=\n## |\Z)",
+        "\n",
+        output,
+        flags=re.DOTALL,
+    )
+    path.write_text(output, encoding="utf-8")
 
 
 def _replace_wiki_page_body(page_path: str, new_body: str) -> None:
@@ -252,24 +568,60 @@ def _replace_wiki_page_body(page_path: str, new_body: str) -> None:
 
 
 def _parse_approved_proposals(review_queue_path: str) -> list[dict]:
-    """Parse review-queue.md for checked (approved) proposals."""
+    """Parse review-queue.md for checked (approved) proposals.
+
+    Handles three proposal types:
+      MERGE / TEMPORAL_SUCCESSION — header: ### [TYPE] page_a + page_b
+      LINK                        — header: ### [LINK_PROPOSED] page ← slug
+    """
     text = Path(review_queue_path).read_text(encoding="utf-8", errors="replace")
     proposals = []
-    current = None
+    current: dict | None = None
+
     for line in text.splitlines():
-        m = PROPOSAL_HEADER_RE.match(line.strip())
-        if m:
+        stripped = line.strip()
+
+        # --- detect proposal header ---
+        merge_m = _MERGE_HEADER_RE.match(stripped)
+        link_m = _LINK_HEADER_RE.match(stripped)
+
+        if merge_m:
             current = {
-                "type": m.group(1),
-                "page_a": m.group(2).strip(),
-                "page_b": m.group(3).strip(),
+                "type": merge_m.group(1),
+                "page_a": merge_m.group(2).strip(),
+                "page_b": merge_m.group(3).strip(),
             }
-        elif current and APPROVED_MERGE_RE.search(line):
+            continue
+
+        if link_m:
+            current = {
+                "type": "LINK_PROPOSED",
+                "page": link_m.group(1).strip(),
+                "slug": link_m.group(2).strip(),
+                "display_text": "",  # filled below
+            }
+            continue
+
+        if current is None:
+            continue
+
+        # --- capture display text for LINK proposals ---
+        dt_m = _DISPLAY_TEXT_RE.match(stripped)
+        if dt_m and current.get("type") == "LINK_PROPOSED":
+            current["display_text"] = dt_m.group(1)
+            continue
+
+        # --- detect approval action ---
+        if re.search(r"\[x\] APPROVE_MERGE", line, re.IGNORECASE):
             proposals.append({**current, "approved_action": "MERGE"})
             current = None
-        elif current and APPROVED_SUCCESSION_RE.search(line):
+        elif re.search(r"\[x\] APPROVE_TEMPORAL_SUCCESSION", line, re.IGNORECASE):
             proposals.append({**current, "approved_action": "TEMPORAL_SUCCESSION"})
             current = None
+        elif re.search(r"\[x\] APPROVE_LINK", line, re.IGNORECASE):
+            proposals.append({**current, "approved_action": "LINK"})
+            current = None
+
     return proposals
 
 
@@ -298,7 +650,7 @@ def _append_merge_log(merge_log_path: str, entry: dict) -> None:
 
 
 def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> None:
-    """Execute approved proposals from review-queue.md."""
+    """Execute approved proposals from review-queue.md, then clean resolved items from the queue."""
     from pipeline.merge_pages import merge_pages as _merge_pages
     from pipeline.alias_registry import add_alias
 
@@ -393,12 +745,48 @@ def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> N
             })
             print(f"[lint_wiki:apply] TEMPORAL_SUCCESSION: {page_b_rel} → {page_a_rel}")
 
+        elif p["approved_action"] == "LINK":
+            page_rel = p.get("page", "")
+            entity_slug = p.get("slug", "")
+            display_text = p.get("display_text", "")
+            page_path = root / page_rel
+
+            if not page_path.exists():
+                print(f"[lint_wiki:apply] WARNING: page not found for LINK: {page_rel}")
+                continue
+            if not display_text:
+                print(f"[lint_wiki:apply] WARNING: no display text for LINK in {page_rel}")
+                continue
+
+            content = page_path.read_text(encoding="utf-8")
+            wikilink = f"[[{entity_slug}|{display_text}]]"
+            # Replace first plain-text occurrence only (skip text already inside [[...]])
+            # Use a pattern that excludes matches already inside wikilinks
+            plain_pattern = re.compile(
+                r"(?<!\[\[)(?<!\|)" + re.escape(display_text) + r"(?!\]\])"
+            )
+            new_content, n = plain_pattern.subn(wikilink, content, count=1)
+            if n:
+                page_path.write_text(new_content, encoding="utf-8")
+                print(f"[lint_wiki:apply] LINK: '{display_text}' → [[{entity_slug}]] in {page_rel}")
+            else:
+                print(f"[lint_wiki:apply] WARNING: display text not found in {page_rel}: '{display_text}'")
+
+    # Remove resolved blocks from queue — inbox stays clean
+    _cleanup_review_queue(rq_path)
+    print("[lint_wiki:apply] review-queue.md updated — resolved proposals removed.")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A2Zero wiki linter")
     parser.add_argument("--wiki-root", default="wiki")
     parser.add_argument("--structural", action="store_true")
     parser.add_argument("--semantic", action="store_true")
+    parser.add_argument("--backlink", action="store_true",
+                        help="Librarian lint: find unlinked entity mentions in page bodies")
+    parser.add_argument("--scope", nargs="+", default=None,
+                        metavar="DIR",
+                        help="Directories to scan for backlink lint (default: strategies overviews)")
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--aliases-path", default="registry/entity_aliases.json")
     parser.add_argument("--merge-log", default="registry/merge-log.jsonl")
@@ -406,14 +794,18 @@ if __name__ == "__main__":
 
     if args.structural:
         findings = structural_lint(args.wiki_root)
-        append_lint_report(args.wiki_root, findings, "structural")
+        write_structural_findings(args.wiki_root, findings)
 
     if args.semantic:
         proposals = semantic_lint(args.wiki_root)
-        append_semantic_proposals(args.wiki_root, proposals)
+        write_semantic_proposals(args.wiki_root, proposals)
+
+    if args.backlink:
+        bl_proposals = backlink_lint(args.wiki_root, scope=args.scope)
+        write_backlink_proposals(args.wiki_root, bl_proposals)
 
     if args.apply:
         apply_proposals(args.wiki_root, args.aliases_path, args.merge_log)
 
-    if not any([args.structural, args.semantic, args.apply]):
-        print("Specify at least one mode: --structural, --semantic, --apply")
+    if not any([args.structural, args.semantic, args.backlink, args.apply]):
+        print("Specify at least one mode: --structural, --semantic, --backlink, --apply")

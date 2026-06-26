@@ -28,7 +28,7 @@ parent-strategy: '[[strategies/strategy-6-resilience]]'
 partners:
 - '[[actors/emergency-management]]'
 - '[[actors/red-cross]]'
-- '[[actors/meals-on-wheels]]'
+- '[[actors/ann-arbor-meals-on-wheels]]'
 - '[[actors/ann-arbor-public-schools]]'
 party-responsible: '[[actors/office-of-sustainability-and-innovations]]'
 related-strategies:
@@ -45,4 +45,4 @@ title: Conduct Asset and Needs Mapping of Neighborhoods
 type: initiative
 ---
 
-This initiative involves working with neighborhoods to systematically identify local assets and needs, then leveraging those assets to create plans that prioritize and address community needs in crisis situations ([[sources/cap/cap-2020|cap-2020]]). Community mapping is intended to identify safe gathering points and activate physical spaces such as homes as shelters during natural disasters and power outages ([[sources/cap/cap-2020|cap-2020]]). Collaborators include the [[actors/red-cross|Red Cross]], [[actors/meals-on-wheels|Meals on Wheels]], neighborhood associations, and [[actors/ann-arbor-public-schools|Ann Arbor Public Schools]], with neighborhood and youth ambassadors playing a key role in execution ([[sources/cap/cap-2020|cap-2020]]). The ten-year estimated cost is $300,000, targeting completion of asset maps for every Ann Arbor neighborhood by 2025 ([[sources/cap/cap-2020|cap-2020]]).
+This initiative involves working with neighborhoods to systematically identify local assets and needs, then leveraging those assets to create plans that prioritize and address community needs in crisis situations ([[sources/cap/cap-2020|cap-2020]]). Community mapping is intended to identify safe gathering points and activate physical spaces such as homes as shelters during natural disasters and power outages ([[sources/cap/cap-2020|cap-2020]]). Collaborators include the [[actors/red-cross|Red Cross]], [[actors/ann-arbor-meals-on-wheels|Meals on Wheels]], neighborhood associations, and [[actors/ann-arbor-public-schools|Ann Arbor Public Schools]], with neighborhood and youth ambassadors playing a key role in execution ([[sources/cap/cap-2020|cap-2020]]). The ten-year estimated cost is $300,000, targeting completion of asset maps for every Ann Arbor neighborhood by 2025 ([[sources/cap/cap-2020|cap-2020]]).

@@ -299,5 +299,74 @@
       "the City of Ann Arbor"
     ],
     "relationship": "name-variant"
+  },
+  "citizens-climate-lobby": {
+    "canonical": "actors/citizens-climate-lobby-ann-arbor",
+    "type": "actor",
+    "aliases": [
+      "Citizens Climate Lobby",
+      "CCL",
+      "Citizens Climate Lobby Ann Arbor"
+    ],
+    "relationship": "name-variant",
+    "notes": "National network; local Ann Arbor chapter is canonical. Generic slug redirects to local chapter."
+  },
+  "united-way": {
+    "canonical": "actors/united-way-of-washtenaw-county",
+    "type": "actor",
+    "aliases": [
+      "United Way",
+      "United Way Washtenaw County"
+    ],
+    "relationship": "name-variant",
+    "notes": "National network; local Washtenaw County chapter is canonical."
+  },
+  "ann-arbor-meals-on-wheels": {
+    "canonical": "actors/ann-arbor-meals-on-wheels",
+    "type": "actor",
+    "aliases": [
+      "Meals on Wheels",
+      "Ann Arbor Meals on Wheels",
+      "meals-on-wheels"
+    ],
+    "relationship": "name-variant",
+    "notes": "National network; local Ann Arbor chapter is canonical."
+  },
+  "city-of-ann-arbor-building-rental-and-inspection-services": {
+    "canonical": "actors/ann-arbor-building-rental-and-inspection-services",
+    "type": "actor",
+    "aliases": [
+      "City of Ann Arbor Building, Rental, and Inspection Services",
+      "Building Rental and Inspection Services",
+      "building-rental-and-inspection-services"
+    ],
+    "relationship": "name-variant",
+    "notes": "Verbose city-prefixed variant used in some CAP pages."
+  },
+  "neighborhood-climate-ambassadors-program": {
+    "canonical": "initiatives/a2zero-ambassadors-program",
+    "type": "initiative",
+    "aliases": [
+      "Neighborhood Climate Ambassadors Program"
+    ],
+    "relationship": "predecessor",
+    "as-of": "2026-06-26"
+  },
+  "community-solar-program": {
+    "canonical": "initiatives/community-solar-pilot",
+    "type": "initiative",
+    "aliases": [
+      "Community Solar Program"
+    ],
+    "relationship": "predecessor",
+    "as-of": "2026-06-26"
+  },
+  "direct-current-fast-charger": {
+    "canonical": "technology/dc-fast-charger",
+    "type": "technology",
+    "aliases": [
+      "Direct Current Fast Charger"
+    ],
+    "relationship": "name-variant"
   }
 }

@@ -29,7 +29,7 @@ milestones:
 parent-strategy: '[[strategies/strategy-3-building-efficiency]]'
 partners:
 - '[[actors/washtenaw-county-office-of-community-and-economic-development]]'
-- '[[actors/meals-on-wheels]]'
+- '[[actors/ann-arbor-meals-on-wheels]]'
 - '[[actors/michigan-saves]]'
 - '[[actors/dte-energy]]'
 - '[[actors/housing-bureau-for-seniors]]'
@@ -49,4 +49,4 @@ title: Support Aging in Place Efficiently
 type: initiative
 ---
 
-The Aging in Place Efficiently program integrates energy efficiency improvements into existing services available to low-income seniors, helping them reduce monthly energy expenditures and remain in their homes longer ([[sources/cap/cap-2020|cap-2020]]). The program is designed to expand weatherization services to a broader segment of low-income seniors than the County program is currently permitted to serve, with plans to scale from Ann Arbor to all of Washtenaw County by 2025 ([[sources/cap/cap-2020|cap-2020]]). Funding is assumed to be secured through a Partners for Places Grant, with existing partners including [[actors/meals-on-wheels|Meals on Wheels]] and the [[actors/housing-bureau-for-seniors|Housing Bureau for Seniors]] continuing to engage ([[sources/cap/cap-2020|cap-2020]]). The 10-year cost is estimated at $150,000; GHG reduction potential is incorporated into other plan calculations ([[sources/cap/cap-2020|cap-2020]]).
+The Aging in Place Efficiently program integrates energy efficiency improvements into existing services available to low-income seniors, helping them reduce monthly energy expenditures and remain in their homes longer ([[sources/cap/cap-2020|cap-2020]]). The program addresses the intersection of housing quality, energy costs, and aging-in-place goals for Ann Arbor's senior residents, and was designed and piloted during Year One of A2ZERO ([[sources/annual-reports/a2zero-year1|a2zero-year1]]). The program is designed to expand weatherization services to a broader segment of low-income seniors than the County program is currently permitted to serve, with plans to scale from Ann Arbor to all of Washtenaw County by 2025 ([[sources/cap/cap-2020|cap-2020]]). Funding is assumed to be secured through a Partners for Places Grant, with existing partners including [[actors/ann-arbor-meals-on-wheels|Meals on Wheels]] and the [[actors/housing-bureau-for-seniors|Housing Bureau for Seniors]] continuing to engage ([[sources/cap/cap-2020|cap-2020]]). The 10-year cost is estimated at $150,000; GHG reduction potential is incorporated into other plan calculations ([[sources/cap/cap-2020|cap-2020]]).
