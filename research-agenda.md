@@ -46,15 +46,15 @@ Status values: `—` (not searched) | `identified` | `partial` | `✓` (complete
 
 Documents identified and ready (or nearly ready) to ingest, in priority order.
 
-### Now
-- [ ] `silver/cap/cap-2020.md` — Climate Action Plan (seed document)
+### Done
+- [x] `prepared/cap/cap-2020.md` — Climate Action Plan (seed document, ingested 2026-06-24)
+- [x] `prepared/annual-reports/a2zero-year1.md` (ingested 2026-06-26)
 
 ### Next
-- [ ] `silver/annual-reports/a2zero-year1.md`
-- [ ] `silver/annual-reports/a2zero-year2.md`
-- [ ] `silver/annual-reports/a2zero-year3.md`
-- [ ] `silver/annual-reports/a2zero-year4.md`
-- [ ] `silver/annual-reports/a2zero-year5.md`
+- [ ] `prepared/annual-reports/a2zero-year2.md`
+- [ ] `prepared/annual-reports/a2zero-year3.md`
+- [ ] `prepared/annual-reports/a2zero-year4.md`
+- [ ] `prepared/annual-reports/a2zero-year5.md`
 
 ### Identified — Not Yet in Silver
 - 

@@ -2,7 +2,7 @@ import pytest
 import yaml
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from pipeline.raw_to_sources import write_silver, build_frontmatter
+from pipeline.raw_to_sources import write_source, build_frontmatter
 
 
 def test_build_frontmatter_annual_report():
@@ -20,7 +20,7 @@ def test_build_frontmatter_annual_report():
     assert fm["raw_path"] == "raw/annual-reports/a2zero-year1.pdf"
 
 
-def test_write_silver_creates_file(tmp_path):
+def test_write_source_creates_file(tmp_path):
     out_path = tmp_path / "a2zero-year1.md"
     frontmatter = {
         "uuid": "a2zero-year1",
@@ -30,7 +30,7 @@ def test_write_silver_creates_file(tmp_path):
         "ingest_date": "2026-06-18",
         "raw_path": "raw/annual-reports/a2zero-year1.pdf",
     }
-    write_silver(str(out_path), frontmatter, body="## Strategy 1\n\nContent here.")
+    write_source(str(out_path), frontmatter, body="## Strategy 1\n\nContent here.")
     assert out_path.exists()
     content = out_path.read_text()
     assert content.startswith("---\n")
@@ -38,7 +38,7 @@ def test_write_silver_creates_file(tmp_path):
     assert "## Strategy 1" in content
 
 
-def test_write_silver_frontmatter_is_valid_yaml(tmp_path):
+def test_write_source_frontmatter_is_valid_yaml(tmp_path):
     out_path = tmp_path / "test.md"
     frontmatter = {
         "uuid": "test-doc",
@@ -48,7 +48,7 @@ def test_write_silver_frontmatter_is_valid_yaml(tmp_path):
         "ingest_date": "2026-06-18",
         "raw_path": "raw/test.pdf",
     }
-    write_silver(str(out_path), frontmatter, body="Body text.")
+    write_source(str(out_path), frontmatter, body="Body text.")
     content = out_path.read_text()
     # extract YAML block
     parts = content.split("---\n")

@@ -5,6 +5,29 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 
 ---
 
+## 2026-06-26 — Year 1 Ingest, Backlink Lint, Naming Cleanup
+
+**What changed:**
+- **Year 1 annual report ingest** — first ingest after CAP 2020. Year 1 source file (`a2zero-year1.md`) had no YAML frontmatter; uncovered Pass 0 gap.
+- **Pass 0 YAML auto-injection** — `run_ingest.py` now prepends YAML frontmatter (`uuid`, `source_type` inferred from `prepared/<type>/` directory, `title`, `ingest_date`) to any copied source file that lacks one. Files prepared with frontmatter pass through unchanged.
+- **Strategy entity wikilinks** — tightened the holistic synthesizer prompt to REQUIRE wikilinks on first mention of every named entity in strategy bodies. Added `pipeline/enrich_strategy_links.py` for one-time enrichment of existing strategy pages (267-entity catalogue, LLM rewrite per page).
+- **Backlink lint (`--backlink`)** — new librarian-style lint mode in `lint_wiki.py`. Two stages: (1) string-match every page title against the bodies of strategies and overviews (≥5 chars, longest-first, skipping already-linked text); (2) LLM filter per page that confirms each candidate before emitting a `LINK_PROPOSED` proposal. `--apply` inserts the wikilink at the first plain-text occurrence.
+- **Review-queue redesign** — `review-queue.md` is now a live inbox, not an append log. `--structural` and `--semantic` and `--backlink` each replace their own section (only if unannotated). `_cleanup_review_queue` state machine clears resolved `[x] APPROVE_…` / `[x] KEEP_SEPARATE` blocks after `--apply`, leaving only `DEFER`'d and unannotated items.
+- **Ambassadors merge** — merged `neighborhood-and-youth-ambassador-program` into `a2zero-ambassadors-program` directly (semantic lint missed the pair due to title distance). Wrote alias, rewrote 7 inbound links, appended to merge-log with diagnostic notes.
+- **Naming cleanup — medallion vocabulary retired in code:**
+  - `pipeline/silver_to_gold.py` → `pipeline/wiki_pages.py`
+  - `extract_quads_from_silver()` → `extract_quads_from_source()`
+  - `run_silver_ingest()` → `run_source_ingest()`
+  - `silver` subcommand → `source` (new CLI: `python -m pipeline.run_ingest source --source prepared/...`)
+  - `tests/test_silver_to_gold.py` → `tests/test_wiki_pages.py`
+  - All `silver_body=` / `silver_content=` kwargs renamed to `source_body=` / `source_content=`
+  - `mechanism` moved out of Pass 2 writable types (now human-curated only — requires ≥2 corroborating sources)
+- **Docs harmonized** — SCHEMA.md, CLAUDE.md, CHANGELOG.md, research-agenda.md updated to reflect current state. `wiki/meta/` directory stubbed with placeholder files for schema-drift / topic-candidates / relationship-lexicon.
+
+**Why:** Year 2 ingest is next, and the team is about to grow. Drift between code, schema, and docs had accumulated to the point that a new collaborator reading SCHEMA.md would be misled. The naming cleanup retires the bronze/silver/gold medallion vocabulary fully — both file paths AND module/function/CLI names — so the codebase reads consistently with the data layers.
+
+---
+
 ## 2026-06-25 — Dedup/Alias Enforcement + lint_wiki
 
 **What changed:**
@@ -56,7 +79,7 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 **What changed:**
 - Added `pipeline/holistic_synthesizer.py` — Pass 1 full-document read producing overview page, strategy bodies, and stub pages for Pass 2 to fill.
 - Added `pipeline/wiki_index.py` — helpers for `index.md`, `log.md`, and `hot.md` per Obsidian vault conventions.
-- Wired three-pass orchestration into `run_silver_ingest`: holistic → chunked LDP → finalize.
+- Wired three-pass orchestration into `run_silver_ingest` (since renamed to `run_source_ingest`): holistic → chunked LDP → finalize.
 - Removed `plan_extractor.py` — functionality absorbed into holistic synthesizer.
 - Renamed `silver/` → `sources/` and `bronze/` → `raw/` throughout codebase for clarity.
 

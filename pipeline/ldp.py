@@ -2,7 +2,7 @@ import anthropic
 import json
 import re
 from pathlib import Path
-from pipeline.silver_to_gold import (
+from pipeline.wiki_pages import (
     parse_llm_quads_response,
     append_quads,
 )

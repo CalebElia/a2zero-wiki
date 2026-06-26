@@ -24,6 +24,8 @@ tags:
 - equity
 title: Neighborhood Climate Ambassadors Program
 type: initiative
+superseded-by: '[[initiatives/a2zero-ambassadors-program]]'
+superseded-date: '2026-06-26'
 ---
 
 The [[initiatives/neighborhood-climate-ambassadors-program|Neighborhood Climate Ambassadors Program]] was discussed at a planning meeting on December 4, 2019, focused on how to disseminate information about A2Zero and recruit community members to serve as neighborhood-level climate advocates ([[sources/cap/cap-2020|cap-2020]]). The program was conceived as a grassroots outreach mechanism to extend A2Zero's reach into Ann Arbor neighborhoods beyond formal public events ([[sources/cap/cap-2020|cap-2020]]).

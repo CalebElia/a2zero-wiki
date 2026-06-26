@@ -4,7 +4,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 
-MOCK_SILVER_BODY = """## Strategy 1: 100% Renewable Grid
+MOCK_SOURCE_BODY = """## Strategy 1: 100% Renewable Grid
 
 In September 2021, the U-20713 settlement established community solar in DTE territory.
 Missy Stults led the effort as Sustainability Director.
@@ -37,24 +37,24 @@ MOCK_QUADS = [
 
 @patch("pipeline.raw_to_sources.extract_pdf_text", return_value="Raw PDF text")
 @patch("anthropic.Anthropic")
-def test_run_ingest_creates_silver_file(
+def test_run_ingest_creates_source_file(
     mock_anthropic_class, mock_extract, tmp_path
 ):
     import pipeline.raw_to_sources as rts
     rts._DEFAULT_CLIENT = None
 
-    mock_silver_client = MagicMock()
-    mock_silver_client.messages.create.return_value = MagicMock(
-        content=[MagicMock(text=MOCK_SILVER_BODY)]
+    mock_source_client = MagicMock()
+    mock_source_client.messages.create.return_value = MagicMock(
+        content=[MagicMock(text=MOCK_SOURCE_BODY)]
     )
-    mock_gold_client = MagicMock()
-    mock_gold_client.messages.create.return_value = MagicMock(
+    mock_quad_client = MagicMock()
+    mock_quad_client.messages.create.return_value = MagicMock(
         content=[MagicMock(text=json.dumps(MOCK_QUADS))]
     )
-    # First Anthropic() call → source client (raw_to_sources); second → gold client (silver_to_gold)
-    mock_anthropic_class.side_effect = [mock_silver_client, mock_gold_client]
+    # First Anthropic() call → source client (raw_to_sources); second → quad client (wiki_pages)
+    mock_anthropic_class.side_effect = [mock_source_client, mock_quad_client]
 
-    source_dir = tmp_path / "silver" / "annual-reports"
+    source_dir = tmp_path / "sources" / "annual-reports"
     quads_file = tmp_path / "blackboard" / "quads.jsonl"
     wiki_root = tmp_path / "wiki"
     queue_file = tmp_path / "review-queue.md"
@@ -72,8 +72,8 @@ def test_run_ingest_creates_silver_file(
         run_date="2026-06-18",
     )
 
-    silver_file = source_dir / "a2zero-year1.md"
-    assert silver_file.exists(), "Silver file not created"
+    source_file = source_dir / "a2zero-year1.md"
+    assert source_file.exists(), "Source file not created"
     assert quads_file.exists(), "quads.jsonl not created"
     lines = [l for l in quads_file.read_text().splitlines() if l.strip()]
     assert len(lines) >= 1, "No quads written"

@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from pipeline.silver_to_gold import (
+from pipeline.wiki_pages import (
     load_existing_body,
     append_to_wiki_page,
     verify_existing_body_unchanged,

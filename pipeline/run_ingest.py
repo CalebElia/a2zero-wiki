@@ -4,7 +4,7 @@ import yaml
 from datetime import date
 from pathlib import Path
 from pipeline.raw_to_sources import convert_annual_report
-from pipeline.silver_to_gold import extract_quads_from_silver
+from pipeline.wiki_pages import extract_quads_from_source
 from pipeline.post_ingest import run_post_ingest
 from pipeline.ldp import run_ldp_ingest
 from pipeline.holistic_synthesizer import synthesize_source
@@ -25,7 +25,7 @@ def _should_use_ldp(source_content: str) -> bool:
     return len(lines) > 1000 and headings > 10
 
 
-def run_silver_ingest(
+def run_source_ingest(
     source_path: str,
     uuid: str,
     title: str,
@@ -188,8 +188,8 @@ def run_silver_ingest(
         )
     else:
         if not wiki_only:
-            extract_quads_from_silver(
-                silver_content=source_content,
+            extract_quads_from_source(
+                source_content=source_content,
                 source_uuid=uuid,
                 out_path=quads_path,
             )
@@ -259,13 +259,13 @@ def run_annual_report_ingest(
 
     # Step 2: Sources → Quads (Pass 2)
     source_content = Path(source_path).read_text(encoding="utf-8")
-    extract_quads_from_silver(
-        silver_content=source_content,
+    extract_quads_from_source(
+        source_content=source_content,
         source_uuid=uuid,
         out_path=quads_path,
     )
     # TODO: Pass 3 (wiki page extraction) not yet wired for PDF ingest path.
-    # Wire it here once the annual report silver files are confirmed stable.
+    # Wire it here once the annual-report source files are confirmed stable.
 
     # Steps 3-6: Post-ingest (lint + review queue)
     report = run_post_ingest(
@@ -286,16 +286,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A2Zero ingest pipeline")
     sub = parser.add_subparsers(dest="command")
 
-    # Source-first ingest (CAP, annual reports already in markdown)
-    p_silver = sub.add_parser("silver", help="Ingest a pre-built source markdown file")
-    p_silver.add_argument("--source", required=True, help="Path to source .md file in prepared/ (e.g. prepared/cap/cap-2020.md). Ingest copies it into wiki/sources/ automatically.")
-    p_silver.add_argument("--uuid", required=True)
-    p_silver.add_argument("--title", required=True)
-    p_silver.add_argument("--quads-path", default="blackboard/quads.jsonl")
-    p_silver.add_argument("--wiki-root", default="wiki")
-    p_silver.add_argument("--review-queue", default="review-queue.md")
-    p_silver.add_argument("--section-maps-dir", default="blackboard/section_maps")
-    mode_group = p_silver.add_mutually_exclusive_group()
+    # Source-first ingest (CAP, annual reports, etc. already in markdown)
+    p_source = sub.add_parser("source", help="Ingest a pre-built source markdown file from prepared/")
+    p_source.add_argument("--source", required=True, help="Path to source .md file in prepared/ (e.g. prepared/cap/cap-2020.md). Ingest copies it into wiki/sources/ automatically.")
+    p_source.add_argument("--uuid", required=True)
+    p_source.add_argument("--title", required=True)
+    p_source.add_argument("--quads-path", default="blackboard/quads.jsonl")
+    p_source.add_argument("--wiki-root", default="wiki")
+    p_source.add_argument("--review-queue", default="review-queue.md")
+    p_source.add_argument("--section-maps-dir", default="blackboard/section_maps")
+    mode_group = p_source.add_mutually_exclusive_group()
     mode_group.add_argument(
         "--wiki-only", action="store_true", default=False,
         help="Run Pass 1 + Pass 2 wiki extraction only; skip quad extraction and review-queue",
@@ -305,8 +305,8 @@ if __name__ == "__main__":
         help="Run Pass 2 quad extraction only; skip holistic synthesis, wiki writes, and Pass 3",
     )
 
-    # PDF-first ingest (future use when Bronze→Silver pipeline is complete)
-    p_pdf = sub.add_parser("pdf", help="Ingest from PDF (Bronze→Silver→Gold)")
+    # PDF-first ingest (future use when raw PDF → prepared markdown pipeline is wired up)
+    p_pdf = sub.add_parser("pdf", help="Ingest from PDF (raw → prepared → wiki)")
     p_pdf.add_argument("--pdf", required=True)
     p_pdf.add_argument("--uuid", required=True)
     p_pdf.add_argument("--year", required=True)
@@ -318,8 +318,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.command == "silver":
-        run_silver_ingest(
+    if args.command == "source":
+        run_source_ingest(
             source_path=args.source,
             uuid=args.uuid,
             title=args.title,

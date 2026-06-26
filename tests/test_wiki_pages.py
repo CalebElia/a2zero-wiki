@@ -3,7 +3,7 @@ import pytest
 import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from pipeline.silver_to_gold import (
+from pipeline.wiki_pages import (
     append_quads,
     parse_llm_quads_response,
     build_quads_prompt,
@@ -11,7 +11,7 @@ from pipeline.silver_to_gold import (
 from pipeline.models import validate_quad
 
 
-FIXTURE_SILVER = (Path(__file__).parent / "fixtures" / "sample_annual_report.md").read_text()
+FIXTURE_SOURCE = (Path(__file__).parent / "fixtures" / "sample_annual_report.md").read_text()
 
 
 def test_parse_llm_quads_response_returns_list():
@@ -118,7 +118,7 @@ def test_append_quads_skips_duplicate_ids(tmp_path):
 
 
 def test_build_quads_prompt_includes_source_uuid():
-    prompt = build_quads_prompt(silver_body="Some text.", source_uuid="a2zero-year1")
+    prompt = build_quads_prompt(source_body="Some text.", source_uuid="a2zero-year1")
     assert "a2zero-year1" in prompt
 
 
@@ -133,9 +133,9 @@ def test_parse_llm_quads_response_raises_on_prose_prefix():
     reason="requires ANTHROPIC_API_KEY",
 )
 def test_integration_extract_quads_from_fixture(tmp_path):
-    from pipeline.silver_to_gold import extract_quads_from_silver
+    from pipeline.wiki_pages import extract_quads_from_source
     out_file = tmp_path / "quads.jsonl"
-    quads = extract_quads_from_silver(FIXTURE_SILVER, source_uuid="test-year1", out_path=str(out_file))
+    quads = extract_quads_from_source(FIXTURE_SOURCE, source_uuid="test-year1", out_path=str(out_file))
     assert len(quads) >= 1
     for q in quads:
         errors = validate_quad(q)

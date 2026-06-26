@@ -3,7 +3,7 @@ import json
 import re
 from pathlib import Path
 
-from pipeline.silver_to_gold import build_wiki_page, write_wiki_page, append_to_wiki_page
+from pipeline.wiki_pages import build_wiki_page, write_wiki_page, append_to_wiki_page
 from pipeline.wiki_index import append_index_entry, append_log
 from pipeline.alias_registry import load_aliases, resolve_slug, resolve_slug_for_title
 from pipeline.merge_pages import merge_pages as _merge_pages

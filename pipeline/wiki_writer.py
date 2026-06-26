@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 from pipeline.alias_registry import load_aliases, resolve_slug, resolve_slug_for_title
 from pipeline.merge_pages import merge_pages as _merge_pages
-from pipeline.silver_to_gold import (
+from pipeline.wiki_pages import (
     VALID_PAGE_TYPES,
     build_wiki_page,
     write_wiki_page,

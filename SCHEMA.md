@@ -4,22 +4,29 @@ This file defines the architecture, page types, ingest rules, ontology governanc
 and wikilink conventions for the A2Zero knowledge wiki. Read this before processing
 any source document or querying the wiki.
 
+> **Implemented vs Planned:** Several page types and directories described below are
+> defined in code and reserved in the schema but have not yet been produced by any
+> ingest. They are clearly marked as **(planned)** where they appear. Once a source
+> document surfaces an instance, the directory and pages will materialize.
+
 ---
 
 ## Architecture Overview
 
-The A2Zero wiki uses a **three-layer medallion architecture**:
+The A2Zero pipeline uses four data layers:
 
 ```
 raw/             Immutable raw source files (PDFs, transcripts, originals)
-sources/         Cleaned LLM-ready markdown — immutable, the citation anchor
+prepared/        Cleaned LLM-ready markdown, reviewed and awaiting ingest (HITL gate)
+wiki/sources/    Ingested source documents, copied in by Pass 0 — the citation anchor
 wiki/            LLM-curated knowledge pages — the living wiki
 blackboard/      Structured quad data (subject/predicate/object/source triples)
 ```
 
-The previous medallion naming (`bronze/`, `silver/`) has been replaced with
-self-documenting names that reflect what each layer actually is rather than its
-position in an abstract pipeline pattern.
+The earlier `bronze/`/`silver/`/`gold/` medallion vocabulary has been fully retired
+in favor of names that describe what each layer actually contains. The `prepared/`
+directory is the human-in-the-loop staging gate: a file is only a wiki node once
+ingest copies it into `wiki/sources/`.
 
 The wiki is an **Obsidian vault**. Every page is a Markdown file with YAML
 frontmatter. Wikilinks (`[[slug|display]]`) are the primary relationship mechanism.
@@ -34,22 +41,31 @@ wiki/
   index.md             Master catalog — one line per page, read FIRST on any query
   log.md               Append-only audit trail of every ingest/query/lint operation
   hot.md               ~500-word recent-state cache for cold-start session continuity
-  overviews/           One synthesis page per source document (pass 1)
-  strategies/          The 7 A2Zero strategy pages (pre-created stubs, bodies by pass 1)
-  initiatives/         Named programs, pilots, projects (pass 1 stubs → pass 2 fills)
-  actors/              Organizations and individuals (pass 1 stubs → pass 2 fills)
-  locations/           Places and geographic units (pass 2)
-  meetings/            Council meetings, public hearings (pass 2)
-  topics/              Cross-cutting synthesis pages (candidate via pass 1, confirmed by human)
-  contradictions/      Flagged tensions or inconsistencies (pass 2, low threshold)
-  technology/          Technologies and tools (pass 2)
-  political-events/    Legislative votes, elections, policy milestones (pass 2)
+  sources/             Ingested source documents (Pass 0 copies from prepared/)
+  overviews/           One synthesis page per source document (Pass 1)
+  strategies/          The 7 A2Zero strategy pages (pre-created stubs, bodies by Pass 1)
+  initiatives/         Named programs, pilots, projects (Pass 1 stubs → Pass 2 fills)
+  actors/              Organizations and individuals (Pass 1 stubs → Pass 2 fills)
+  locations/           Places and geographic units (Pass 2)
+  meetings/            Council meetings, public hearings (Pass 2)
+  political-events/    Legislative votes, elections, policy milestones (Pass 2)
+  technology/          Technologies and tools (Pass 2)
+  funding-events/      Specific grant awards and dollar allocations (Pass 2)
+  framing/             Communications strategies / advocacy framings (Pass 2, planned)
+  contradictions/      Flagged tensions or inconsistencies (Pass 2, planned, low threshold)
+  topics/              Cross-cutting synthesis pages (candidate via Pass 1, promoted by human)
   meta/                Wiki governance files — not ingest output, not in index
-    schema-drift.md    Proposed new types/verbs awaiting human review
-    topic-candidates.md LLM-surfaced cross-cutting topics awaiting human promotion
-    relationship-lexicon.md Approved relationship verbs with examples
-  plans/               [DEPRECATED — replaced by overviews/]
+    schema-drift.md      Proposed new types/verbs awaiting human review
+    topic-candidates.md  LLM-surfaced cross-cutting topics awaiting human promotion
+    relationship-lexicon.md  Approved relationship verbs with examples
 ```
+
+**Currently on disk:** `sources`, `overviews`, `strategies`, `initiatives`, `actors`,
+`locations`, `meetings`, `political-events`, `technology`, `funding-events`, `topics`.
+
+**Planned (defined in schema, no instances yet):** `framing`, `contradictions`,
+`meta`. These will be created lazily when an ingest produces the first instance,
+or — for `meta` — when the LLM proposes a schema drift.
 
 ---
 
@@ -304,13 +320,15 @@ proposing additions.
 
 **Pass 2 (chunked extraction):**
 `initiative`, `actor`, `funding-event`, `technology`, `location`, `meeting`,
-`framing`, `political-event`, `contradiction`, `mechanism`
+`framing` (planned), `political-event`, `contradiction` (planned)
 
 **Pass 1 (holistic synthesizer only):**
 `overview`, `strategy`
 
-**Human-curated only:**
-`topic`, `synthesis`
+**Human-curated or post-ingest synthesis only:**
+`topic` (Pass 1 surfaces candidates; human promotes),
+`synthesis`,
+`mechanism` (causal claims requiring ≥2 corroborating sources; not extractable from a single ingest)
 
 ### Current approved relationship verbs
 
@@ -338,7 +356,7 @@ type: overview
 uuid: "a3f8c2..."
 title: "Ann Arbor A2Zero Living Carbon Neutrality Plan (2020)"
 source-type: strategic-plan
-source-ref: "[[silver/cap/cap-2020]]"
+source-first-seen: "[[sources/cap/cap-2020]]"
 date: 2020-04
 scope: community-wide
 structure:
@@ -367,7 +385,7 @@ When the holistic synthesizer creates this page, it also adds a `wiki-overview:`
 backlink to the source file's frontmatter, making the link bidirectional:
 
 ```yaml
-# Added to silver/cap/cap-2020.md by holistic_synthesizer:
+# Added to wiki/sources/cap/cap-2020.md by holistic_synthesizer:
 wiki-overview: "[[overviews/cap-2020]]"
 ```
 
@@ -470,7 +488,7 @@ role: party-responsible
 tags:
   - city-government
   - sustainability
-source-first-seen: "[[silver/cap/cap-2020]]"
+source-first-seen: "[[sources/cap/cap-2020]]"
 last-updated: 2026-06-23
 ---
 ```
@@ -493,8 +511,8 @@ type: contradiction
 uuid: "e2c6d9..."
 title: "CCA cost estimate discrepancy"
 sources:
-  - "[[silver/cap/cap-2020]]"
-  - "[[silver/annual-report-year1]]"
+  - "[[sources/cap/cap-2020]]"
+  - "[[sources/annual-reports/a2zero-year1]]"
 status: flagged
 tags:
   - cca
@@ -560,6 +578,7 @@ pre-created manually before ingest begins.
 | `meeting` | `wiki/meetings/<slug>.md` | Council meetings, public hearings |
 | `technology` | `wiki/technology/<slug>.md` | Technologies, tools, infrastructure types |
 | `political-event` | `wiki/political-events/<slug>.md` | Votes, elections, legislative milestones |
+| `funding-event` | `wiki/funding-events/<slug>.md` | Specific grant awards or appropriations with a date, dollar amount, source, and recipient |
 
 ---
 
@@ -577,7 +596,7 @@ Slugs are relative to the vault root (no leading `wiki/`).
 ### Citation in body prose
 
 ```
-The CCA is projected to reduce community emissions by 22% ([[silver/cap/cap-2020|cap-2020]]).
+The CCA is projected to reduce community emissions by 22% ([[sources/cap/cap-2020|cap-2020]]).
 ```
 
 Never copy bullet lists verbatim. Synthesize and rephrase, then cite.
@@ -601,10 +620,10 @@ Every wiki page originating from a source document includes `source-first-seen`
 in frontmatter. The source file is the most-connected node in the graph:
 
 ```
-silver/cap/cap-2020.md
+wiki/sources/cap/cap-2020.md
   ← (wiki-overview)        wiki/overviews/cap-2020.md  [bidirectional]
-  ← (source-first-seen)    wiki/initiatives/cca.md
-  ← (source-first-seen)    wiki/actors/osi.md
+  ← (source-first-seen)    wiki/initiatives/community-choice-aggregation.md
+  ← (source-first-seen)    wiki/actors/office-of-sustainability-and-innovations.md
   ← (source-first-seen)    wiki/strategies/strategy-1-renewable-grid.md
   ...
 ```
@@ -615,13 +634,16 @@ silver/cap/cap-2020.md
 
 For each new source document:
 
-1. Add cleaned markdown to `silver/<source-type>/<slug>.md`
-2. Run `python -m pipeline.run_ingest silver --source <path> [--wiki-only]`
-3. **Pass 1**: holistic synthesizer reads full doc → W→E→E loop → writes overview,
+1. Add cleaned markdown to `prepared/<source-type>/<uuid>.md` (HITL review gate)
+2. Run `python -m pipeline.run_ingest source --source prepared/<type>/<uuid>.md --uuid <uuid> --title "<title>" [--wiki-only | --quads-only]`
+3. **Pass 0**: copy source from `prepared/` → `wiki/sources/`; inject YAML frontmatter if absent
+4. **Pass 1**: holistic synthesizer reads full doc → W→E→E loop → writes overview,
    strategy bodies, stub pages, topic candidates, seeds index, opens log entry
-4. **Pass 2**: wiki extraction → populates stubs + discovers new pages;
+5. **Pass 1.5**: every proposed slug resolved through `registry/entity_aliases.json` before write
+6. **Pass 2**: wiki extraction → populates stubs + discovers new pages;
    short docs use single-call extraction, long docs use chunk loop
-5. **Pass 3**: synchronizes index with all page frontmatter, seals log, updates hot.md
+7. **Pass 3**: synchronizes index with all page frontmatter, seals log, updates hot.md
+8. **Post-ingest (on demand)**: `python -m pipeline.lint_wiki --structural --semantic --backlink` then `--apply` after review-queue annotations
 
 ---
 
@@ -661,7 +683,8 @@ For each new source document:
 | `wiki/index.md`, `wiki/log.md`, `wiki/hot.md` | Core LLM-wiki infrastructure (Karpathy pattern) |
 | Prompt caching on `[FULL DOCUMENT]` block | W→E→E loop reuses same document — cache_control saves ~60% on calls 2 and 3 |
 | max_tokens per step: 16384 / 4096 / 16384 | Writer/Editor need headroom; prior 8192 truncated 8 of 20 chunks |
-| `silver/` → `sources/` (pending rename) | Wikilink citations self-documenting inside the vault |
+| `silver/` → `sources/`, `bronze/` → `raw/`, `prepared/` HITL gate added | Self-documenting layer names; medallion vocabulary fully retired (2026-06-26) |
+| `silver_to_gold.py` → `wiki_pages.py`, `silver` subcommand → `source`, `run_silver_ingest()` → `run_source_ingest()` | Codebase aligned with the retired medallion vocabulary (2026-06-26) |
 | Chunk clipping: depth-1 ends before first depth-2 child | Prevents 3,000+ line catch-all chunks from duplicating all strategy content |
 | Read-understand-integrate model for multi-source ingest | v2 failure: blind append across 5 annual report ingests produced 4 near-identical paragraphs per strategy; holistic synthesizer now reads existing page bodies before writing and replaces rather than appends |
 | `projections:` + `outcomes:` structured frontmatter lists | Enables machine-readable plan-vs-reality trajectory tracking; dashboard cards and funder queries can extract dated figures without LLM prose parsing |

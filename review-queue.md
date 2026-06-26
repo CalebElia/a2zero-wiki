@@ -1,16 +1,11 @@
-# Review Queue — cap-2020 — 2026-06-22
+# Review Queue
 
-## Summary
-- Total quads: 128
-- Confirmed: 128
-- Unverified: 0
-- Schema errors: 0
-- Duplicate IDs: 0
-- Dark matter quads: 0
+Live inbox for lint findings awaiting human decision. Each `## Lint —` section is
+replaced wholesale on the next run of that lint mode (only if unannotated).
+Annotated proposals (`[x] APPROVE_...`, `[x] KEEP_SEPARATE`, `[x] DEFER`) are
+processed by `lint_wiki --apply`; resolved blocks are cleared, deferred and
+unannotated items persist.
 
-## 🟢 Low — Skim Confirmed Quads
-128 confirmed quads added from `cap-2020`.
-_Run: `duckdb -c "SELECT date, subject, relation, object FROM read_ndjson('blackboard/quads.jsonl') WHERE list_contains(sources, 'cap-2020') ORDER BY date"`_
 ## Structural Lint — 2026-06-26
 
 - [BROKEN_LINK] `initiatives/non-motorized-transportation-plan.md` — [[actors/ann-arbor-transportation-commission]] → actors/ann-arbor-transportation-commission.md not found

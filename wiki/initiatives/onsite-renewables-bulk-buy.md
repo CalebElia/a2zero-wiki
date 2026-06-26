@@ -21,7 +21,7 @@ milestones:
   year: 2030
 parent-strategy: '[[strategies/strategy-1-renewable-grid]]'
 partners:
-- '[[actors/city-of-ann-arbor-building-rental-and-inspection-services]]'
+- '[[actors/ann-arbor-building-rental-and-inspection-services]]'
 - '[[actors/michigan-saves]]'
 party-responsible: '[[actors/office-of-sustainability-and-innovations]]'
 related-strategies:

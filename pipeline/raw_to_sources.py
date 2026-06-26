@@ -76,7 +76,7 @@ def build_frontmatter(
     return fm
 
 
-def write_silver(out_path: str, frontmatter: dict, body: str):
+def write_source(out_path: str, frontmatter: dict, body: str):
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     fm_yaml = yaml.dump(frontmatter, allow_unicode=True, default_flow_style=False)
     content = f"---\n{fm_yaml}---\n\n{body}\n"
@@ -103,5 +103,5 @@ def convert_annual_report(
         raw_path=pdf_path,
         ingest_date=ingest_date,
     )
-    write_silver(out_path, fm, body)
+    write_source(out_path, fm, body)
     return out_path

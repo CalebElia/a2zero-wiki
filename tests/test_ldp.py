@@ -187,10 +187,10 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class, mock_wi
     assert isinstance(pages_written, int)
 
 
-def test_run_silver_ingest_routes_to_ldp_when_flagged(tmp_path):
+def test_run_source_ingest_routes_to_ldp_when_flagged(tmp_path):
     from unittest.mock import patch, MagicMock
-    silver_file = tmp_path / "cap-2020.md"
-    silver_file.write_text(SAMPLE_SILVER)
+    source_file = tmp_path / "cap-2020.md"
+    source_file.write_text(SAMPLE_SILVER)
     quads_file = tmp_path / "quads.jsonl"
     queue_file = tmp_path / "review-queue.md"
 
@@ -203,9 +203,9 @@ def test_run_silver_ingest_routes_to_ldp_when_flagged(tmp_path):
         mock_post.return_value = MagicMock(
             total_quads=0, schema_errors=[], dark_matter_ids=[]
         )
-        from pipeline.run_ingest import run_silver_ingest
-        run_silver_ingest(
-            source_path=str(silver_file),
+        from pipeline.run_ingest import run_source_ingest
+        run_source_ingest(
+            source_path=str(source_file),
             uuid="test-cap",
             title="Test CAP",
             quads_path=str(quads_file),
@@ -218,15 +218,15 @@ def test_run_silver_ingest_routes_to_ldp_when_flagged(tmp_path):
         mock_log.assert_called_once()
 
 
-def test_run_silver_ingest_uses_single_pass_without_ldp_flag(tmp_path):
-    silver_content = "## Short doc\n\nJust a few lines.\n"
-    silver_file = tmp_path / "short.md"
-    silver_file.write_text(silver_content)
+def test_run_source_ingest_uses_single_pass_without_ldp_flag(tmp_path):
+    source_content = "## Short doc\n\nJust a few lines.\n"
+    source_file = tmp_path / "short.md"
+    source_file.write_text(source_content)
     quads_file = tmp_path / "quads.jsonl"
     queue_file = tmp_path / "review-queue.md"
 
     with patch("pipeline.run_ingest.synthesize_source") as mock_synth, \
-         patch("pipeline.run_ingest.extract_quads_from_silver") as mock_extract, \
+         patch("pipeline.run_ingest.extract_quads_from_source") as mock_extract, \
          patch("pipeline.run_ingest.rebuild_index") as mock_rebuild, \
          patch("pipeline.run_ingest.wiki_append_log") as mock_log, \
          patch("pipeline.run_ingest.run_post_ingest") as mock_post, \
@@ -242,9 +242,9 @@ def test_run_silver_ingest_uses_single_pass_without_ldp_flag(tmp_path):
             stop_reason="end_turn",
             content=[MagicMock(text="[]")],
         )
-        from pipeline.run_ingest import run_silver_ingest
-        run_silver_ingest(
-            source_path=str(silver_file),
+        from pipeline.run_ingest import run_source_ingest
+        run_source_ingest(
+            source_path=str(source_file),
             uuid="short-doc",
             title="Short Doc",
             quads_path=str(quads_file),

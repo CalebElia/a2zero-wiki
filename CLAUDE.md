@@ -12,10 +12,10 @@ Next sources: Five annual progress reports (`prepared/annual-reports/a2zero-year
 ## Directory Map
 
 ```
-raw/                  ← PDFs and unprocessed source files (bronze)
+raw/                  ← PDFs and unprocessed source files (immutable originals)
 prepared/             ← Cleaned markdown, reviewed, awaiting ingest (HITL gate)
   cap/                  ← cap-2020.md (pattern copy; already ingested)
-  annual-reports/       ← year1..5.md (ready to ingest)
+  annual-reports/       ← year1..5.md (year1 ingested, year2..5 awaiting ingest)
 wiki/                 ← Obsidian vault (everything here is intentionally ingested)
   sources/              ← Source documents copied here by ingest step 0
   strategies/           ← 7 strategy pages (strategy-1 through strategy-7)
@@ -27,34 +27,84 @@ wiki/                 ← Obsidian vault (everything here is intentionally inges
   technology/           ← Technology types with deployment/barrier details
   funding-events/       ← Specific grant awards and dollar allocations
   meetings/             ← Deliberative body meetings where A2Zero items were discussed
-  topics/               ← Aggregate/curated pages (not pipeline-generated)
+  framing/              ← Communications strategies / advocacy framings (planned — none yet on disk)
+  contradictions/       ← Cross-source tensions and conflicts (planned — none yet on disk)
+  topics/               ← Aggregate/curated synthesis pages (human-promoted from topic-candidates)
+  meta/                 ← Governance files (schema-drift.md, topic-candidates.md, relationship-lexicon.md)
   index.md              ← Auto-rebuilt by Pass 3
   log.md                ← Append-only ingest log
-  hot.md                ← Frequently linked pages
+  hot.md                ← Most-recent session summary (overwritten each Pass 3)
 blackboard/           ← Quads (structured fact triples) + section maps
-registry/             ← entity_registry.json, entity_aliases.json
+registry/             ← entity_registry.json, entity_aliases.json, merge-log.jsonl
 pipeline/             ← All Python ingest code
-tests/                ← pytest suite (101 tests, 1 skipped — must stay green)
-archive/              ← Prior wiki snapshots
-docs/                 ← Empty; reserved for design docs
+tests/                ← pytest suite (137 tests, 1 skipped — must stay green)
+archive/              ← Prior wiki snapshots (v1, v2, v3-pre-ingest)
+docs/superpowers/     ← Historical implementation plans and specs from earlier sessions
+CHANGELOG.md          ← Reverse-chronological session-by-session change log
+SCHEMA.md             ← Page types, frontmatter schemas, ontology governance
+research-agenda.md    ← Source-selection priorities (human-maintained, not read by pipeline)
+review-queue.md       ← Live inbox: structural/semantic/backlink lint findings awaiting decisions
 ```
 
 ## Three-Pass Ingest Pipeline
 
-Run with: `python -m pipeline.run_ingest silver --source prepared/<type>/<uuid>.md --uuid <uuid> --title "<title>" --quads-path blackboard/quads.jsonl --wiki-root wiki --review-queue review-queue.md --section-maps-dir blackboard/section_maps`
+Run with:
+```
+python -m pipeline.run_ingest source \
+  --source prepared/<type>/<uuid>.md \
+  --uuid <uuid> \
+  --title "<title>" \
+  --quads-path blackboard/quads.jsonl \
+  --wiki-root wiki \
+  --review-queue review-queue.md \
+  --section-maps-dir blackboard/section_maps
+```
 
-**Pass 0 (copy):** Source file copied from `prepared/<type>/<uuid>.md` → `wiki/sources/<type>/<uuid>.md`.
+Optional flags on the `source` subcommand:
+- `--wiki-only` — Pass 1 + Pass 2 wiki extraction only; skip quad extraction and review-queue
+- `--quads-only` — Pass 2 quad extraction only; skip Pass 1 and wiki writes
+
+**Pass 0 (copy + YAML inject):** Source file copied from `prepared/<type>/<uuid>.md` → `wiki/sources/<type>/<uuid>.md`. If the prepared file has no YAML frontmatter, one is injected (`uuid`, `source_type` inferred from directory, `title`, `ingest_date`).
 
 **Pass 1 (holistic synthesis):** Full-document read. Writer → Evaluator → Editor loop. Produces: overview page, strategy body text, stub pages for all entities mentioned in the document. Uses streaming API (`max_tokens=64000`).
 
+**Pass 1.5 (alias resolution):** Every proposed entity slug is resolved through `registry/entity_aliases.json` before writing. Known aliases redirect to the canonical page and trigger an LLM merge if the canonical page has real content.
+
 **Pass 2 (chunked LDP):** Section-by-section extraction. Each chunk produces actor/initiative/location/political-event/technology/funding-event/meeting pages. Integrates into existing stubs from Pass 1.
 
-**Pass 3 (finalize):** Rebuilds `index.md`, seals `log.md`.
+**Pass 3 (finalize):** Rebuilds `index.md`, seals `log.md`, overwrites `hot.md`.
 
 Post-ingest linting (on-demand):
-  python -m pipeline.lint_wiki --wiki-root wiki --structural   # broken links, orphans
-  python -m pipeline.lint_wiki --wiki-root wiki --semantic     # near-duplicate detection (LLM)
-  python -m pipeline.lint_wiki --wiki-root wiki --apply        # execute approved proposals from review-queue.md
+```
+python -m pipeline.lint_wiki --wiki-root wiki --structural    # broken links, orphans
+python -m pipeline.lint_wiki --wiki-root wiki --semantic      # near-duplicate detection (LLM)
+python -m pipeline.lint_wiki --wiki-root wiki --backlink      # find missed entity mentions in strategy/overview bodies
+python -m pipeline.lint_wiki --wiki-root wiki --apply         # execute approved proposals from review-queue.md
+```
+
+One-time enrichment (rarely needed; used after prompt changes):
+```
+python -m pipeline.enrich_strategy_links --wiki-root wiki [--dry-run]
+```
+
+## Pipeline Modules
+
+| File | Role |
+|---|---|
+| `run_ingest.py` | CLI entry point + three-pass orchestration |
+| `holistic_synthesizer.py` | Pass 1 Writer→Evaluator→Editor loop |
+| `wiki_writer.py` | Pass 2 chunk extraction (calls LDP for long docs) |
+| `ldp.py` | Long-document chunk loop with section maps |
+| `wiki_pages.py` | Page primitives (build/write/append) + `VALID_PAGE_TYPES` + quad extraction |
+| `wiki_index.py` | Pass 3 helpers: `rebuild_index`, `append_log`, `update_hot` |
+| `alias_registry.py` | Pass 1.5 alias resolution |
+| `merge_pages.py` | LLM merge for duplicate page bodies |
+| `lint_wiki.py` | Post-ingest linting (structural, semantic, backlink, apply) |
+| `enrich_strategy_links.py` | One-time pass to inject entity wikilinks into strategy bodies |
+| `raw_to_sources.py` | PDF → cleaned markdown (currently paused) |
+| `post_ingest.py` + `quad_linter.py` | Quad pipeline review-queue generation (paused pending schema design) |
+| `models.py` | `WikiPage` dataclass + quad schema validation |
+| `registry.py` | Legacy entity registry (used by quad linter) |
 
 ## Key Conventions
 
@@ -74,6 +124,10 @@ Post-ingest linting (on-demand):
 **Alias registry:** `registry/entity_aliases.json` — canonical source of truth for entity name variants and temporal relationships. Every write in Pass 1 and Pass 2 resolves through this registry (Pass 1.5). Entries have: `canonical`, `type`, `aliases`, `relationship` (`name-variant`|`predecessor`|`absorbed-by`), optional `as-of`/`notes`. Approved lint proposals are automatically written back here by `lint_wiki --apply`.
 
 **Merge log:** `registry/merge-log.jsonl` — append-only audit trail for every approved entity merge or temporal succession. Each entry: `date`, `action`, `from`/`into` (or `predecessor`/`successor`), `approved-by`. Use `git show <hash>:wiki/<path>.md` to recover any deleted page from git history.
+
+**Review queue:** `review-queue.md` is a live inbox, not an append log. Each lint pass (`--structural`, `--semantic`, `--backlink`) replaces its own section. Annotated proposals (`[x] APPROVE_...` / `[x] KEEP_SEPARATE`) are cleared by `--apply`; unactioned and `DEFER`'d proposals stay.
+
+**Schema drift:** When the LLM encounters an entity that doesn't fit any approved `type:` from `VALID_PAGE_TYPES`, it writes the page using the closest approved type AND adds `proposed-type: <new-type>` to the frontmatter. The pipeline auto-logs an entry to `wiki/meta/schema-drift.md` for HITL review. Approve a proposed type by adding it to `VALID_PAGE_TYPES` in `pipeline/wiki_pages.py`.
 
 ## What NOT to Do
 
@@ -112,7 +166,7 @@ git push                         # push the revert
 python -m pytest tests/ -q       # must be green before any commit to main
 ```
 
-101 tests, 1 skipped (intentional). If tests break, fix them before continuing — do not bypass.
+137 tests, 1 skipped (intentional). If tests break, fix them before continuing — do not bypass.
 
 ## GitHub
 

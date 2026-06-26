@@ -292,7 +292,7 @@ def test_validate_synthesis_output_catches_bad_source_ref(tmp_path):
             "frontmatter": {
                 "type": "overview",
                 "title": "Test",
-                "source-ref": "silver/cap/cap-2020",  # missing [[...]] wikilink format
+                "source-ref": "sources/cap/cap-2020",  # missing [[...]] wikilink format
             },
             "body": "Some body.",
         },
