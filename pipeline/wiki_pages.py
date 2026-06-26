@@ -51,14 +51,50 @@ def build_quads_prompt(source_body: str, source_uuid: str) -> str:
     )
 
 
+def _recover_partial_quad_array(text: str) -> list[dict]:
+    """Walk chars tracking brace depth to find all complete top-level objects."""
+    start = text.find("[")
+    if start == -1:
+        return []
+    last_complete = -1
+    depth = 0
+    in_string = False
+    escape = False
+    for i, ch in enumerate(text[start:], start):
+        if escape:
+            escape = False
+            continue
+        if ch == "\\" and in_string:
+            escape = True
+            continue
+        if ch == '"':
+            in_string = not in_string
+            continue
+        if in_string:
+            continue
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                last_complete = i
+    if last_complete == -1:
+        return []
+    return json.loads(text[start : last_complete + 1] + "]")
+
+
 def parse_llm_quads_response(raw: str) -> list[dict]:
     # strip markdown code fence if present
-    cleaned = re.sub(r"^```(?:json)?\n?", "", raw.strip())
-    cleaned = re.sub(r"\n?```$", "", cleaned)
+    cleaned = re.sub(r"^```(?:json)?\s*", "", raw.strip())
+    cleaned = re.sub(r"\s*```$", "", cleaned)
     try:
         quads = json.loads(cleaned)
-    except json.JSONDecodeError as e:
-        raise ValueError(f"LLM response is not valid JSON. Raw response: {raw!r}") from e
+    except json.JSONDecodeError:
+        quads = _recover_partial_quad_array(cleaned)
+        if quads:
+            print(f"[quads] WARNING: response was truncated — recovered {len(quads)} complete quads")
+        else:
+            raise ValueError(f"LLM response is not valid JSON and no quads could be recovered. Raw response: {raw!r}")
     if not isinstance(quads, list):
         raise ValueError(f"LLM response must be a JSON array, got {type(quads).__name__}. Raw: {raw!r}")
     for q in quads:
@@ -99,9 +135,9 @@ def extract_quads_from_source(
     # strip frontmatter before sending to LLM
     body = re.sub(r"^---\n.*?\n---\n", "", source_content, flags=re.DOTALL).strip()
 
-    response = client.messages.create(
+    with client.messages.stream(
         model="claude-sonnet-4-6",
-        max_tokens=8192,
+        max_tokens=16384,
         system=QUADS_SYSTEM,
         messages=[
             {
@@ -109,7 +145,12 @@ def extract_quads_from_source(
                 "content": build_quads_prompt(body, source_uuid),
             }
         ],
-    )
+    ) as stream:
+        response = stream.get_final_message()
+
+    if response.stop_reason == "max_tokens":
+        print(f"[quads] WARNING: response truncated for {source_uuid} — partial recovery will be attempted")
+
     raw = response.content[0].text
     quads = parse_llm_quads_response(raw)
     append_quads(quads, out_path)

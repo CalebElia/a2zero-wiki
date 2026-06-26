@@ -47,10 +47,17 @@ def test_run_ingest_creates_source_file(
     mock_source_client.messages.create.return_value = MagicMock(
         content=[MagicMock(text=MOCK_SOURCE_BODY)]
     )
-    mock_quad_client = MagicMock()
-    mock_quad_client.messages.create.return_value = MagicMock(
-        content=[MagicMock(text=json.dumps(MOCK_QUADS))]
+    # quad client uses messages.stream() context manager
+    mock_quad_response = MagicMock(
+        stop_reason="end_turn",
+        content=[MagicMock(text=json.dumps(MOCK_QUADS))],
     )
+    mock_quad_stream = MagicMock()
+    mock_quad_stream.__enter__ = MagicMock(return_value=mock_quad_stream)
+    mock_quad_stream.__exit__ = MagicMock(return_value=False)
+    mock_quad_stream.get_final_message.return_value = mock_quad_response
+    mock_quad_client = MagicMock()
+    mock_quad_client.messages.stream.return_value = mock_quad_stream
     # First Anthropic() call → source client (raw_to_sources); second → quad client (wiki_pages)
     mock_anthropic_class.side_effect = [mock_source_client, mock_quad_client]
 
