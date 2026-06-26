@@ -227,6 +227,7 @@ def extract_quads_chunked(
     from datetime import date as _date
     # Function-level import to avoid circular-import risk at module load time.
     from pipeline.wiki_writer import extract_wiki_pages_from_chunk
+    from pipeline.alias_registry import load_aliases as _load_aliases
 
     if run_date is None:
         run_date = _date.today().isoformat()
@@ -235,6 +236,7 @@ def extract_quads_chunked(
     chunks = get_chunks(section_map)
     all_quads: list[dict] = []
     total_pages_written = 0
+    aliases = _load_aliases(str(Path(wiki_root).parent / "registry" / "entity_aliases.json"))
 
     # Only instantiate the quads client when we actually need it.
     client = None if wiki_only else anthropic.Anthropic()
@@ -283,6 +285,7 @@ def extract_quads_chunked(
             source_type=source_type,
             wiki_root=wiki_root,
             run_date=run_date,
+            aliases=aliases,
         )
         total_pages_written += len(pages_written)
 

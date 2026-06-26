@@ -5,6 +5,11 @@ from pathlib import Path
 
 from pipeline.silver_to_gold import build_wiki_page, write_wiki_page, append_to_wiki_page
 from pipeline.wiki_index import append_index_entry, append_log
+from pipeline.alias_registry import load_aliases, resolve_slug, resolve_slug_for_title
+from pipeline.merge_pages import merge_pages as _merge_pages
+
+# Module-level path — overridable in tests via patch("pipeline.holistic_synthesizer.alias_registry_path", ...)
+alias_registry_path = "registry/entity_aliases.json"
 
 
 # ── Constants ─────────────────────────────────────────────────────────────────
@@ -505,14 +510,41 @@ def _write_synthesis(
             _replace_wiki_page_body(str(strat_path), sb["body"])
             print(f"[holistic] Strategy body integrated: {strat_path.name}")
 
+    aliases = load_aliases(alias_registry_path)
+
     stubs_written = 0
     for sp in result.get("stub_pages", []):
         stub_slug = sp.get("slug", "")
         if not stub_slug:
             continue
-        stub_path = Path(wiki_root) / (stub_slug + ".md")
+
+        # Pass 1.5: resolve through alias registry before writing
+        bare_key = stub_slug.split("/")[-1]  # "actors/office-of-sustainability" → "office-of-sustainability"
+        canonical_path = resolve_slug(bare_key, aliases) or resolve_slug_for_title(sp.get("title", ""), aliases)
+        if canonical_path:
+            effective_slug = canonical_path
+            print(f"[holistic:pass1.5] {stub_slug!r} → canonical {canonical_path!r}")
+        else:
+            effective_slug = stub_slug
+
+        stub_path = Path(wiki_root) / (effective_slug + ".md")
         if stub_path.exists():
-            continue
+            existing = stub_path.read_text(encoding="utf-8")
+            existing_body = re.sub(r"^---\n.*?\n---\n", "", existing, flags=re.DOTALL).strip()
+            if re.sub(r"<!--.*?-->", "", existing_body, flags=re.DOTALL).strip():
+                # Canonical page has real content — merge stub one-liner context in
+                one_liner = sp.get("one-liner", "")
+                if one_liner:
+                    merged = _merge_pages(
+                        canonical_slug=effective_slug,
+                        existing_body=existing_body,
+                        new_body=one_liner,
+                        source_uuid=source_uuid,
+                    )
+                    _replace_wiki_page_body(str(stub_path), merged)
+                    print(f"[holistic:pass1.5] Merged one-liner into existing {effective_slug}")
+            continue  # canonical stub or real page already exists — skip creation
+
         stub_path.parent.mkdir(parents=True, exist_ok=True)
         stub_fm = {
             "type": sp.get("type", "initiative"),
@@ -527,7 +559,7 @@ def _write_synthesis(
             stub_fm["outcomes"] = []
         stub_page = build_wiki_page(
             page_type=sp.get("type", "initiative"),
-            slug=stub_slug,
+            slug=effective_slug,
             frontmatter=stub_fm,
             body=f"<!-- stub from Pass 1 holistic read ({source_uuid}) — {sp.get('one-liner', '')} -->",
         )

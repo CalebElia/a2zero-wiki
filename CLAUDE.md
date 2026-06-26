@@ -48,7 +48,10 @@ Run with: `python -m pipeline.run_ingest silver --source prepared/<type>/<uuid>.
 
 **Pass 3 (finalize):** Rebuilds `index.md`, seals `log.md`.
 
-Post-ingest linting (not yet implemented): `python -m pipeline.lint_wiki` — on-demand.
+Post-ingest linting (on-demand):
+  python -m pipeline.lint_wiki --wiki-root wiki --structural   # broken links, orphans
+  python -m pipeline.lint_wiki --wiki-root wiki --semantic     # near-duplicate detection (LLM)
+  python -m pipeline.lint_wiki --wiki-root wiki --apply        # execute approved proposals from review-queue.md
 
 ## Key Conventions
 
@@ -64,6 +67,10 @@ Post-ingest linting (not yet implemented): `python -m pipeline.lint_wiki` — on
 **Stub pages:** Created by Pass 1 with body `<!-- Body populated by holistic synthesizer -->`. Pass 2 replaces the stub body on first write; subsequent ingests integrate (merge) rather than replace.
 
 **Stub detection:** `not bool(re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL).strip())` — strips HTML comments before checking if body has real content.
+
+**Alias registry:** `registry/entity_aliases.json` — canonical source of truth for entity name variants and temporal relationships. Every write in Pass 1 and Pass 2 resolves through this registry (Pass 1.5). Entries have: `canonical`, `type`, `aliases`, `relationship` (`name-variant`|`predecessor`|`absorbed-by`), optional `as-of`/`notes`. Approved lint proposals are automatically written back here by `lint_wiki --apply`.
+
+**Merge log:** `registry/merge-log.jsonl` — append-only audit trail for every approved entity merge or temporal succession. Each entry: `date`, `action`, `from`/`into` (or `predecessor`/`successor`), `approved-by`. Use `git show <hash>:wiki/<path>.md` to recover any deleted page from git history.
 
 ## What NOT to Do
 

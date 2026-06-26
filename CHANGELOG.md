@@ -5,6 +5,20 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 
 ---
 
+## 2026-06-25 — Dedup/Alias Enforcement + lint_wiki
+
+**What changed:**
+- Added `pipeline/alias_registry.py` — load/resolve/fuzzy helpers wrapping `registry/entity_aliases.json`.
+- Added `pipeline/merge_pages.py` — LLM merge call combining two page bodies into one; fails safe to existing body on any failure.
+- Pass 1.5 integrated into `holistic_synthesizer.py` and `wiki_writer.py`: every proposed entity slug is resolved through the alias registry before writing; known aliases redirect to the canonical page and trigger an LLM merge if the page has real content.
+- Extended `entity_aliases.json` schema with `relationship`, `as-of`, `notes` fields; retrofitted all 13 existing entries with `relationship: name-variant`; added first `predecessor` entry (SEU → OSI).
+- Added `pipeline/lint_wiki.py` with three modes: `--structural` (broken links, orphans), `--semantic` (fuzzy + LLM near-duplicate detection with proposals to review-queue.md), `--apply` (execute approved proposals: merge content, rewrite inbound links, update alias registry, log to `registry/merge-log.jsonl`).
+- Created `registry/merge-log.jsonl` — empty append-only audit trail for all approved merges and temporal successions.
+
+**Why:** Multi-document ingests were producing duplicate entity pages when the same real-world entity appeared under different names across source documents. The alias enforcement layer (Pass 1.5) prevents duplicates during ingest; `lint_wiki` surfaces and resolves any existing duplicates post-ingest with HITL review.
+
+---
+
 ## 2026-06-25 — Vault Architecture & GitHub Setup
 
 **What changed:**
