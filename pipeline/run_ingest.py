@@ -35,6 +35,7 @@ def run_silver_ingest(
     section_maps_dir: str = "blackboard/section_maps",
     run_date: str | None = None,
     wiki_only: bool = False,
+    quads_only: bool = False,
 ):
     """Ingest a source markdown file through the three-pass wiki pipeline.
 
@@ -80,24 +81,7 @@ def run_silver_ingest(
         except Exception:
             pass
 
-    # ── Pass 1: Holistic synthesis (always runs) ──────────────────────────────
-    synthesis_result = synthesize_source(
-        source_content=source_content,
-        source_uuid=uuid,
-        source_rel_path=source_rel_path,
-        source_type=source_type,
-        wiki_root=wiki_root,
-        run_date=run_date,
-    )
-
-    # Collect stub descriptors from Pass 1 for Pass 2 entity context.
-    known_entities: list[dict] = []
-    if synthesis_result:
-        known_entities = [
-            sp for sp in synthesis_result.get("stub_pages", [])
-            if sp.get("slug") and sp.get("title")
-        ]
-
+    # ── Pass 1: Holistic synthesis (skipped for quads-only) ──────────────────
     def _build_entity_context(entities: list[dict]) -> str:
         """Build the known-entity + existing-page-body block for Pass 2 chunk headers."""
         if not entities:
@@ -142,7 +126,25 @@ def run_silver_ingest(
         lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
         return "\n".join(lines)
 
-    entity_context = _build_entity_context(known_entities)
+    if quads_only:
+        entity_context = ""
+        print(f"[ingest] {uuid}: quads-only — skipping Pass 1 holistic synthesis")
+    else:
+        synthesis_result = synthesize_source(
+            source_content=source_content,
+            source_uuid=uuid,
+            source_rel_path=source_rel_path,
+            source_type=source_type,
+            wiki_root=wiki_root,
+            run_date=run_date,
+        )
+        known_entities: list[dict] = []
+        if synthesis_result:
+            known_entities = [
+                sp for sp in synthesis_result.get("stub_pages", [])
+                if sp.get("slug") and sp.get("title")
+            ]
+        entity_context = _build_entity_context(known_entities)
 
     # ── Pass 2: Extraction (conditional on document complexity) ───────────────
     if _should_use_ldp(source_content):
@@ -157,6 +159,7 @@ def run_silver_ingest(
             section_maps_dir=section_maps_dir,
             run_date=run_date,
             wiki_only=wiki_only,
+            quads_only=quads_only,
             entity_context=entity_context,
         )
     else:
@@ -166,26 +169,28 @@ def run_silver_ingest(
                 source_uuid=uuid,
                 out_path=quads_path,
             )
-        from pipeline.wiki_writer import extract_wiki_pages_from_chunk
-        body = re.sub(r"^---\n.*?\n---\n", "", source_content, flags=re.DOTALL).strip()
-        extract_wiki_pages_from_chunk(
-            chunk_text=body,
-            source_uuid=uuid,
-            source_rel_path=source_rel_path,
-            context_header=entity_context,
-            source_type=source_type,
+        if not quads_only:
+            from pipeline.wiki_writer import extract_wiki_pages_from_chunk
+            body = re.sub(r"^---\n.*?\n---\n", "", source_content, flags=re.DOTALL).strip()
+            extract_wiki_pages_from_chunk(
+                chunk_text=body,
+                source_uuid=uuid,
+                source_rel_path=source_rel_path,
+                context_header=entity_context,
+                source_type=source_type,
+                wiki_root=wiki_root,
+                run_date=run_date,
+            )
+
+    # ── Pass 3: Finalize index + log (skipped for quads-only) ────────────────
+    if not quads_only:
+        rebuild_index(wiki_root)
+        wiki_append_log(
             wiki_root=wiki_root,
+            message="Pass 3 complete — index rebuilt.",
+            source_uuid=uuid,
             run_date=run_date,
         )
-
-    # ── Pass 3: Finalize index + log ──────────────────────────────────────────
-    rebuild_index(wiki_root)
-    wiki_append_log(
-        wiki_root=wiki_root,
-        message="Pass 3 complete — index rebuilt.",
-        source_uuid=uuid,
-        run_date=run_date,
-    )
 
     if wiki_only:
         print(f"[ingest] {uuid}: wiki-only run complete — quads and review-queue untouched")
@@ -266,9 +271,14 @@ if __name__ == "__main__":
     p_silver.add_argument("--wiki-root", default="wiki")
     p_silver.add_argument("--review-queue", default="review-queue.md")
     p_silver.add_argument("--section-maps-dir", default="blackboard/section_maps")
-    p_silver.add_argument(
+    mode_group = p_silver.add_mutually_exclusive_group()
+    mode_group.add_argument(
         "--wiki-only", action="store_true", default=False,
-        help="Run only Pass 1 (holistic synthesizer) + Pass 2 wiki extraction; skip quad extraction and review-queue",
+        help="Run Pass 1 + Pass 2 wiki extraction only; skip quad extraction and review-queue",
+    )
+    mode_group.add_argument(
+        "--quads-only", action="store_true", default=False,
+        help="Run Pass 2 quad extraction only; skip holistic synthesis, wiki writes, and Pass 3",
     )
 
     # PDF-first ingest (future use when Bronze→Silver pipeline is complete)
@@ -294,6 +304,7 @@ if __name__ == "__main__":
             review_queue_path=args.review_queue,
             section_maps_dir=args.section_maps_dir,
             wiki_only=args.wiki_only,
+            quads_only=args.quads_only,
         )
     elif args.command == "pdf":
         run_annual_report_ingest(

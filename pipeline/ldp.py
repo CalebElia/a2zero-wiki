@@ -217,11 +217,13 @@ def extract_quads_chunked(
     wiki_root: str = "wiki",
     run_date: str | None = None,
     wiki_only: bool = False,
+    quads_only: bool = False,
     entity_context: str = "",
 ) -> tuple[list[dict], int]:
     """Extract quads and/or wiki pages from all depth-1 and depth-2 chunks.
 
-    wiki_only=True skips Pass 2 quad extraction and runs only Pass 3 wiki pages.
+    wiki_only=True  — skip quad extraction, run only wiki page writes.
+    quads_only=True — skip wiki page writes, run only quad extraction.
     Returns a tuple of (all_quads, total_pages_written).
     """
     from datetime import date as _date
@@ -240,6 +242,9 @@ def extract_quads_chunked(
 
     # Only instantiate the quads client when we actually need it.
     client = None if wiki_only else anthropic.Anthropic()
+    # Skip alias load when quads_only — wiki_writer never runs.
+    if quads_only:
+        aliases = {}
 
     for i, chunk in enumerate(chunks):
         parent_title = _find_parent_title(chunk, section_map["sections"])
@@ -274,8 +279,9 @@ def extract_quads_chunked(
                 quads = []
             all_quads.extend(quads)
 
-        # Pass 3: wiki pages (always runs unless explicitly disabled)
-        # Prepend entity_context (from Pass 1 holistic read) before section context header.
+        # Pass 3: wiki pages — skip when quads_only.
+        if quads_only:
+            continue
         combined_context = entity_context + context_header if entity_context else context_header
         pages_written = extract_wiki_pages_from_chunk(
             chunk_text=chunk_text,
@@ -303,16 +309,18 @@ def run_ldp_ingest(
     section_maps_dir: str = "blackboard/section_maps",
     run_date: str | None = None,
     wiki_only: bool = False,
+    quads_only: bool = False,
     entity_context: str = "",
 ):
     """Full LDP pipeline: parse section map → chunked extraction → append quads.
 
-    wiki_only=True runs only Pass 3 wiki generation; quads_path is untouched.
+    wiki_only=True  — skip quad extraction; quads_path is untouched.
+    quads_only=True — skip wiki page writes; entity_context is ignored.
     entity_context: known-entity block from Pass 1 holistic read, prepended to each chunk header.
     """
     section_map = parse_section_map(source_content, uuid)
     save_section_map(section_map, section_maps_dir)
-    mode = "wiki-only" if wiki_only else "quads+wiki"
+    mode = "wiki-only" if wiki_only else ("quads-only" if quads_only else "quads+wiki")
     print(f"[ldp] {uuid}: {len(section_map['sections'])} sections, "
           f"{len(get_chunks(section_map))} chunks to extract [{mode}]")
     quads, pages_written = extract_quads_chunked(
@@ -325,6 +333,7 @@ def run_ldp_ingest(
         wiki_root=wiki_root,
         run_date=run_date,
         wiki_only=wiki_only,
+        quads_only=quads_only,
         entity_context=entity_context,
     )
     if not wiki_only:
