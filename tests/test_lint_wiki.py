@@ -114,6 +114,36 @@ def test_parse_approved_proposals_finds_checked_merge(tmp_path):
     assert proposals[0]["page_a"] == "actors/osi.md"
 
 
+def test_structural_finds_empty_page(tmp_path):
+    from pipeline.lint_wiki import structural_lint
+    wiki = _make_wiki(tmp_path)
+    (wiki / "actors" / "ghost.md").write_text("", encoding="utf-8")
+    findings = structural_lint(str(wiki))
+    empty = [f for f in findings if f["type"] == "EMPTY_PAGE"]
+    assert any("ghost" in f["page"] for f in empty)
+
+
+def test_structural_finds_stub_page(tmp_path):
+    from pipeline.lint_wiki import structural_lint
+    wiki = _make_wiki(tmp_path)
+    (wiki / "actors" / "stub-actor.md").write_text(
+        "---\ntype: actor\ntitle: Stub Actor\n---\n<!-- Body populated by holistic synthesizer -->\n",
+        encoding="utf-8",
+    )
+    findings = structural_lint(str(wiki))
+    stubs = [f for f in findings if f["type"] == "STUB_PAGE"]
+    assert any("stub-actor" in f["page"] for f in stubs)
+
+
+def test_structural_exempt_pages_skip_empty_check(tmp_path):
+    from pipeline.lint_wiki import structural_lint
+    wiki = _make_wiki(tmp_path)
+    # index.md is already empty-ish in _make_wiki; confirm it is not flagged
+    findings = structural_lint(str(wiki))
+    empty = [f for f in findings if f["type"] in ("EMPTY_PAGE", "STUB_PAGE")]
+    assert not any(f["page"].endswith("index.md") for f in empty)
+
+
 def test_rewrite_inbound_links(tmp_path):
     from pipeline.lint_wiki import _rewrite_inbound_links
     wiki = tmp_path / "wiki"

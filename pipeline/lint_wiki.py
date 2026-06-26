@@ -13,9 +13,11 @@ import anthropic
 from datetime import date
 from pathlib import Path
 
-# Pages exempt from orphan check — hub pages, auto-generated, or top-level containers
+# Pages exempt from orphan and empty-page checks — hub pages, auto-generated, or top-level containers
 ORPHAN_EXEMPT_NAMES = frozenset({"index.md", "log.md", "hot.md"})
 ORPHAN_EXEMPT_DIRS = frozenset({"strategies", "sources", "overviews", "topics", "meta"})
+
+FRONTMATTER_RE = re.compile(r"^---\n.*?\n---\n?", re.DOTALL)
 
 WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)(?:\|[^\]]*)?\]\]")
 
@@ -69,6 +71,29 @@ def structural_lint(wiki_root: str) -> list[dict]:
                 "type": "ORPHAN",
                 "page": rel,
                 "detail": "No other page links to this page",
+            })
+
+    # Empty / stub-only page check
+    for md_file in all_files:
+        rel = str(md_file.relative_to(root))
+        if md_file.name in ORPHAN_EXEMPT_NAMES:
+            continue
+        if md_file.parent.name in ORPHAN_EXEMPT_DIRS:
+            continue
+        raw = md_file.read_text(encoding="utf-8", errors="replace")
+        if not raw.strip():
+            findings.append({
+                "type": "EMPTY_PAGE",
+                "page": rel,
+                "detail": "File is empty (0 bytes or whitespace only)",
+            })
+            continue
+        body = FRONTMATTER_RE.sub("", raw).strip()
+        if not re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL).strip():
+            findings.append({
+                "type": "STUB_PAGE",
+                "page": rel,
+                "detail": "Body has no real content (stub comment only)",
             })
 
     return findings
