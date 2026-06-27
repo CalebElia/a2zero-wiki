@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2Zero Wiki — Pipeline Architecture</title>
+<style>
+  /* ── Reset ───────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #18181B;
+    background: #FAFAF7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ── Tokens ──────────────────────────────────────────────── */
+  :root {
+    --bg: #FAFAF7;
+    --surface: #FFFFFF;
+    --surface-warm: #F5F3EE;
+    --ink: #18181B;
+    --ink-2: #3F3F46;
+    --ink-3: #71717A;
+    --ink-4: #A1A1AA;
+    --line: #E7E5E0;
+    --line-soft: #EFEDE7;
+
+    --violet: #6D28D9;
+    --violet-soft: #F5F3FF;
+    --violet-line: #DDD6FE;
+    --violet-ink: #4C1D95;
+
+    --amber: #B45309;
+    --amber-soft: #FEF3C7;
+    --amber-line: #FCD34D;
+    --amber-ink: #78350F;
+
+    --blue: #1D4ED8;
+    --blue-soft: #EFF6FF;
+    --blue-line: #BFDBFE;
+    --blue-ink: #1E3A8A;
+
+    --green: #15803D;
+    --green-soft: #F0FDF4;
+    --green-line: #BBF7D0;
+    --green-ink: #14532D;
+
+    --slate: #475569;
+    --slate-soft: #F8FAFC;
+    --slate-line: #E2E8F0;
+
+    --maxw: 1080px;
+    --pad-x: 32px;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --shadow: 0 1px 2px rgba(24,24,27,0.04), 0 4px 12px rgba(24,24,27,0.04);
+    --shadow-lift: 0 4px 8px rgba(24,24,27,0.06), 0 12px 28px rgba(24,24,27,0.08);
+  }
+
+  /* ── Layout primitives ───────────────────────────────────── */
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 var(--pad-x);
+  }
+  section { padding: 72px 0; border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: none; }
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--line); max-width: 60px; }
+  .eyebrow.center { justify-content: center; }
+  .eyebrow.center::before { content: ''; flex: 1; height: 1px; background: var(--line); max-width: 60px; }
+
+  h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+  h1 { font-size: 42px; line-height: 1.1; }
+  h2 { font-size: 30px; line-height: 1.2; margin-bottom: 14px; }
+  h3 { font-size: 18px; line-height: 1.3; margin-bottom: 6px; }
+  p { color: var(--ink-2); }
+  p.lead { font-size: 18px; line-height: 1.55; color: var(--ink-2); max-width: 680px; }
+  .section-intro { max-width: 720px; margin-bottom: 40px; }
+  code {
+    background: var(--surface-warm);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.88em;
+    font-family: 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+    color: var(--ink-2);
+  }
+  em { font-style: italic; color: var(--ink-2); }
+
+  /* ── Nav ─────────────────────────────────────────────────── */
+  nav.topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(250,250,247,0.85);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    display: flex; align-items: center; gap: 24px;
+    height: 56px;
+  }
+  .brand {
+    font-weight: 700; font-size: 13px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 8px;
+    color: var(--ink);
+  }
+  .brand-mark {
+    width: 22px; height: 22px; border-radius: 5px;
+    background: linear-gradient(135deg, var(--violet) 0%, #312E81 100%);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 11px; font-weight: 800; letter-spacing: -0.04em;
+  }
+  .nav-links { display: flex; gap: 4px; margin-left: auto; }
+  .nav-links a {
+    color: var(--ink-3);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .nav-links a:hover { color: var(--ink); background: var(--surface-warm); }
+
+  /* ── Hero ────────────────────────────────────────────────── */
+  section.hero {
+    padding: 96px 0 88px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 64px;
+    align-items: start;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--violet-soft);
+    border: 1px solid var(--violet-line);
+    color: var(--violet);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  .hero-tag-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--violet);
+    box-shadow: 0 0 0 4px rgba(109,40,217,0.15);
+  }
+  h1 .accent { color: var(--violet); }
+  .hero p.lead { margin-top: 18px; }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  .stat-card h4 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 16px;
+  }
+  .stat-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .stat-row:first-child { padding-top: 0; }
+  .stat-label { font-size: 13px; color: var(--ink-3); }
+  .stat-value { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .stat-value .small { font-size: 12px; color: var(--ink-3); font-weight: 400; margin-left: 4px; }
+
+  /* ── Problem section ─────────────────────────────────────── */
+  .problem-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    margin-top: 32px;
+  }
+  .compare-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    position: relative;
+  }
+  .compare-card.bad { border-color: var(--line); }
+  .compare-card.good {
+    border-color: var(--violet-line);
+    background: linear-gradient(180deg, var(--violet-soft) 0%, var(--surface) 60%);
+  }
+  .compare-label {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 14px;
+  }
+  .compare-card.bad .compare-label { background: #FEF2F2; color: #B91C1C; }
+  .compare-card.good .compare-label { background: var(--violet-soft); color: var(--violet); }
+  .compare-card h3 { margin-bottom: 10px; }
+  .compare-card p { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+
+  /* ── Pipeline section ────────────────────────────────────── */
+  .pipeline-wrap {
+    position: relative;
+    margin-top: 40px;
+  }
+
+  /* Input row */
+  .inputs {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    margin-bottom: 0;
+  }
+  .input-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .input-card .mini-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 6px;
+  }
+  .input-card .input-title { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 4px; }
+  .input-card .input-desc { font-size: 12.5px; color: var(--ink-3); line-height: 1.45; }
+
+  .pipeline-connector {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 0;
+    color: var(--ink-4);
+    font-size: 12px;
+    margin-left: 30px;
+  }
+  .pipeline-connector .line {
+    width: 1px; height: 28px; background: var(--line);
+  }
+  .pipeline-connector em { color: var(--ink-3); font-style: normal; }
+
+  /* Phase cards */
+  .phases { display: flex; flex-direction: column; gap: 14px; position: relative; }
+  .phase {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  .phase:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lift);
+  }
+  .phase.active {
+    box-shadow: 0 0 0 2px var(--phase-accent), var(--shadow-lift);
+  }
+  .phase[data-phase="a"] { --phase-accent: var(--blue); --phase-soft: var(--blue-soft); --phase-line: var(--blue-line); --phase-ink: var(--blue-ink); }
+  .phase[data-phase="b"] { --phase-accent: var(--amber); --phase-soft: var(--amber-soft); --phase-line: var(--amber-line); --phase-ink: var(--amber-ink); }
+  .phase[data-phase="c"] { --phase-accent: var(--violet); --phase-soft: var(--violet-soft); --phase-line: var(--violet-line); --phase-ink: var(--violet-ink); }
+  .phase[data-phase="d"] { --phase-accent: var(--green); --phase-soft: var(--green-soft); --phase-line: var(--green-line); --phase-ink: var(--green-ink); }
+
+  .phase-bar {
+    position: absolute;
+    left: 0; top: 16px; bottom: 16px;
+    width: 4px;
+    background: var(--phase-accent);
+    border-radius: 0 4px 4px 0;
+  }
+  .phase-header {
+    display: flex; align-items: baseline; gap: 14px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .phase-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--phase-accent);
+  }
+  .phase-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .phase-tag {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 4px;
+    background: var(--phase-soft);
+    color: var(--phase-accent);
+    border: 1px solid var(--phase-line);
+  }
+  .phase-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin-bottom: 14px;
+    max-width: 760px;
+  }
+  .phase-steps {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .step-chip {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--phase-ink);
+    background: var(--phase-soft);
+    border: 1px solid var(--phase-line);
+    padding: 4px 10px;
+    border-radius: 5px;
+    line-height: 1.4;
+  }
+  .phase-foot {
+    margin-top: 14px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11.5px;
+    color: var(--ink-3);
+  }
+  .phase-foot kbd {
+    font-family: 'SF Mono', monospace;
+    background: var(--surface-warm);
+    border: 1px solid var(--line);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 11px;
+    color: var(--ink-2);
+  }
+
+  /* Loop callout */
+  .loop {
+    margin-top: 24px;
+    background: linear-gradient(135deg, var(--violet-soft) 0%, #EDE9FE 100%);
+    border: 1px solid var(--violet-line);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 18px;
+    align-items: center;
+  }
+  .loop-icon {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--violet);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .loop-icon svg { width: 24px; height: 24px; }
+  .loop-body { font-size: 14px; color: var(--violet-ink); line-height: 1.55; }
+  .loop-body strong { color: var(--violet); }
+
+  .aside {
+    margin-top: 18px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+  .aside strong { color: var(--ink); }
+
+  /* Detail drawer */
+  .detail {
+    margin-top: 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .detail.open { max-height: 800px; }
+  .detail-inner {
+    background: var(--ink);
+    color: #E4E4E7;
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    border-top: 3px solid var(--violet);
+  }
+  .detail-header {
+    display: flex; align-items: center; gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #27272A;
+    margin-bottom: 18px;
+  }
+  .detail-badge {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: #27272A;
+    color: #E4E4E7;
+  }
+  .detail-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    flex: 1;
+    letter-spacing: -0.01em;
+  }
+  .detail-close {
+    color: #71717A;
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .detail-close:hover { background: #27272A; color: #E4E4E7; }
+  .detail-body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #A1A1AA;
+    max-width: 780px;
+  }
+  .detail-body p { color: #A1A1AA; margin-bottom: 14px; }
+  .detail-body p:last-child { margin-bottom: 0; }
+  .detail-body strong { color: #E4E4E7; font-weight: 600; }
+  .detail-body code {
+    background: #27272A;
+    border: 1px solid #3F3F46;
+    color: #A78BFA;
+  }
+
+  /* ── Hierarchy section ───────────────────────────────────── */
+  .hierarchy {
+    margin-top: 40px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .layer {
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 100px 1fr 200px;
+    gap: 28px;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    transition: background 0.15s;
+  }
+  .layer:last-child { border-bottom: none; }
+  .layer:hover { background: var(--surface-warm); }
+  .layer-num {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ink-4);
+    font-family: 'SF Mono', monospace;
+  }
+  .layer[data-layer="l2"] .layer-num { color: var(--violet); }
+  .layer[data-layer="l1"] .layer-num { color: var(--blue); }
+  .layer[data-layer="l0"] .layer-num { color: var(--slate); }
+
+  .layer-main h3 {
+    font-size: 18px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .layer-tag {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #fff;
+  }
+  .layer[data-layer="l2"] .layer-tag { background: var(--violet); }
+  .layer[data-layer="l1"] .layer-tag { background: var(--blue); }
+  .layer-path {
+    font-family: 'SF Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-4);
+    margin-bottom: 8px;
+  }
+  .layer-desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .layer-stats {
+    font-size: 12px;
+    color: var(--ink-3);
+    line-height: 1.55;
+    text-align: right;
+  }
+  .layer-stats strong { color: var(--ink); font-weight: 600; }
+
+  .hierarchy-arrow {
+    height: 0;
+    text-align: center;
+    position: relative;
+    background: var(--surface-warm);
+    padding: 8px 0;
+    height: auto;
+  }
+  .hierarchy-arrow span {
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* GraphRAG callout */
+  .graphrag {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .gr-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 24px 26px;
+  }
+  .gr-card h4 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin-bottom: 12px;
+  }
+  .gr-card h3 { margin-bottom: 10px; font-size: 17px; }
+  .gr-card p { font-size: 13.5px; line-height: 1.6; color: var(--ink-2); }
+
+  /* ── Obsidian section ────────────────────────────────────── */
+  .obsidian {
+    margin-top: 40px;
+    background: #18181B;
+    color: #E4E4E7;
+    border-radius: var(--radius-lg);
+    padding: 36px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    align-items: center;
+  }
+  .obsidian h3 { color: #fff; margin-bottom: 12px; font-size: 22px; }
+  .obsidian p { color: #A1A1AA; font-size: 14px; line-height: 1.6; }
+  .obs-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px; }
+  .obs-chip {
+    background: #27272A;
+    border: 1px solid #3F3F46;
+    color: #D4D4D8;
+    font-size: 11.5px;
+    padding: 4px 10px;
+    border-radius: 5px;
+  }
+  .obs-chip.hub {
+    border-color: var(--violet);
+    color: #C4B5FD;
+    background: rgba(124,58,237,0.12);
+  }
+  .obs-visual {
+    background: #09090B;
+    border-radius: var(--radius);
+    padding: 24px;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #27272A;
+  }
+  .obs-visual svg { width: 100%; height: auto; }
+
+  /* ── Footer / status ─────────────────────────────────────── */
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .status-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+  }
+  .status-card .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+  }
+  .status-card h3 { font-size: 15px; margin-bottom: 4px; }
+  .status-card p { font-size: 13px; color: var(--ink-2); }
+  .status-card .pill-row { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px; }
+  .status-card .pill-row span {
+    font-size: 10.5px; padding: 2px 7px;
+    border-radius: 3px;
+    background: var(--surface-warm);
+    color: var(--ink-3);
+    border: 1px solid var(--line);
+  }
+
+  footer {
+    padding: 32px var(--pad-x);
+    text-align: center;
+    color: var(--ink-4);
+    font-size: 12px;
+    border-top: 1px solid var(--line);
+  }
+  footer a { color: var(--ink-3); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+
+  /* ── Responsive ──────────────────────────────────────────── */
+  @media (max-width: 880px) {
+    h1 { font-size: 32px; }
+    h2 { font-size: 24px; }
+    .hero-grid, .problem-grid, .graphrag, .obsidian, .status-grid {
+      grid-template-columns: 1fr;
+    }
+    .layer { grid-template-columns: 60px 1fr; }
+    .layer-stats { display: none; }
+    .inputs { grid-template-columns: 1fr; }
+    section { padding: 56px 0; }
+    section.hero { padding: 64px 0; }
+  }
+
+  /* Print */
+  @media print {
+    nav.topbar { position: static; background: white; }
+    .detail { display: none; }
+    .phase:hover { transform: none; }
+    section { page-break-inside: avoid; padding: 32px 0; }
+  }
+
+  /* Fade in on load */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  section { animation: fadeUp 0.5s ease-out; animation-fill-mode: both; }
+  section:nth-child(2) { animation-delay: 0.05s; }
+  section:nth-child(3) { animation-delay: 0.1s; }
+</style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ─────────────────────────────────────────────── -->
+<nav class="topbar">
+  <div class="wrap nav-inner">
+    <div class="brand">
+      <span class="brand-mark">A2</span>
+      A2Zero Wiki Pipeline
+    </div>
+    <div class="nav-links">
+      <a href="#idea">Concept</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#hierarchy">Hierarchy</a>
+      <a href="#obsidian">Obsidian</a>
+      <a href="#status">Status</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">
+          <span class="hero-tag-dot"></span>
+          Active architecture · drafted 2026-06-26
+        </div>
+        <h1>A wiki that <span class="accent">compounds knowledge</span><br>across every source it reads.</h1>
+        <p class="lead">
+          A2Zero Wiki ingests Ann Arbor's climate planning documents into a structured, AI-queryable knowledge base. Each new source is integrated against what the wiki already knows — not processed in isolation. This is the architectural map of how that happens, end to end.
+        </p>
+      </div>
+      <aside class="stat-card">
+        <h4>Current state</h4>
+        <div class="stat-row">
+          <span class="stat-label">Sources ingested</span>
+          <span class="stat-value">3 <span class="small">of 7 planned</span></span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Entity pages</span>
+          <span class="stat-value">399</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Page types</span>
+          <span class="stat-value">11</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Pipeline tests</span>
+          <span class="stat-value">137 <span class="small">passing</span></span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">For</span>
+          <span class="stat-value">Grapevine</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ── THE IDEA ───────────────────────────────────────────────── -->
+<section id="idea">
+  <div class="wrap">
+    <div class="eyebrow">The idea</div>
+    <div class="section-intro">
+      <h2>Documents should make the system smarter, not just bigger.</h2>
+      <p class="lead">The foundational insight behind <em>LLM-Wiki</em> (Karpathy, 2025) is that the wiki is both <strong>output</strong> and <strong>memory</strong>. Most ingest pipelines treat sources as documents to file away. We're building one that reads each new source against everything it has already learned.</p>
+    </div>
+
+    <div class="problem-grid">
+      <div class="compare-card bad">
+        <span class="compare-label">Document indexer</span>
+        <h3>Each source is its own island</h3>
+        <p>The pipeline reads Year 3 as if Year 1 and Year 2 never happened. The same initiative under slightly different names produces three disconnected pages. Knowledge accumulates as <em>files</em>, not as understanding. This is what we had after our Year 2 ingest — three flagship initiatives had fragmented across multiple pages.</p>
+      </div>
+      <div class="compare-card good">
+        <span class="compare-label">Compounding wiki</span>
+        <h3>Each source builds on the last</h3>
+        <p>The pipeline reads a curated synthesis of what the wiki already knows <em>before</em> reading the new source. It enters every document already aware of the entities, the year-over-year arcs, the unresolved questions. New facts integrate; name variants resolve to canonical pages; contradictions surface. The wiki becomes smarter with each ingest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── THE PIPELINE ───────────────────────────────────────────── -->
+<section id="pipeline">
+  <div class="wrap">
+    <div class="eyebrow">The pipeline</div>
+    <div class="section-intro">
+      <h2>Four phases, run in cycle.</h2>
+      <p class="lead">One ingest cycle takes a source from prepared markdown through extraction, review, synthesis, and back into the digest that informs the next cycle. Click any phase to expand its detail.</p>
+    </div>
+
+    <div class="pipeline-wrap">
+
+      <!-- Input documents -->
+      <div class="inputs">
+        <div class="input-card">
+          <div class="mini-label">Anchor source</div>
+          <div class="input-title">CAP 2020</div>
+          <div class="input-desc">Carbon Neutrality Plan, 280KB. Fully ingested — defines the 7-strategy structure.</div>
+        </div>
+        <div class="input-card">
+          <div class="mini-label">Recurring sources</div>
+          <div class="input-title">Annual Reports</div>
+          <div class="input-desc">Year 1 & 2 ingested. Year 3–5 queued for ingest pending pipeline upgrades.</div>
+        </div>
+        <div class="input-card">
+          <div class="mini-label">Future sources</div>
+          <div class="input-title">Council, News, Research</div>
+          <div class="input-desc">Council transcripts and news coverage planned. Pipeline is source-type agnostic.</div>
+        </div>
+      </div>
+
+      <div class="pipeline-connector">
+        <div class="line"></div>
+        <em>human-reviewed markdown lands in <code>prepared/</code></em>
+      </div>
+
+      <!-- Phase A -->
+      <div class="phases">
+        <article class="phase" data-phase="a" id="phase-a" onclick="togglePhase('a')">
+          <div class="phase-bar"></div>
+          <div class="phase-header">
+            <span class="phase-label">Phase A</span>
+            <h3 class="phase-title">Extraction</h3>
+          </div>
+          <p class="phase-desc">
+            Four sequential passes turn a single source document into structured entity pages. The new <strong>Comprehend</strong> step reads the wiki's digest first so the LLM enters the source with full awareness of what's already known.
+          </p>
+          <div class="phase-steps">
+            <span class="step-chip">Pass 0 · copy source &amp; inject YAML</span>
+            <span class="step-chip">Pass 1 · Comprehend → integration plan</span>
+            <span class="step-chip">Pass 1.5 · alias resolution (fuzzy match)</span>
+            <span class="step-chip">Pass 2 · LDP chunked extraction</span>
+            <span class="step-chip">Pass 3 · index rebuild + alias seeding</span>
+          </div>
+          <div class="phase-foot">
+            <kbd>python -m pipeline.run_ingest source</kbd>
+            <span>· produces entity pages in <code>wiki/actors/</code>, <code>wiki/initiatives/</code>, etc.</span>
+          </div>
+        </article>
+
+        <!-- Phase B -->
+        <article class="phase" data-phase="b" id="phase-b" onclick="togglePhase('b')">
+          <div class="phase-bar"></div>
+          <div class="phase-header">
+            <span class="phase-label">Phase B</span>
+            <h3 class="phase-title">Review</h3>
+            <span class="phase-tag">Human gate</span>
+          </div>
+          <p class="phase-desc">
+            Three lint modes surface problems in the freshly extracted entity layer. A human reviews the proposals — merge, keep separate, defer — and <code>--apply</code> executes the approved actions. This gate cannot be automated; some near-duplicate decisions require editorial judgment.
+          </p>
+          <div class="phase-steps">
+            <span class="step-chip">--structural · type mismatch, broken links</span>
+            <span class="step-chip">--semantic · near-duplicate detection</span>
+            <span class="step-chip">--backlink · missed entity mentions</span>
+            <span class="step-chip">human annotates review-queue.md</span>
+            <span class="step-chip">--apply</span>
+          </div>
+          <div class="phase-foot">
+            <kbd>python -m pipeline.lint_wiki</kbd>
+            <span>· produces merge proposals in <code>review-queue.md</code></span>
+          </div>
+        </article>
+
+        <!-- Phase C -->
+        <article class="phase" data-phase="c" id="phase-c" onclick="togglePhase('c')">
+          <div class="phase-bar"></div>
+          <div class="phase-header">
+            <span class="phase-label">Phase C</span>
+            <h3 class="phase-title">Synthesis rebuild</h3>
+            <span class="phase-tag">New architecture</span>
+          </div>
+          <p class="phase-desc">
+            Reads the clean, reviewed entity layer and builds the knowledge hierarchy upward: strategy synthesis sections (L1) → cross-strategy narrative and entity map (L2). Runs <em>after</em> lint, never during extraction — synthesis must encode a state a human has signed off on, or it propagates errors into the next ingest.
+          </p>
+          <div class="phase-steps">
+            <span class="step-chip">rebuild strategy synthesis: sections</span>
+            <span class="step-chip">write cross-strategy narrative</span>
+            <span class="step-chip">generate entity map + recent delta</span>
+            <span class="step-chip">writes wiki/digest.md</span>
+          </div>
+          <div class="phase-foot">
+            <kbd>python -m pipeline.synthesize_wiki</kbd>
+            <span>· to be built</span>
+          </div>
+        </article>
+
+        <!-- Phase D -->
+        <article class="phase" data-phase="d" id="phase-d" onclick="togglePhase('d')">
+          <div class="phase-bar"></div>
+          <div class="phase-header">
+            <span class="phase-label">Phase D</span>
+            <h3 class="phase-title">Ready for next ingest</h3>
+          </div>
+          <p class="phase-desc">
+            The digest now reflects the post-lint, post-review state of the wiki. The next ingest's Comprehend pass reads it first — entering the new source with full awareness of prior knowledge. The compounding-knowledge property is restored.
+          </p>
+          <div class="phase-steps">
+            <span class="step-chip">digest.md is the post-review snapshot</span>
+            <span class="step-chip">next Comprehend reads digest first</span>
+            <span class="step-chip">knowledge compounds across sources</span>
+          </div>
+        </article>
+      </div>
+
+      <!-- Detail drawer -->
+      <div class="detail" id="detail">
+        <div class="detail-inner">
+          <div class="detail-header">
+            <span class="detail-badge" id="d-badge"></span>
+            <h3 class="detail-title" id="d-title"></h3>
+            <button class="detail-close" onclick="closeDetail()" aria-label="Close detail">×</button>
+          </div>
+          <div class="detail-body" id="d-body"></div>
+        </div>
+      </div>
+
+      <!-- Loop callout -->
+      <div class="loop">
+        <div class="loop-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 0 1-9 9c-2.5 0-4.8-1-6.4-2.6L3 16"/>
+            <path d="M3 12a9 9 0 0 1 9-9c2.5 0 4.8 1 6.4 2.6L21 8"/>
+            <polyline points="3 21 3 16 8 16"/>
+            <polyline points="21 3 21 8 16 8"/>
+          </svg>
+        </div>
+        <div class="loop-body">
+          <strong>The cycle closes here.</strong> The digest produced in Phase C feeds directly into Phase A of the next ingest. Without this loop, each source is processed in isolation. With it, every new document is integrated against everything the wiki has already learned and reviewed.
+        </div>
+      </div>
+
+      <!-- Blackboard aside -->
+      <div class="aside">
+        <strong>Parallel track — blackboard quads.</strong> Alongside the wiki, the pipeline can extract structured fact triples (subject / predicate / object) into <code>blackboard/quads.jsonl</code>. This enables graph-structured queries and feeds future analytics. Currently paused pending schema design; the wiki track is the active focus.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HIERARCHY ──────────────────────────────────────────────── -->
+<section id="hierarchy">
+  <div class="wrap">
+    <div class="eyebrow">Knowledge hierarchy</div>
+    <div class="section-intro">
+      <h2>Three layers, each built from the one below.</h2>
+      <p class="lead">The wiki is structured like a pyramid. Entity pages are the broad factual base. Strategy pages aggregate them into community-level synthesis. The digest sits on top — a compressed briefing that fits in an LLM context window and feeds the next ingest.</p>
+    </div>
+
+    <div class="hierarchy">
+      <div class="layer" data-layer="l2">
+        <div class="layer-num">L2</div>
+        <div class="layer-main">
+          <h3>Wiki Digest <span class="layer-tag">New</span></h3>
+          <div class="layer-path">wiki/digest.md</div>
+          <p class="layer-desc">Cross-strategy narrative, per-strategy entity map, and recent-ingest delta. Injected into the Comprehend pass before reading any new source. Compresses the full wiki into ~4–6k tokens — small enough for context budget, rich enough to guide integration decisions.</p>
+        </div>
+        <div class="layer-stats">
+          ~4–6k tokens<br>
+          <strong>Rebuilt in Phase C</strong>
+        </div>
+      </div>
+      <div class="hierarchy-arrow"><span>↑ synthesized from</span></div>
+      <div class="layer" data-layer="l1">
+        <div class="layer-num">L1</div>
+        <div class="layer-main">
+          <h3>Strategy Synthesis Pages <span class="layer-tag">Upgrading</span></h3>
+          <div class="layer-path">wiki/strategies/strategy-1 … -7.md</div>
+          <p class="layer-desc">Seven pages — one per A2Zero strategy. Each gains a machine-maintained <code>synthesis:</code> section listing core initiatives, core actors, year-over-year arc, open questions, and cross-strategy links. The human-written prose body is preserved.</p>
+        </div>
+        <div class="layer-stats">
+          7 pages<br>
+          <strong>Community-level synthesis</strong>
+        </div>
+      </div>
+      <div class="hierarchy-arrow"><span>↑ aggregated from</span></div>
+      <div class="layer" data-layer="l0">
+        <div class="layer-num">L0</div>
+        <div class="layer-main">
+          <h3>Entity Pages</h3>
+          <div class="layer-path">wiki/actors/, initiatives/, locations/, …</div>
+          <p class="layer-desc">399 pages across 11 types. Produced by Pass 1 stubs and Pass 2 LDP extraction. The factual leaf layer — actors, initiatives, locations, funding events, political events, technology, meetings, and the source documents themselves.</p>
+        </div>
+        <div class="layer-stats">
+          399 pages<br>
+          <strong>The factual record</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="graphrag">
+      <div class="gr-card">
+        <h4>The GraphRAG parallel</h4>
+        <h3>Why this works without community detection</h3>
+        <p>Microsoft's GraphRAG (2024) answers global questions about large corpora by building community summaries from entity graphs. The trick is that you can't read every document for every query — you read the community summaries instead. Our L0→L1→L2 hierarchy does the same thing.</p>
+      </div>
+      <div class="gr-card">
+        <h4>Our domain advantage</h4>
+        <h3>Strategies replace Leiden clustering</h3>
+        <p>GraphRAG runs Leiden algorithm to discover clusters. We don't have to — Ann Arbor's plan defined them. The 7 A2Zero strategies are semantically grounded, stable across ingests, human-legible, and already embedded in every entity page's <code>related-strategies:</code> field. Domain structure beats algorithmic structure.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── OBSIDIAN ───────────────────────────────────────────────── -->
+<section id="obsidian">
+  <div class="wrap">
+    <div class="eyebrow">In Obsidian</div>
+    <div class="section-intro">
+      <h2>What colleagues will see in the graph view.</h2>
+      <p class="lead">The wiki is a native Obsidian vault. Every page is a node. Wikilinks between pages are edges. The graph view shows the knowledge structure as it accumulates — and as the synthesis hierarchy gets built, new structural nodes appear at the top.</p>
+    </div>
+
+    <div class="obsidian">
+      <div>
+        <h3>The graph as a living artifact</h3>
+        <p>L0 entity pages form dense clusters around their strategies. The seven strategy pages appear as high-connectivity hubs that everything else routes through. Flagship initiatives like Bryant Decarbonization, the Sustainable Energy Utility, and Solarize Ann Arbor sit as cluster centers, linking actors, funding events, locations, and political events.</p>
+        <p style="margin-top:14px">Once Phase C is built, <code>wiki/digest.md</code> appears as a new top-level node above the strategies — the synthesis pinnacle of the hierarchy.</p>
+        <div class="obs-chips">
+          <span class="obs-chip hub">strategies (7)</span>
+          <span class="obs-chip hub">sources (3)</span>
+          <span class="obs-chip hub">digest.md</span>
+          <span class="obs-chip">actors</span>
+          <span class="obs-chip">initiatives</span>
+          <span class="obs-chip">locations</span>
+          <span class="obs-chip">funding-events</span>
+          <span class="obs-chip">political-events</span>
+          <span class="obs-chip">technology</span>
+          <span class="obs-chip">meetings</span>
+        </div>
+      </div>
+      <div class="obs-visual">
+        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Conceptual graph view">
+          <!-- Edges -->
+          <g stroke="#3F3F46" stroke-width="0.6" opacity="0.6">
+            <line x1="200" y1="60" x2="120" y2="140"/>
+            <line x1="200" y1="60" x2="200" y2="140"/>
+            <line x1="200" y1="60" x2="280" y2="140"/>
+            <line x1="120" y1="140" x2="60" y2="220"/>
+            <line x1="120" y1="140" x2="100" y2="240"/>
+            <line x1="120" y1="140" x2="150" y2="230"/>
+            <line x1="200" y1="140" x2="180" y2="230"/>
+            <line x1="200" y1="140" x2="220" y2="240"/>
+            <line x1="280" y1="140" x2="250" y2="220"/>
+            <line x1="280" y1="140" x2="310" y2="230"/>
+            <line x1="280" y1="140" x2="340" y2="220"/>
+            <line x1="200" y1="140" x2="150" y2="230" opacity="0.4"/>
+            <line x1="120" y1="140" x2="180" y2="230" opacity="0.4"/>
+            <line x1="280" y1="140" x2="220" y2="240" opacity="0.4"/>
+          </g>
+          <!-- L0 nodes -->
+          <g fill="#71717A">
+            <circle cx="60" cy="220" r="4"/>
+            <circle cx="100" cy="240" r="4"/>
+            <circle cx="150" cy="230" r="4"/>
+            <circle cx="180" cy="230" r="4"/>
+            <circle cx="220" cy="240" r="4"/>
+            <circle cx="250" cy="220" r="4"/>
+            <circle cx="310" cy="230" r="4"/>
+            <circle cx="340" cy="220" r="4"/>
+            <circle cx="85" cy="265" r="3.5"/>
+            <circle cx="170" cy="265" r="3.5"/>
+            <circle cx="270" cy="260" r="3.5"/>
+          </g>
+          <!-- L1 nodes (strategies) -->
+          <g fill="#3B82F6">
+            <circle cx="120" cy="140" r="9"/>
+            <circle cx="200" cy="140" r="9"/>
+            <circle cx="280" cy="140" r="9"/>
+          </g>
+          <!-- L2 node (digest) -->
+          <circle cx="200" cy="60" r="14" fill="#7C3AED"/>
+          <text x="200" y="35" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="10" font-weight="600" fill="#A78BFA">digest.md</text>
+          <text x="120" y="170" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="9" fill="#60A5FA">strategy-1</text>
+          <text x="200" y="170" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="9" fill="#60A5FA">strategy-2</text>
+          <text x="280" y="170" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="9" fill="#60A5FA">strategy-3</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATUS ─────────────────────────────────────────────────── -->
+<section id="status">
+  <div class="wrap">
+    <div class="eyebrow">Status &amp; roadmap</div>
+    <div class="section-intro">
+      <h2>What's built, what's next.</h2>
+      <p class="lead">The extraction pipeline (Phase A) and the lint cycle (Phase B) are operational and tested. The synthesis layer (Phase C) is the active architectural focus.</p>
+    </div>
+
+    <div class="status-grid">
+      <div class="status-card">
+        <div class="label">Operational</div>
+        <h3>Phase A · Extraction</h3>
+        <p>Three-pass ingest with alias resolution. Successfully processed CAP 2020 and two annual reports.</p>
+        <div class="pill-row">
+          <span>holistic synthesizer</span>
+          <span>LDP chunking</span>
+          <span>fuzzy alias</span>
+        </div>
+      </div>
+      <div class="status-card">
+        <div class="label">Operational</div>
+        <h3>Phase B · Lint cycle</h3>
+        <p>Three lint modes with cross-directory awareness and human-gated apply. TYPE_MISMATCH and backlink checks added after Year 2 ingest revealed gaps.</p>
+        <div class="pill-row">
+          <span>structural</span>
+          <span>semantic</span>
+          <span>backlink</span>
+        </div>
+      </div>
+      <div class="status-card">
+        <div class="label">Building next</div>
+        <h3>Phase C · Synthesis</h3>
+        <p>New <code>synthesize_wiki</code> command. Will rebuild strategy synthesis sections then write <code>wiki/digest.md</code>. Comprehend pass upgrade follows.</p>
+        <div class="pill-row">
+          <span>digest.md</span>
+          <span>L1 sections</span>
+          <span>Comprehend split</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Architecture doc: <a href="knowledge-synthesis-architecture.md">docs/architecture/knowledge-synthesis-architecture.md</a> · Repo: a2zero-wiki · Drafted 2026-06-26
+  </div>
+</footer>
+
+<script>
+  const INFO = {
+    a: {
+      badge: 'Phase A',
+      title: 'Extraction — four passes',
+      html: `
+        <p><strong>Pass 0 — Copy &amp; YAML inject.</strong> The reviewed source moves from <code>prepared/</code> into <code>wiki/sources/</code>, and YAML frontmatter (uuid, source_type, title, ingest_date) is injected if missing. This is the gate: a file only enters the wiki when explicitly ingested.</p>
+        <p><strong>Pass 1 — Comprehend.</strong> Reads <code>wiki/digest.md</code> first, then the full source. Produces a structured integration plan — which strategies are touched, which existing entity pages to retrieve for context, what the new source confirms / extends / contradicts / adds. This is the "understand before writing" step that restores the LLM-Wiki compounding property.</p>
+        <p><strong>Pass 1.5 — Alias resolution.</strong> Before writing any entity page, the proposed slug resolves through <code>entity_aliases.json</code> via exact key match → exact title match → fuzzy edit-distance match (threshold 0.82). Catches year-over-year name drift like "Ann Arbor Solarize Program" → <code>solarize-ann-arbor</code>. After the ingest, new entity titles are seeded into the registry so future ingests can match against them.</p>
+        <p><strong>Pass 2 — LDP (Long Document Processing).</strong> Section-by-section extraction guided by the integration plan. Each chunk gets the plan's verdicts as context. Still does independent bottom-up extraction — the plan is a prior, not a constraint. Surfaces detail entities the holistic pass missed.</p>
+        <p><strong>Pass 3 — Finalize.</strong> Rebuilds <code>index.md</code>, appends to <code>log.md</code>, seeds the alias registry from newly first-seen entity pages.</p>
+      `
+    },
+    b: {
+      badge: 'Phase B',
+      title: 'Review — lint cycle and human gate',
+      html: `
+        <p><strong>--structural.</strong> Detects broken wikilinks, orphan pages, empty stubs, and TYPE_MISMATCH — pages whose <code>type:</code> frontmatter doesn't match their directory (e.g. <code>type: initiative</code> living in <code>topics/</code>). This was a key Year 2 failure mode: misrouted pages were invisible to semantic comparison.</p>
+        <p><strong>--semantic.</strong> Fuzzy edit-distance plus LLM verification to detect near-duplicate entity pages. Now pools misrouted topics/ pages with their correct directory's population for cross-directory comparison.</p>
+        <p><strong>--backlink.</strong> Scans strategy and overview bodies for unlinked entity name mentions. An LLM verifies each candidate before proposing a wikilink injection.</p>
+        <p>All proposals are written to <code>review-queue.md</code> as annotatable items. A human reviews and annotates each one — this gate cannot be automated because merge-vs-keep-separate decisions require editorial judgment. <code>--apply</code> then executes approved proposals: page merges, link rewrites, alias registry updates, merge-log entries. The wiki must be clean before Phase C synthesis runs.</p>
+      `
+    },
+    c: {
+      badge: 'Phase C',
+      title: 'Synthesis rebuild — new command: synthesize_wiki',
+      html: `
+        <p>This phase closes the core LLM-Wiki gap. It runs <em>after</em> lint and human review — never before — so the synthesis always encodes the clean, reviewed state of the wiki. Propagating errors into the synthesis would corrupt the next ingest's comprehension context.</p>
+        <p><strong>Step 1 — Strategy synthesis sections.</strong> For each strategy touched by the ingest (identified in the integration plan), <code>synthesize_wiki</code> reads all entity pages tagged to that strategy and writes a machine-maintained <code>synthesis:</code> block into the strategy page. The prose body stays human-editable. The synthesis block records core initiatives, core actors, year-over-year arc, open questions, and cross-strategy links.</p>
+        <p><strong>Step 2 — Cross-strategy narrative.</strong> Reads all seven synthesis blocks and writes the narrative body of <code>digest.md</code> — what the wiki knows at the theme level, where strategies intersect, which entities span multiple domains, what's unresolved.</p>
+        <p><strong>Step 3 — Entity map and delta.</strong> Appends a structured per-strategy entity list (slug-level) and a recent-delta section (what the last ingest added) to <code>digest.md</code>.</p>
+        <p>Result: <code>wiki/digest.md</code> at ~4–6k tokens, readable by humans as a knowledge briefing and injectable into the next Comprehend pass as a structured prior.</p>
+      `
+    },
+    d: {
+      badge: 'Phase D',
+      title: 'Ready for next ingest',
+      html: `
+        <p>After Phase C completes, <code>digest.md</code> reflects the post-lint, post-review state of the wiki — a snapshot a human has signed off on.</p>
+        <p>When the next ingest begins, Pass 1's Comprehend step reads <code>digest.md</code> before reading the new source document. It enters the new document already knowing: what entities the wiki tracks (organized by strategy cluster), what the year-over-year arcs look like, what's unresolved or contested, and what the most recent ingest added.</p>
+        <p>This allows the Comprehend pass to produce a rich integration plan: confirming things the new source corroborates, extending what's already known, flagging genuine new entities vs. name variants of existing ones.</p>
+        <p><strong>The compounding property:</strong> without the digest, each source is processed in isolation — the system reads Year 3 as if Year 1 and Year 2 never happened. With the digest, Year 3 is integrated against everything learned before it. By Year 5, the system's comprehension of each new source is informed by four prior years of accumulated and reviewed knowledge.</p>
+      `
+    }
+  };
+
+  let activePhase = null;
+
+  function togglePhase(key) {
+    const detail = document.getElementById('detail');
+    const card = document.getElementById('phase-' + key);
+
+    if (activePhase === key) {
+      closeDetail();
+      return;
+    }
+
+    if (activePhase) {
+      const prev = document.getElementById('phase-' + activePhase);
+      if (prev) prev.classList.remove('active');
+    }
+
+    activePhase = key;
+    card.classList.add('active');
+
+    const info = INFO[key];
+    if (!info) return;
+
+    document.getElementById('d-badge').textContent = info.badge;
+    document.getElementById('d-title').textContent = info.title;
+    document.getElementById('d-body').innerHTML = info.html;
+
+    detail.classList.add('open');
+
+    // Smooth scroll detail into view if it's below the fold
+    setTimeout(() => {
+      const rect = detail.getBoundingClientRect();
+      if (rect.bottom > window.innerHeight || rect.top < 80) {
+        detail.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  }
+
+  function closeDetail() {
+    document.getElementById('detail').classList.remove('open');
+    if (activePhase) {
+      const prev = document.getElementById('phase-' + activePhase);
+      if (prev) prev.classList.remove('active');
+    }
+    activePhase = null;
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+</script>
+</body>
+</html>
