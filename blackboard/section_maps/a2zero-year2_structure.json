@@ -1,0 +1,70 @@
+{
+  "document_uuid": "a2zero-year2",
+  "total_lines": 200,
+  "ldp_version": "1.0",
+  "sections": [
+    {
+      "id": "2021---2022-annual-report",
+      "title": "2021 - 2022 Annual Report",
+      "depth": 2,
+      "line_start": 18,
+      "line_end": 19
+    },
+    {
+      "id": "strategy-1-power-our-electric-grid-with-100-renewable-energy",
+      "title": "Strategy 1: Power our electric grid with 100% renewable energy",
+      "depth": 2,
+      "line_start": 20,
+      "line_end": 40
+    },
+    {
+      "id": "strategy-2-switch-our-appliances-and-vehicles-from-fossil-fuels-to-electric",
+      "title": "Strategy 2: Switch our appliances and vehicles from fossil fuels to electric",
+      "depth": 2,
+      "line_start": 41,
+      "line_end": 61
+    },
+    {
+      "id": "strategy-3-significantly-improve-the-energy-efficiency-in-our-buildings",
+      "title": "Strategy 3: Significantly improve the energy efficiency in our buildings",
+      "depth": 2,
+      "line_start": 62,
+      "line_end": 83
+    },
+    {
+      "id": "strategy-4-reduce-the-miles-we-travel-in-our-vehicles-by-at-least-50",
+      "title": "Strategy 4: Reduce the miles we travel in our vehicles by at least 50%",
+      "depth": 2,
+      "line_start": 84,
+      "line_end": 93
+    },
+    {
+      "id": "strategy-5-change-the-way-we-use-reuse-and-dispose-of-materials",
+      "title": "Strategy 5: Change the way we use, reuse, and dispose of materials",
+      "depth": 2,
+      "line_start": 94,
+      "line_end": 118
+    },
+    {
+      "id": "strategy-6-enhance-the-resilience-of-our-people-and-our-place",
+      "title": "Strategy 6: Enhance the resilience of our people and our place",
+      "depth": 2,
+      "line_start": 119,
+      "line_end": 138
+    },
+    {
+      "id": "strategy-7---other-strategiesaccomplishments",
+      "title": "Strategy 7 - Other strategies/accomplishments",
+      "depth": 2,
+      "line_start": 139,
+      "line_end": 172
+    },
+    {
+      "id": "a2zero-year-3-priorities",
+      "title": "A2ZERO Year 3 Priorities",
+      "depth": 2,
+      "line_start": 173,
+      "line_end": 200
+    }
+  ]
+}

@@ -14,3 +14,31 @@
 {"date": "2026-06-26", "action": "TEMPORAL_SUCCESSION", "predecessor": "initiatives/community-solar-program.md", "successor": "initiatives/community-solar-pilot.md", "approved-by": "manual"}
 {"date": "2026-06-26", "action": "MERGE", "from": "technology/direct-current-fast-charger.md", "into": "technology/dc-fast-charger.md", "approved-by": "manual"}
 {"date": "2026-06-26", "action": "MERGE", "from": "initiatives/neighborhood-and-youth-ambassador-program.md", "into": "initiatives/a2zero-ambassadors-program.md", "approved-by": "manual", "notes": "CAP 2020 planned program merged into Year 1 active program; semantic lint missed pair due to title distance. Flagged by spot-check."}
+{"date": "2026-06-26", "action": "MERGE", "from": "actors/ann-arbor-dda.md", "into": "actors/downtown-development-authority.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "actors/ann-arbor-planning-department.md", "into": "actors/city-of-ann-arbor-planning-department.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "actors/elevate-energy.md", "into": "actors/elevate.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "actors/2030-district.md", "into": "actors/ann-arbor-2030-district.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "actors/rocky-mountain-institute.md", "into": "actors/rmi.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "initiatives/green-rental-housing-initiative.md", "into": "initiatives/green-rental-housing.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "initiatives/a2zero-land-use-integration.md", "into": "initiatives/a2zero-unified-development-code-integration.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "initiatives/city-facilities-solar.md", "into": "initiatives/city-buildings-solar-design.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "initiatives/neighborhood-climate-ambassadors-program.md", "into": "initiatives/a2zero-ambassadors-program.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "initiatives/municipal-fleet-electrification.md", "into": "initiatives/city-fleet-electrification.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "initiatives/home-energy-rating-disclosure.md", "into": "initiatives/home-energy-rating-disclosure-program.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "initiatives/10000-trees-program.md", "into": "initiatives/10000-trees-initiative.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "initiatives/air-quality-monitoring.md", "into": "initiatives/aqmesh-air-quality-monitoring.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "initiatives/year-round-residential-composting.md", "into": "initiatives/year-round-composting.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "TEMPORAL_SUCCESSION", "predecessor": "initiatives/commercial-benchmarking-ordinance.md", "successor": "initiatives/benchmarking-ordinance.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "locations/ann-arbor-landfill.md", "into": "locations/ann-arbor-capped-landfill.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "locations/kerrytown-farmers-market.md", "into": "locations/ann-arbor-farmers-market.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "locations/wheeler-service-center.md", "into": "locations/wheeler-center.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "MERGE", "from": "funding-events/aahc-net-zero-grant-2022.md", "into": "funding-events/federal-aahc-energy-2022.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "TEMPORAL_SUCCESSION", "predecessor": "initiatives/commercial-benchmarking-ordinance.md", "successor": "initiatives/benchmarking-ordinance.md", "approved-by": "manual"}
+{"date": "2026-06-26", "action": "merge", "from": "topics/bryant-neighborhood-decarbonization", "into": "initiatives/bryant-neighborhood-decarbonization", "approved-by": "human+claude", "notes": "topics/ page was misrouted Year 2 duplicate; all inbound links already used initiatives/ slug; content merged into canonical page"}
+{"date": "2026-06-26", "action": "merge", "from": "initiatives/bryant-neighborhood-climate-action-grant", "into": "initiatives/bryant-neighborhood-decarbonization", "approved-by": "human+claude", "notes": "Grant application stub absorbed as milestone; EPA award outcome tracked in funding-events/epa-bryant-2022"}
+{"date": "2026-06-26", "action": "merge", "from": "topics/sustainable-energy-utility", "into": "initiatives/sustainable-energy-utility", "approved-by": "human+claude", "notes": "topics/ page was misrouted; canonical slug already used by strategy-1, battery-storage, missy-stults inbound links"}
+{"date": "2026-06-26", "action": "merge", "from": "initiatives/sustainable-energy-utility-exploration", "into": "initiatives/sustainable-energy-utility", "approved-by": "human+claude", "notes": "Municipalization exploration is a sub-element of the SEU initiative, not a separate initiative"}
+{"date": "2026-06-26", "action": "merge", "from": "initiatives/ann-arbor-sustainable-energy-utility", "into": "initiatives/sustainable-energy-utility", "approved-by": "human+claude", "notes": "Name variant; GLREA award detail absorbed into SEU body; GLREA inbound link rewritten"}
+{"date": "2026-06-26", "action": "delete", "slug": "sustainable-energy-utility-seu", "approved-by": "human+claude", "notes": "Hallucinated alias entry — incorrectly mapped SEU as predecessor to OSI; removed entirely"}
+{"date": "2026-06-26", "action": "merge", "from": "initiatives/ann-arbor-solarize-program", "into": "initiatives/solarize-ann-arbor", "approved-by": "human+claude", "notes": "Year 2 duplicate name for same initiative; GLREA and missy-stults inbound links rewritten"}
+{"date": "2026-06-26", "action": "merge", "from": "initiatives/solarize-toolkit", "into": "initiatives/solarize-ann-arbor", "approved-by": "human+claude", "notes": "Toolkit is a deliverable of the Solarize program; absorbed as milestone; strategy-1 body link updated"}

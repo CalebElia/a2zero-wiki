@@ -15,4 +15,4 @@ title: Ann Arbor City Hall
 type: location
 ---
 
-Ann Arbor City Hall is a municipal facility identified as the site for installation of four Direct Current Fast Chargers (DCFCs) funded by a grant won during Year One of A2ZERO ([[sources/annual-reports/a2zero-year1|a2zero-year1]]).
+Ann Arbor City Hall is a municipal facility that was the site of four Direct Current Fast Charger (DCFC) installations as part of A2ZERO's public EV charging infrastructure expansion. The chargers were funded by a grant won during Year One of A2ZERO ([[sources/annual-reports/a2zero-year1|a2zero-year1]]) and reported as completed in Year Two ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).

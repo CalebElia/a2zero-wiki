@@ -27,7 +27,7 @@ milestones:
   year: 2030
 parent-strategy: '[[strategies/strategy-3-building-efficiency]]'
 partners:
-- '[[actors/rocky-mountain-institute]]'
+- '[[actors/rmi]]'
 - '[[actors/michigan-saves]]'
 - '[[actors/dte-energy]]'
 - '[[actors/washtenaw-area-apartment-association]]'

@@ -1,7 +1,7 @@
 {
   "bryant-neighborhood-decarbonization": {
-    "canonical": "topics/bryant-neighborhood-decarbonization",
-    "type": "topic",
+    "canonical": "initiatives/bryant-neighborhood-decarbonization",
+    "type": "initiative",
     "aliases": [
       "Bryant Neighborhood Decarbonization",
       "Bryant Decarbonization",
@@ -14,9 +14,41 @@
     ],
     "relationship": "name-variant"
   },
+  "bryant-neighborhood-climate-action-grant": {
+    "canonical": "initiatives/bryant-neighborhood-decarbonization",
+    "type": "initiative",
+    "aliases": [
+      "Bryant Neighborhood Climate Action Federal Grant Application",
+      "Bryant climate action grant",
+      "Bryant federal grant application"
+    ],
+    "relationship": "absorbed-by",
+    "notes": "Grant application milestone absorbed into the Bryant Neighborhood Decarbonization initiative page; EPA award tracked in funding-events/epa-bryant-2022"
+  },
+  "ann-arbor-solarize-program": {
+    "canonical": "initiatives/solarize-ann-arbor",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Solarize Program",
+      "Solarize Program",
+      "Solarize Ann Arbor"
+    ],
+    "relationship": "name-variant"
+  },
+  "solarize-toolkit": {
+    "canonical": "initiatives/solarize-ann-arbor",
+    "type": "initiative",
+    "aliases": [
+      "Solarize Toolkit",
+      "Solarize replication toolkit",
+      "Solarize guide"
+    ],
+    "relationship": "absorbed-by",
+    "notes": "Toolkit is a deliverable output of the Solarize program, not a standalone initiative"
+  },
   "sustainable-energy-utility": {
-    "canonical": "topics/sustainable-energy-utility",
-    "type": "topic",
+    "canonical": "initiatives/sustainable-energy-utility",
+    "type": "initiative",
     "aliases": [
       "Sustainable Energy Utility",
       "SEU",
@@ -27,6 +59,26 @@
       "community-owned supplemental utility",
       "supplemental utility",
       "SEU ballot measure"
+    ],
+    "relationship": "name-variant"
+  },
+  "sustainable-energy-utility-exploration": {
+    "canonical": "initiatives/sustainable-energy-utility",
+    "type": "initiative",
+    "aliases": [
+      "Sustainable Energy Utility and Municipalization Exploration",
+      "SEU and municipalization",
+      "municipalization exploration"
+    ],
+    "relationship": "absorbed-by",
+    "notes": "Municipalization exploration is a sub-element of the SEU initiative page, not a separate initiative"
+  },
+  "ann-arbor-sustainable-energy-utility": {
+    "canonical": "initiatives/sustainable-energy-utility",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Sustainable Energy Utility",
+      "Ann Arbor SEU proposal"
     ],
     "relationship": "name-variant"
   },
@@ -173,24 +225,6 @@
       "Public Service Commission"
     ],
     "relationship": "name-variant"
-  },
-  "sustainable-energy-utility-seu": {
-    "canonical": "actors/office-of-sustainability-and-innovations",
-    "type": "actor",
-    "aliases": [
-      "Sustainable Energy Utility",
-      "SEU",
-      "community energy utility",
-      "Ann Arbor SEU",
-      "A2Zero SEU",
-      "the SEU",
-      "community-owned supplemental utility",
-      "supplemental utility",
-      "SEU ballot measure"
-    ],
-    "relationship": "predecessor",
-    "as-of": "2022",
-    "notes": "SEU was the proposed community energy utility; restructured/renamed into OSI scope per Year 2 annual report"
   },
   "washtenaw-county-department-of-community-and-economic-development": {
     "canonical": "actors/washtenaw-county-office-of-community-and-economic-development",
@@ -349,8 +383,7 @@
     "aliases": [
       "Neighborhood Climate Ambassadors Program"
     ],
-    "relationship": "predecessor",
-    "as-of": "2026-06-26"
+    "relationship": "name-variant"
   },
   "community-solar-program": {
     "canonical": "initiatives/community-solar-pilot",
@@ -375,6 +408,2911 @@
     "aliases": [
       "Foster Neighborhood and Youth Ambassador Programs",
       "Neighborhood and Youth Ambassador Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-dda": {
+    "canonical": "actors/downtown-development-authority",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Dda"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-planning-department": {
+    "canonical": "actors/city-of-ann-arbor-planning-department",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Planning Department"
+    ],
+    "relationship": "name-variant"
+  },
+  "elevate-energy": {
+    "canonical": "actors/elevate",
+    "type": "actor",
+    "aliases": [
+      "Elevate Energy"
+    ],
+    "relationship": "name-variant"
+  },
+  "2030-district": {
+    "canonical": "actors/ann-arbor-2030-district",
+    "type": "actor",
+    "aliases": [
+      "2030 District"
+    ],
+    "relationship": "name-variant"
+  },
+  "rocky-mountain-institute": {
+    "canonical": "actors/rmi",
+    "type": "actor",
+    "aliases": [
+      "Rocky Mountain Institute"
+    ],
+    "relationship": "name-variant"
+  },
+  "green-rental-housing-initiative": {
+    "canonical": "initiatives/green-rental-housing",
+    "type": "initiative",
+    "aliases": [
+      "Green Rental Housing Initiative"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-land-use-integration": {
+    "canonical": "initiatives/a2zero-unified-development-code-integration",
+    "type": "initiative",
+    "aliases": [
+      "A2Zero Land Use Integration"
+    ],
+    "relationship": "name-variant"
+  },
+  "city-facilities-solar": {
+    "canonical": "initiatives/city-buildings-solar-design",
+    "type": "initiative",
+    "aliases": [
+      "City Facilities Solar"
+    ],
+    "relationship": "name-variant"
+  },
+  "municipal-fleet-electrification": {
+    "canonical": "initiatives/city-fleet-electrification",
+    "type": "initiative",
+    "aliases": [
+      "Municipal Fleet Electrification"
+    ],
+    "relationship": "name-variant"
+  },
+  "home-energy-rating-disclosure": {
+    "canonical": "initiatives/home-energy-rating-disclosure-program",
+    "type": "initiative",
+    "aliases": [
+      "Home Energy Rating Disclosure"
+    ],
+    "relationship": "name-variant"
+  },
+  "10000-trees-program": {
+    "canonical": "initiatives/10000-trees-initiative",
+    "type": "initiative",
+    "aliases": [
+      "10000 Trees Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "air-quality-monitoring": {
+    "canonical": "initiatives/aqmesh-air-quality-monitoring",
+    "type": "initiative",
+    "aliases": [
+      "Air Quality Monitoring"
+    ],
+    "relationship": "name-variant"
+  },
+  "year-round-residential-composting": {
+    "canonical": "initiatives/year-round-composting",
+    "type": "initiative",
+    "aliases": [
+      "Year Round Residential Composting"
+    ],
+    "relationship": "name-variant"
+  },
+  "commercial-benchmarking-ordinance": {
+    "canonical": "initiatives/benchmarking-ordinance",
+    "type": "initiative",
+    "aliases": [
+      "Commercial Benchmarking Ordinance"
+    ],
+    "relationship": "predecessor",
+    "as-of": "2026-06-26"
+  },
+  "ann-arbor-landfill": {
+    "canonical": "locations/ann-arbor-capped-landfill",
+    "type": "location",
+    "aliases": [
+      "Ann Arbor Landfill"
+    ],
+    "relationship": "name-variant"
+  },
+  "kerrytown-farmers-market": {
+    "canonical": "locations/ann-arbor-farmers-market",
+    "type": "location",
+    "aliases": [
+      "Kerrytown Farmers Market"
+    ],
+    "relationship": "name-variant"
+  },
+  "wheeler-service-center": {
+    "canonical": "locations/wheeler-center",
+    "type": "location",
+    "aliases": [
+      "Wheeler Service Center"
+    ],
+    "relationship": "name-variant"
+  },
+  "aahc-net-zero-grant-2022": {
+    "canonical": "funding-events/federal-aahc-energy-2022",
+    "type": "funding-event",
+    "aliases": [
+      "Aahc Net Zero Grant 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-electric-auto-association": {
+    "canonical": "actors/washtenaw-electric-auto-association",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw Electric Auto Association"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-housing-alliance": {
+    "canonical": "actors/ann-arbor-housing-alliance",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Housing Alliance"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-county-office-of-community-and-economic-development": {
+    "canonical": "actors/washtenaw-county-office-of-community-and-economic-development",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw County Office of Community and Economic Development"
+    ],
+    "relationship": "name-variant"
+  },
+  "downtown-development-authority": {
+    "canonical": "actors/downtown-development-authority",
+    "type": "actor",
+    "aliases": [
+      "Downtown Development Authority"
+    ],
+    "relationship": "name-variant"
+  },
+  "city-of-ann-arbor-diversity-equity-inclusion-manager": {
+    "canonical": "actors/city-of-ann-arbor-diversity-equity-inclusion-manager",
+    "type": "actor",
+    "aliases": [
+      "City of Ann Arbor Diversity, Equity and Inclusion Manager"
+    ],
+    "relationship": "name-variant"
+  },
+  "southeast-michigan-council-of-governments": {
+    "canonical": "actors/southeast-michigan-council-of-governments",
+    "type": "actor",
+    "aliases": [
+      "Southeast Michigan Council of Governments"
+    ],
+    "relationship": "name-variant"
+  },
+  "neutral-zone": {
+    "canonical": "actors/neutral-zone",
+    "type": "actor",
+    "aliases": [
+      "Neutral Zone"
+    ],
+    "relationship": "name-variant"
+  },
+  "osi-equity-fellow": {
+    "canonical": "actors/osi-equity-fellow",
+    "type": "actor",
+    "aliases": [
+      "OSI Equity Fellow"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-information-technology-unit": {
+    "canonical": "actors/ann-arbor-information-technology-unit",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Information Technology Unit"
+    ],
+    "relationship": "name-variant"
+  },
+  "federal-transit-administration": {
+    "canonical": "actors/federal-transit-administration",
+    "type": "actor",
+    "aliases": [
+      "Federal Transit Administration"
+    ],
+    "relationship": "name-variant"
+  },
+  "walker-miller-energy-services": {
+    "canonical": "actors/walker-miller-energy-services",
+    "type": "actor",
+    "aliases": [
+      "Walker Miller Energy Services"
+    ],
+    "relationship": "name-variant"
+  },
+  "chip-nelson": {
+    "canonical": "actors/chip-nelson",
+    "type": "actor",
+    "aliases": [
+      "Chip Nelson"
+    ],
+    "relationship": "name-variant"
+  },
+  "resource-recycling-associates": {
+    "canonical": "actors/resource-recycling-associates",
+    "type": "actor",
+    "aliases": [
+      "Resource Recycling Associates"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-food-policy-council": {
+    "canonical": "actors/washtenaw-food-policy-council",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw Food Policy Council"
+    ],
+    "relationship": "name-variant"
+  },
+  "forth-mobility": {
+    "canonical": "actors/forth-mobility",
+    "type": "actor",
+    "aliases": [
+      "Forth Mobility"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-2030-district": {
+    "canonical": "actors/ann-arbor-2030-district",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor 2030 District"
+    ],
+    "relationship": "name-variant"
+  },
+  "growing-hope": {
+    "canonical": "actors/growing-hope",
+    "type": "actor",
+    "aliases": [
+      "Growing Hope"
+    ],
+    "relationship": "name-variant"
+  },
+  "red-cross": {
+    "canonical": "actors/red-cross",
+    "type": "actor",
+    "aliases": [
+      "Red Cross"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-county": {
+    "canonical": "actors/washtenaw-county",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw County"
+    ],
+    "relationship": "name-variant"
+  },
+  "presidents-commission-on-carbon-neutrality": {
+    "canonical": "actors/presidents-commission-on-carbon-neutrality",
+    "type": "actor",
+    "aliases": [
+      "President's Commission on Carbon Neutrality (PCCN)"
+    ],
+    "relationship": "name-variant"
+  },
+  "michigan-saves": {
+    "canonical": "actors/michigan-saves",
+    "type": "actor",
+    "aliases": [
+      "Michigan Saves"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-county-health-department": {
+    "canonical": "actors/washtenaw-county-health-department",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw County Health Department"
+    ],
+    "relationship": "name-variant"
+  },
+  "zachary-smith": {
+    "canonical": "actors/zachary-smith",
+    "type": "actor",
+    "aliases": [
+      "Zachary Smith"
+    ],
+    "relationship": "name-variant"
+  },
+  "community-action-network": {
+    "canonical": "actors/community-action-network",
+    "type": "actor",
+    "aliases": [
+      "Community Action Network"
+    ],
+    "relationship": "name-variant"
+  },
+  "pittsfield-township": {
+    "canonical": "actors/pittsfield-township",
+    "type": "actor",
+    "aliases": [
+      "Pittsfield Township"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-ypsilanti-regional-chamber-of-commerce": {
+    "canonical": "actors/ann-arbor-ypsilanti-regional-chamber-of-commerce",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor-Ypsilanti Regional Chamber of Commerce"
+    ],
+    "relationship": "name-variant"
+  },
+  "michigan-municipal-league": {
+    "canonical": "actors/michigan-municipal-league",
+    "type": "actor",
+    "aliases": [
+      "Michigan Municipal League"
+    ],
+    "relationship": "name-variant"
+  },
+  "department-of-public-works": {
+    "canonical": "actors/department-of-public-works",
+    "type": "actor",
+    "aliases": [
+      "Department of Public Works"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-spark": {
+    "canonical": "actors/ann-arbor-spark",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor SPARK"
+    ],
+    "relationship": "name-variant"
+  },
+  "julie-grand": {
+    "canonical": "actors/julie-grand",
+    "type": "actor",
+    "aliases": [
+      "Julie Grand"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-housing-commission": {
+    "canonical": "actors/ann-arbor-housing-commission",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Housing Commission"
+    ],
+    "relationship": "name-variant"
+  },
+  "naacp-ann-arbor": {
+    "canonical": "actors/naacp-ann-arbor",
+    "type": "actor",
+    "aliases": [
+      "NAACP Ann Arbor Chapter"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-350": {
+    "canonical": "actors/washtenaw-350",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw 350"
+    ],
+    "relationship": "name-variant"
+  },
+  "common-cycle": {
+    "canonical": "actors/common-cycle",
+    "type": "actor",
+    "aliases": [
+      "Common Cycle"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-optimal-wellness": {
+    "canonical": "actors/washtenaw-optimal-wellness",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw Optimal Wellness"
+    ],
+    "relationship": "name-variant"
+  },
+  "michigan-municipal-association-on-utility-issues": {
+    "canonical": "actors/michigan-municipal-association-on-utility-issues",
+    "type": "actor",
+    "aliases": [
+      "Michigan Municipal Association on Utility Issues"
+    ],
+    "relationship": "name-variant"
+  },
+  "housing-bureau-for-seniors": {
+    "canonical": "actors/housing-bureau-for-seniors",
+    "type": "actor",
+    "aliases": [
+      "Housing Bureau for Seniors"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-building-rental-and-inspection-services": {
+    "canonical": "actors/ann-arbor-building-rental-and-inspection-services",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Building, Rental, and Inspection Services"
+    ],
+    "relationship": "name-variant"
+  },
+  "chip-ackerman": {
+    "canonical": "actors/chip-ackerman",
+    "type": "actor",
+    "aliases": [
+      "Chip Ackerman"
+    ],
+    "relationship": "name-variant"
+  },
+  "ali-ramlawi": {
+    "canonical": "actors/ali-ramlawi",
+    "type": "actor",
+    "aliases": [
+      "Ali Ramlawi"
+    ],
+    "relationship": "name-variant"
+  },
+  "regional-transit-authority-of-southeast-michigan": {
+    "canonical": "actors/regional-transit-authority-of-southeast-michigan",
+    "type": "actor",
+    "aliases": [
+      "Regional Transit Authority of Southeast Michigan"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-finance-department": {
+    "canonical": "actors/ann-arbor-finance-department",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Finance Department"
+    ],
+    "relationship": "name-variant"
+  },
+  "united-way-of-washtenaw-county": {
+    "canonical": "actors/united-way-of-washtenaw-county",
+    "type": "actor",
+    "aliases": [
+      "United Way of Washtenaw County"
+    ],
+    "relationship": "name-variant"
+  },
+  "urban-sustainability-directors-network": {
+    "canonical": "actors/urban-sustainability-directors-network",
+    "type": "actor",
+    "aliases": [
+      "Urban Sustainability Directors Network"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-area-transportation-study": {
+    "canonical": "actors/washtenaw-area-transportation-study",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw Area Transportation Study"
+    ],
+    "relationship": "name-variant"
+  },
+  "electrification-coalition": {
+    "canonical": "actors/electrification-coalition",
+    "type": "actor",
+    "aliases": [
+      "The Electrification Coalition"
+    ],
+    "relationship": "name-variant"
+  },
+  "fleets-and-facilities-department": {
+    "canonical": "actors/fleets-and-facilities-department",
+    "type": "actor",
+    "aliases": [
+      "City of Ann Arbor Fleets and Facilities Department"
+    ],
+    "relationship": "name-variant"
+  },
+  "citizens-climate-lobby-ann-arbor": {
+    "canonical": "actors/citizens-climate-lobby-ann-arbor",
+    "type": "actor",
+    "aliases": [
+      "Citizens Climate Lobby — Ann Arbor Chapter"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-county-racial-equity-program-manager": {
+    "canonical": "actors/washtenaw-county-racial-equity-program-manager",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw County Racial Equity Program Manager"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-historic-district-commission": {
+    "canonical": "actors/ann-arbor-historic-district-commission",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Historic District Commission"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-area-transit-authority": {
+    "canonical": "actors/ann-arbor-area-transit-authority",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Area Transit Authority"
+    ],
+    "relationship": "name-variant"
+  },
+  "tony-reames": {
+    "canonical": "actors/tony-reames",
+    "type": "actor",
+    "aliases": [
+      "Dr. Tony Reames"
+    ],
+    "relationship": "name-variant"
+  },
+  "huron-river-watershed-council": {
+    "canonical": "actors/huron-river-watershed-council",
+    "type": "actor",
+    "aliases": [
+      "Huron River Watershed Council"
+    ],
+    "relationship": "name-variant"
+  },
+  "state-of-michigan": {
+    "canonical": "actors/state-of-michigan",
+    "type": "actor",
+    "aliases": [
+      "State of Michigan"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-international-high-school": {
+    "canonical": "actors/washtenaw-international-high-school",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw International High School"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-climate-partnership": {
+    "canonical": "actors/ann-arbor-climate-partnership",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Climate Partnership"
+    ],
+    "relationship": "name-variant"
+  },
+  "jeff-bannister": {
+    "canonical": "actors/jeff-bannister",
+    "type": "actor",
+    "aliases": [
+      "Jeff Bannister"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-public-schools": {
+    "canonical": "actors/ann-arbor-public-schools",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Public Schools"
+    ],
+    "relationship": "name-variant"
+  },
+  "americorps": {
+    "canonical": "actors/americorps",
+    "type": "actor",
+    "aliases": [
+      "AmeriCorps"
+    ],
+    "relationship": "name-variant"
+  },
+  "anne-marie-griswold": {
+    "canonical": "actors/anne-marie-griswold",
+    "type": "actor",
+    "aliases": [
+      "Anne Marie Griswold"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-area-apartment-association": {
+    "canonical": "actors/washtenaw-area-apartment-association",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw Area Apartment Association"
+    ],
+    "relationship": "name-variant"
+  },
+  "um-energy-institute": {
+    "canonical": "actors/um-energy-institute",
+    "type": "actor",
+    "aliases": [
+      "University of Michigan Energy Institute"
+    ],
+    "relationship": "name-variant"
+  },
+  "green-fleets-team": {
+    "canonical": "actors/green-fleets-team",
+    "type": "actor",
+    "aliases": [
+      "Green Fleets Team"
+    ],
+    "relationship": "name-variant"
+  },
+  "ecology-center": {
+    "canonical": "actors/ecology-center",
+    "type": "actor",
+    "aliases": [
+      "The Ecology Center"
+    ],
+    "relationship": "name-variant"
+  },
+  "huron-valley-sierra-club": {
+    "canonical": "actors/huron-valley-sierra-club",
+    "type": "actor",
+    "aliases": [
+      "Huron Valley Sierra Club"
+    ],
+    "relationship": "name-variant"
+  },
+  "environmental-commission": {
+    "canonical": "actors/environmental-commission",
+    "type": "actor",
+    "aliases": [
+      "Environmental Commission"
+    ],
+    "relationship": "name-variant"
+  },
+  "office-of-sustainability-and-innovations": {
+    "canonical": "actors/office-of-sustainability-and-innovations",
+    "type": "actor",
+    "aliases": [
+      "Office of Sustainability and Innovations"
+    ],
+    "relationship": "name-variant"
+  },
+  "christopher-taylor": {
+    "canonical": "actors/christopher-taylor",
+    "type": "actor",
+    "aliases": [
+      "Christopher Taylor"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-partner-organizations": {
+    "canonical": "actors/a2zero-partner-organizations",
+    "type": "actor",
+    "aliases": [
+      "A²ZERO Partner Organizations"
+    ],
+    "relationship": "name-variant"
+  },
+  "energy-commission": {
+    "canonical": "actors/energy-commission",
+    "type": "actor",
+    "aliases": [
+      "Energy Commission"
+    ],
+    "relationship": "name-variant"
+  },
+  "jack-eaton": {
+    "canonical": "actors/jack-eaton",
+    "type": "actor",
+    "aliases": [
+      "Jack Eaton"
+    ],
+    "relationship": "name-variant"
+  },
+  "city-of-ann-arbor-signs-and-signals": {
+    "canonical": "actors/city-of-ann-arbor-signs-and-signals",
+    "type": "actor",
+    "aliases": [
+      "City of Ann Arbor Signs and Signals"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-bicycling-and-walking-coalition": {
+    "canonical": "actors/washtenaw-bicycling-and-walking-coalition",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw Bicycling and Walking Coalition"
+    ],
+    "relationship": "name-variant"
+  },
+  "um-carbon-neutrality-commission": {
+    "canonical": "actors/um-carbon-neutrality-commission",
+    "type": "actor",
+    "aliases": [
+      "University of Michigan Carbon Neutrality Commission"
+    ],
+    "relationship": "name-variant"
+  },
+  "habitat-for-humanity": {
+    "canonical": "actors/habitat-for-humanity",
+    "type": "actor",
+    "aliases": [
+      "Habitat for Humanity"
+    ],
+    "relationship": "name-variant"
+  },
+  "extinction-rebellion": {
+    "canonical": "actors/extinction-rebellion",
+    "type": "actor",
+    "aliases": [
+      "Extinction Rebellion"
+    ],
+    "relationship": "name-variant"
+  },
+  "common-cycle-expansion": {
+    "canonical": "initiatives/common-cycle-expansion",
+    "type": "initiative",
+    "aliases": [
+      "Common Cycle Volunteer Bike Repair Clinic Expansion"
+    ],
+    "relationship": "name-variant"
+  },
+  "green-rental-housing-program": {
+    "canonical": "initiatives/green-rental-housing-program",
+    "type": "initiative",
+    "aliases": [
+      "Green Rental Housing Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "non-motorized-transportation-plan": {
+    "canonical": "initiatives/non-motorized-transportation-plan",
+    "type": "initiative",
+    "aliases": [
+      "Implement Non-Motorized Transportation Plan"
+    ],
+    "relationship": "name-variant"
+  },
+  "bulk-purchase-of-renewables": {
+    "canonical": "initiatives/bulk-purchase-of-renewables",
+    "type": "initiative",
+    "aliases": [
+      "Bulk Purchase of Renewables"
+    ],
+    "relationship": "name-variant"
+  },
+  "bus-electrification": {
+    "canonical": "initiatives/bus-electrification",
+    "type": "initiative",
+    "aliases": [
+      "Bus Electrification"
+    ],
+    "relationship": "name-variant"
+  },
+  "preserve-and-enhance-local-tree-canopy": {
+    "canonical": "initiatives/preserve-and-enhance-local-tree-canopy",
+    "type": "initiative",
+    "aliases": [
+      "Preserve and Enhance the Local Tree Canopy"
+    ],
+    "relationship": "name-variant"
+  },
+  "community-solar-non-city-property": {
+    "canonical": "initiatives/community-solar-non-city-property",
+    "type": "initiative",
+    "aliases": [
+      "Community Solar on Non-City Property (University of Michigan, Municipal, AAPS)"
+    ],
+    "relationship": "name-variant"
+  },
+  "neighborhood-resiliency-plans": {
+    "canonical": "initiatives/neighborhood-resiliency-plans",
+    "type": "initiative",
+    "aliases": [
+      "Neighborhood-Based Resiliency Plans"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-ambassadors-program": {
+    "canonical": "initiatives/a2zero-ambassadors-program",
+    "type": "initiative",
+    "aliases": [
+      "A2ZERO Ambassadors Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "city-ev-fleet": {
+    "canonical": "initiatives/city-ev-fleet",
+    "type": "initiative",
+    "aliases": [
+      "City EV Fleet"
+    ],
+    "relationship": "name-variant"
+  },
+  "net-zero-energy-affordable-housing": {
+    "canonical": "initiatives/net-zero-energy-affordable-housing",
+    "type": "initiative",
+    "aliases": [
+      "Net Zero Energy Affordable Housing"
+    ],
+    "relationship": "name-variant"
+  },
+  "resilience-hubs": {
+    "canonical": "initiatives/resilience-hubs",
+    "type": "initiative",
+    "aliases": [
+      "Resilience Hubs"
+    ],
+    "relationship": "name-variant"
+  },
+  "expand-improve-local-transit": {
+    "canonical": "initiatives/expand-improve-local-transit",
+    "type": "initiative",
+    "aliases": [
+      "Expand and Improve Local Transit"
+    ],
+    "relationship": "name-variant"
+  },
+  "local-food-production-expansion": {
+    "canonical": "initiatives/local-food-production-expansion",
+    "type": "initiative",
+    "aliases": [
+      "Local Food Production and Distribution Expansion"
+    ],
+    "relationship": "name-variant"
+  },
+  "resilience-fund-equity": {
+    "canonical": "initiatives/resilience-fund-equity",
+    "type": "initiative",
+    "aliases": [
+      "Resilience Fund Focused on Equity"
+    ],
+    "relationship": "name-variant"
+  },
+  "aging-in-place-efficiently": {
+    "canonical": "initiatives/aging-in-place-efficiently",
+    "type": "initiative",
+    "aliases": [
+      "Support Aging in Place Efficiently"
+    ],
+    "relationship": "name-variant"
+  },
+  "led-street-lighting-and-traffic-signals": {
+    "canonical": "initiatives/led-street-lighting-and-traffic-signals",
+    "type": "initiative",
+    "aliases": [
+      "Power Street Lighting and Traffic Signals with LED"
+    ],
+    "relationship": "name-variant"
+  },
+  "community-choice-aggregation": {
+    "canonical": "initiatives/community-choice-aggregation",
+    "type": "initiative",
+    "aliases": [
+      "Community Choice Aggregation"
+    ],
+    "relationship": "name-variant"
+  },
+  "sa2t-grant-program": {
+    "canonical": "initiatives/sa2t-grant-program",
+    "type": "initiative",
+    "aliases": [
+      "SA2T Grant Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "green-business-challenge": {
+    "canonical": "initiatives/green-business-challenge",
+    "type": "initiative",
+    "aliases": [
+      "Green Business Challenge"
+    ],
+    "relationship": "name-variant"
+  },
+  "update-building-codes": {
+    "canonical": "initiatives/update-building-codes",
+    "type": "initiative",
+    "aliases": [
+      "Update Building Codes"
+    ],
+    "relationship": "name-variant"
+  },
+  "active-transportation-infrastructure": {
+    "canonical": "initiatives/active-transportation-infrastructure",
+    "type": "initiative",
+    "aliases": [
+      "Active Transportation Infrastructure Improvements"
+    ],
+    "relationship": "name-variant"
+  },
+  "commercial-recycling": {
+    "canonical": "initiatives/commercial-recycling",
+    "type": "initiative",
+    "aliases": [
+      "Commercial Recycling"
+    ],
+    "relationship": "name-variant"
+  },
+  "community-ev-solar-bulk-buy": {
+    "canonical": "initiatives/community-ev-solar-bulk-buy",
+    "type": "initiative",
+    "aliases": [
+      "Support Community Electric Vehicle and Solar Bulk Buys"
+    ],
+    "relationship": "name-variant"
+  },
+  "energy-concierge-and-community-engagement-program": {
+    "canonical": "initiatives/energy-concierge-and-community-engagement-program",
+    "type": "initiative",
+    "aliases": [
+      "Energy Concierge and Community Engagement Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "electrify-buses": {
+    "canonical": "initiatives/electrify-buses",
+    "type": "initiative",
+    "aliases": [
+      "Electrify Buses"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-technical-advisory-committees": {
+    "canonical": "initiatives/a2zero-technical-advisory-committees",
+    "type": "initiative",
+    "aliases": [
+      "A2Zero Technical Advisory Committees"
+    ],
+    "relationship": "name-variant"
+  },
+  "green-streets-program": {
+    "canonical": "initiatives/green-streets-program",
+    "type": "initiative",
+    "aliases": [
+      "Green Streets Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "transition-to-more-energy-efficient-homes-and-businesses": {
+    "canonical": "initiatives/transition-to-more-energy-efficient-homes-and-businesses",
+    "type": "initiative",
+    "aliases": [
+      "Transition to More Energy Efficient Homes and Businesses"
+    ],
+    "relationship": "name-variant"
+  },
+  "aging-in-place-program": {
+    "canonical": "initiatives/aging-in-place-program",
+    "type": "initiative",
+    "aliases": [
+      "Aging in Place Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "plant-based-diet-program": {
+    "canonical": "initiatives/plant-based-diet-program",
+    "type": "initiative",
+    "aliases": [
+      "Plant-Based Diet Promotion Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "go-pass-expansion": {
+    "canonical": "initiatives/go-pass-expansion",
+    "type": "initiative",
+    "aliases": [
+      "Go-Pass Area Expansion and Transit Fee Reduction"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-public-engagement-process": {
+    "canonical": "initiatives/a2zero-public-engagement-process",
+    "type": "initiative",
+    "aliases": [
+      "A2Zero Public Engagement Process"
+    ],
+    "relationship": "name-variant"
+  },
+  "landfill-solar-project": {
+    "canonical": "initiatives/landfill-solar-project",
+    "type": "initiative",
+    "aliases": [
+      "Landfill Solar Project"
+    ],
+    "relationship": "name-variant"
+  },
+  "waste-truck-fleet-electrification": {
+    "canonical": "initiatives/waste-truck-fleet-electrification",
+    "type": "initiative",
+    "aliases": [
+      "Waste Truck Fleet Electrification"
+    ],
+    "relationship": "name-variant"
+  },
+  "decentralized-energy-microgrids": {
+    "canonical": "initiatives/decentralized-energy-microgrids",
+    "type": "initiative",
+    "aliases": [
+      "Decentralized Energy and Microgrid Development"
+    ],
+    "relationship": "name-variant"
+  },
+  "bulk-purchase-evs": {
+    "canonical": "initiatives/bulk-purchase-evs",
+    "type": "initiative",
+    "aliases": [
+      "Bulk Purchase EVs"
+    ],
+    "relationship": "name-variant"
+  },
+  "forth-mobility-education-outreach": {
+    "canonical": "initiatives/forth-mobility-education-outreach",
+    "type": "initiative",
+    "aliases": [
+      "Forth Mobility Education and Outreach Partnership"
+    ],
+    "relationship": "name-variant"
+  },
+  "develop-mixed-use-neighborhoods": {
+    "canonical": "initiatives/develop-mixed-use-neighborhoods",
+    "type": "initiative",
+    "aliases": [
+      "Develop Mixed-Use Neighborhoods"
+    ],
+    "relationship": "name-variant"
+  },
+  "mobility-hubs": {
+    "canonical": "initiatives/mobility-hubs",
+    "type": "initiative",
+    "aliases": [
+      "Mobility Hubs Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "neighborhood-climate-ambassadors": {
+    "canonical": "initiatives/neighborhood-climate-ambassadors",
+    "type": "initiative",
+    "aliases": [
+      "Neighborhood Climate Ambassadors Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "floodplain-stormwater-management": {
+    "canonical": "initiatives/floodplain-stormwater-management",
+    "type": "initiative",
+    "aliases": [
+      "Floodplain and Stormwater Management"
+    ],
+    "relationship": "name-variant"
+  },
+  "urban-heat-island-mitigation": {
+    "canonical": "initiatives/urban-heat-island-mitigation",
+    "type": "initiative",
+    "aliases": [
+      "Urban Heat Island Mitigation"
+    ],
+    "relationship": "name-variant"
+  },
+  "advance-equity-programs": {
+    "canonical": "initiatives/advance-equity-programs",
+    "type": "initiative",
+    "aliases": [
+      "Advance Equity Programs"
+    ],
+    "relationship": "name-variant"
+  },
+  "grid-capacity-expansion-electrification": {
+    "canonical": "initiatives/grid-capacity-expansion-electrification",
+    "type": "initiative",
+    "aliases": [
+      "Increase Grid Capacity for Electrification"
+    ],
+    "relationship": "name-variant"
+  },
+  "circular-economy-program": {
+    "canonical": "initiatives/circular-economy-program",
+    "type": "initiative",
+    "aliases": [
+      "Circular Economy and Repair Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "transit-oriented-development-zoning": {
+    "canonical": "initiatives/transit-oriented-development-zoning",
+    "type": "initiative",
+    "aliases": [
+      "Transit-Oriented Development and Upzoning"
+    ],
+    "relationship": "name-variant"
+  },
+  "geothermal-districts": {
+    "canonical": "initiatives/geothermal-districts",
+    "type": "initiative",
+    "aliases": [
+      "Geothermal Districts"
+    ],
+    "relationship": "name-variant"
+  },
+  "home-and-business-electrification": {
+    "canonical": "initiatives/home-and-business-electrification",
+    "type": "initiative",
+    "aliases": [
+      "Home & Business Electrification"
+    ],
+    "relationship": "name-variant"
+  },
+  "act-51-reform-lobbying": {
+    "canonical": "initiatives/act-51-reform-lobbying",
+    "type": "initiative",
+    "aliases": [
+      "Act 51 Reform and State Transportation Funding Lobbying"
+    ],
+    "relationship": "name-variant"
+  },
+  "city-bus-evacuation-disaster-response": {
+    "canonical": "initiatives/city-bus-evacuation-disaster-response",
+    "type": "initiative",
+    "aliases": [
+      "City Bus Evacuation and Power Source Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-carbon-neutrality-plan": {
+    "canonical": "initiatives/a2zero-carbon-neutrality-plan",
+    "type": "initiative",
+    "aliases": [
+      "A2Zero Living Carbon Neutrality Plan"
+    ],
+    "relationship": "name-variant"
+  },
+  "solid-waste-resource-management-plan": {
+    "canonical": "initiatives/solid-waste-resource-management-plan",
+    "type": "initiative",
+    "aliases": [
+      "Solid Waste Resource Management Plan"
+    ],
+    "relationship": "name-variant"
+  },
+  "solar-energy-on-greenbelt": {
+    "canonical": "initiatives/solar-energy-on-greenbelt",
+    "type": "initiative",
+    "aliases": [
+      "Solar Energy on Greenbelt"
+    ],
+    "relationship": "name-variant"
+  },
+  "solar-zoning-opportunities": {
+    "canonical": "initiatives/solar-zoning-opportunities",
+    "type": "initiative",
+    "aliases": [
+      "Create More Zoning Opportunities for Solar"
+    ],
+    "relationship": "name-variant"
+  },
+  "offset-greenhouse-gas-emissions": {
+    "canonical": "initiatives/offset-greenhouse-gas-emissions",
+    "type": "initiative",
+    "aliases": [
+      "Offset Greenhouse Gas Emissions"
+    ],
+    "relationship": "name-variant"
+  },
+  "e-bike-e-scooter-program": {
+    "canonical": "initiatives/e-bike-e-scooter-program",
+    "type": "initiative",
+    "aliases": [
+      "E-Bike and E-Scooter Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "carbon-neutral-districts": {
+    "canonical": "initiatives/carbon-neutral-districts",
+    "type": "initiative",
+    "aliases": [
+      "Develop Carbon Neutral Districts (Zero Energy Zones, 2030 Districts)"
+    ],
+    "relationship": "name-variant"
+  },
+  "internal-carbon-price": {
+    "canonical": "initiatives/internal-carbon-price",
+    "type": "initiative",
+    "aliases": [
+      "Establish Internal Carbon Price"
+    ],
+    "relationship": "name-variant"
+  },
+  "composting-expansion": {
+    "canonical": "initiatives/composting-expansion",
+    "type": "initiative",
+    "aliases": [
+      "Composting Expansion and Local Organics Recovery"
+    ],
+    "relationship": "name-variant"
+  },
+  "natural-area-preservation-carbon-sequestration": {
+    "canonical": "initiatives/natural-area-preservation-carbon-sequestration",
+    "type": "initiative",
+    "aliases": [
+      "Natural Area Preservation and Stewardship for Carbon Sequestration"
+    ],
+    "relationship": "name-variant"
+  },
+  "microgrid-creation": {
+    "canonical": "initiatives/microgrid-creation",
+    "type": "initiative",
+    "aliases": [
+      "Create Microgrids"
+    ],
+    "relationship": "name-variant"
+  },
+  "high-energy-district-targeting": {
+    "canonical": "initiatives/high-energy-district-targeting",
+    "type": "initiative",
+    "aliases": [
+      "Target High-Energy Districts with Renewables, Efficiency, and Electrification"
+    ],
+    "relationship": "name-variant"
+  },
+  "expand-improve-regional-transit": {
+    "canonical": "initiatives/expand-improve-regional-transit",
+    "type": "initiative",
+    "aliases": [
+      "Expand and Improve Regional Transit"
+    ],
+    "relationship": "name-variant"
+  },
+  "appliance-hvac-electrification-requirement": {
+    "canonical": "initiatives/appliance-hvac-electrification-requirement",
+    "type": "initiative",
+    "aliases": [
+      "Require Electrification of All Existing Appliances and HVAC Systems"
+    ],
+    "relationship": "name-variant"
+  },
+  "year-round-composting": {
+    "canonical": "initiatives/year-round-composting",
+    "type": "initiative",
+    "aliases": [
+      "Year Round Composting"
+    ],
+    "relationship": "name-variant"
+  },
+  "building-code-requirements": {
+    "canonical": "initiatives/building-code-requirements",
+    "type": "initiative",
+    "aliases": [
+      "Building Code Requirements"
+    ],
+    "relationship": "name-variant"
+  },
+  "affordable-housing-net-zero-energy": {
+    "canonical": "initiatives/affordable-housing-net-zero-energy",
+    "type": "initiative",
+    "aliases": [
+      "Transition Affordable Housing Sites to Net Zero Energy"
+    ],
+    "relationship": "name-variant"
+  },
+  "environmental-sensors-monitoring": {
+    "canonical": "initiatives/environmental-sensors-monitoring",
+    "type": "initiative",
+    "aliases": [
+      "Implement Sensors to Monitor and Manage Heat, Air Quality, Waterways, and Flooding"
+    ],
+    "relationship": "name-variant"
+  },
+  "on-bill-financing-renewables-efficiency": {
+    "canonical": "initiatives/on-bill-financing-renewables-efficiency",
+    "type": "initiative",
+    "aliases": [
+      "Create On-Bill Financing for Renewable Energy and Energy Efficiency Projects"
+    ],
+    "relationship": "name-variant"
+  },
+  "sustainable-purchasing-policy": {
+    "canonical": "initiatives/sustainable-purchasing-policy",
+    "type": "initiative",
+    "aliases": [
+      "Sustainable Purchasing Policy and Carbon Pricing on Products"
+    ],
+    "relationship": "name-variant"
+  },
+  "onsite-renewables-bulk-buy": {
+    "canonical": "initiatives/onsite-renewables-bulk-buy",
+    "type": "initiative",
+    "aliases": [
+      "Support Onsite Renewable Energy Generation with Battery Storage (Bulk Buys)"
+    ],
+    "relationship": "name-variant"
+  },
+  "tree-canopy": {
+    "canonical": "initiatives/tree-canopy",
+    "type": "initiative",
+    "aliases": [
+      "Tree Canopy"
+    ],
+    "relationship": "name-variant"
+  },
+  "expedited-permitting-efficient-construction": {
+    "canonical": "initiatives/expedited-permitting-efficient-construction",
+    "type": "initiative",
+    "aliases": [
+      "Expedite Permitting for More Efficient Construction"
+    ],
+    "relationship": "name-variant"
+  },
+  "weatherization-expansion": {
+    "canonical": "initiatives/weatherization-expansion",
+    "type": "initiative",
+    "aliases": [
+      "Weatherization Expansion"
+    ],
+    "relationship": "name-variant"
+  },
+  "expand-ev-charging-infrastructure": {
+    "canonical": "initiatives/expand-ev-charging-infrastructure",
+    "type": "initiative",
+    "aliases": [
+      "Expand Electric Vehicle Charging Infrastructure"
+    ],
+    "relationship": "name-variant"
+  },
+  "financing-loan-loss-reserve": {
+    "canonical": "initiatives/financing-loan-loss-reserve",
+    "type": "initiative",
+    "aliases": [
+      "Create Financing Opportunities and Loan Loss Reserve"
+    ],
+    "relationship": "name-variant"
+  },
+  "electrify-private-fleets": {
+    "canonical": "initiatives/electrify-private-fleets",
+    "type": "initiative",
+    "aliases": [
+      "Electrify Private Fleets"
+    ],
+    "relationship": "name-variant"
+  },
+  "environmental-monitoring-sensors": {
+    "canonical": "initiatives/environmental-monitoring-sensors",
+    "type": "initiative",
+    "aliases": [
+      "Environmental Monitoring via Sensors and Data"
+    ],
+    "relationship": "name-variant"
+  },
+  "emergency-preparedness-kits": {
+    "canonical": "initiatives/emergency-preparedness-kits",
+    "type": "initiative",
+    "aliases": [
+      "Assist in Assembling and Distributing Emergency Preparedness Kits"
+    ],
+    "relationship": "name-variant"
+  },
+  "move-toward-circular-economy": {
+    "canonical": "initiatives/move-toward-circular-economy",
+    "type": "initiative",
+    "aliases": [
+      "Move Toward a Circular Economy"
+    ],
+    "relationship": "name-variant"
+  },
+  "park-and-ride": {
+    "canonical": "initiatives/park-and-ride",
+    "type": "initiative",
+    "aliases": [
+      "Park and Ride"
+    ],
+    "relationship": "name-variant"
+  },
+  "community-emergency-preparedness-training": {
+    "canonical": "initiatives/community-emergency-preparedness-training",
+    "type": "initiative",
+    "aliases": [
+      "Community Emergency Preparedness Training"
+    ],
+    "relationship": "name-variant"
+  },
+  "common-cycle-bike-program": {
+    "canonical": "initiatives/common-cycle-bike-program",
+    "type": "initiative",
+    "aliases": [
+      "Common Cycle Bike Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "zero-waste-plan": {
+    "canonical": "initiatives/zero-waste-plan",
+    "type": "initiative",
+    "aliases": [
+      "Zero Waste Plan"
+    ],
+    "relationship": "name-variant"
+  },
+  "energy-disclosure-policies": {
+    "canonical": "initiatives/energy-disclosure-policies",
+    "type": "initiative",
+    "aliases": [
+      "Energy Disclosure Policies for Rental, Single Family, and Commercial Buildings"
+    ],
+    "relationship": "name-variant"
+  },
+  "zoning-density-increase": {
+    "canonical": "initiatives/zoning-density-increase",
+    "type": "initiative",
+    "aliases": [
+      "Change Zoning Laws to Allow for More Density"
+    ],
+    "relationship": "name-variant"
+  },
+  "require-sustainable-materials-in-developments": {
+    "canonical": "initiatives/require-sustainable-materials-in-developments",
+    "type": "initiative",
+    "aliases": [
+      "Require Sustainable Materials in New and Existing Developments"
+    ],
+    "relationship": "name-variant"
+  },
+  "non-motorized-plan": {
+    "canonical": "initiatives/non-motorized-plan",
+    "type": "initiative",
+    "aliases": [
+      "Non-Motorized Plan"
+    ],
+    "relationship": "name-variant"
+  },
+  "expand-weatherization-program": {
+    "canonical": "initiatives/expand-weatherization-program",
+    "type": "initiative",
+    "aliases": [
+      "Expand Weatherization Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "parking-reform": {
+    "canonical": "initiatives/parking-reform",
+    "type": "initiative",
+    "aliases": [
+      "Parking Reform and Reduction"
+    ],
+    "relationship": "name-variant"
+  },
+  "electrify-city-fleet": {
+    "canonical": "initiatives/electrify-city-fleet",
+    "type": "initiative",
+    "aliases": [
+      "Electrify City Fleet"
+    ],
+    "relationship": "name-variant"
+  },
+  "park-and-ride-expansion": {
+    "canonical": "initiatives/park-and-ride-expansion",
+    "type": "initiative",
+    "aliases": [
+      "Increase Number of Park and Rides and Ensure Seamless Connection to Transit"
+    ],
+    "relationship": "name-variant"
+  },
+  "energy-concierge-service": {
+    "canonical": "initiatives/energy-concierge-service",
+    "type": "initiative",
+    "aliases": [
+      "County/City Energy Efficiency and Renewable Energy Concierge Service"
+    ],
+    "relationship": "name-variant"
+  },
+  "enhance-refrigerant-recycling-reuse-program": {
+    "canonical": "initiatives/enhance-refrigerant-recycling-reuse-program",
+    "type": "initiative",
+    "aliases": [
+      "Enhance Refrigerant Recycling and Reuse Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "property-tax-reduction-energy-efficiency": {
+    "canonical": "initiatives/property-tax-reduction-energy-efficiency",
+    "type": "initiative",
+    "aliases": [
+      "Reduce Property Taxes Based on Energy Efficiency Upgrades"
+    ],
+    "relationship": "name-variant"
+  },
+  "carbon-tax": {
+    "canonical": "initiatives/carbon-tax",
+    "type": "initiative",
+    "aliases": [
+      "Create Carbon Tax"
+    ],
+    "relationship": "name-variant"
+  },
+  "energy-information-sessions-sectors": {
+    "canonical": "initiatives/energy-information-sessions-sectors",
+    "type": "initiative",
+    "aliases": [
+      "Information Sessions on Energy Efficiency, Electrification, Renewables, and"
+    ],
+    "relationship": "name-variant"
+  },
+  "internal-carbon-tax": {
+    "canonical": "initiatives/internal-carbon-tax",
+    "type": "initiative",
+    "aliases": [
+      "Internal Carbon Tax"
+    ],
+    "relationship": "name-variant"
+  },
+  "carbon-sequestration-ann-arbor": {
+    "canonical": "initiatives/carbon-sequestration-ann-arbor",
+    "type": "initiative",
+    "aliases": [
+      "Increase Carbon Sequestration Practices in Ann Arbor"
+    ],
+    "relationship": "name-variant"
+  },
+  "theride-electrification-expansion": {
+    "canonical": "initiatives/theride-electrification-expansion",
+    "type": "initiative",
+    "aliases": [
+      "TheRide Bus Electrification and Route Expansion"
+    ],
+    "relationship": "name-variant"
+  },
+  "youth-education-carbon-neutrality": {
+    "canonical": "initiatives/youth-education-carbon-neutrality",
+    "type": "initiative",
+    "aliases": [
+      "Youth Education on Carbon Neutrality"
+    ],
+    "relationship": "name-variant"
+  },
+  "increase-diversity-of-housing": {
+    "canonical": "initiatives/increase-diversity-of-housing",
+    "type": "initiative",
+    "aliases": [
+      "Increase Diversity of Housing"
+    ],
+    "relationship": "name-variant"
+  },
+  "materials-recovery-facility-renovation": {
+    "canonical": "initiatives/materials-recovery-facility-renovation",
+    "type": "initiative",
+    "aliases": [
+      "Materials Recovery Facility Renovation or Development"
+    ],
+    "relationship": "name-variant"
+  },
+  "ev-charging-infrastructure-expansion": {
+    "canonical": "initiatives/ev-charging-infrastructure-expansion",
+    "type": "initiative",
+    "aliases": [
+      "EV Charging Infrastructure Expansion"
+    ],
+    "relationship": "name-variant"
+  },
+  "local-and-regional-transit": {
+    "canonical": "initiatives/local-and-regional-transit",
+    "type": "initiative",
+    "aliases": [
+      "Local and Regional Transit"
+    ],
+    "relationship": "name-variant"
+  },
+  "bulk-purchase-of-energy-efficiency": {
+    "canonical": "initiatives/bulk-purchase-of-energy-efficiency",
+    "type": "initiative",
+    "aliases": [
+      "Bulk Purchase of Energy Efficiency"
+    ],
+    "relationship": "name-variant"
+  },
+  "regional-methane-digester": {
+    "canonical": "initiatives/regional-methane-digester",
+    "type": "initiative",
+    "aliases": [
+      "Regional Methane Digester"
+    ],
+    "relationship": "name-variant"
+  },
+  "bulk-buy-renewable-energy-ev": {
+    "canonical": "initiatives/bulk-buy-renewable-energy-ev",
+    "type": "initiative",
+    "aliases": [
+      "Bulk-Buy Purchasing for Renewable Energy, Energy Efficiency, and EVs"
+    ],
+    "relationship": "name-variant"
+  },
+  "tiered-parking-rates": {
+    "canonical": "initiatives/tiered-parking-rates",
+    "type": "initiative",
+    "aliases": [
+      "Establish Tiered Parking Rates"
+    ],
+    "relationship": "name-variant"
+  },
+  "ev-fleet-conversion": {
+    "canonical": "initiatives/ev-fleet-conversion",
+    "type": "initiative",
+    "aliases": [
+      "EV Fleet Conversion Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-planning-process": {
+    "canonical": "initiatives/a2zero-planning-process",
+    "type": "initiative",
+    "aliases": [
+      "A2Zero Planning Process"
+    ],
+    "relationship": "name-variant"
+  },
+  "carbon-offsets": {
+    "canonical": "initiatives/carbon-offsets",
+    "type": "initiative",
+    "aliases": [
+      "Offsets"
+    ],
+    "relationship": "name-variant"
+  },
+  "equity-programs": {
+    "canonical": "initiatives/equity-programs",
+    "type": "initiative",
+    "aliases": [
+      "Equity Programs"
+    ],
+    "relationship": "name-variant"
+  },
+  "dte-on-bill-financing-efficiency": {
+    "canonical": "initiatives/dte-on-bill-financing-efficiency",
+    "type": "initiative",
+    "aliases": [
+      "DTE Energy On-Bill Financing for Energy Efficiency Improvements"
+    ],
+    "relationship": "name-variant"
+  },
+  "ev-infrastructure": {
+    "canonical": "initiatives/ev-infrastructure",
+    "type": "initiative",
+    "aliases": [
+      "EV Infrastructure"
+    ],
+    "relationship": "name-variant"
+  },
+  "loan-loss-reserve": {
+    "canonical": "initiatives/loan-loss-reserve",
+    "type": "initiative",
+    "aliases": [
+      "Establish Loan Loss Reserve"
+    ],
+    "relationship": "name-variant"
+  },
+  "sustaining-ann-arbor-together-grant-program": {
+    "canonical": "initiatives/sustaining-ann-arbor-together-grant-program",
+    "type": "initiative",
+    "aliases": [
+      "Sustaining Ann Arbor Together Grant Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "dte-existing-programs-awareness": {
+    "canonical": "initiatives/dte-existing-programs-awareness",
+    "type": "initiative",
+    "aliases": [
+      "Spread Information About DTE Energy's Existing Energy Efficiency Programs"
+    ],
+    "relationship": "name-variant"
+  },
+  "benchmark-and-disclose-energy-usage": {
+    "canonical": "initiatives/benchmark-and-disclose-energy-usage",
+    "type": "initiative",
+    "aliases": [
+      "Benchmark and Disclose Energy Usage"
+    ],
+    "relationship": "name-variant"
+  },
+  "asset-and-needs-mapping-of-neighborhoods": {
+    "canonical": "initiatives/asset-and-needs-mapping-of-neighborhoods",
+    "type": "initiative",
+    "aliases": [
+      "Conduct Asset and Needs Mapping of Neighborhoods"
+    ],
+    "relationship": "name-variant"
+  },
+  "support-plant-rich-diet": {
+    "canonical": "initiatives/support-plant-rich-diet",
+    "type": "initiative",
+    "aliases": [
+      "Support a Plant Rich Diet"
+    ],
+    "relationship": "name-variant"
+  },
+  "westgate-library": {
+    "canonical": "locations/westgate-library",
+    "type": "location",
+    "aliases": [
+      "Westgate Library"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-greenbelt": {
+    "canonical": "locations/ann-arbor-greenbelt",
+    "type": "location",
+    "aliases": [
+      "Ann Arbor Greenbelt"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-farmers-market": {
+    "canonical": "locations/ann-arbor-farmers-market",
+    "type": "location",
+    "aliases": [
+      "Ann Arbor Farmers Market"
+    ],
+    "relationship": "name-variant"
+  },
+  "veterans-memorial-park": {
+    "canonical": "locations/veterans-memorial-park",
+    "type": "location",
+    "aliases": [
+      "Veterans Memorial Park"
+    ],
+    "relationship": "name-variant"
+  },
+  "detroit": {
+    "canonical": "locations/detroit",
+    "type": "location",
+    "aliases": [
+      "Detroit"
+    ],
+    "relationship": "name-variant"
+  },
+  "bryant-community-center": {
+    "canonical": "locations/bryant-community-center",
+    "type": "location",
+    "aliases": [
+      "Bryant Community Center"
+    ],
+    "relationship": "name-variant"
+  },
+  "cobblestone-farm": {
+    "canonical": "locations/cobblestone-farm",
+    "type": "location",
+    "aliases": [
+      "Cobblestone Farm"
+    ],
+    "relationship": "name-variant"
+  },
+  "downtown-development-authority-district": {
+    "canonical": "locations/downtown-development-authority-district",
+    "type": "location",
+    "aliases": [
+      "Downtown Development Authority District"
+    ],
+    "relationship": "name-variant"
+  },
+  "ypsilanti": {
+    "canonical": "locations/ypsilanti",
+    "type": "location",
+    "aliases": [
+      "Ypsilanti"
+    ],
+    "relationship": "name-variant"
+  },
+  "dc-fast-charger": {
+    "canonical": "technology/dc-fast-charger",
+    "type": "technology",
+    "aliases": [
+      "Direct Current Fast Charger (DCFC)"
+    ],
+    "relationship": "name-variant"
+  },
+  "electric-bus": {
+    "canonical": "technology/electric-bus",
+    "type": "technology",
+    "aliases": [
+      "Electric Bus"
+    ],
+    "relationship": "name-variant"
+  },
+  "led-lighting": {
+    "canonical": "technology/led-lighting",
+    "type": "technology",
+    "aliases": [
+      "LED Lighting"
+    ],
+    "relationship": "name-variant"
+  },
+  "autonomous-vehicle": {
+    "canonical": "technology/autonomous-vehicle",
+    "type": "technology",
+    "aliases": [
+      "Connected and Autonomous Vehicle"
+    ],
+    "relationship": "name-variant"
+  },
+  "geothermal-district-system": {
+    "canonical": "technology/geothermal-district-system",
+    "type": "technology",
+    "aliases": [
+      "District Geothermal System"
+    ],
+    "relationship": "name-variant"
+  },
+  "permeable-pavement": {
+    "canonical": "technology/permeable-pavement",
+    "type": "technology",
+    "aliases": [
+      "Permeable Pavement"
+    ],
+    "relationship": "name-variant"
+  },
+  "floating-solar-panels": {
+    "canonical": "technology/floating-solar-panels",
+    "type": "technology",
+    "aliases": [
+      "Floating Solar Panels (Floatovoltaics)"
+    ],
+    "relationship": "name-variant"
+  },
+  "2019-12-19-a2zero-partners-equity-training": {
+    "canonical": "meetings/2019-12-19-a2zero-partners-equity-training",
+    "type": "meeting",
+    "aliases": [
+      "A²ZERO Partners — 2019-12-19 (Equity and Climate Training)"
+    ],
+    "relationship": "name-variant"
+  },
+  "2020-03-20-a2zero-partners-strategy-unveiling": {
+    "canonical": "meetings/2020-03-20-a2zero-partners-strategy-unveiling",
+    "type": "meeting",
+    "aliases": [
+      "A²ZERO Partners — 2020-03-20 (Final Strategy Unveiling)"
+    ],
+    "relationship": "name-variant"
+  },
+  "2020-01-14-energy-commission": {
+    "canonical": "meetings/2020-01-14-energy-commission",
+    "type": "meeting",
+    "aliases": [
+      "Energy Commission — 2020-01-14 (A2Zero presentation and discussion)"
+    ],
+    "relationship": "name-variant"
+  },
+  "2020-02-22-carbon-neutrality-town-hall": {
+    "canonical": "meetings/2020-02-22-carbon-neutrality-town-hall",
+    "type": "meeting",
+    "aliases": [
+      "2nd Carbon Neutrality Town Hall — 2020-02-22"
+    ],
+    "relationship": "name-variant"
+  },
+  "2020-01-17-transportation-energy-environmental-planning-commissions": {
+    "canonical": "meetings/2020-01-17-transportation-energy-environmental-planning-commissions",
+    "type": "meeting",
+    "aliases": [
+      "Transportation, Energy, Environmental, and Planning Commissions — 2020-01-17"
+    ],
+    "relationship": "name-variant"
+  },
+  "2019-12-13-a2zero-partners": {
+    "canonical": "meetings/2019-12-13-a2zero-partners",
+    "type": "meeting",
+    "aliases": [
+      "A²ZERO Partners — 2019-12-13 (First Partner Meeting)"
+    ],
+    "relationship": "name-variant"
+  },
+  "2017-06-01-green-fleets-policy-resolution": {
+    "canonical": "political-events/2017-06-01-green-fleets-policy-resolution",
+    "type": "political-event",
+    "aliases": [
+      "Ann Arbor City Council — Resolution R-17-237 (Green Fleets Policy Update)"
+    ],
+    "relationship": "name-variant"
+  },
+  "2019-11-04-climate-emergency-declaration-and-carbon-neutrality-plan-resolution": {
+    "canonical": "political-events/2019-11-04-climate-emergency-declaration-and-carbon-neutrality-plan-resolution",
+    "type": "political-event",
+    "aliases": [
+      "Ann Arbor City Council — Climate Emergency Declaration and Resolution to Create"
+    ],
+    "relationship": "name-variant"
+  },
+  "ibew-252": {
+    "canonical": "actors/ibew-252",
+    "type": "actor",
+    "aliases": [
+      "IBEW Local 252"
+    ],
+    "relationship": "name-variant"
+  },
+  "national-community-solar-partnership": {
+    "canonical": "actors/national-community-solar-partnership",
+    "type": "actor",
+    "aliases": [
+      "National Community Solar Partnership"
+    ],
+    "relationship": "name-variant"
+  },
+  "city-fleet-electrification": {
+    "canonical": "initiatives/city-fleet-electrification",
+    "type": "initiative",
+    "aliases": [
+      "City Fleet Electrification"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-pledge": {
+    "canonical": "initiatives/a2zero-pledge",
+    "type": "initiative",
+    "aliases": [
+      "A2ZERO Community Pledge"
+    ],
+    "relationship": "name-variant"
+  },
+  "10000-trees-initiative": {
+    "canonical": "initiatives/10000-trees-initiative",
+    "type": "initiative",
+    "aliases": [
+      "10,000 Trees Initiative"
+    ],
+    "relationship": "name-variant"
+  },
+  "lmi-solar-access-program": {
+    "canonical": "initiatives/lmi-solar-access-program",
+    "type": "initiative",
+    "aliases": [
+      "Low-to-Moderate Income Solar Access Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "municipal-rooftop-solar-rfp": {
+    "canonical": "initiatives/municipal-rooftop-solar-rfp",
+    "type": "initiative",
+    "aliases": [
+      "Municipal Rooftop Solar RFP"
+    ],
+    "relationship": "name-variant"
+  },
+  "solarize-ann-arbor": {
+    "canonical": "initiatives/solarize-ann-arbor",
+    "type": "initiative",
+    "aliases": [
+      "Solarize Ann Arbor"
+    ],
+    "relationship": "name-variant"
+  },
+  "ev-readiness-ordinance": {
+    "canonical": "initiatives/ev-readiness-ordinance",
+    "type": "initiative",
+    "aliases": [
+      "EV Readiness Ordinance"
+    ],
+    "relationship": "name-variant"
+  },
+  "re4m-learning-series": {
+    "canonical": "initiatives/re4m-learning-series",
+    "type": "initiative",
+    "aliases": [
+      "RE4M Internal Learning Series"
+    ],
+    "relationship": "name-variant"
+  },
+  "community-solar-pilot": {
+    "canonical": "initiatives/community-solar-pilot",
+    "type": "initiative",
+    "aliases": [
+      "Community Solar Pilot"
+    ],
+    "relationship": "name-variant"
+  },
+  "carbon-neutrality-coordinating-committee": {
+    "canonical": "initiatives/carbon-neutrality-coordinating-committee",
+    "type": "initiative",
+    "aliases": [
+      "Carbon Neutrality Coordinating Committee"
+    ],
+    "relationship": "name-variant"
+  },
+  "whole-home-checkup": {
+    "canonical": "initiatives/whole-home-checkup",
+    "type": "initiative",
+    "aliases": [
+      "Whole Home Check-Up"
+    ],
+    "relationship": "name-variant"
+  },
+  "northside-resilience-hub": {
+    "canonical": "initiatives/northside-resilience-hub",
+    "type": "initiative",
+    "aliases": [
+      "Northside Community Center Resilience Hub"
+    ],
+    "relationship": "name-variant"
+  },
+  "benchmarking-ordinance": {
+    "canonical": "initiatives/benchmarking-ordinance",
+    "type": "initiative",
+    "aliases": [
+      "Commercial and Multi-Family Benchmarking Ordinance"
+    ],
+    "relationship": "name-variant"
+  },
+  "bike-discount-program": {
+    "canonical": "initiatives/bike-discount-program",
+    "type": "initiative",
+    "aliases": [
+      "Bike Discount Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "landfill-solar-feasibility": {
+    "canonical": "initiatives/landfill-solar-feasibility",
+    "type": "initiative",
+    "aliases": [
+      "Landfill Solar Feasibility Study"
+    ],
+    "relationship": "name-variant"
+  },
+  "range-replacement-program": {
+    "canonical": "initiatives/range-replacement-program",
+    "type": "initiative",
+    "aliases": [
+      "Range Replacement Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "sustaining-ann-arbor-together-grants": {
+    "canonical": "initiatives/sustaining-ann-arbor-together-grants",
+    "type": "initiative",
+    "aliases": [
+      "Sustaining Ann Arbor Together Grant Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "heat-pump-replacement-campaign": {
+    "canonical": "initiatives/heat-pump-replacement-campaign",
+    "type": "initiative",
+    "aliases": [
+      "Heat Pump Replacement Campaign"
+    ],
+    "relationship": "name-variant"
+  },
+  "ibew-252-home-electrification-assessment": {
+    "canonical": "initiatives/ibew-252-home-electrification-assessment",
+    "type": "initiative",
+    "aliases": [
+      "IBEW 252 Home Electrification Assessment Collaboration"
+    ],
+    "relationship": "name-variant"
+  },
+  "reusable-container-pilot": {
+    "canonical": "initiatives/reusable-container-pilot",
+    "type": "initiative",
+    "aliases": [
+      "Reusable Container Pilot"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-capped-landfill": {
+    "canonical": "locations/ann-arbor-capped-landfill",
+    "type": "location",
+    "aliases": [
+      "Ann Arbor Capped Landfill"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-city-hall": {
+    "canonical": "locations/ann-arbor-city-hall",
+    "type": "location",
+    "aliases": [
+      "Ann Arbor City Hall"
+    ],
+    "relationship": "name-variant"
+  },
+  "bryant-neighborhood": {
+    "canonical": "locations/bryant-neighborhood",
+    "type": "location",
+    "aliases": [
+      "Bryant Neighborhood"
+    ],
+    "relationship": "name-variant"
+  },
+  "northside-community-center": {
+    "canonical": "locations/northside-community-center",
+    "type": "location",
+    "aliases": [
+      "Northside Community Center"
+    ],
+    "relationship": "name-variant"
+  },
+  "battery-storage": {
+    "canonical": "technology/battery-storage",
+    "type": "technology",
+    "aliases": [
+      "Solar-Powered Battery Storage"
+    ],
+    "relationship": "name-variant"
+  },
+  "induction-range": {
+    "canonical": "technology/induction-range",
+    "type": "technology",
+    "aliases": [
+      "Induction Range"
+    ],
+    "relationship": "name-variant"
+  },
+  "dcfc-city-hall-grant-2021": {
+    "canonical": "funding-events/dcfc-city-hall-grant-2021",
+    "type": "funding-event",
+    "aliases": [
+      "Direct Current Fast Charger Installation Grant — City Hall 2021"
+    ],
+    "relationship": "name-variant"
+  },
+  "ncsp-technical-assistance-grant-2021": {
+    "canonical": "funding-events/ncsp-technical-assistance-grant-2021",
+    "type": "funding-event",
+    "aliases": [
+      "National Community Solar Partnership Technical Assistance Grant 2021"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-fire-department": {
+    "canonical": "actors/ann-arbor-fire-department",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Fire Department"
+    ],
+    "relationship": "name-variant"
+  },
+  "ibew-neca": {
+    "canonical": "actors/ibew-neca",
+    "type": "actor",
+    "aliases": [
+      "IBEW/NECA (International Brotherhood of Electrical Workers / National Electrical"
+    ],
+    "relationship": "name-variant"
+  },
+  "iclei": {
+    "canonical": "actors/iclei",
+    "type": "actor",
+    "aliases": [
+      "ICLEI-Local Governments for Sustainability"
+    ],
+    "relationship": "name-variant"
+  },
+  "city-of-ann-arbor-planning-department": {
+    "canonical": "actors/city-of-ann-arbor-planning-department",
+    "type": "actor",
+    "aliases": [
+      "City of Ann Arbor Planning Department"
+    ],
+    "relationship": "name-variant"
+  },
+  "american-lung-association": {
+    "canonical": "actors/american-lung-association",
+    "type": "actor",
+    "aliases": [
+      "American Lung Association"
+    ],
+    "relationship": "name-variant"
+  },
+  "elevate": {
+    "canonical": "actors/elevate",
+    "type": "actor",
+    "aliases": [
+      "Elevate"
+    ],
+    "relationship": "name-variant"
+  },
+  "mcknight-foundation": {
+    "canonical": "actors/mcknight-foundation",
+    "type": "actor",
+    "aliases": [
+      "McKnight Foundation"
+    ],
+    "relationship": "name-variant"
+  },
+  "avalon-housing": {
+    "canonical": "actors/avalon-housing",
+    "type": "actor",
+    "aliases": [
+      "Avalon Housing"
+    ],
+    "relationship": "name-variant"
+  },
+  "world-resources-institute": {
+    "canonical": "actors/world-resources-institute",
+    "type": "actor",
+    "aliases": [
+      "World Resources Institute"
+    ],
+    "relationship": "name-variant"
+  },
+  "live-zero-waste": {
+    "canonical": "actors/live-zero-waste",
+    "type": "actor",
+    "aliases": [
+      "Live Zero Waste"
+    ],
+    "relationship": "name-variant"
+  },
+  "bright-cities": {
+    "canonical": "actors/bright-cities",
+    "type": "actor",
+    "aliases": [
+      "Bright Cities"
+    ],
+    "relationship": "name-variant"
+  },
+  "simi-barr": {
+    "canonical": "actors/simi-barr",
+    "type": "actor",
+    "aliases": [
+      "Simi Barr"
+    ],
+    "relationship": "name-variant"
+  },
+  "missy-stults": {
+    "canonical": "actors/missy-stults",
+    "type": "actor",
+    "aliases": [
+      "Missy Stults"
+    ],
+    "relationship": "name-variant"
+  },
+  "el-harissa-market-cafe": {
+    "canonical": "actors/el-harissa-market-cafe",
+    "type": "actor",
+    "aliases": [
+      "El Harissa Market Café"
+    ],
+    "relationship": "name-variant"
+  },
+  "galen-hardy": {
+    "canonical": "actors/galen-hardy",
+    "type": "actor",
+    "aliases": [
+      "Galen Hardy"
+    ],
+    "relationship": "name-variant"
+  },
+  "zingermans-next-door-cafe": {
+    "canonical": "actors/zingermans-next-door-cafe",
+    "type": "actor",
+    "aliases": [
+      "Zingerman's Next Door Café"
+    ],
+    "relationship": "name-variant"
+  },
+  "julie-roth": {
+    "canonical": "actors/julie-roth",
+    "type": "actor",
+    "aliases": [
+      "Julie Roth"
+    ],
+    "relationship": "name-variant"
+  },
+  "solar-moonshot": {
+    "canonical": "actors/solar-moonshot",
+    "type": "actor",
+    "aliases": [
+      "Solar Moonshot"
+    ],
+    "relationship": "name-variant"
+  },
+  "sean-reynolds": {
+    "canonical": "actors/sean-reynolds",
+    "type": "actor",
+    "aliases": [
+      "Sean Reynolds"
+    ],
+    "relationship": "name-variant"
+  },
+  "egle": {
+    "canonical": "actors/egle",
+    "type": "actor",
+    "aliases": [
+      "Michigan Department of Environment, Great Lakes, and Energy (EGLE)"
+    ],
+    "relationship": "name-variant"
+  },
+  "rmi": {
+    "canonical": "actors/rmi",
+    "type": "actor",
+    "aliases": [
+      "RMI (Rocky Mountain Institute)"
+    ],
+    "relationship": "name-variant"
+  },
+  "great-lakes-renewable-energy-association": {
+    "canonical": "actors/great-lakes-renewable-energy-association",
+    "type": "actor",
+    "aliases": [
+      "Great Lakes Renewable Energy Association"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-emergency-management": {
+    "canonical": "actors/ann-arbor-emergency-management",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Emergency Management"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-downtown-development-authority": {
+    "canonical": "actors/ann-arbor-downtown-development-authority",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor Downtown Development Authority"
+    ],
+    "relationship": "name-variant"
+  },
+  "ginger-deli": {
+    "canonical": "actors/ginger-deli",
+    "type": "actor",
+    "aliases": [
+      "Ginger Deli"
+    ],
+    "relationship": "name-variant"
+  },
+  "commercial-solarize-pilot": {
+    "canonical": "initiatives/commercial-solarize-pilot",
+    "type": "initiative",
+    "aliases": [
+      "Commercial Solarize Pilot Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "green-rental-housing": {
+    "canonical": "initiatives/green-rental-housing",
+    "type": "initiative",
+    "aliases": [
+      "Green Rental Housing Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-unified-development-code-integration": {
+    "canonical": "initiatives/a2zero-unified-development-code-integration",
+    "type": "initiative",
+    "aliases": [
+      "A2Zero Integration into Unified Development Code"
+    ],
+    "relationship": "name-variant"
+  },
+  "bicycle-discount-program": {
+    "canonical": "initiatives/bicycle-discount-program",
+    "type": "initiative",
+    "aliases": [
+      "Bicycle Discount Program with Local Vendors"
+    ],
+    "relationship": "name-variant"
+  },
+  "electrification-campaign": {
+    "canonical": "initiatives/electrification-campaign",
+    "type": "initiative",
+    "aliases": [
+      "Electrification Campaign"
+    ],
+    "relationship": "name-variant"
+  },
+  "nextcycle-i2p3-circular-economy": {
+    "canonical": "initiatives/nextcycle-i2p3-circular-economy",
+    "type": "initiative",
+    "aliases": [
+      "NextCycle Michigan I2P3 Circular Economy Challenge"
+    ],
+    "relationship": "name-variant"
+  },
+  "city-buildings-solar-design": {
+    "canonical": "initiatives/city-buildings-solar-design",
+    "type": "initiative",
+    "aliases": [
+      "City Buildings Solar Design and Installation"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2r3-reduce-reuse-return": {
+    "canonical": "initiatives/a2r3-reduce-reuse-return",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Reduce, Reuse, Return (A2R3)"
+    ],
+    "relationship": "name-variant"
+  },
+  "sustainable-food-working-group": {
+    "canonical": "initiatives/sustainable-food-working-group",
+    "type": "initiative",
+    "aliases": [
+      "Sustainable Food Working Group"
+    ],
+    "relationship": "name-variant"
+  },
+  "home-energy-rating-disclosure-program": {
+    "canonical": "initiatives/home-energy-rating-disclosure-program",
+    "type": "initiative",
+    "aliases": [
+      "Home Energy Rating Disclosure Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "circular-economy-strategy": {
+    "canonical": "initiatives/circular-economy-strategy",
+    "type": "initiative",
+    "aliases": [
+      "Circular Economy Strategy"
+    ],
+    "relationship": "name-variant"
+  },
+  "wheeler-center-solar-park": {
+    "canonical": "initiatives/wheeler-center-solar-park",
+    "type": "initiative",
+    "aliases": [
+      "Wheeler Center Solar Park"
+    ],
+    "relationship": "name-variant"
+  },
+  "future-is-electric-campaign": {
+    "canonical": "initiatives/future-is-electric-campaign",
+    "type": "initiative",
+    "aliases": [
+      "The Future is Electric Campaign"
+    ],
+    "relationship": "name-variant"
+  },
+  "carbon-neutral-fire-station": {
+    "canonical": "initiatives/carbon-neutral-fire-station",
+    "type": "initiative",
+    "aliases": [
+      "Carbon Neutral Fire Station Design"
+    ],
+    "relationship": "name-variant"
+  },
+  "whole-home-decarbonization-assessment": {
+    "canonical": "initiatives/whole-home-decarbonization-assessment",
+    "type": "initiative",
+    "aliases": [
+      "Whole-Home Decarbonization Assessment"
+    ],
+    "relationship": "name-variant"
+  },
+  "circular-economy-working-group": {
+    "canonical": "initiatives/circular-economy-working-group",
+    "type": "initiative",
+    "aliases": [
+      "Circular Economy Working Group"
+    ],
+    "relationship": "name-variant"
+  },
+  "arpa-city-facilities-solar": {
+    "canonical": "initiatives/arpa-city-facilities-solar",
+    "type": "initiative",
+    "aliases": [
+      "ARPA Solar and Energy Savings at City Facilities"
+    ],
+    "relationship": "name-variant"
+  },
+  "master-rain-gardener-training": {
+    "canonical": "initiatives/master-rain-gardener-training",
+    "type": "initiative",
+    "aliases": [
+      "Master Rain Gardener Training"
+    ],
+    "relationship": "name-variant"
+  },
+  "aahc-energy-improvements": {
+    "canonical": "initiatives/aahc-energy-improvements",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Housing Commission Energy, Comfort, and Safety Improvements"
+    ],
+    "relationship": "name-variant"
+  },
+  "aqmesh-air-quality-monitoring": {
+    "canonical": "initiatives/aqmesh-air-quality-monitoring",
+    "type": "initiative",
+    "aliases": [
+      "AQMesh Air Quality Monitoring Network"
+    ],
+    "relationship": "name-variant"
+  },
+  "zero-waste-challenge": {
+    "canonical": "initiatives/zero-waste-challenge",
+    "type": "initiative",
+    "aliases": [
+      "Zero Waste Challenge"
+    ],
+    "relationship": "name-variant"
+  },
+  "ev-charger-deployment": {
+    "canonical": "initiatives/ev-charger-deployment",
+    "type": "initiative",
+    "aliases": [
+      "EV Charger Deployment"
+    ],
+    "relationship": "name-variant"
+  },
+  "dte-utility-case-u-20836-intervention": {
+    "canonical": "initiatives/dte-utility-case-u-20836-intervention",
+    "type": "initiative",
+    "aliases": [
+      "DTE Utility Case U-20836 Intervention"
+    ],
+    "relationship": "name-variant"
+  },
+  "transportation-carbon-calculator": {
+    "canonical": "initiatives/transportation-carbon-calculator",
+    "type": "initiative",
+    "aliases": [
+      "Transportation Carbon Calculator for Plan Review"
+    ],
+    "relationship": "name-variant"
+  },
+  "downtown-commercial-recycling-saturday-service": {
+    "canonical": "initiatives/downtown-commercial-recycling-saturday-service",
+    "type": "initiative",
+    "aliases": [
+      "Downtown Commercial Recycling Saturday Service"
+    ],
+    "relationship": "name-variant"
+  },
+  "resident-race-to-zero": {
+    "canonical": "initiatives/resident-race-to-zero",
+    "type": "initiative",
+    "aliases": [
+      "Resident Race to Zero (A2ZERO Waste Challenge)"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-collaborators-network": {
+    "canonical": "initiatives/a2zero-collaborators-network",
+    "type": "initiative",
+    "aliases": [
+      "A2ZERO Collaborators Network"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-solar-stories": {
+    "canonical": "initiatives/ann-arbor-solar-stories",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Solar Stories"
+    ],
+    "relationship": "name-variant"
+  },
+  "soil-carbon-calculator": {
+    "canonical": "initiatives/soil-carbon-calculator",
+    "type": "initiative",
+    "aliases": [
+      "Soil Carbon Calculator Tool"
+    ],
+    "relationship": "name-variant"
+  },
+  "tree-planting-underserved-areas": {
+    "canonical": "initiatives/tree-planting-underserved-areas",
+    "type": "initiative",
+    "aliases": [
+      "Tree Planting in Underserved Areas"
+    ],
+    "relationship": "name-variant"
+  },
+  "electrification-contractor-training-and-badging": {
+    "canonical": "initiatives/electrification-contractor-training-and-badging",
+    "type": "initiative",
+    "aliases": [
+      "Electrification Contractor Training and Badging Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "energy-concierge": {
+    "canonical": "initiatives/energy-concierge",
+    "type": "initiative",
+    "aliases": [
+      "Energy Concierge"
+    ],
+    "relationship": "name-variant"
+  },
+  "sustainable-food-framework": {
+    "canonical": "initiatives/sustainable-food-framework",
+    "type": "initiative",
+    "aliases": [
+      "Sustainable Food Framework for Ann Arbor"
+    ],
+    "relationship": "name-variant"
+  },
+  "city-facilities-energy-audits": {
+    "canonical": "initiatives/city-facilities-energy-audits",
+    "type": "initiative",
+    "aliases": [
+      "City Facilities Energy Audits and Decarbonization Plan"
+    ],
+    "relationship": "name-variant"
+  },
+  "sustainability-review-plan-process": {
+    "canonical": "initiatives/sustainability-review-plan-process",
+    "type": "initiative",
+    "aliases": [
+      "Sustainability Review in City Plan Review Process"
+    ],
+    "relationship": "name-variant"
+  },
+  "dte-utility-case-u-20713-intervention": {
+    "canonical": "initiatives/dte-utility-case-u-20713-intervention",
+    "type": "initiative",
+    "aliases": [
+      "DTE Utility Case U-20713 Intervention and Settlement"
+    ],
+    "relationship": "name-variant"
+  },
+  "protected-bike-lanes-expansion": {
+    "canonical": "initiatives/protected-bike-lanes-expansion",
+    "type": "initiative",
+    "aliases": [
+      "Protected Bike Lanes Expansion"
+    ],
+    "relationship": "name-variant"
+  },
+  "sustainable-food-purchasing-policy": {
+    "canonical": "initiatives/sustainable-food-purchasing-policy",
+    "type": "initiative",
+    "aliases": [
+      "Sustainable Food Purchasing Policy"
+    ],
+    "relationship": "name-variant"
+  },
+  "electric-refuse-truck-program": {
+    "canonical": "initiatives/electric-refuse-truck-program",
+    "type": "initiative",
+    "aliases": [
+      "Electric Refuse Truck Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "city-buildings-decarbonization": {
+    "canonical": "initiatives/city-buildings-decarbonization",
+    "type": "initiative",
+    "aliases": [
+      "City Buildings Decarbonization"
+    ],
+    "relationship": "name-variant"
+  },
+  "wri-247-renewable-energy-working-group": {
+    "canonical": "initiatives/wri-247-renewable-energy-working-group",
+    "type": "initiative",
+    "aliases": [
+      "World Resources Institute 24/7 Renewable Energy Working Group"
+    ],
+    "relationship": "name-variant"
+  },
+  "parking-minimum-removal": {
+    "canonical": "initiatives/parking-minimum-removal",
+    "type": "initiative",
+    "aliases": [
+      "Removal of Parking Minimums from Plan Review Requirements"
+    ],
+    "relationship": "name-variant"
+  },
+  "electrification-expo": {
+    "canonical": "initiatives/electrification-expo",
+    "type": "initiative",
+    "aliases": [
+      "Electrification Expo"
+    ],
+    "relationship": "name-variant"
+  },
+  "contractor-electrification-education-badging": {
+    "canonical": "initiatives/contractor-electrification-education-badging",
+    "type": "initiative",
+    "aliases": [
+      "Contractor Education and Badging Program on Electrification"
+    ],
+    "relationship": "name-variant"
+  },
+  "anti-idling-campaign-aaps": {
+    "canonical": "initiatives/anti-idling-campaign-aaps",
+    "type": "initiative",
+    "aliases": [
+      "Anti-Idling Campaign with Ann Arbor Public Schools"
+    ],
+    "relationship": "name-variant"
+  },
+  "rmi-electrification-cohort": {
+    "canonical": "initiatives/rmi-electrification-cohort",
+    "type": "initiative",
+    "aliases": [
+      "RMI Electrification Cities Cohort"
+    ],
+    "relationship": "name-variant"
+  },
+  "multi-hazard-mitigation-plan-climate-integration": {
+    "canonical": "initiatives/multi-hazard-mitigation-plan-climate-integration",
+    "type": "initiative",
+    "aliases": [
+      "Climate Integration into Multi-Hazard Mitigation Plan"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-metrics-dashboard": {
+    "canonical": "initiatives/a2zero-metrics-dashboard",
+    "type": "initiative",
+    "aliases": [
+      "A2Zero Metrics Dashboard"
+    ],
+    "relationship": "name-variant"
+  },
+  "avalon-housing-resilience-assessment": {
+    "canonical": "initiatives/avalon-housing-resilience-assessment",
+    "type": "initiative",
+    "aliases": [
+      "Avalon Housing Resilience Assessment"
+    ],
+    "relationship": "name-variant"
+  },
+  "ev-fast-charger-installation": {
+    "canonical": "initiatives/ev-fast-charger-installation",
+    "type": "initiative",
+    "aliases": [
+      "Electric Vehicle Fast Charger Installation"
+    ],
+    "relationship": "name-variant"
+  },
+  "utility-pole-ev-charging-pilot": {
+    "canonical": "initiatives/utility-pole-ev-charging-pilot",
+    "type": "initiative",
+    "aliases": [
+      "Utility-Pole EV Charging Pilot"
+    ],
+    "relationship": "name-variant"
+  },
+  "downtown-development-authority-garages": {
+    "canonical": "locations/downtown-development-authority-garages",
+    "type": "location",
+    "aliases": [
+      "Downtown Development Authority Parking Garages"
+    ],
+    "relationship": "name-variant"
+  },
+  "wheeler-center": {
+    "canonical": "locations/wheeler-center",
+    "type": "location",
+    "aliases": [
+      "Wheeler Center"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-senior-center": {
+    "canonical": "locations/ann-arbor-senior-center",
+    "type": "location",
+    "aliases": [
+      "Ann Arbor Senior Center"
+    ],
+    "relationship": "name-variant"
+  },
+  "federal-aahc-energy-2022": {
+    "canonical": "funding-events/federal-aahc-energy-2022",
+    "type": "funding-event",
+    "aliases": [
+      "Federal Grant for Ann Arbor Housing Commission Energy Improvements 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "michigan-electrification-expo-2022": {
+    "canonical": "funding-events/michigan-electrification-expo-2022",
+    "type": "funding-event",
+    "aliases": [
+      "State of Michigan Grant for Electrification Expo 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "american-lung-association-refuse-truck-2022": {
+    "canonical": "funding-events/american-lung-association-refuse-truck-2022",
+    "type": "funding-event",
+    "aliases": [
+      "American Lung Association Grant for Electric Refuse Truck 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "ev-fast-charger-2022": {
+    "canonical": "funding-events/ev-fast-charger-2022",
+    "type": "funding-event",
+    "aliases": [
+      "EV Fast Charger Installation Grant 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "michigan-refuse-truck-2022": {
+    "canonical": "funding-events/michigan-refuse-truck-2022",
+    "type": "funding-event",
+    "aliases": [
+      "State of Michigan Grant for Electric Refuse Truck 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "mcknight-foundation-bryant-2022": {
+    "canonical": "funding-events/mcknight-foundation-bryant-2022",
+    "type": "funding-event",
+    "aliases": [
+      "McKnight Foundation Grant for Bryant Neighborhood Work 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "epa-bryant-2022": {
+    "canonical": "funding-events/epa-bryant-2022",
+    "type": "funding-event",
+    "aliases": [
+      "U.S. EPA Grant for Bryant Neighborhood Work 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "egle-contractor-education-2022": {
+    "canonical": "funding-events/egle-contractor-education-2022",
+    "type": "funding-event",
+    "aliases": [
+      "EGLE Grant for Contractor Electrification Education 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "bright-cities-tree-planting-2022": {
+    "canonical": "funding-events/bright-cities-tree-planting-2022",
+    "type": "funding-event",
+    "aliases": [
+      "Bright Cities Grant for Tree Planting 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "solar-moonshot-bryant-2022": {
+    "canonical": "funding-events/solar-moonshot-bryant-2022",
+    "type": "funding-event",
+    "aliases": [
+      "Solar Moonshot Grant for Bryant Solar Installations 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "arpa-city-facilities-solar-2022": {
+    "canonical": "funding-events/arpa-city-facilities-solar-2022",
+    "type": "funding-event",
+    "aliases": [
+      "American Rescue Plan Act Grant for City Facilities Solar 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "michigan-utility-pole-ev-2022": {
+    "canonical": "funding-events/michigan-utility-pole-ev-2022",
+    "type": "funding-event",
+    "aliases": [
+      "State of Michigan Grant for Utility-Pole EV Charging Pilot 2022"
+    ],
+    "relationship": "name-variant"
+  },
+  "2022-commercial-benchmarking-ordinance-ann-arbor": {
+    "canonical": "political-events/2022-commercial-benchmarking-ordinance-ann-arbor",
+    "type": "political-event",
+    "aliases": [
+      "Ann Arbor City Council — Commercial Benchmarking Ordinance Passed (Michigan's"
+    ],
+    "relationship": "name-variant"
+  },
+  "2022-03-21-sustainable-food-purchasing-resolution": {
+    "canonical": "political-events/2022-03-21-sustainable-food-purchasing-resolution",
+    "type": "political-event",
+    "aliases": [
+      "Ann Arbor City Council — 2022-03-21 (Sustainable Food Purchasing Policy Resolution)"
     ],
     "relationship": "name-variant"
   }

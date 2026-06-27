@@ -32,7 +32,7 @@ partners:
 - '[[actors/ann-arbor-planning-commission]]'
 - '[[actors/ann-arbor-city-council]]'
 - '[[actors/ann-arbor-historic-district-commission]]'
-party-responsible: '[[actors/ann-arbor-planning-department]]'
+party-responsible: '[[actors/city-of-ann-arbor-planning-department]]'
 related-strategies:
 - '[[strategies/strategy-4-vmt-reduction]]'
 source-first-seen: '[[sources/cap/cap-2020]]'

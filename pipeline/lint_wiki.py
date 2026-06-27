@@ -64,6 +64,22 @@ _ENTITY_DIRS = frozenset({
 # Default scope for backlink scan — navigation layer first
 _BACKLINK_DEFAULT_SCOPE = ["strategies", "overviews"]
 
+# Expected type value for each directory — used for type/directory mismatch detection
+_EXPECTED_TYPE_BY_DIR = {
+    "strategies": "strategy",
+    "actors": "actor",
+    "initiatives": "initiative",
+    "locations": "location",
+    "technology": "technology",
+    "funding-events": "funding-event",
+    "meetings": "meeting",
+    "political-events": "political-event",
+    "overviews": "overview",
+    "topics": "topic",
+}
+# Reverse map: type value → canonical directory
+_CANONICAL_DIR_BY_TYPE = {v: k for k, v in _EXPECTED_TYPE_BY_DIR.items()}
+
 
 def _all_md_files(wiki_root: str) -> list[Path]:
     return list(Path(wiki_root).rglob("*.md"))
@@ -114,6 +130,33 @@ def structural_lint(wiki_root: str) -> list[dict]:
                 "type": "ORPHAN",
                 "page": rel,
                 "detail": "No other page links to this page",
+            })
+
+    # Type/directory mismatch check — catches misrouted pages (e.g. type:initiative in topics/)
+    for md_file in all_files:
+        dir_name = md_file.parent.name
+        expected_type = _EXPECTED_TYPE_BY_DIR.get(dir_name)
+        if expected_type is None:
+            continue
+        rel = str(md_file.relative_to(root))
+        raw = md_file.read_text(encoding="utf-8", errors="replace")
+        m = re.match(r"^---\n(.*?)\n---\n", raw, re.DOTALL)
+        if not m:
+            continue
+        page_type = None
+        for line in m.group(1).splitlines():
+            if line.startswith("type:"):
+                page_type = line.split(":", 1)[1].strip().strip("'\"")
+                break
+        if page_type and page_type != expected_type:
+            canonical_dir = _CANONICAL_DIR_BY_TYPE.get(page_type, f"{page_type}s")
+            findings.append({
+                "type": "TYPE_MISMATCH",
+                "page": rel,
+                "detail": (
+                    f"type: {page_type!r} but lives in {dir_name!r} "
+                    f"(should be in {canonical_dir!r})"
+                ),
             })
 
     # Empty / stub-only page check
@@ -233,11 +276,9 @@ def _llm_filter_candidates(
         f'  "{c["title"]}" → [[{c["slug"]}]]  |  context: {c["context"]}'
         for c in candidates
     )
-    user_msg = (
-        f"PAGE: {page_rel}\n\n"
-        f"CANDIDATES:\n{catalogue_lines}\n\n"
-        f"BODY:\n{body}"
-    )
+    # Omit full body — context snippets in CANDIDATES are sufficient and
+    # sending large bodies causes empty responses on long strategy/overview pages.
+    user_msg = f"PAGE: {page_rel}\n\nCANDIDATES:\n{catalogue_lines}"
     try:
         response = client.messages.create(
             model="claude-sonnet-4-6",
@@ -246,7 +287,13 @@ def _llm_filter_candidates(
             system=BACKLINK_FILTER_SYSTEM,
             messages=[{"role": "user", "content": user_msg}],
         )
-        result = json.loads(response.content[0].text)
+        raw = response.content[0].text.strip()
+        raw = re.sub(r"^```(?:json)?\s*", "", raw)
+        raw = re.sub(r"\s*```$", "", raw)
+        if not raw:
+            print(f"[lint_wiki:backlink] WARNING: empty LLM response for {page_rel} — skipping")
+            return []
+        result = json.loads(raw)
         return result.get("confirmed", [])
     except Exception as e:
         print(f"[lint_wiki:backlink] WARNING: LLM filter failed for {page_rel}: {e}")
@@ -405,12 +452,32 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
     proposals = []
     client = anthropic.Anthropic()
 
+    # Collect misrouted pages from topics/ that have a non-topic type frontmatter.
+    # These are pooled into the comparison group for their declared type so they
+    # can be detected as duplicates of correctly-routed pages.
+    _misrouted_by_dir: dict[str, list[Path]] = {}
+    _topics_dir = root / "topics"
+    if _topics_dir.exists():
+        for _tp in _topics_dir.glob("*.md"):
+            _raw = _tp.read_text(encoding="utf-8", errors="replace")
+            _fm = re.match(r"^---\n(.*?)\n---\n", _raw, re.DOTALL)
+            if not _fm:
+                continue
+            for _line in _fm.group(1).splitlines():
+                if _line.startswith("type:"):
+                    _pt = _line.split(":", 1)[1].strip().strip("'\"")
+                    if _pt != "topic":
+                        _target = _CANONICAL_DIR_BY_TYPE.get(_pt)
+                        if _target:
+                            _misrouted_by_dir.setdefault(_target, []).append(_tp)
+                    break
+
     for type_dir in ["actors", "initiatives", "locations", "political-events",
                      "technology", "funding-events", "meetings"]:
         dir_path = root / type_dir
         if not dir_path.exists():
             continue
-        pages = list(dir_path.glob("*.md"))
+        pages = list(dir_path.glob("*.md")) + _misrouted_by_dir.get(type_dir, [])
         if len(pages) < 2:
             continue
 
@@ -447,7 +514,13 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
                         system=SEMANTIC_VERDICT_SYSTEM,
                         messages=[{"role": "user", "content": prompt}],
                     )
-                    verdict = json.loads(response.content[0].text)
+                    raw = response.content[0].text.strip()
+                    raw = re.sub(r"^```(?:json)?\s*", "", raw)
+                    raw = re.sub(r"\s*```$", "", raw)
+                    if not raw:
+                        print(f"[lint_wiki:semantic] WARNING: empty LLM response for {title_a!r} vs {title_b!r} — skipping")
+                        continue
+                    verdict = json.loads(raw)
                 except Exception as e:
                     print(f"[lint_wiki:semantic] WARNING: verdict failed for {title_a!r} vs {title_b!r}: {e}")
                     continue
@@ -668,6 +741,35 @@ def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> N
     root = Path(wiki_root)
 
     for p in proposals:
+        if p["approved_action"] == "LINK":
+            page_rel = p.get("page", "")
+            entity_slug = p.get("slug", "")
+            display_text = p.get("display_text", "")
+            page_path = root / page_rel
+
+            if not page_path.exists():
+                print(f"[lint_wiki:apply] WARNING: page not found for LINK: {page_rel}")
+                continue
+            if not display_text:
+                print(f"[lint_wiki:apply] WARNING: no display text for LINK in {page_rel}")
+                continue
+
+            content = page_path.read_text(encoding="utf-8")
+            plain_pattern = re.compile(
+                r"(?<!\[\[)(?<!\|)" + re.escape(display_text) + r"(?!\]\])",
+                re.IGNORECASE,
+            )
+            match = plain_pattern.search(content)
+            if match:
+                actual_text = match.group(0)
+                wikilink = f"[[{entity_slug}|{actual_text}]]"
+                new_content, n = plain_pattern.subn(wikilink, content, count=1)
+                page_path.write_text(new_content, encoding="utf-8")
+                print(f"[lint_wiki:apply] LINK: '{actual_text}' → [[{entity_slug}]] in {page_rel}")
+            else:
+                print(f"[lint_wiki:apply] WARNING: display text not found in {page_rel}: '{display_text}'")
+            continue
+
         page_a_rel = p["page_a"]
         page_b_rel = p["page_b"]
         path_a = root / page_a_rel
@@ -745,32 +847,6 @@ def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> N
             })
             print(f"[lint_wiki:apply] TEMPORAL_SUCCESSION: {page_b_rel} → {page_a_rel}")
 
-        elif p["approved_action"] == "LINK":
-            page_rel = p.get("page", "")
-            entity_slug = p.get("slug", "")
-            display_text = p.get("display_text", "")
-            page_path = root / page_rel
-
-            if not page_path.exists():
-                print(f"[lint_wiki:apply] WARNING: page not found for LINK: {page_rel}")
-                continue
-            if not display_text:
-                print(f"[lint_wiki:apply] WARNING: no display text for LINK in {page_rel}")
-                continue
-
-            content = page_path.read_text(encoding="utf-8")
-            wikilink = f"[[{entity_slug}|{display_text}]]"
-            # Replace first plain-text occurrence only (skip text already inside [[...]])
-            # Use a pattern that excludes matches already inside wikilinks
-            plain_pattern = re.compile(
-                r"(?<!\[\[)(?<!\|)" + re.escape(display_text) + r"(?!\]\])"
-            )
-            new_content, n = plain_pattern.subn(wikilink, content, count=1)
-            if n:
-                page_path.write_text(new_content, encoding="utf-8")
-                print(f"[lint_wiki:apply] LINK: '{display_text}' → [[{entity_slug}]] in {page_rel}")
-            else:
-                print(f"[lint_wiki:apply] WARNING: display text not found in {page_rel}: '{display_text}'")
 
     # Remove resolved blocks from queue — inbox stays clean
     _cleanup_review_queue(rq_path)

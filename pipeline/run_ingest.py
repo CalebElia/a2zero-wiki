@@ -22,7 +22,7 @@ def _should_use_ldp(source_content: str) -> bool:
             pass
     lines = source_content.splitlines()
     headings = sum(1 for line in lines if re.match(r"^#{1,4}\s", line))
-    return len(lines) > 1000 and headings > 10
+    return len(lines) > 150 and headings > 5
 
 
 def run_source_ingest(
@@ -215,6 +215,19 @@ def run_source_ingest(
             source_uuid=uuid,
             run_date=run_date,
         )
+        # Seed alias registry with display titles for all entity pages first-seen
+        # in this source.  On subsequent ingests, Pass 1.5 can fuzzy-match against
+        # these titles and redirect to the canonical slug instead of creating
+        # year-over-year name-drift duplicates.
+        from pipeline.alias_registry import seed_aliases_from_ingest
+        _source_wikilink = f"sources/{Path(source_path).stem}" if "/" not in source_rel_path else source_rel_path
+        _seeded = seed_aliases_from_ingest(
+            wiki_root=wiki_root,
+            source_wikilink=source_rel_path,
+            aliases_path="registry/entity_aliases.json",
+        )
+        if _seeded:
+            print(f"[ingest] {uuid}: seeded {_seeded} alias entries for Pass 1.5 resolution")
 
     if wiki_only:
         print(f"[ingest] {uuid}: wiki-only run complete — quads and review-queue untouched")

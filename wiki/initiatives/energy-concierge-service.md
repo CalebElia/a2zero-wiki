@@ -25,3 +25,5 @@ type: initiative
 ---
 
 A joint county/city energy efficiency and renewable energy concierge service was proposed in the A2Zero plan as an idea to help residents and businesses navigate clean energy options ([[sources/cap/cap-2020|cap-2020]]). The service concept would provide coordinated guidance across both city and county jurisdictions to accelerate adoption of efficiency upgrades and renewables ([[sources/cap/cap-2020|cap-2020]]).
+
+The Energy Concierge Service is a one-on-one advisory program being co-designed with community partners to help residents develop prescriptive maps toward home improvements and decarbonization ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). As of Year Two, the City was collaborating with community partners on the co-design process and planned to test the service in Year Three ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).

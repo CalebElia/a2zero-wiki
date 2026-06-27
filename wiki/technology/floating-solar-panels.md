@@ -9,7 +9,7 @@ initiatives:
 - '[[initiatives/landfill-solar-project]]'
 last-updated: '2026-06-24'
 locations:
-- '[[locations/ann-arbor-landfill]]'
+- '[[locations/ann-arbor-capped-landfill]]'
 source-first-seen: '[[sources/cap/cap-2020]]'
 tags:
 - solar

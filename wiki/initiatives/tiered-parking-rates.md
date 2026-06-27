@@ -33,7 +33,7 @@ partners:
 - '[[actors/ann-arbor-2030-district]]'
 - '[[actors/ann-arbor-area-transit-authority]]'
 - '[[actors/university-of-michigan]]'
-- '[[actors/ann-arbor-planning-department]]'
+- '[[actors/city-of-ann-arbor-planning-department]]'
 party-responsible: '[[actors/downtown-development-authority]]'
 related-strategies:
 - '[[strategies/strategy-4-vmt-reduction]]'

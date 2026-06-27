@@ -2,7 +2,7 @@ import anthropic
 import json
 import re
 from pathlib import Path
-from pipeline.alias_registry import load_aliases, resolve_slug, resolve_slug_for_title
+from pipeline.alias_registry import load_aliases, resolve_slug, resolve_slug_for_title, fuzzy_resolve_slug_for_title
 from pipeline.merge_pages import merge_pages as _merge_pages
 from pipeline.wiki_pages import (
     VALID_PAGE_TYPES,
@@ -422,6 +422,7 @@ def extract_wiki_pages_from_chunk(
             canonical_path = (
                 resolve_slug(bare_key, aliases)
                 or resolve_slug_for_title(title, aliases)
+                or fuzzy_resolve_slug_for_title(title, aliases)
             )
             if canonical_path:
                 effective_slug = canonical_path

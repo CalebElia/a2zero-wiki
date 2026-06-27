@@ -5,6 +5,39 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 
 ---
 
+## 2026-06-26 — Lint Improvements + Entity Continuity Layer
+
+**What changed:**
+- **Structural lint: TYPE_MISMATCH check** — `structural_lint()` now detects pages whose `type:` frontmatter doesn't match their containing directory (e.g. `type: initiative` living in `topics/`). Emits `[TYPE_MISMATCH]` finding. Added `_EXPECTED_TYPE_BY_DIR` and `_CANONICAL_DIR_BY_TYPE` constants to `lint_wiki.py`.
+- **Semantic lint: cross-directory comparison** — Before the per-directory loop, `semantic_lint()` now collects misrouted pages from `topics/` (any page with a non-`topic` type frontmatter) and pools them into the correct type group for comparison. Topics-page duplicates of initiatives/actors are now surfaced automatically.
+- **Pass 1.5: fuzzy title resolution** — `alias_registry.py` gains `fuzzy_resolve_slug_for_title()` (threshold 0.82 — higher than semantic dedup to avoid false redirects). Called as a third fallback after exact slug and exact title resolution in both `holistic_synthesizer.py` and `wiki_writer.py`. Catches year-over-year name drift like "Ann Arbor Solarize Program" → `solarize-ann-arbor`.
+- **Post-ingest alias seeding** — `alias_registry.py` gains `seed_aliases_from_ingest()`: scans all entity pages first-seen in the current source and registers their display titles in `entity_aliases.json`. Called automatically in Pass 3 of `run_ingest.py`. On subsequent ingests, fuzzy title resolution has titles to match against.
+- **Retroactive seeding** — Ran seeding against all three ingested sources (CAP 2020, Year 1, Year 2): 345 new alias entries added. Year 3+ ingests will benefit immediately.
+
+**Why:** Year 2 ingest produced fragmented pages for three flagship initiatives (Bryant Decarbonization, SEU, Solarize Ann Arbor) that required manual consolidation. Two failure modes identified: (1) misrouted pages in `topics/` were invisible to semantic lint (now fixed); (2) year-over-year name drift bypassed exact alias matching (now fixed with fuzzy resolution + seeding). These changes close both gaps before Year 3 ingest.
+
+---
+
+## 2026-06-26 — Year 2 Ingest, Post-Ingest Lint Cycle, Entity Consolidation
+
+**What changed:**
+- **Year 2 annual report ingest** (`a2zero-year2.md`) — `--wiki-only` flag (no quads). 148 pages written; wiki index at 399 entities across 11 types.
+- **LDP threshold lowered** — `_should_use_ldp()` gate changed from `> 1000 lines AND > 10 headings` to `> 150 lines AND > 5 headings` so annual reports route through the chunked LDP path correctly.
+- **Quad extractor hardened** — `extract_quads_from_source()` switched from `messages.create(max_tokens=8192)` to `messages.stream(max_tokens=16384)`; added code-fence stripping and `_recover_partial_quad_array()` for partial JSON recovery. Test mock updated to match streaming pattern.
+- **Semantic lint cycle** — 20 proposals reviewed; 19 merges applied (actors: RMI→rmi, planning-dept duplicate, DDA duplicate; initiatives: ambassadors variant; locations: landfill variant; temporal succession: benchmarking ordinance). `merge-log.jsonl` and alias registry updated.
+- **Backlink lint bug fixed** — `_llm_filter_candidates()` was sending full page bodies to the LLM, causing empty responses for long strategy pages. Fix: removed body from user message; LLM now receives only context snippets. Added code-fence stripping + empty-string guard. Same fix applied to semantic verdict parsing.
+- **Apply bug fixed** — `apply_proposals()` was unconditionally accessing `p["page_a"]` before checking proposal type; LINK proposals use different keys and crashed after semantic merges succeeded. Fixed dispatch order with early `continue`. Also fixed case-sensitivity in LINK pattern matching (`re.IGNORECASE` + matched-text display alias).
+- **Backlink lint cycle** — 35 proposals from second run (after bug fix); 21 APPROVE_LINK, 14 KEEP_UNLINKED. Applied cleanly.
+- **Relationship lexicon expanded** — `wiki/meta/relationship-lexicon.md` rewritten to cover all three vocabulary layers: 19 frontmatter fields (table), 13 approved prose verbs, quad relations placeholder.
+- **Entity consolidation — Bryant Neighborhood Decarbonization** — merged `topics/bryant-neighborhood-decarbonization` (misrouted Year 2 duplicate) and `initiatives/bryant-neighborhood-climate-action-grant` (milestone-level stub) into canonical `initiatives/bryant-neighborhood-decarbonization`. No link rewriting needed; all inbound links already used the initiatives/ slug.
+- **Entity consolidation — Sustainable Energy Utility** — merged `topics/sustainable-energy-utility` (misrouted), `initiatives/sustainable-energy-utility-exploration` (sub-element), and `initiatives/ann-arbor-sustainable-energy-utility` (name variant) into new canonical `initiatives/sustainable-energy-utility`. Fixed 3 broken inbound links that already targeted the initiatives/ slug. Removed hallucinated alias entry (`sustainable-energy-utility-seu` → OSI).
+- **Entity consolidation — Solarize Ann Arbor** — merged `initiatives/ann-arbor-solarize-program` (Year 2 name variant) into canonical `initiatives/solarize-ann-arbor`; absorbed `initiatives/solarize-toolkit` (program deliverable, not a standalone initiative) as milestone. GLREA + missy-stults inbound links rewritten. `commercial-solarize-pilot` and `ann-arbor-solar-stories` kept separate (genuinely distinct scope/leadership).
+- **Restaurant page type fix** — three restaurant pages created by Year 2 ingest as `type: location` in `locations/` moved to `actors/` with correct `type: actor, actor-type: business` schema. Slugs: `zingermans-next-door-cafe`, `ginger-deli`, `el-harissa-market-cafe`.
+
+**Why:** Year 2 ingest exposed two recurring failure modes in the pipeline: (1) the same initiative appearing under slightly different names across annual reports produces fragmented pages that bypass alias resolution; (2) misrouted pages (`type: initiative` living in `topics/`) are invisible to the semantic lint because it compares within directories. Manual consolidation was required for three flagship initiatives. See review-queue.md discussion for proposed lint improvements.
+
+---
+
 ## 2026-06-26 — Year 1 Ingest, Backlink Lint, Naming Cleanup
 
 **What changed:**

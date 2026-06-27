@@ -5,7 +5,7 @@ from pathlib import Path
 
 from pipeline.wiki_pages import build_wiki_page, write_wiki_page, append_to_wiki_page
 from pipeline.wiki_index import append_index_entry, append_log
-from pipeline.alias_registry import load_aliases, resolve_slug, resolve_slug_for_title
+from pipeline.alias_registry import load_aliases, resolve_slug, resolve_slug_for_title, fuzzy_resolve_slug_for_title
 from pipeline.merge_pages import merge_pages as _merge_pages
 
 # Module-level path — overridable in tests via patch("pipeline.holistic_synthesizer.alias_registry_path", ...)
@@ -525,7 +525,12 @@ def _write_synthesis(
 
         # Pass 1.5: resolve through alias registry before writing
         bare_key = stub_slug.split("/")[-1]  # "actors/office-of-sustainability" → "office-of-sustainability"
-        canonical_path = resolve_slug(bare_key, aliases) or resolve_slug_for_title(sp.get("title", ""), aliases)
+        title_hint = sp.get("title", "")
+        canonical_path = (
+            resolve_slug(bare_key, aliases)
+            or resolve_slug_for_title(title_hint, aliases)
+            or fuzzy_resolve_slug_for_title(title_hint, aliases)
+        )
         if canonical_path:
             effective_slug = canonical_path
             print(f"[holistic:pass1.5] {stub_slug!r} → canonical {canonical_path!r}")
