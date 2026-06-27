@@ -40,6 +40,7 @@ pipeline/             ← All Python ingest code
 tests/                ← pytest suite (137 tests, 1 skipped — must stay green)
 archive/              ← Prior wiki snapshots (v1, v2, v3-pre-ingest)
 docs/superpowers/     ← Historical implementation plans and specs from earlier sessions
+docs/architecture/    ← Locked architectural decisions and design rationale (read before speccing new pipeline work)
 CHANGELOG.md          ← Reverse-chronological session-by-session change log
 SCHEMA.md             ← Page types, frontmatter schemas, ontology governance
 research-agenda.md    ← Source-selection priorities (human-maintained, not read by pipeline)
@@ -167,6 +168,20 @@ python -m pytest tests/ -q       # must be green before any commit to main
 ```
 
 137 tests, 1 skipped (intentional). If tests break, fix them before continuing — do not bypass.
+
+## Active Architectural Direction
+
+**Read `docs/architecture/knowledge-synthesis-architecture.md` before speccing or implementing any pipeline changes.**
+
+The pipeline is being upgraded to close a fundamental LLM-Wiki design gap: the extraction pass currently has no visibility into existing wiki content, breaking the compounding-knowledge property. The solution is a GraphRAG-inspired synthesis hierarchy:
+
+- **L0** — Entity pages (exists)
+- **L1** — Strategy synthesis pages (exist as prose, need LLM-maintained `synthesis:` section)
+- **L2** — `wiki/digest.md` — cross-strategy narrative + entity map, injected into every Comprehend pass (~4-6k tokens)
+
+The upgraded ingest cycle: **Phase A** (extraction) → **Phase B** (lint + human review) → **Phase C** (`synthesize_wiki` command rebuilds L1 → L2) → **Phase D** (ready for next ingest). Synthesis must come after lint — the digest encodes the wiki's state and must encode a clean, reviewed state.
+
+Implementation order: `synthesize_wiki` command → digest injection into Comprehend pass → Comprehend/Plan split → strategy `synthesis:` sections.
 
 ## GitHub
 
