@@ -243,3 +243,35 @@ def test_build_digest_narrative_returns_placeholder_on_failure():
         result = build_digest_narrative(strategies_data=SAMPLE_STRATEGIES_DATA)
     # Falls back to a placeholder rather than crashing the synthesis run
     assert "Cross-strategy synthesis" in result
+
+
+def test_assemble_digest_combines_all_sections():
+    from pipeline.synthesize_wiki import assemble_digest
+    text = assemble_digest(
+        narrative="## Cross-strategy synthesis\n\nStrategy 1 ...\n",
+        strategies_data=SAMPLE_STRATEGIES_DATA,
+        delta={"date": "2026-06-26", "source_uuid": "a2zero-year2"},
+        run_date="2026-06-26",
+        sources_count=3,
+        entity_count=399,
+    )
+    # Frontmatter
+    assert text.startswith("---\n")
+    assert "generated-by: synthesize_wiki" in text
+    assert "last-rebuilt: '2026-06-26'" in text or 'last-rebuilt: "2026-06-26"' in text
+    # Narrative section
+    assert "Cross-strategy synthesis" in text
+    # Entity map section
+    assert "## Strategy entity map" in text
+    assert "[[initiatives/solarize-ann-arbor]]" in text
+    # Recent delta section
+    assert "## Recent delta" in text
+    assert "a2zero-year2" in text
+
+
+def test_write_digest_writes_to_vault_root(tmp_path):
+    from pipeline.synthesize_wiki import write_digest
+    (tmp_path / "wiki").mkdir()
+    out = write_digest(wiki_root=str(tmp_path / "wiki"), content="# Hello digest")
+    assert (tmp_path / "wiki" / "digest.md").read_text(encoding="utf-8") == "# Hello digest"
+    assert out.endswith("wiki/digest.md")

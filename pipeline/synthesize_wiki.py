@@ -213,6 +213,67 @@ def build_digest_narrative(strategies_data: dict) -> str:
         )
 
 
+def assemble_digest(
+    narrative: str,
+    strategies_data: dict,
+    delta: dict,
+    run_date: str,
+    sources_count: int,
+    entity_count: int,
+) -> str:
+    """Combine narrative + entity map + recent delta into the digest.md body."""
+    parts = [
+        "---",
+        "generated-by: synthesize_wiki",
+        f"last-rebuilt: '{run_date}'",
+        f"sources-covered: {sources_count}",
+        f"entity-count: {entity_count}",
+        "---",
+        "",
+        "# Wiki Digest",
+        f"*State of A2Zero knowledge as of {run_date} "
+        f"(after {sources_count} ingested sources).*",
+        "",
+        narrative.strip(),
+        "",
+        "## Strategy entity map",
+        "",
+    ]
+    for slug, info in strategies_data.items():
+        s = info["synthesis"]
+        parts.append(f"### [[{slug}|{info['title']}]]")
+        if s.get("core-initiatives"):
+            inits = ", ".join(f"[[{x}]]" for x in s["core-initiatives"])
+            parts.append(f"- **core initiatives:** {inits}")
+        if s.get("core-actors"):
+            actors = ", ".join(f"[[{x}]]" for x in s["core-actors"])
+            parts.append(f"- **core actors:** {actors}")
+        parts.append(f"- **arc:** {s.get('year-over-year-arc', '—')}")
+        if s.get("open-questions"):
+            parts.append(f"- **open:** {'; '.join(s['open-questions'])}")
+        if s.get("cross-strategy-links"):
+            xs = ", ".join(f"[[{x}]]" for x in s["cross-strategy-links"])
+            parts.append(f"- **cross-strategy links:** {xs}")
+        parts.append("")
+
+    parts.append("## Recent delta")
+    if delta:
+        parts.append(f"**Last ingest:** [[sources/.../{delta['source_uuid']}|"
+                     f"{delta['source_uuid']}]] ({delta['date']}).")
+    else:
+        parts.append("_No ingest log entries found._")
+    parts.append("")
+
+    return "\n".join(parts)
+
+
+def write_digest(wiki_root: str, content: str) -> str:
+    """Write digest.md to vault root. Returns the absolute path."""
+    out = Path(wiki_root) / "digest.md"
+    out.write_text(content, encoding="utf-8")
+    return str(out)
+
+
 ALL_STRATEGIES = [
     "strategies/strategy-1-renewable-grid",
     "strategies/strategy-2-electrification",
