@@ -13,6 +13,8 @@ _ENTITY_DIRS = [
     "funding-events", "meetings", "political-events",
 ]
 
+_LOG_ENTRY_RE = re.compile(r"^## (\d{4}-\d{2}-\d{2}) — (.+?)$", re.MULTILINE)
+
 
 def _parse_frontmatter(text: str) -> dict:
     """Return the YAML frontmatter as a dict, or {} if missing/invalid."""
@@ -50,6 +52,19 @@ def gather_strategy_entities(wiki_root: str, strategy_slug: str) -> list[dict]:
                 "one-liner": fm.get("one-liner", ""),
             })
     return out
+
+
+def extract_recent_delta(log_path: str) -> dict:
+    """Return {date, source_uuid} for the most recent ingest in log.md, or {}."""
+    try:
+        text = Path(log_path).read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return {}
+    matches = _LOG_ENTRY_RE.findall(text)
+    if not matches:
+        return {}
+    date, source_uuid = matches[-1]
+    return {"date": date, "source_uuid": source_uuid.strip()}
 
 
 ALL_STRATEGIES = [

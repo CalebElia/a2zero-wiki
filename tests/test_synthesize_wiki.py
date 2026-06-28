@@ -39,3 +39,33 @@ def test_gather_strategy_entities_returns_empty_for_unknown_strategy(tmp_path):
         strategy_slug="strategies/strategy-99-nonexistent",
     )
     assert entities == []
+
+
+LOG_FIXTURE = """# Ingest Log
+
+## 2026-06-15 — cap-2020
+Pass 3 complete — index rebuilt.
+
+## 2026-06-25 — a2zero-year1
+Pass 3 complete — index rebuilt.
+
+## 2026-06-26 — a2zero-year2
+Pass 3 complete — index rebuilt.
+"""
+
+
+def test_extract_recent_delta_returns_last_entry(tmp_path):
+    from pipeline.synthesize_wiki import extract_recent_delta
+    log_path = tmp_path / "log.md"
+    log_path.write_text(LOG_FIXTURE, encoding="utf-8")
+    delta = extract_recent_delta(str(log_path))
+    assert delta["source_uuid"] == "a2zero-year2"
+    assert delta["date"] == "2026-06-26"
+
+
+def test_extract_recent_delta_handles_empty_log(tmp_path):
+    from pipeline.synthesize_wiki import extract_recent_delta
+    log_path = tmp_path / "log.md"
+    log_path.write_text("# Ingest Log\n", encoding="utf-8")
+    delta = extract_recent_delta(str(log_path))
+    assert delta == {}
