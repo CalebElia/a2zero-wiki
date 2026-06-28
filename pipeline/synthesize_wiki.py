@@ -3,8 +3,10 @@ and the L2 wiki/digest.md from the clean post-lint entity layer.
 
 See docs/architecture/knowledge-synthesis-architecture.md for design rationale.
 """
+import json
 import re
 import yaml
+import anthropic
 from pathlib import Path
 
 
@@ -65,6 +67,75 @@ def extract_recent_delta(log_path: str) -> dict:
         return {}
     date, source_uuid = matches[-1]
     return {"date": date, "source_uuid": source_uuid.strip()}
+
+
+_STRATEGY_SYNTHESIS_SYSTEM = """You are synthesizing one strategy of Ann Arbor's A2Zero \
+carbon neutrality plan into a compact structured summary that will be injected into \
+future LLM ingest passes as prior context.
+
+Given the strategy and its inventory of entity pages, return JSON with EXACTLY these keys:
+- core-initiatives: list of up to 8 slugs of the most important initiatives (most \
+central to the strategy's outcomes)
+- core-actors: list of up to 6 slugs of the most important actors
+- year-over-year-arc: one sentence describing the trajectory across ingested sources \
+(e.g. "Residential solar grew 31% Y1→Y2; commercial pilot launched"). If only one \
+source is ingested, describe the baseline state.
+- open-questions: list of 2–4 short strings flagging what is unresolved or pending
+- cross-strategy-links: list of slugs of entities you would expect to also appear in \
+other strategies' core-initiatives (initiatives spanning multiple strategies)
+
+Return ONLY the JSON object. Slugs use the form `actors/foo` or `initiatives/bar` — \
+the same format as the inputs.
+"""
+
+
+def _strip_code_fence(text: str) -> str:
+    """Strip ```json fences if present."""
+    t = text.strip()
+    if t.startswith("```"):
+        lines = t.split("\n")
+        t = "\n".join(lines[1:-1]) if len(lines) > 2 else t
+    return t.strip()
+
+
+def _empty_synthesis() -> dict:
+    return {
+        "core-initiatives": [],
+        "core-actors": [],
+        "year-over-year-arc": "—",
+        "open-questions": [],
+        "cross-strategy-links": [],
+    }
+
+
+def build_strategy_synthesis(
+    strategy_slug: str,
+    strategy_title: str,
+    entities: list[dict],
+) -> dict:
+    """LLM call: produce the synthesis dict for one strategy."""
+    entity_lines = "\n".join(
+        f"- [{e['type']}] {e['slug']} — {e['title']}: {e.get('one-liner','')}"
+        for e in entities
+    )
+    user_msg = (
+        f"Strategy: {strategy_title} ({strategy_slug})\n\n"
+        f"Entity inventory ({len(entities)} pages):\n{entity_lines}\n\n"
+        "Produce the synthesis JSON now."
+    )
+    try:
+        client = anthropic.Anthropic()
+        response = client.messages.create(
+            model="claude-sonnet-4-5",
+            max_tokens=2048,
+            system=_STRATEGY_SYNTHESIS_SYSTEM,
+            messages=[{"role": "user", "content": user_msg}],
+        )
+        raw = response.content[0].text
+        return json.loads(_strip_code_fence(raw))
+    except Exception as e:
+        print(f"[synthesize_wiki] build_strategy_synthesis failed for {strategy_slug}: {e}")
+        return _empty_synthesis()
 
 
 ALL_STRATEGIES = [

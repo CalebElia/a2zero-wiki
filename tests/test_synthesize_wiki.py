@@ -69,3 +69,72 @@ def test_extract_recent_delta_handles_empty_log(tmp_path):
     log_path.write_text("# Ingest Log\n", encoding="utf-8")
     delta = extract_recent_delta(str(log_path))
     assert delta == {}
+
+
+import json
+from unittest.mock import patch, MagicMock
+
+
+def _mock_response(text: str):
+    msg = MagicMock()
+    msg.content = [MagicMock(text=text)]
+    msg.stop_reason = "end_turn"
+    return msg
+
+
+SAMPLE_ENTITIES = [
+    {"slug": "initiatives/solarize-ann-arbor", "title": "Solarize Ann Arbor",
+     "type": "initiative", "one-liner": "Residential solar bulk-buy."},
+    {"slug": "actors/glrea", "title": "Great Lakes Renewable Energy Association",
+     "type": "actor", "one-liner": "Nonprofit leading Solarize."},
+]
+
+
+def test_build_strategy_synthesis_calls_anthropic_and_returns_dict():
+    from pipeline.synthesize_wiki import build_strategy_synthesis
+
+    llm_output = json.dumps({
+        "core-initiatives": ["initiatives/solarize-ann-arbor"],
+        "core-actors": ["actors/glrea"],
+        "year-over-year-arc": "Residential solar grew 31% Y1→Y2.",
+        "open-questions": ["5MW Y3 target on track?"],
+        "cross-strategy-links": [],
+    })
+    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
+        MockClient.return_value.messages.create.return_value = _mock_response(llm_output)
+        result = build_strategy_synthesis(
+            strategy_slug="strategies/strategy-1-renewable-grid",
+            strategy_title="Strategy 1 — Renewable Grid",
+            entities=SAMPLE_ENTITIES,
+        )
+    assert result["core-initiatives"] == ["initiatives/solarize-ann-arbor"]
+    assert result["year-over-year-arc"].startswith("Residential")
+
+
+def test_build_strategy_synthesis_handles_fenced_json():
+    from pipeline.synthesize_wiki import build_strategy_synthesis
+    llm_output = "```json\n" + json.dumps({
+        "core-initiatives": [], "core-actors": [],
+        "year-over-year-arc": "—", "open-questions": [], "cross-strategy-links": [],
+    }) + "\n```"
+    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
+        MockClient.return_value.messages.create.return_value = _mock_response(llm_output)
+        result = build_strategy_synthesis(
+            strategy_slug="strategies/strategy-1-renewable-grid",
+            strategy_title="Strategy 1 — Renewable Grid",
+            entities=SAMPLE_ENTITIES,
+        )
+    assert result["core-initiatives"] == []
+
+
+def test_build_strategy_synthesis_returns_empty_skeleton_on_api_failure():
+    from pipeline.synthesize_wiki import build_strategy_synthesis
+    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
+        MockClient.return_value.messages.create.side_effect = Exception("api error")
+        result = build_strategy_synthesis(
+            strategy_slug="strategies/strategy-1-renewable-grid",
+            strategy_title="Strategy 1 — Renewable Grid",
+            entities=SAMPLE_ENTITIES,
+        )
+    assert "core-initiatives" in result
+    assert result["core-initiatives"] == []
