@@ -275,3 +275,48 @@ def test_write_digest_writes_to_vault_root(tmp_path):
     out = write_digest(wiki_root=str(tmp_path / "wiki"), content="# Hello digest")
     assert (tmp_path / "wiki" / "digest.md").read_text(encoding="utf-8") == "# Hello digest"
     assert out.endswith("wiki/digest.md")
+
+
+def _setup_full_fixture(tmp_path):
+    """Stage a minimal but complete wiki fixture for end-to-end orchestration."""
+    import shutil
+    root = tmp_path / "wiki"
+    shutil.copytree("tests/fixtures/synthesize_wiki/wiki", root)
+    (root / "strategies").mkdir(parents=True, exist_ok=True)
+    (root / "strategies" / "strategy-1-renewable-grid.md").write_text(
+        STRATEGY_FIXTURE, encoding="utf-8")
+    (root / "log.md").write_text(LOG_FIXTURE, encoding="utf-8")
+    return root
+
+
+def test_synthesize_wiki_orchestrates_end_to_end(tmp_path):
+    from pipeline.synthesize_wiki import synthesize_wiki
+
+    root = _setup_full_fixture(tmp_path)
+    strategy_llm_output = json.dumps({
+        "core-initiatives": ["initiatives/solarize-ann-arbor"],
+        "core-actors": ["actors/glrea"],
+        "year-over-year-arc": "Residential solar grew 31% Y1→Y2.",
+        "open-questions": [],
+        "cross-strategy-links": [],
+    })
+    narrative_output = "## Cross-strategy synthesis\n\nStrategy 1 has solarized 430+ homes.\n"
+
+    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
+        # Strategy synthesis call returns the JSON; digest narrative call returns prose.
+        # Match call order: 1 strategy (since we limit to strategy-1) then 1 narrative.
+        responses = [_mock_response(strategy_llm_output), _mock_response(narrative_output)]
+        MockClient.return_value.messages.create.side_effect = responses
+
+        result = synthesize_wiki(
+            wiki_root=str(root),
+            strategies=["strategies/strategy-1-renewable-grid"],
+        )
+
+    assert result["strategies_rebuilt"] == ["strategies/strategy-1-renewable-grid"]
+    assert (root / "digest.md").exists()
+    digest_text = (root / "digest.md").read_text(encoding="utf-8")
+    assert "Strategy 1 has solarized 430+ homes" in digest_text
+    strategy_text = (root / "strategies" / "strategy-1-renewable-grid.md").read_text(encoding="utf-8")
+    assert "synthesis:" in strategy_text
+    assert "Solarize program is the flagship initiative" in strategy_text  # prose preserved

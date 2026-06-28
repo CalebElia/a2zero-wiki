@@ -284,6 +284,26 @@ ALL_STRATEGIES = [
 ]
 
 
+def _read_strategy_title(wiki_root: str, strategy_slug: str) -> str:
+    page = Path(wiki_root) / (strategy_slug + ".md")
+    if not page.exists():
+        return strategy_slug
+    fm = _parse_frontmatter(page.read_text(encoding="utf-8"))
+    return fm.get("title", strategy_slug)
+
+
+def _count_entities(wiki_root: str) -> int:
+    root = Path(wiki_root)
+    return sum(len(list((root / d).glob("*.md"))) for d in _ENTITY_DIRS if (root / d).exists())
+
+
+def _count_sources(wiki_root: str) -> int:
+    sources_dir = Path(wiki_root) / "sources"
+    if not sources_dir.exists():
+        return 0
+    return sum(1 for p in sources_dir.rglob("*.md"))
+
+
 def synthesize_wiki(
     wiki_root: str,
     strategies: list[str] | None = None,
@@ -302,7 +322,58 @@ def synthesize_wiki(
     Returns:
         dict with keys: `strategies_rebuilt` (list of slugs), `digest_path`.
     """
-    raise NotImplementedError("Pending tasks 2-9")
+    import copy
+    from datetime import date
+    run_date = date.today().isoformat()
+    targets = strategies or ALL_STRATEGIES
+
+    strategies_data: dict = {}
+    rebuilt: list[str] = []
+
+    for strategy_slug in targets:
+        title = _read_strategy_title(wiki_root, strategy_slug)
+        entities = gather_strategy_entities(wiki_root, strategy_slug)
+
+        if digest_only:
+            # Read existing synthesis from strategy frontmatter rather than rebuilding
+            page = Path(wiki_root) / (strategy_slug + ".md")
+            if page.exists():
+                fm = _parse_frontmatter(page.read_text(encoding="utf-8"))
+                synthesis = fm.get("synthesis") or _empty_synthesis()
+            else:
+                synthesis = _empty_synthesis()
+        else:
+            synthesis = build_strategy_synthesis(
+                strategy_slug=strategy_slug,
+                strategy_title=title,
+                entities=entities,
+            )
+            page = Path(wiki_root) / (strategy_slug + ".md")
+            if page.exists():
+                write_strategy_synthesis(str(page), synthesis, run_date=run_date)
+                rebuilt.append(strategy_slug)
+            else:
+                print(f"[synthesize_wiki] strategy page missing: {page}")
+
+        strategies_data[strategy_slug] = {"title": title, "synthesis": copy.deepcopy(synthesis)}
+
+    narrative = build_digest_narrative(strategies_data=strategies_data)
+    delta = extract_recent_delta(str(Path(wiki_root) / "log.md"))
+
+    digest_text = assemble_digest(
+        narrative=narrative,
+        strategies_data=strategies_data,
+        delta=delta,
+        run_date=run_date,
+        sources_count=_count_sources(wiki_root),
+        entity_count=_count_entities(wiki_root),
+    )
+    digest_path = write_digest(wiki_root=wiki_root, content=digest_text)
+
+    return {
+        "strategies_rebuilt": rebuilt,
+        "digest_path": digest_path,
+    }
 
 
 if __name__ == "__main__":
