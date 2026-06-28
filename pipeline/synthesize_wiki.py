@@ -40,6 +40,7 @@ def gather_strategy_entities(wiki_root: str, strategy_slug: str) -> list[dict]:
             related = fm.get("related-strategies") or []
             if isinstance(related, str):
                 related = [related]
+            related = [r.strip("[]") for r in related]
             if strategy_slug not in related:
                 continue
             out.append({
