@@ -196,3 +196,50 @@ def test_write_strategy_synthesis_overwrites_existing_block(tmp_path):
     assert "initiatives/old" not in text
     # Prose body still present and intact
     assert "Solarize program is the flagship initiative" in text
+
+
+SAMPLE_STRATEGIES_DATA = {
+    "strategies/strategy-1-renewable-grid": {
+        "title": "Strategy 1 — Renewable Grid",
+        "synthesis": {
+            "core-initiatives": ["initiatives/solarize-ann-arbor"],
+            "core-actors": ["actors/glrea"],
+            "year-over-year-arc": "Residential solar grew 31% Y1→Y2.",
+            "open-questions": ["DTE intervention outcomes pending"],
+            "cross-strategy-links": ["initiatives/bryant-neighborhood-decarbonization"],
+        },
+    },
+    "strategies/strategy-2-electrification": {
+        "title": "Strategy 2 — Electrification",
+        "synthesis": {
+            "core-initiatives": ["initiatives/electrification-campaign"],
+            "core-actors": ["actors/rmi"],
+            "year-over-year-arc": "Contractor cohort launched Y2.",
+            "open-questions": ["Heat pump adoption uptake?"],
+            "cross-strategy-links": [],
+        },
+    },
+}
+
+
+def test_build_digest_narrative_calls_anthropic():
+    from pipeline.synthesize_wiki import build_digest_narrative
+    narrative_text = (
+        "## Cross-strategy synthesis\n\n"
+        "Strategy 1 has built a 1.7MW residential rooftop base anchored by "
+        "[[initiatives/solarize-ann-arbor]]...\n"
+    )
+    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
+        MockClient.return_value.messages.create.return_value = _mock_response(narrative_text)
+        result = build_digest_narrative(strategies_data=SAMPLE_STRATEGIES_DATA)
+    assert "Strategy 1" in result
+    assert "[[initiatives/solarize-ann-arbor]]" in result
+
+
+def test_build_digest_narrative_returns_placeholder_on_failure():
+    from pipeline.synthesize_wiki import build_digest_narrative
+    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
+        MockClient.return_value.messages.create.side_effect = Exception("api error")
+        result = build_digest_narrative(strategies_data=SAMPLE_STRATEGIES_DATA)
+    # Falls back to a placeholder rather than crashing the synthesis run
+    assert "Cross-strategy synthesis" in result

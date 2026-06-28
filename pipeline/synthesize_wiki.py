@@ -161,6 +161,58 @@ def write_strategy_synthesis(
     page.write_text(f"---\n{new_fm}\n---\n{body}", encoding="utf-8")
 
 
+_DIGEST_NARRATIVE_SYSTEM = """You write the narrative cross-strategy section of \
+Ann Arbor's A2Zero wiki digest. This will be read by future LLM ingest passes as \
+prior context, AND by humans skimming the current state of the wiki.
+
+Given a structured summary of each of the 7 A2Zero strategies (the synthesis dicts), \
+produce markdown prose. Required structure:
+
+## Cross-strategy synthesis
+
+<One short paragraph per strategy — what it has accomplished, the year-over-year \
+arc, key actors. Reference entities as Obsidian wikilinks: [[initiatives/foo]] or \
+[[actors/bar]]. Keep each paragraph to 3–5 sentences.>
+
+<Closing paragraph titled "### Connections" describing where strategies intersect \
+— which initiatives or actors span multiple strategies, where work in one strategy \
+constrains or enables another. 4–6 sentences.>
+
+Return ONLY the markdown — no preamble, no code fences.
+"""
+
+
+def build_digest_narrative(strategies_data: dict) -> str:
+    """LLM call: produce the cross-strategy narrative section of digest.md."""
+    lines = []
+    for slug, info in strategies_data.items():
+        s = info["synthesis"]
+        lines.append(f"\n### {info['title']} ({slug})")
+        lines.append(f"core-initiatives: {', '.join(s.get('core-initiatives', []))}")
+        lines.append(f"core-actors: {', '.join(s.get('core-actors', []))}")
+        lines.append(f"arc: {s.get('year-over-year-arc', '—')}")
+        lines.append(f"open: {'; '.join(s.get('open-questions', []))}")
+        lines.append(f"cross-strategy-links: {', '.join(s.get('cross-strategy-links', []))}")
+
+    user_msg = "Strategy summaries:\n" + "\n".join(lines) + "\n\nWrite the narrative now."
+
+    try:
+        client = anthropic.Anthropic()
+        response = client.messages.create(
+            model="claude-sonnet-4-5",
+            max_tokens=4096,
+            system=_DIGEST_NARRATIVE_SYSTEM,
+            messages=[{"role": "user", "content": user_msg}],
+        )
+        return response.content[0].text.strip()
+    except Exception as e:
+        print(f"[synthesize_wiki] build_digest_narrative failed: {e}")
+        return (
+            "## Cross-strategy synthesis\n\n"
+            "_Narrative generation failed; rerun `synthesize_wiki` to retry._\n"
+        )
+
+
 ALL_STRATEGIES = [
     "strategies/strategy-1-renewable-grid",
     "strategies/strategy-2-electrification",
