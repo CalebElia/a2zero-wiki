@@ -3,7 +3,52 @@ and the L2 wiki/digest.md from the clean post-lint entity layer.
 
 See docs/architecture/knowledge-synthesis-architecture.md for design rationale.
 """
+import re
+import yaml
 from pathlib import Path
+
+
+_ENTITY_DIRS = [
+    "actors", "initiatives", "locations", "technology",
+    "funding-events", "meetings", "political-events",
+]
+
+
+def _parse_frontmatter(text: str) -> dict:
+    """Return the YAML frontmatter as a dict, or {} if missing/invalid."""
+    m = re.match(r"^---\n(.*?)\n---\n", text, re.DOTALL)
+    if not m:
+        return {}
+    try:
+        return yaml.safe_load(m.group(1)) or {}
+    except yaml.YAMLError:
+        return {}
+
+
+def gather_strategy_entities(wiki_root: str, strategy_slug: str) -> list[dict]:
+    """Return entity dicts for every page tagged with this strategy.
+
+    Each dict has: slug, title, type, one-liner.
+    Used by build_strategy_synthesis() to feed the LLM the entity inventory.
+    """
+    root = Path(wiki_root)
+    out: list[dict] = []
+    for type_dir in _ENTITY_DIRS:
+        for page in (root / type_dir).glob("*.md"):
+            text = page.read_text(encoding="utf-8", errors="replace")
+            fm = _parse_frontmatter(text)
+            related = fm.get("related-strategies") or []
+            if isinstance(related, str):
+                related = [related]
+            if strategy_slug not in related:
+                continue
+            out.append({
+                "slug": fm.get("slug") or f"{type_dir}/{page.stem}",
+                "title": fm.get("title", page.stem),
+                "type": fm.get("type", type_dir.rstrip("s")),
+                "one-liner": fm.get("one-liner", ""),
+            })
+    return out
 
 
 ALL_STRATEGIES = [
