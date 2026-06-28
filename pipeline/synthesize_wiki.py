@@ -258,8 +258,7 @@ def assemble_digest(
 
     parts.append("## Recent delta")
     if delta:
-        parts.append(f"**Last ingest:** [[sources/.../{delta['source_uuid']}|"
-                     f"{delta['source_uuid']}]] ({delta['date']}).")
+        parts.append(f"**Last ingest:** `{delta['source_uuid']}` ({delta['date']}).")
     else:
         parts.append("_No ingest log entries found._")
     parts.append("")
