@@ -1,6 +1,4 @@
 # tests/test_synthesize_wiki.py
-import pytest
-from unittest.mock import MagicMock
 
 
 def test_module_imports():
@@ -8,3 +6,5 @@ def test_module_imports():
     from pipeline import synthesize_wiki
     assert hasattr(synthesize_wiki, "synthesize_wiki")
     assert callable(synthesize_wiki.synthesize_wiki)
+    assert hasattr(synthesize_wiki, "ALL_STRATEGIES")
+    assert len(synthesize_wiki.ALL_STRATEGIES) == 7
