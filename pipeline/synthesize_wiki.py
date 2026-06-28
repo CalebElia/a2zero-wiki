@@ -138,6 +138,29 @@ def build_strategy_synthesis(
         return _empty_synthesis()
 
 
+def write_strategy_synthesis(
+    page_path: str,
+    synthesis: dict,
+    run_date: str,
+) -> None:
+    """Inject `synthesis:` block into the strategy page frontmatter. Preserve prose body."""
+    page = Path(page_path)
+    text = page.read_text(encoding="utf-8")
+    m = re.match(r"^---\n(.*?)\n---\n(.*)$", text, re.DOTALL)
+    if not m:
+        raise ValueError(f"No YAML frontmatter found in {page_path}")
+    fm_text, body = m.group(1), m.group(2)
+    fm = yaml.safe_load(fm_text) or {}
+
+    # Stamp the rebuild date onto the synthesis block itself
+    block = dict(synthesis)
+    block["last-rebuilt"] = run_date
+    fm["synthesis"] = block
+
+    new_fm = yaml.safe_dump(fm, sort_keys=False, allow_unicode=True).rstrip()
+    page.write_text(f"---\n{new_fm}\n---\n{body}", encoding="utf-8")
+
+
 ALL_STRATEGIES = [
     "strategies/strategy-1-renewable-grid",
     "strategies/strategy-2-electrification",

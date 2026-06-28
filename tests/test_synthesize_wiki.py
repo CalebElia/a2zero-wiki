@@ -138,3 +138,61 @@ def test_build_strategy_synthesis_returns_empty_skeleton_on_api_failure():
         )
     assert "core-initiatives" in result
     assert result["core-initiatives"] == []
+
+
+STRATEGY_FIXTURE = """---
+title: "Strategy 1 — Renewable Grid"
+type: strategy
+slug: strategies/strategy-1-renewable-grid
+---
+
+This strategy focuses on grid-scale renewable energy and rooftop solar.
+The Solarize program is the flagship initiative. ([[sources/cap/cap-2020|cap-2020]])
+"""
+
+
+def test_write_strategy_synthesis_injects_synthesis_block(tmp_path):
+    from pipeline.synthesize_wiki import write_strategy_synthesis
+    page = tmp_path / "strategy-1-renewable-grid.md"
+    page.write_text(STRATEGY_FIXTURE, encoding="utf-8")
+
+    synthesis = {
+        "core-initiatives": ["initiatives/solarize-ann-arbor"],
+        "core-actors": ["actors/glrea"],
+        "year-over-year-arc": "Residential solar grew 31% Y1→Y2.",
+        "open-questions": ["5MW Y3 target on track?"],
+        "cross-strategy-links": [],
+    }
+    write_strategy_synthesis(str(page), synthesis, run_date="2026-06-26")
+    text = page.read_text(encoding="utf-8")
+
+    # Synthesis block lives in frontmatter
+    assert "synthesis:" in text
+    assert "core-initiatives:" in text
+    assert "initiatives/solarize-ann-arbor" in text
+    assert "last-rebuilt: '2026-06-26'" in text or 'last-rebuilt: "2026-06-26"' in text
+
+    # Prose body is preserved
+    assert "This strategy focuses on grid-scale renewable energy" in text
+    assert "Solarize program is the flagship initiative" in text
+
+
+def test_write_strategy_synthesis_overwrites_existing_block(tmp_path):
+    from pipeline.synthesize_wiki import write_strategy_synthesis
+    page = tmp_path / "s1.md"
+    page.write_text(STRATEGY_FIXTURE, encoding="utf-8")
+    write_strategy_synthesis(str(page),
+        {"core-initiatives": ["initiatives/old"],
+         "core-actors": [], "year-over-year-arc": "old",
+         "open-questions": [], "cross-strategy-links": []},
+        run_date="2026-06-01")
+    write_strategy_synthesis(str(page),
+        {"core-initiatives": ["initiatives/new"],
+         "core-actors": [], "year-over-year-arc": "new",
+         "open-questions": [], "cross-strategy-links": []},
+        run_date="2026-06-26")
+    text = page.read_text(encoding="utf-8")
+    assert "initiatives/new" in text
+    assert "initiatives/old" not in text
+    # Prose body still present and intact
+    assert "Solarize program is the flagship initiative" in text
