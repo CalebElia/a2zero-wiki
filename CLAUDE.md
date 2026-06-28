@@ -88,6 +88,13 @@ One-time enrichment (rarely needed; used after prompt changes):
 python -m pipeline.enrich_strategy_links --wiki-root wiki [--dry-run]
 ```
 
+Phase C synthesis (run after lint + apply, before next ingest):
+```
+python -m pipeline.synthesize_wiki --wiki-root wiki                                             # rebuild all 7 strategies + digest
+python -m pipeline.synthesize_wiki --wiki-root wiki --strategy strategies/strategy-1-renewable-grid  # single strategy
+python -m pipeline.synthesize_wiki --wiki-root wiki --digest-only                              # rebuild digest from existing synthesis: blocks
+```
+
 ## Pipeline Modules
 
 | File | Role |
@@ -167,7 +174,7 @@ git push                         # push the revert
 python -m pytest tests/ -q       # must be green before any commit to main
 ```
 
-137 tests, 1 skipped (intentional). If tests break, fix them before continuing — do not bypass.
+152 tests, 1 skipped (intentional). If tests break, fix them before continuing — do not bypass.
 
 ## Active Architectural Direction
 
