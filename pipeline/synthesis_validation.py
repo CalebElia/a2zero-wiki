@@ -234,7 +234,7 @@ def revise_synthesis(
             system=_REVISE_SYNTHESIS_SYSTEM,
             messages=[{"role": "user", "content": user_msg}],
             max_tokens=2048,
-            model_hint="revision",
+            model_hint="merge",
             temperature=0.0,
         )
         return json.loads(_strip_code_fence(raw))
@@ -294,7 +294,7 @@ def revise_narrative(
             system=_REVISE_NARRATIVE_SYSTEM,
             messages=[{"role": "user", "content": user_msg}],
             max_tokens=4096,
-            model_hint="revision",
+            model_hint="merge",
             temperature=0.0,
         ).strip()
     except Exception as e:
