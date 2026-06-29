@@ -1,4 +1,4 @@
-import anthropic
+from pipeline.llm import stream_chat
 import json
 import re
 from pathlib import Path
@@ -225,36 +225,27 @@ OUTPUT: A single JSON object with the SAME SCHEMA as the writer draft — no mar
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _llm_call(
-    client: anthropic.Anthropic,
     system: str,
     user_content: "str | list",
     step_name: str,
     source_uuid: str,
     max_tokens: int = 64000,
-    model: str = "claude-sonnet-4-6",
 ) -> dict | None:
     """Single LLM call with JSON parsing. Returns parsed dict or None on failure."""
     try:
-        with client.messages.stream(
-            model=model,
-            max_tokens=max_tokens,
-            temperature=0,
+        raw = stream_chat(
             system=system,
             messages=[{"role": "user", "content": user_content}],
-        ) as stream:
-            response = stream.get_final_message()
-        if response.stop_reason == "max_tokens":
+            max_tokens=max_tokens,
+            model_hint="synthesis",
+            temperature=0.0,
+        )
+        if raw is None:
             print(f"[holistic:{step_name}] WARNING: response truncated for {source_uuid}")
             return None
-        raw = response.content[0].text
         cleaned = re.sub(r"^```(?:json)?\n?", "", raw.strip())
         cleaned = re.sub(r"\n?```$", "", cleaned)
         result = json.loads(cleaned)
-        usage = getattr(response, "usage", None)
-        if usage:
-            print(
-                f"[holistic:{step_name}] tokens in={usage.input_tokens} out={usage.output_tokens}"
-            )
         return result
     except Exception as e:
         print(f"[holistic:{step_name}] WARNING: call failed for {source_uuid}: {e}")
@@ -380,12 +371,10 @@ def synthesize_source(
         run_date=run_date,
     )
 
-    client = anthropic.Anthropic()
-
     # ── Step 1: Writer ────────────────────────────────────────────────────────
     print(f"[holistic:writer] {source_uuid}")
     draft = _llm_call(
-        client, writer_system,
+        writer_system,
         [cached_document_block],
         "writer", source_uuid, max_tokens=64000,
     )
@@ -400,7 +389,7 @@ def synthesize_source(
         {"type": "text", "text": "\n\n[WRITER DRAFT]\n" + json.dumps(draft, indent=2) + "\n[END DRAFT]"},
     ]
     critique = _llm_call(
-        client, HOLISTIC_EVALUATOR_SYSTEM, eval_content,
+        HOLISTIC_EVALUATOR_SYSTEM, eval_content,
         "evaluator", source_uuid, max_tokens=64000,
     )
 
@@ -421,7 +410,7 @@ def synthesize_source(
             {"type": "text", "text": retry_suffix},
         ]
         draft = _llm_call(
-            client, writer_system, retry_content,
+            writer_system, retry_content,
             "writer-retry", source_uuid, max_tokens=64000,
         )
         if draft is None:
@@ -441,7 +430,7 @@ def synthesize_source(
     for attempt in range(max_retries + 1):
         print(f"[holistic:editor] {source_uuid} attempt {attempt + 1}")
         final = _llm_call(
-            client, HOLISTIC_EDITOR_SYSTEM, editor_content,
+            HOLISTIC_EDITOR_SYSTEM, editor_content,
             f"editor-{attempt}", source_uuid, max_tokens=64000,
         )
         if final is None:

@@ -145,8 +145,8 @@ def test_extract_chunk_lines_returns_correct_text():
 
 
 @patch("pipeline.wiki_writer.extract_wiki_pages_from_chunk")
-@patch("pipeline.ldp.anthropic.Anthropic")
-def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class, mock_wiki_writer_extract):
+@patch("pipeline.ldp.chat")
+def test_extract_quads_chunked_calls_llm_per_chunk(mock_chat, mock_wiki_writer_extract):
     import json
     valid_quad = {
         "id": "sha256-abc001",
@@ -169,9 +169,7 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class, mock_wi
         "commitment_status": "unverified",
         "last_updated": "2026-06-22",
     }
-    mock_anthropic_class.return_value.messages.create.return_value = MagicMock(
-        content=[MagicMock(text=json.dumps([valid_quad]))]
-    )
+    mock_chat.return_value = json.dumps([valid_quad])
     # Pass 3 is stubbed out entirely — not under test here
     mock_wiki_writer_extract.return_value = []
     from pipeline.ldp import parse_section_map, extract_quads_chunked
@@ -182,7 +180,7 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_anthropic_class, mock_wi
         source_uuid="test-cap",
         document_title="Test CAP",
     )
-    assert mock_anthropic_class.return_value.messages.create.call_count >= 1
+    assert mock_chat.call_count >= 1
     assert len(quads) >= 1
     assert isinstance(pages_written, int)
 
@@ -230,18 +228,13 @@ def test_run_source_ingest_uses_single_pass_without_ldp_flag(tmp_path):
          patch("pipeline.run_ingest.rebuild_index") as mock_rebuild, \
          patch("pipeline.run_ingest.wiki_append_log") as mock_log, \
          patch("pipeline.run_ingest.run_post_ingest") as mock_post, \
-         patch("pipeline.wiki_writer.anthropic.Anthropic") as mock_wiki_writer_anthropic:
+         patch("pipeline.wiki_writer.chat") as mock_wiki_writer_chat:
         mock_synth.return_value = {"stub_pages": []}
         mock_extract.return_value = []
         mock_post.return_value = MagicMock(
             total_quads=0, schema_errors=[], dark_matter_ids=[]
         )
-        mock_wiki_writer_client = MagicMock()
-        mock_wiki_writer_anthropic.return_value = mock_wiki_writer_client
-        mock_wiki_writer_client.messages.create.return_value = MagicMock(
-            stop_reason="end_turn",
-            content=[MagicMock(text="[]")],
-        )
+        mock_wiki_writer_chat.return_value = "[]"
         from pipeline.run_ingest import run_source_ingest
         run_source_ingest(
             source_path=str(source_file),

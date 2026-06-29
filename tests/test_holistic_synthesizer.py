@@ -1,6 +1,6 @@
 import json
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, call
 
 
 MOCK_SYNTHESIS = {
@@ -75,20 +75,6 @@ MOCK_CRITIQUE = {
 }
 
 
-def _make_response(payload):
-    r = MagicMock()
-    r.stop_reason = "end_turn"
-    r.content = [MagicMock(text=json.dumps(payload))]
-    return r
-
-
-def _make_stream_ctx(payload):
-    ctx = MagicMock()
-    ctx.__enter__ = MagicMock(return_value=ctx)
-    ctx.__exit__ = MagicMock(return_value=False)
-    ctx.get_final_message.return_value = _make_response(payload)
-    return ctx
-
 
 def _strategy_stub(tmp_path):
     (tmp_path / "strategies").mkdir(exist_ok=True)
@@ -116,15 +102,13 @@ def _strategy_stub(tmp_path):
     (tmp_path / "overviews").mkdir(exist_ok=True)
 
 
-@patch("pipeline.holistic_synthesizer.anthropic.Anthropic")
-def test_synthesize_source_makes_three_calls(mock_anthropic_class, tmp_path):
+@patch("pipeline.holistic_synthesizer.stream_chat")
+def test_synthesize_source_makes_three_calls(mock_stream_chat, tmp_path):
     """Writer → Evaluator → Editor: exactly 3 API calls on the happy path."""
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
-    mock_client.messages.stream.side_effect = [
-        _make_stream_ctx(MOCK_SYNTHESIS),   # Writer
-        _make_stream_ctx(MOCK_CRITIQUE),    # Evaluator
-        _make_stream_ctx(MOCK_SYNTHESIS),   # Editor
+    mock_stream_chat.side_effect = [
+        json.dumps(MOCK_SYNTHESIS),   # Writer
+        json.dumps(MOCK_CRITIQUE),    # Evaluator
+        json.dumps(MOCK_SYNTHESIS),   # Editor
     ]
     _strategy_stub(tmp_path)
 
@@ -139,17 +123,15 @@ def test_synthesize_source_makes_three_calls(mock_anthropic_class, tmp_path):
     )
 
     assert result is not None
-    assert mock_client.messages.stream.call_count == 3
+    assert mock_stream_chat.call_count == 3
 
 
-@patch("pipeline.holistic_synthesizer.anthropic.Anthropic")
-def test_synthesize_source_writes_overview(mock_anthropic_class, tmp_path):
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
-    mock_client.messages.stream.side_effect = [
-        _make_stream_ctx(MOCK_SYNTHESIS),
-        _make_stream_ctx(MOCK_CRITIQUE),
-        _make_stream_ctx(MOCK_SYNTHESIS),
+@patch("pipeline.holistic_synthesizer.stream_chat")
+def test_synthesize_source_writes_overview(mock_stream_chat, tmp_path):
+    mock_stream_chat.side_effect = [
+        json.dumps(MOCK_SYNTHESIS),
+        json.dumps(MOCK_CRITIQUE),
+        json.dumps(MOCK_SYNTHESIS),
     ]
     _strategy_stub(tmp_path)
 
@@ -171,14 +153,12 @@ def test_synthesize_source_writes_overview(mock_anthropic_class, tmp_path):
     assert "type: overview" in content
 
 
-@patch("pipeline.holistic_synthesizer.anthropic.Anthropic")
-def test_synthesize_source_appends_strategy_body(mock_anthropic_class, tmp_path):
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
-    mock_client.messages.stream.side_effect = [
-        _make_stream_ctx(MOCK_SYNTHESIS),
-        _make_stream_ctx(MOCK_CRITIQUE),
-        _make_stream_ctx(MOCK_SYNTHESIS),
+@patch("pipeline.holistic_synthesizer.stream_chat")
+def test_synthesize_source_appends_strategy_body(mock_stream_chat, tmp_path):
+    mock_stream_chat.side_effect = [
+        json.dumps(MOCK_SYNTHESIS),
+        json.dumps(MOCK_CRITIQUE),
+        json.dumps(MOCK_SYNTHESIS),
     ]
     _strategy_stub(tmp_path)
     stub = tmp_path / "strategies" / "strategy-1-renewable-grid.md"
@@ -197,11 +177,8 @@ def test_synthesize_source_appends_strategy_body(mock_anthropic_class, tmp_path)
     assert "Strategy 1 focuses on 100% renewable electricity" in content
 
 
-@patch("pipeline.holistic_synthesizer.anthropic.Anthropic")
-def test_synthesize_source_skips_if_overview_exists(mock_anthropic_class, tmp_path):
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
-
+@patch("pipeline.holistic_synthesizer.stream_chat")
+def test_synthesize_source_skips_if_overview_exists(mock_stream_chat, tmp_path):
     (tmp_path / "overviews").mkdir()
     (tmp_path / "overviews" / "cap-2020.md").write_text("existing overview")
 
@@ -216,20 +193,18 @@ def test_synthesize_source_skips_if_overview_exists(mock_anthropic_class, tmp_pa
     )
 
     assert result is None
-    assert not mock_client.messages.stream.called
+    assert not mock_stream_chat.called
 
 
-@patch("pipeline.holistic_synthesizer.anthropic.Anthropic")
-def test_evaluator_proceed_false_reruns_writer(mock_anthropic_class, tmp_path):
+@patch("pipeline.holistic_synthesizer.stream_chat")
+def test_evaluator_proceed_false_reruns_writer(mock_stream_chat, tmp_path):
     """If evaluator says proceed_to_edit=False, Writer re-runs, then Editor runs."""
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
     bad_critique = {**MOCK_CRITIQUE, "overall_score": 2, "proceed_to_edit": False}
-    mock_client.messages.stream.side_effect = [
-        _make_stream_ctx(MOCK_SYNTHESIS),   # Writer (first attempt)
-        _make_stream_ctx(bad_critique),     # Evaluator — says don't proceed
-        _make_stream_ctx(MOCK_SYNTHESIS),   # Writer (retry)
-        _make_stream_ctx(MOCK_SYNTHESIS),   # Editor
+    mock_stream_chat.side_effect = [
+        json.dumps(MOCK_SYNTHESIS),   # Writer (first attempt)
+        json.dumps(bad_critique),     # Evaluator — says don't proceed
+        json.dumps(MOCK_SYNTHESIS),   # Writer (retry)
+        json.dumps(MOCK_SYNTHESIS),   # Editor
     ]
     _strategy_stub(tmp_path)
 
@@ -244,20 +219,18 @@ def test_evaluator_proceed_false_reruns_writer(mock_anthropic_class, tmp_path):
     )
 
     assert result is not None
-    assert mock_client.messages.stream.call_count == 4
+    assert mock_stream_chat.call_count == 4
 
 
-@patch("pipeline.holistic_synthesizer.anthropic.Anthropic")
-def test_editor_retries_on_validation_failure(mock_anthropic_class, tmp_path):
+@patch("pipeline.holistic_synthesizer.stream_chat")
+def test_editor_retries_on_validation_failure(mock_stream_chat, tmp_path):
     """Editor output that fails structural validation causes Editor to retry."""
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
     bad_editor_output = {"overview": None, "strategy_bodies": []}
-    mock_client.messages.stream.side_effect = [
-        _make_stream_ctx(MOCK_SYNTHESIS),       # Writer
-        _make_stream_ctx(MOCK_CRITIQUE),        # Evaluator
-        _make_stream_ctx(bad_editor_output),    # Editor attempt 1 — fails validation
-        _make_stream_ctx(MOCK_SYNTHESIS),       # Editor attempt 2 — passes
+    mock_stream_chat.side_effect = [
+        json.dumps(MOCK_SYNTHESIS),       # Writer
+        json.dumps(MOCK_CRITIQUE),        # Evaluator
+        json.dumps(bad_editor_output),    # Editor attempt 1 — fails validation
+        json.dumps(MOCK_SYNTHESIS),       # Editor attempt 2 — passes
     ]
     _strategy_stub(tmp_path)
 
@@ -273,7 +246,7 @@ def test_editor_retries_on_validation_failure(mock_anthropic_class, tmp_path):
     )
 
     assert result is not None
-    assert mock_client.messages.stream.call_count == 4
+    assert mock_stream_chat.call_count == 4
 
 
 def test_validate_synthesis_output_catches_missing_overview(tmp_path):
@@ -302,15 +275,13 @@ def test_validate_synthesis_output_catches_bad_source_ref(tmp_path):
     assert any("source-ref" in e for e in errors)
 
 
-@patch("pipeline.holistic_synthesizer.anthropic.Anthropic")
-def test_synthesize_source_integrates_existing_strategy_body(mock_anthropic_class, tmp_path):
+@patch("pipeline.holistic_synthesizer.stream_chat")
+def test_synthesize_source_integrates_existing_strategy_body(mock_stream_chat, tmp_path):
     """When a strategy page already has real content, body is replaced not appended."""
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
-    mock_client.messages.stream.side_effect = [
-        _make_stream_ctx(MOCK_SYNTHESIS),
-        _make_stream_ctx(MOCK_CRITIQUE),
-        _make_stream_ctx(MOCK_SYNTHESIS),
+    mock_stream_chat.side_effect = [
+        json.dumps(MOCK_SYNTHESIS),
+        json.dumps(MOCK_CRITIQUE),
+        json.dumps(MOCK_SYNTHESIS),
     ]
     _strategy_stub(tmp_path)
     # Write existing real content to strategy page (not a stub comment)

@@ -88,6 +88,13 @@ One-time enrichment (rarely needed; used after prompt changes):
 python -m pipeline.enrich_strategy_links --wiki-root wiki [--dry-run]
 ```
 
+Phase C synthesis (run after lint + apply, before next ingest):
+```
+python -m pipeline.synthesize_wiki --wiki-root wiki                                             # rebuild all 7 strategies + digest
+python -m pipeline.synthesize_wiki --wiki-root wiki --strategy strategies/strategy-1-renewable-grid  # single strategy
+python -m pipeline.synthesize_wiki --wiki-root wiki --digest-only                              # rebuild digest from existing synthesis: blocks
+```
+
 ## Pipeline Modules
 
 | File | Role |
@@ -130,6 +137,19 @@ python -m pipeline.enrich_strategy_links --wiki-root wiki [--dry-run]
 
 **Schema drift:** When the LLM encounters an entity that doesn't fit any approved `type:` from `VALID_PAGE_TYPES`, it writes the page using the closest approved type AND adds `proposed-type: <new-type>` to the frontmatter. The pipeline auto-logs an entry to `wiki/meta/schema-drift.md` for HITL review. Approve a proposed type by adding it to `VALID_PAGE_TYPES` in `pipeline/wiki_pages.py`.
 
+## Environment Variables
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-...   # required for default operation
+OPENAI_API_KEY=sk-...          # required when LLM_PROVIDER=openai
+LLM_PROVIDER=anthropic         # "anthropic" (default) or "openai"
+LLM_MODEL_OVERRIDE=            # force a specific model ID (optional)
+```
+
+Set these in your shell or copy `.env.example` → `.env` and `source .env` before running the pipeline. Never commit `.env`.
+
+The pipeline uses `LLM_PROVIDER` to select the backend; `LLM_MODEL_OVERRIDE` bypasses the internal model map entirely and routes to the literal model ID string you provide.
+
 ## What NOT to Do
 
 - Never create or edit files in `wiki/` directly during a pipeline run — use the pipeline functions.
@@ -167,7 +187,7 @@ git push                         # push the revert
 python -m pytest tests/ -q       # must be green before any commit to main
 ```
 
-137 tests, 1 skipped (intentional). If tests break, fix them before continuing — do not bypass.
+152 tests, 1 skipped (intentional). If tests break, fix them before continuing — do not bypass.
 
 ## Active Architectural Direction
 

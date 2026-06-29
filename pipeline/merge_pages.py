@@ -1,5 +1,5 @@
 # pipeline/merge_pages.py
-import anthropic
+from pipeline.llm import chat
 
 MERGE_SYSTEM = """You are integrating two wiki page bodies into one unified page body.
 
@@ -17,7 +17,6 @@ def merge_pages(
     existing_body: str,
     new_body: str,
     source_uuid: str,
-    model: str = "claude-sonnet-4-6",
 ) -> str:
     """Merge new_body into existing_body for the canonical page.
 
@@ -31,18 +30,14 @@ def merge_pages(
         "Produce the unified body."
     )
     try:
-        client = anthropic.Anthropic()
-        response = client.messages.create(
-            model=model,
-            max_tokens=8192,
-            temperature=0,
+        raw = chat(
             system=MERGE_SYSTEM,
             messages=[{"role": "user", "content": prompt}],
+            max_tokens=8192,
+            model_hint="merge",
+            temperature=0.0,
         )
-        if response.stop_reason == "max_tokens":
-            print(f"[merge_pages] WARNING: response truncated for {canonical_slug} — keeping existing body")
-            return existing_body
-        return response.content[0].text.strip()
+        return raw.strip()
     except Exception as e:
         print(f"[merge_pages] WARNING: merge failed for {canonical_slug}: {e} — keeping existing body")
         return existing_body

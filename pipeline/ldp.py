@@ -1,7 +1,7 @@
-import anthropic
 import json
 import re
 from pathlib import Path
+from pipeline.llm import chat
 from pipeline.wiki_pages import (
     parse_llm_quads_response,
     append_quads,
@@ -240,8 +240,6 @@ def extract_quads_chunked(
     total_pages_written = 0
     aliases = _load_aliases(str(Path(wiki_root).parent / "registry" / "entity_aliases.json"))
 
-    # Only instantiate the quads client when we actually need it.
-    client = None if wiki_only else anthropic.Anthropic()
     # Skip alias load when quads_only — wiki_writer never runs.
     if quads_only:
         aliases = {}
@@ -264,14 +262,13 @@ def extract_quads_chunked(
                 f"[SECTION CONTENT]\n{chunk_text}\n[END SECTION]\n\n"
                 f"Source UUID: {source_uuid}\nToday's date: {run_date}"
             )
-            response = client.messages.create(
-                model="claude-sonnet-4-6",
-                max_tokens=8192,
-                temperature=0,
+            raw = chat(
                 system=CAP_QUADS_SYSTEM,
                 messages=[{"role": "user", "content": prompt}],
+                max_tokens=8192,
+                model_hint="extraction",
+                temperature=0.0,
             )
-            raw = response.content[0].text
             try:
                 quads = parse_llm_quads_response(raw)
             except Exception as e:

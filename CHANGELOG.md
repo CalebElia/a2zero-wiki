@@ -5,6 +5,34 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 
 ---
 
+## 2026-06-28 — Multi-provider LLM switching layer
+
+**What changed:**
+- **`pipeline/llm.py`** — new provider-agnostic adapter. `chat()` (non-streaming) and `stream_chat()` (streaming, returns `None` on max_tokens truncation) read `LLM_PROVIDER` (default `"anthropic"`) and `LLM_MODEL_OVERRIDE` from the environment. Strips Anthropic-specific `cache_control` keys from message content before sending to OpenAI — OpenAI caches automatically and rejects explicit annotations.
+- **All 7 pipeline modules** migrated off direct Anthropic SDK calls: `holistic_synthesizer`, `wiki_pages`, `wiki_writer`, `lint_wiki`, `merge_pages`, `raw_to_sources`, `ldp`, `synthesize_wiki`.
+- **15 new tests** in `tests/test_llm.py` covering both providers, model selection, `LLM_MODEL_OVERRIDE` env var, `_strip_cache_control` behavioral tests, and Anthropic/OpenAI streaming.
+- **All existing test mocks simplified** — `patch("pipeline.X.anthropic.Anthropic")` chains → `patch("pipeline.X.chat")` or `patch("pipeline.X.stream_chat")` returning plain strings.
+- **`requirements.txt`** — added `openai>=1.0.0`.
+- **`.env.example`** — documents `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `LLM_PROVIDER`, `LLM_MODEL_OVERRIDE`.
+- **`CLAUDE.md`** — new Environment Variables section.
+
+**Why:** Two-provider A/B capability — GPT-5.4 ($2.50/M input, 1.05M context, 128k output) vs Claude Sonnet 4.6. Setting `LLM_PROVIDER=openai` switches the entire pipeline with no code changes. `cache_control` is stripped because OpenAI rejects explicit cache annotations (OpenAI caches automatically based on common prefixes).
+
+---
+
+## 2026-06-28 — Phase C: synthesize_wiki command (L1 + L2)
+
+**What changed:**
+- **`pipeline/synthesize_wiki.py`** — new Phase C command. Reads the clean post-lint entity layer, rebuilds machine-maintained `synthesis:` blocks in each of the 7 strategy pages (L1), and writes `wiki/digest.md` (L2): a ~4–6k-token briefing combining cross-strategy narrative, structured entity map, and recent ingest delta.
+- **15 new unit + integration tests** in `tests/test_synthesize_wiki.py`. Key functions: `gather_strategy_entities()`, `extract_recent_delta()`, `build_strategy_synthesis()`, `write_strategy_synthesis()`, `build_digest_narrative()`, `assemble_digest()`, `write_digest()`.
+- **`tests/fixtures/synthesize_wiki/wiki/`** — minimal fixture entity tree (3 pages: solarize-ann-arbor, glrea, electrification-campaign) for integration tests.
+- **`CLAUDE.md`** — Phase C command reference added; test count updated to 152.
+- **Two bugs caught and fixed by code review:** (1) `gather_strategy_entities()` now strips `[[]]` wikilink brackets from `related-strategies` values before matching (real wiki format vs bare slug format); (2) `assemble_digest()` uses plain-text source reference in Recent delta instead of an unresolvable `sources/.../uuid` wikilink.
+
+**Why:** Establishes the L1 and L2 layers defined in `docs/architecture/knowledge-synthesis-architecture.md`. Closes Step 1 of four implementation steps in the knowledge synthesis upgrade. Next: wire `digest.md` injection into the holistic synthesizer's Comprehend pass (Plan 2).
+
+---
+
 ## 2026-06-26 — Lint Improvements + Entity Continuity Layer
 
 **What changed:**
