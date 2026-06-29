@@ -6,7 +6,7 @@ _MODEL_MAP = {
         "extraction": "claude-sonnet-4-6",
         "synthesis":  "claude-sonnet-4-6",
         "merge":      "claude-sonnet-4-6",
-        "digest":     "claude-sonnet-4-5",
+        "digest":     "claude-sonnet-4-5",  # sonnet-4-5 sufficient for cross-strategy narrative; lower cost
         "clean":      "claude-sonnet-4-6",
     },
     "openai": {
@@ -31,6 +31,10 @@ def _model(hint: str) -> str:
     if provider not in _MODEL_MAP:
         raise ValueError(
             f"Unknown LLM_PROVIDER: {provider!r}. Expected 'anthropic' or 'openai'."
+        )
+    if hint not in _MODEL_MAP[provider]:
+        raise ValueError(
+            f"Unknown model_hint: {hint!r}. Valid hints: {list(_MODEL_MAP[provider].keys())}"
         )
     return _MODEL_MAP[provider][hint]
 

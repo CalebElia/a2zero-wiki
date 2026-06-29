@@ -106,10 +106,6 @@ def test_stream_chat_returns_none_on_max_tokens(monkeypatch):
 def test_chat_raises_on_unknown_provider(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "groq")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    # Reload to pick up new env (functions cache _provider() at call time via os.environ)
-    from pipeline import llm as llm_module
-    import importlib
-    importlib.reload(llm_module)
     from pipeline.llm import chat
     with pytest.raises(ValueError, match="Unknown LLM_PROVIDER"):
         chat(system="s", messages=[], max_tokens=10, model_hint="extraction")
