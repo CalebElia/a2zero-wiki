@@ -1,12 +1,41 @@
 ---
 type: strategy
-title: "Strategy 6: Community Resilience"
+title: 'Strategy 6: Community Resilience'
 strategy-number: 6
 tags:
-  - resilience
-  - equity
-  - strategy-6
+- resilience
+- equity
+- strategy-6
 last-updated: 2026-06-22
+synthesis:
+  core-initiatives:
+  - initiatives/resilience-hubs
+  - initiatives/preserve-and-enhance-local-tree-canopy
+  - initiatives/10000-trees-initiative
+  - initiatives/decentralized-energy-microgrids
+  - initiatives/aqmesh-air-quality-monitoring
+  - initiatives/resilience-fund-equity
+  - initiatives/neighborhood-climate-ambassadors
+  - initiatives/environmental-sensors-monitoring
+  core-actors: []
+  year-over-year-arc: Community resilience infrastructure is in early deployment phase
+    with pilot resilience hubs (Northside), AQMesh air quality monitoring network
+    operational, 10,000 Trees Initiative launched to expand urban canopy, and foundational
+    work on microgrids and equity-focused funding mechanisms underway.
+  open-questions:
+  - What is the timeline and funding secured for scaling resilience hubs beyond Northside
+    pilot?
+  - How will the Resilience Fund prioritize and distribute resources to achieve equity
+    goals?
+  - What are the technical and regulatory barriers to microgrid deployment at scale?
+  - How will tree canopy preservation targets be reconciled with development pressures?
+  cross-strategy-links:
+  - initiatives/decentralized-energy-microgrids
+  - initiatives/affordable-housing-net-zero-energy
+  - initiatives/a2zero-carbon-neutrality-plan
+  - initiatives/soil-carbon-calculator
+  - initiatives/carbon-sequestration-ann-arbor
+  last-rebuilt: '2026-06-29'
 ---
 
 Strategy 6 focuses on climate adaptation — enhancing the resilience of [[locations/ann-arbor|Ann Arbor]]'s people and place to withstand and recover from climate disruptions — through six actions. While GHG reduction is not the primary purpose of this strategy, the six actions collectively contribute a modest 0.1% reduction in community-wide emissions at a cost of approximately $7.5 million ([[sources/cap/cap-2020]]). The plan grounds this strategy in documented local climate impacts: average annual temperature has already risen nearly 1°F since the 1900s, precipitation has increased 44% since the 1950s, and extreme rainfall events have grown 37% since 1981, with Ann Arbor projected to have 12–36 more days per year above 90°F by 2050 ([[sources/cap/cap-2020]]).

@@ -1,14 +1,44 @@
 ---
 type: strategy
-title: "Strategy 7: Community Engagement & Equity"
+title: 'Strategy 7: Community Engagement & Equity'
 strategy-number: 7
 tags:
-  - community-engagement
-  - equity
-  - communication
-  - outreach
-  - strategy-7
+- community-engagement
+- equity
+- communication
+- outreach
+- strategy-7
 last-updated: 2026-06-22
+synthesis:
+  core-initiatives:
+  - initiatives/a2zero-ambassadors-program
+  - initiatives/sa2t-grant-program
+  - initiatives/energy-concierge-and-community-engagement-program
+  - initiatives/neighborhood-resiliency-plans
+  - initiatives/a2zero-collaborators-network
+  - initiatives/net-zero-energy-affordable-housing
+  - initiatives/electrification-campaign
+  - initiatives/a2zero-metrics-dashboard
+  core-actors: []
+  year-over-year-arc: Community engagement infrastructure established with Ambassadors
+    Program, SA2T grants, and Energy Concierge launching; equity-focused initiatives
+    like net-zero affordable housing and neighborhood resiliency plans in early implementation;
+    public-facing tools (dashboard, pledges) creating baseline participation mechanisms.
+  open-questions:
+  - What participation rates and demographic reach have the Ambassadors Program and
+    SA2T grants achieved?
+  - How are equity outcomes being measured across neighborhood-based initiatives?
+  - What feedback mechanisms exist to incorporate community input into plan revisions?
+  - How is coordination managed across the numerous overlapping engagement initiatives?
+  cross-strategy-links:
+  - initiatives/net-zero-energy-affordable-housing
+  - initiatives/electrification-campaign
+  - initiatives/tree-planting-underserved-areas
+  - initiatives/a2zero-metrics-dashboard
+  - initiatives/bryant-neighborhood-decarbonization
+  - initiatives/forth-mobility-education-outreach
+  - initiatives/contractor-electrification-education-badging
+  last-rebuilt: '2026-06-29'
 ---
 
 Strategy 7 — labeled 'Other' in the plan — serves as a catch-all for cross-cutting programs that enable and amplify the other six strategies, while also closing any remaining emissions gap through offsets. The four actions collectively account for just under 14% of community-wide emissions reductions at a cost of approximately $10.7 million, with offsets providing the bulk of that reduction ([[sources/cap/cap-2020]]). Year 2 was particularly active on engagement, institutional recognition, and grant fundraising, with [[actors/office-of-sustainability-and-innovations|OSI]] continuing to build the organizational scaffolding needed to sustain a decade-long community transition.

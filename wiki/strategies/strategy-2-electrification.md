@@ -1,13 +1,52 @@
 ---
 type: strategy
-title: "Strategy 2: Building Electrification"
+title: 'Strategy 2: Building Electrification'
 strategy-number: 2
 tags:
-  - electrification
-  - heat-pumps
-  - buildings
-  - strategy-2
+- electrification
+- heat-pumps
+- buildings
+- strategy-2
 last-updated: 2026-06-22
+synthesis:
+  core-initiatives:
+  - initiatives/home-and-business-electrification
+  - initiatives/city-buildings-decarbonization
+  - initiatives/ev-charging-infrastructure-expansion
+  - initiatives/theride-electrification-expansion
+  - initiatives/sustainable-energy-utility
+  - initiatives/green-rental-housing
+  - initiatives/whole-home-decarbonization-assessment
+  - initiatives/ev-readiness-ordinance
+  core-actors:
+  - actors/city-of-ann-arbor
+  - actors/theride
+  - actors/dte-energy
+  - actors/ann-arbor-housing-commission
+  - actors/washtenaw-county
+  - actors/rmi
+  year-over-year-arc: Building electrification expanded from municipal demonstrations
+    (fire station design, city fleet pilots) to comprehensive residential/commercial
+    programs including contractor training, bulk-buy campaigns, SEU establishment,
+    and regulatory frameworks (EV readiness ordinance); transit electrification progressed
+    from initial bus pilots to fleet-wide conversion planning with charging infrastructure
+    deployment across public and private sectors.
+  open-questions:
+  - Grid capacity expansion timeline and coordination with DTE to support widespread
+    electrification demand
+  - Financing mechanisms and loan loss reserve implementation for residential electrification
+    barriers
+  - Enforcement and compliance pathway for appliance/HVAC electrification requirements
+  - Scalability of geothermal districts and carbon-neutral neighborhood models beyond
+    Bryant pilot
+  cross-strategy-links:
+  - initiatives/solarize-ann-arbor
+  - initiatives/carbon-neutral-districts
+  - initiatives/aahc-energy-improvements
+  - initiatives/financing-loan-loss-reserve
+  - initiatives/city-facilities-energy-audits
+  - initiatives/mobility-hubs
+  last-rebuilt: '2026-06-29'
 ---
 
 Strategy 2 addresses the conversion of fossil-fuel-powered appliances, heating systems, and vehicles to electric, and is projected to reduce community-wide emissions by 23% at a combined cost of approximately $143 million ([[sources/cap/cap-2020]]). The strategy's effectiveness is explicitly contingent on Strategy 1: electrification only achieves its full GHG reduction potential when the electricity powering those systems is sourced from renewables. The dominant action is [[initiatives/home-and-business-electrification|Home and Business Electrification]], targeting 100% of city facilities, 30% of owner-occupied homes, and 25% of rental properties fully electrified by 2030. Natural gas for space heating, water heating, and cooking represents over 25% of community emissions. Projected: 362,200 MTCO₂e reduced (16.5% of community-wide emissions) with UM participation ([[sources/cap/cap-2020]]).

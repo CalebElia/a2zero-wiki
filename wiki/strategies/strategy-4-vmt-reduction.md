@@ -1,14 +1,43 @@
 ---
 type: strategy
-title: "Strategy 4: Vehicle Miles Traveled Reduction"
+title: 'Strategy 4: Vehicle Miles Traveled Reduction'
 strategy-number: 4
 tags:
-  - transportation
-  - ev
-  - mobility
-  - vmt
-  - strategy-4
+- transportation
+- ev
+- mobility
+- vmt
+- strategy-4
 last-updated: 2026-06-22
+synthesis:
+  core-initiatives:
+  - initiatives/expand-improve-local-transit
+  - initiatives/active-transportation-infrastructure
+  - initiatives/protected-bike-lanes-expansion
+  - initiatives/transit-oriented-development-zoning
+  - initiatives/parking-reform
+  - initiatives/non-motorized-transportation-plan
+  - initiatives/develop-mixed-use-neighborhoods
+  - initiatives/go-pass-expansion
+  core-actors: []
+  year-over-year-arc: Strategy establishes baseline VMT reduction framework through
+    land-use reform (TOD zoning, parking minimums removal), transit expansion (TheRide
+    route growth, Go-Pass coverage), and active transportation infrastructure (protected
+    bike lanes, non-motorized plan implementation).
+  open-questions:
+  - Actual VMT metrics and reduction percentages achieved versus targets
+  - Integration timeline between land-use changes and transit service expansion
+  - Funding mechanism for sustained transit expansion and bike infrastructure
+  - Equity distribution of transit access and active transportation infrastructure
+    across neighborhoods
+  cross-strategy-links:
+  - initiatives/electrify-buses
+  - initiatives/ev-charger-deployment
+  - initiatives/ev-charging-infrastructure-expansion
+  - initiatives/urban-heat-island-mitigation
+  - initiatives/a2zero-unified-development-code-integration
+  - initiatives/a2zero-carbon-neutrality-plan
+  last-rebuilt: '2026-06-29'
 ---
 
 Strategy 4 targets a reduction of at least 50% in vehicle miles traveled (VMT) through seven actions spanning active transportation infrastructure, transit expansion, land use reform, and parking policy. Combined, these actions are projected to reduce just over 8% of community-wide emissions at a cost exceeding $901 million — the most capital-intensive strategy in the plan, driven primarily by transit infrastructure costs ([[sources/cap/cap-2020]]). The plan notes that transportation emissions are on the rise, making VMT reduction essential to prevent gains in other sectors from being offset.

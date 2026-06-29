@@ -1,14 +1,42 @@
 ---
 type: strategy
-title: "Strategy 1: 100% Renewable Energy Grid"
+title: 'Strategy 1: 100% Renewable Energy Grid'
 strategy-number: 1
 tags:
-  - renewable-energy
-  - solar
-  - geothermal
-  - grid
-  - strategy-1
+- renewable-energy
+- solar
+- geothermal
+- grid
+- strategy-1
 last-updated: 2026-06-22
+synthesis:
+  core-initiatives:
+  - initiatives/community-choice-aggregation
+  - initiatives/solarize-ann-arbor
+  - initiatives/lmi-solar-access-program
+  - initiatives/landfill-solar-project
+  - initiatives/city-buildings-solar-design
+  - initiatives/community-solar-program
+  - initiatives/sustainable-energy-utility
+  - initiatives/grid-capacity-expansion-electrification
+  core-actors: []
+  year-over-year-arc: Residential solar programs (Solarize) matured with bulk-buy
+    mechanisms; city-scale infrastructure projects (landfill, municipal rooftops)
+    moved from feasibility to implementation; community choice aggregation and sustainable
+    energy utility concepts emerged as strategic policy tools; low-to-moderate income
+    access programs initiated to address equity gaps.
+  open-questions:
+  - Community Choice Aggregation regulatory approval and implementation timeline
+  - Financing mechanisms for LMI solar access at scale
+  - Grid capacity expansion pace relative to electrification demand
+  - Community solar program deployment model and subscriber uptake
+  cross-strategy-links:
+  - initiatives/whole-home-decarbonization-assessment
+  - initiatives/carbon-neutral-districts
+  - initiatives/high-energy-district-targeting
+  - initiatives/on-bill-financing-renewables-efficiency
+  - initiatives/energy-concierge-service
+  last-rebuilt: '2026-06-29'
 ---
 
 Strategy 1 is the single largest contributor to A²ZERO's emissions reduction portfolio, targeting a transition to 100% renewable electricity for the entire community through four complementary actions projected to reduce 41% of community-wide emissions at a combined cost of approximately $4.1 million ([[sources/cap/cap-2020]]). The dominant mechanism is [[technology/community-choice-aggregation|Community Choice Aggregation]] (CCA), an opt-out bulk procurement program that would allow the City to purchase 100% new renewable energy on behalf of all residents, businesses, and municipal accounts — projected to reduce 462,100 MTCO₂e (21% of community-wide emissions) without UM participation, rising to 784,000 MTCO₂e (~36%) if the [[actors/university-of-michigan|University of Michigan]] joins. CCA requires state enabling legislation, with the plan's timeline projecting legislation by 2025, a local public vote in 2026, and program launch in 2027. In Year One, the City began working with legislators toward this goal and regularly participated in Michigan Public Service Commission working groups ([[sources/cap/cap-2020]], [[sources/annual-reports/a2zero-year1]]).
