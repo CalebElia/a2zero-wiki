@@ -248,3 +248,33 @@ def test_stream_chat_openai_returns_text(monkeypatch):
             model_hint="synthesis",
         )
     assert result == "hello world"
+
+
+def test_stream_chat_openai_strips_cache_control(monkeypatch):
+    monkeypatch.setenv("LLM_PROVIDER", "openai")
+    monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
+    from pipeline.llm import stream_chat
+
+    def _single_chunk(text):
+        chunk = MagicMock()
+        chunk.choices = [MagicMock()]
+        chunk.choices[0].delta.content = text
+        yield chunk
+
+    with patch("pipeline.llm.openai") as mock_openai:
+        stream_ctx = MagicMock()
+        stream_ctx.__enter__ = MagicMock(return_value=_single_chunk("ok"))
+        stream_ctx.__exit__ = MagicMock(return_value=False)
+        mock_openai.OpenAI.return_value.chat.completions.create.return_value = stream_ctx
+        stream_chat(
+            system="s",
+            messages=[{"role": "user", "content": [
+                {"type": "text", "text": "doc", "cache_control": {"type": "ephemeral"}}
+            ]}],
+            max_tokens=100,
+            model_hint="synthesis",
+        )
+        call_kwargs = mock_openai.OpenAI.return_value.chat.completions.create.call_args[1]
+    # The system message is first (index 0); user message is second (index 1)
+    user_msg = call_kwargs["messages"][1]
+    assert "cache_control" not in user_msg["content"][0]
