@@ -1,5 +1,6 @@
 import os
 import anthropic
+import openai
 
 _MODEL_MAP = {
     "anthropic": {
@@ -77,6 +78,17 @@ def chat(
         )
         return response.content[0].text
 
+    if provider == "openai":
+        clean_messages = _strip_cache_control(messages)
+        oai_messages = [{"role": "system", "content": system}] + clean_messages
+        response = openai.OpenAI().chat.completions.create(
+            model=model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            messages=oai_messages,
+        )
+        return response.choices[0].message.content
+
     raise ValueError(
         f"Unknown LLM_PROVIDER: {provider!r}. Expected 'anthropic' or 'openai'."
     )
@@ -106,6 +118,23 @@ def stream_chat(
             print(f"[llm] WARNING: response truncated (max_tokens={max_tokens})")
             return None
         return response.content[0].text
+
+    if provider == "openai":
+        clean_messages = _strip_cache_control(messages)
+        oai_messages = [{"role": "system", "content": system}] + clean_messages
+        collected = []
+        with openai.OpenAI().chat.completions.create(
+            model=model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            messages=oai_messages,
+            stream=True,
+        ) as stream:
+            for chunk in stream:
+                delta = chunk.choices[0].delta.content
+                if delta:
+                    collected.append(delta)
+        return "".join(collected)
 
     raise ValueError(
         f"Unknown LLM_PROVIDER: {provider!r}. Expected 'anthropic' or 'openai'."

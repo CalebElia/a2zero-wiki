@@ -114,3 +114,137 @@ def test_chat_raises_on_unknown_provider(monkeypatch):
 def test_strip_cache_control_is_importable():
     from pipeline.llm import _strip_cache_control
     assert callable(_strip_cache_control)
+
+
+# ── _strip_cache_control (behavioral) ────────────────────────────────────────
+
+def test_strip_cache_control_removes_key_from_content_blocks():
+    from pipeline.llm import _strip_cache_control
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "hello", "cache_control": {"type": "ephemeral"}},
+                {"type": "text", "text": "world"},
+            ],
+        }
+    ]
+    result = _strip_cache_control(messages)
+    block = result[0]["content"][0]
+    assert "cache_control" not in block
+    assert block["text"] == "hello"
+    # Second block (no cache_control) is unchanged
+    assert result[0]["content"][1] == {"type": "text", "text": "world"}
+
+
+def test_strip_cache_control_leaves_string_content_untouched():
+    from pipeline.llm import _strip_cache_control
+    messages = [{"role": "user", "content": "just a string"}]
+    result = _strip_cache_control(messages)
+    assert result == messages
+
+
+# ── chat() — OpenAI ───────────────────────────────────────────────────────────
+
+def test_chat_openai_returns_text(monkeypatch):
+    monkeypatch.setenv("LLM_PROVIDER", "openai")
+    monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
+    from pipeline.llm import chat
+    with patch("pipeline.llm.openai") as mock_openai:
+        choice = MagicMock()
+        choice.message.content = "openai response"
+        mock_openai.OpenAI.return_value.chat.completions.create.return_value = (
+            MagicMock(choices=[choice])
+        )
+        result = chat(
+            system="You are a test.",
+            messages=[{"role": "user", "content": "hi"}],
+            max_tokens=100,
+            model_hint="extraction",
+        )
+    assert result == "openai response"
+
+
+def test_chat_openai_prepends_system_message(monkeypatch):
+    monkeypatch.setenv("LLM_PROVIDER", "openai")
+    monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
+    from pipeline.llm import chat
+    with patch("pipeline.llm.openai") as mock_openai:
+        choice = MagicMock()
+        choice.message.content = "ok"
+        mock_openai.OpenAI.return_value.chat.completions.create.return_value = (
+            MagicMock(choices=[choice])
+        )
+        chat(system="Be helpful.", messages=[{"role": "user", "content": "q"}],
+             max_tokens=100, model_hint="extraction")
+        call_kwargs = mock_openai.OpenAI.return_value.chat.completions.create.call_args[1]
+    assert call_kwargs["messages"][0] == {"role": "system", "content": "Be helpful."}
+    assert call_kwargs["messages"][1] == {"role": "user", "content": "q"}
+
+
+def test_chat_openai_strips_cache_control(monkeypatch):
+    monkeypatch.setenv("LLM_PROVIDER", "openai")
+    monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
+    from pipeline.llm import chat
+    with patch("pipeline.llm.openai") as mock_openai:
+        choice = MagicMock()
+        choice.message.content = "ok"
+        mock_openai.OpenAI.return_value.chat.completions.create.return_value = (
+            MagicMock(choices=[choice])
+        )
+        chat(
+            system="s",
+            messages=[{"role": "user", "content": [
+                {"type": "text", "text": "doc", "cache_control": {"type": "ephemeral"}}
+            ]}],
+            max_tokens=100,
+            model_hint="extraction",
+        )
+        call_kwargs = mock_openai.OpenAI.return_value.chat.completions.create.call_args[1]
+    # The system message is first; user message is second
+    user_msg = call_kwargs["messages"][1]
+    assert "cache_control" not in user_msg["content"][0]
+
+
+def test_chat_openai_uses_correct_model(monkeypatch):
+    monkeypatch.setenv("LLM_PROVIDER", "openai")
+    monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
+    from pipeline.llm import chat
+    with patch("pipeline.llm.openai") as mock_openai:
+        choice = MagicMock()
+        choice.message.content = "ok"
+        mock_openai.OpenAI.return_value.chat.completions.create.return_value = (
+            MagicMock(choices=[choice])
+        )
+        chat(system="s", messages=[{"role": "user", "content": "u"}],
+             max_tokens=100, model_hint="extraction")
+        call_kwargs = mock_openai.OpenAI.return_value.chat.completions.create.call_args[1]
+    assert call_kwargs["model"] == "gpt-5.4"
+
+
+# ── stream_chat() — OpenAI ────────────────────────────────────────────────────
+
+def test_stream_chat_openai_returns_text(monkeypatch):
+    monkeypatch.setenv("LLM_PROVIDER", "openai")
+    monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
+    from pipeline.llm import stream_chat
+
+    def _make_chunks(words):
+        for w in words:
+            chunk = MagicMock()
+            chunk.choices = [MagicMock()]
+            chunk.choices[0].delta.content = w
+            yield chunk
+
+    with patch("pipeline.llm.openai") as mock_openai:
+        stream_ctx = MagicMock()
+        stream_ctx.__enter__ = MagicMock(return_value=_make_chunks(["hello", " ", "world"]))
+        stream_ctx.__exit__ = MagicMock(return_value=False)
+        mock_openai.OpenAI.return_value.chat.completions.create.return_value = stream_ctx
+        result = stream_chat(
+            system="You are a test.",
+            messages=[{"role": "user", "content": "hi"}],
+            max_tokens=1000,
+            model_hint="synthesis",
+        )
+    assert result == "hello world"
