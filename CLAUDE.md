@@ -137,6 +137,19 @@ python -m pipeline.synthesize_wiki --wiki-root wiki --digest-only               
 
 **Schema drift:** When the LLM encounters an entity that doesn't fit any approved `type:` from `VALID_PAGE_TYPES`, it writes the page using the closest approved type AND adds `proposed-type: <new-type>` to the frontmatter. The pipeline auto-logs an entry to `wiki/meta/schema-drift.md` for HITL review. Approve a proposed type by adding it to `VALID_PAGE_TYPES` in `pipeline/wiki_pages.py`.
 
+## Environment Variables
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-...   # required for default operation
+OPENAI_API_KEY=sk-...          # required when LLM_PROVIDER=openai
+LLM_PROVIDER=anthropic         # "anthropic" (default) or "openai"
+LLM_MODEL_OVERRIDE=            # force a specific model ID (optional)
+```
+
+Set these in your shell or copy `.env.example` → `.env` and `source .env` before running the pipeline. Never commit `.env`.
+
+The pipeline uses `LLM_PROVIDER` to select the backend; `LLM_MODEL_OVERRIDE` bypasses the internal model map entirely and routes to the literal model ID string you provide.
+
 ## What NOT to Do
 
 - Never create or edit files in `wiki/` directly during a pipeline run — use the pipeline functions.

@@ -84,11 +84,9 @@ def test_semantic_lint_calls_llm_for_candidates(tmp_path):
     )
 
     verdict = {"relationship": "same", "confidence": 0.92, "reasoning": "Same office."}
-    mock_response = MagicMock()
-    mock_response.content = [MagicMock(text=json.dumps(verdict))]
 
-    with patch("pipeline.lint_wiki.anthropic.Anthropic") as MockClient:
-        MockClient.return_value.messages.create.return_value = mock_response
+    with patch("pipeline.lint_wiki.chat") as mock_chat:
+        mock_chat.return_value = json.dumps(verdict)
         from pipeline.lint_wiki import semantic_lint
         proposals = semantic_lint(str(wiki))
 

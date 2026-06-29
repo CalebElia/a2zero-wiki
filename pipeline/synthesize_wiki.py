@@ -6,8 +6,8 @@ See docs/architecture/knowledge-synthesis-architecture.md for design rationale.
 import json
 import re
 import yaml
-import anthropic
 from pathlib import Path
+from pipeline.llm import chat
 
 
 _ENTITY_DIRS = [
@@ -124,14 +124,13 @@ def build_strategy_synthesis(
         "Produce the synthesis JSON now."
     )
     try:
-        client = anthropic.Anthropic()
-        response = client.messages.create(
-            model="claude-sonnet-4-5",
-            max_tokens=2048,
+        raw = chat(
             system=_STRATEGY_SYNTHESIS_SYSTEM,
             messages=[{"role": "user", "content": user_msg}],
+            max_tokens=2048,
+            model_hint="synthesis",
+            temperature=0.0,
         )
-        raw = response.content[0].text
         return json.loads(_strip_code_fence(raw))
     except Exception as e:
         print(f"[synthesize_wiki] build_strategy_synthesis failed for {strategy_slug}: {e}")
@@ -197,14 +196,14 @@ def build_digest_narrative(strategies_data: dict) -> str:
     user_msg = "Strategy summaries:\n" + "\n".join(lines) + "\n\nWrite the narrative now."
 
     try:
-        client = anthropic.Anthropic()
-        response = client.messages.create(
-            model="claude-sonnet-4-5",
-            max_tokens=4096,
+        raw = chat(
             system=_DIGEST_NARRATIVE_SYSTEM,
             messages=[{"role": "user", "content": user_msg}],
+            max_tokens=4096,
+            model_hint="digest",
+            temperature=0.0,
         )
-        return response.content[0].text.strip()
+        return raw.strip()
     except Exception as e:
         print(f"[synthesize_wiki] build_digest_narrative failed: {e}")
         return (

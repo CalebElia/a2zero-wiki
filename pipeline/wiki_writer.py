@@ -1,7 +1,7 @@
-import anthropic
 import json
 import re
 from pathlib import Path
+from pipeline.llm import chat
 from pipeline.alias_registry import load_aliases, resolve_slug, resolve_slug_for_title, fuzzy_resolve_slug_for_title
 from pipeline.merge_pages import merge_pages as _merge_pages
 from pipeline.wiki_pages import (
@@ -376,7 +376,6 @@ def extract_wiki_pages_from_chunk(
     aliases: dict | None = None,
 ) -> list[dict]:
     try:
-        client = anthropic.Anthropic()
         prompt = (
             f"{context_header}\n\n"
             f"[SECTION CONTENT]\n{chunk_text}\n[END SECTION]\n\n"
@@ -385,17 +384,13 @@ def extract_wiki_pages_from_chunk(
             f"Source type: {source_type}\n"
             f"Today's date: {run_date}"
         )
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=16384,
-            temperature=0.2,
+        raw = chat(
             system=WIKI_PAGES_SYSTEM,
             messages=[{"role": "user", "content": prompt}],
+            max_tokens=16384,
+            model_hint="extraction",
+            temperature=0.2,
         )
-        if response.stop_reason == "max_tokens":
-            print("[wiki_writer] WARNING: response truncated (max_tokens hit). Chunk skipped.")
-            return []
-        raw = response.content[0].text
         specs = parse_llm_pages_response(raw)
     except Exception as e:
         print(f"[wiki_writer] WARNING: page extraction failed for chunk: {e}")

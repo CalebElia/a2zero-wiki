@@ -1,8 +1,8 @@
-import anthropic
 import yaml
 import pdfplumber
 from pathlib import Path
 from datetime import date
+from pipeline.llm import chat
 
 
 CLEAN_SYSTEM = """You are a document cleaning assistant for the A2Zero climate wiki pipeline.
@@ -30,21 +30,8 @@ def extract_pdf_text(pdf_path: str) -> str:
     return "\n\n".join(pages)
 
 
-_DEFAULT_CLIENT: anthropic.Anthropic | None = None
-
-
-def _get_client() -> anthropic.Anthropic:
-    global _DEFAULT_CLIENT
-    if _DEFAULT_CLIENT is None:
-        _DEFAULT_CLIENT = anthropic.Anthropic()
-    return _DEFAULT_CLIENT
-
-
-def clean_with_llm(raw_text: str, uuid: str, client: anthropic.Anthropic | None = None) -> str:
-    c = client or _get_client()
-    response = c.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=8192,
+def clean_with_llm(raw_text: str, uuid: str) -> str:
+    return chat(
         system=CLEAN_SYSTEM,
         messages=[
             {
@@ -52,8 +39,10 @@ def clean_with_llm(raw_text: str, uuid: str, client: anthropic.Anthropic | None 
                 "content": f"Document UUID: {uuid}\n\nRaw extracted text:\n\n{raw_text}",
             }
         ],
+        max_tokens=8192,
+        model_hint="clean",
+        temperature=0.0,
     )
-    return response.content[0].text
 
 
 def build_frontmatter(

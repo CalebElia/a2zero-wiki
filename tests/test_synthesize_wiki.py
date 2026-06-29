@@ -72,14 +72,7 @@ def test_extract_recent_delta_handles_empty_log(tmp_path):
 
 
 import json
-from unittest.mock import patch, MagicMock
-
-
-def _mock_response(text: str):
-    msg = MagicMock()
-    msg.content = [MagicMock(text=text)]
-    msg.stop_reason = "end_turn"
-    return msg
+from unittest.mock import patch
 
 
 SAMPLE_ENTITIES = [
@@ -100,8 +93,8 @@ def test_build_strategy_synthesis_calls_anthropic_and_returns_dict():
         "open-questions": ["5MW Y3 target on track?"],
         "cross-strategy-links": [],
     })
-    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
-        MockClient.return_value.messages.create.return_value = _mock_response(llm_output)
+    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
+        mock_chat.return_value = llm_output
         result = build_strategy_synthesis(
             strategy_slug="strategies/strategy-1-renewable-grid",
             strategy_title="Strategy 1 — Renewable Grid",
@@ -117,8 +110,8 @@ def test_build_strategy_synthesis_handles_fenced_json():
         "core-initiatives": [], "core-actors": [],
         "year-over-year-arc": "—", "open-questions": [], "cross-strategy-links": [],
     }) + "\n```"
-    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
-        MockClient.return_value.messages.create.return_value = _mock_response(llm_output)
+    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
+        mock_chat.return_value = llm_output
         result = build_strategy_synthesis(
             strategy_slug="strategies/strategy-1-renewable-grid",
             strategy_title="Strategy 1 — Renewable Grid",
@@ -129,8 +122,8 @@ def test_build_strategy_synthesis_handles_fenced_json():
 
 def test_build_strategy_synthesis_returns_empty_skeleton_on_api_failure():
     from pipeline.synthesize_wiki import build_strategy_synthesis
-    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
-        MockClient.return_value.messages.create.side_effect = Exception("api error")
+    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
+        mock_chat.side_effect = Exception("api error")
         result = build_strategy_synthesis(
             strategy_slug="strategies/strategy-1-renewable-grid",
             strategy_title="Strategy 1 — Renewable Grid",
@@ -229,8 +222,8 @@ def test_build_digest_narrative_calls_anthropic():
         "Strategy 1 has built a 1.7MW residential rooftop base anchored by "
         "[[initiatives/solarize-ann-arbor]]...\n"
     )
-    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
-        MockClient.return_value.messages.create.return_value = _mock_response(narrative_text)
+    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
+        mock_chat.return_value = narrative_text
         result = build_digest_narrative(strategies_data=SAMPLE_STRATEGIES_DATA)
     assert "Strategy 1" in result
     assert "[[initiatives/solarize-ann-arbor]]" in result
@@ -238,8 +231,8 @@ def test_build_digest_narrative_calls_anthropic():
 
 def test_build_digest_narrative_returns_placeholder_on_failure():
     from pipeline.synthesize_wiki import build_digest_narrative
-    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
-        MockClient.return_value.messages.create.side_effect = Exception("api error")
+    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
+        mock_chat.side_effect = Exception("api error")
         result = build_digest_narrative(strategies_data=SAMPLE_STRATEGIES_DATA)
     # Falls back to a placeholder rather than crashing the synthesis run
     assert "Cross-strategy synthesis" in result
@@ -302,11 +295,10 @@ def test_synthesize_wiki_orchestrates_end_to_end(tmp_path):
     })
     narrative_output = "## Cross-strategy synthesis\n\nStrategy 1 has solarized 430+ homes.\n"
 
-    with patch("pipeline.synthesize_wiki.anthropic.Anthropic") as MockClient:
+    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
         # Strategy synthesis call returns the JSON; digest narrative call returns prose.
         # Match call order: 1 strategy (since we limit to strategy-1) then 1 narrative.
-        responses = [_mock_response(strategy_llm_output), _mock_response(narrative_output)]
-        MockClient.return_value.messages.create.side_effect = responses
+        mock_chat.side_effect = [strategy_llm_output, narrative_output]
 
         result = synthesize_wiki(
             wiki_root=str(root),

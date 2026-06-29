@@ -203,14 +203,9 @@ def test_write_or_append_page_frontmatter_is_valid_yaml(tmp_path):
     assert parsed["actor-type"] == "government-office"
 
 
-@patch("pipeline.wiki_writer.anthropic.Anthropic")
-def test_extract_wiki_pages_from_chunk_calls_llm(mock_anthropic_class, tmp_path):
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
-    mock_response = MagicMock()
-    mock_response.stop_reason = "end_turn"
-    mock_response.content = [MagicMock(text=json.dumps(MOCK_PAGES))]
-    mock_client.messages.create.return_value = mock_response
+@patch("pipeline.wiki_writer.chat")
+def test_extract_wiki_pages_from_chunk_calls_llm(mock_chat, tmp_path):
+    mock_chat.return_value = json.dumps(MOCK_PAGES)
 
     from pipeline.wiki_writer import extract_wiki_pages_from_chunk
     pages = extract_wiki_pages_from_chunk(
@@ -222,17 +217,15 @@ def test_extract_wiki_pages_from_chunk_calls_llm(mock_anthropic_class, tmp_path)
         wiki_root=str(tmp_path),
         run_date="2026-06-22",
     )
-    assert mock_client.messages.create.called
+    assert mock_chat.called
     assert len(pages) == 2
     assert (tmp_path / "initiatives" / "community-choice-aggregation.md").exists()
     assert (tmp_path / "actors" / "osi.md").exists()
 
 
-@patch("pipeline.wiki_writer.anthropic.Anthropic")
-def test_extract_wiki_pages_from_chunk_handles_llm_failure(mock_anthropic_class, tmp_path):
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
-    mock_client.messages.create.side_effect = Exception("API error")
+@patch("pipeline.wiki_writer.chat")
+def test_extract_wiki_pages_from_chunk_handles_llm_failure(mock_chat, tmp_path):
+    mock_chat.side_effect = Exception("API error")
 
     from pipeline.wiki_writer import extract_wiki_pages_from_chunk
     pages = extract_wiki_pages_from_chunk(
@@ -247,13 +240,9 @@ def test_extract_wiki_pages_from_chunk_handles_llm_failure(mock_anthropic_class,
     assert pages == []
 
 
-@patch("pipeline.wiki_writer.anthropic.Anthropic")
-def test_extract_wiki_pages_from_chunk_handles_max_tokens(mock_anthropic_class, tmp_path):
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
-    mock_response = MagicMock()
-    mock_response.stop_reason = "max_tokens"
-    mock_client.messages.create.return_value = mock_response
+@patch("pipeline.wiki_writer.chat")
+def test_extract_wiki_pages_from_chunk_handles_json_error(mock_chat, tmp_path):
+    mock_chat.return_value = "invalid json {"
 
     from pipeline.wiki_writer import extract_wiki_pages_from_chunk
     pages = extract_wiki_pages_from_chunk(
