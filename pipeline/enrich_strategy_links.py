@@ -13,7 +13,7 @@ Idempotent: already-linked text is preserved as-is.
 import re
 import json
 import argparse
-import anthropic
+from pipeline.llm import chat
 from pathlib import Path
 
 STRATEGY_SLUGS = [
@@ -70,25 +70,23 @@ def _build_entity_catalogue(wiki_root: Path) -> dict[str, str]:
     return catalogue
 
 
-def _enrich_body(body: str, catalogue: dict[str, str], client: anthropic.Anthropic) -> str:
+def _enrich_body(body: str, catalogue: dict[str, str]) -> str:
     catalogue_text = "\n".join(
         f'  "{title}" → [[{slug}]]'
         for title, slug in sorted(catalogue.items())
     )
     user_msg = f"ENTITY CATALOGUE:\n{catalogue_text}\n\nSTRATEGY BODY:\n{body}"
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=8192,
-        temperature=0,
+    return chat(
         system=ENRICHER_SYSTEM,
         messages=[{"role": "user", "content": user_msg}],
-    )
-    return response.content[0].text.strip()
+        max_tokens=8192,
+        model_hint="extraction",
+        temperature=0.0,
+    ).strip()
 
 
 def enrich_strategy_links(wiki_root: str, dry_run: bool = False) -> None:
     root = Path(wiki_root)
-    client = anthropic.Anthropic()
     catalogue = _build_entity_catalogue(root)
     print(f"[enrich] Built catalogue: {len(catalogue)} entities")
 
@@ -104,7 +102,7 @@ def enrich_strategy_links(wiki_root: str, dry_run: bool = False) -> None:
         body = FRONTMATTER_RE.sub("", raw).strip()
 
         print(f"[enrich] Processing {slug}...")
-        enriched_body = _enrich_body(body, catalogue, client)
+        enriched_body = _enrich_body(body, catalogue)
 
         if enriched_body == body:
             print(f"[enrich]   No changes.")
