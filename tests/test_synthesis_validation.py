@@ -243,3 +243,32 @@ def test_revise_synthesis_returns_original_on_llm_failure():
         result = revise_synthesis(synthesis, report, inventory=[])
     # Falls back to original synthesis (with the ghost still in it) rather than crashing
     assert result == synthesis
+
+
+from pipeline.synthesis_validation import revise_narrative
+
+
+def test_revise_narrative_calls_llm_and_returns_corrected_prose():
+    narrative = "The [[actors/foo|Foo]] partnered with [[actors/ghost|Ghost Inc]]."
+    report = ValidationReport(broken=[
+        BrokenRef(slug="actors/ghost", location="narrative", display="Ghost Inc",
+                  context="partnered with Ghost Inc"),
+    ])
+    inventory = []
+    corrected = "The [[actors/foo|Foo]] partnered with Ghost Inc."
+    with patch("pipeline.synthesis_validation.chat") as mock_chat:
+        mock_chat.return_value = corrected
+        result = revise_narrative(narrative, report, inventory)
+    assert "[[actors/ghost" not in result
+    assert "Ghost Inc" in result  # demoted to plain text
+
+
+def test_revise_narrative_returns_original_on_llm_failure():
+    narrative = "Text with [[actors/foo|Foo]]."
+    report = ValidationReport(broken=[
+        BrokenRef(slug="actors/foo", location="narrative", display="Foo", context="")
+    ])
+    with patch("pipeline.synthesis_validation.chat") as mock_chat:
+        mock_chat.side_effect = Exception("api error")
+        result = revise_narrative(narrative, report, inventory=[])
+    assert result == narrative

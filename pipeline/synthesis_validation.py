@@ -241,3 +241,62 @@ def revise_synthesis(
     except Exception as e:
         print(f"[synthesis_validation] revise_synthesis failed; returning original: {e}")
         return synthesis
+
+
+_REVISE_NARRATIVE_SYSTEM = """You are correcting wikilinks in narrative prose for an \
+Obsidian wiki.
+
+You will receive:
+1. The original narrative (markdown prose with [[slug|Display]] wikilinks)
+2. A list of broken references — wikilinks pointing to pages that don't exist
+3. The available entity inventory
+
+For each broken wikilink, choose ONE action:
+- SUBSTITUTE with a real slug from the inventory, ONLY if there is a clear match
+- DEMOTE to plain text: unwrap [[slug|Display Name]] → Display Name (preserves \
+readability, removes the false link)
+
+Do NOT invent new slugs. Do NOT modify the analytical content of the prose — only \
+fix the broken wikilinks. Keep paragraph structure and word choice intact otherwise.
+
+Return ONLY the corrected markdown — no preamble, no code fences.
+"""
+
+
+def revise_narrative(
+    narrative: str,
+    report: ValidationReport,
+    inventory: list[dict],
+) -> str:
+    """LLM call: correct broken wikilinks in narrative prose.
+
+    Falls back to the original narrative if the LLM call fails.
+    """
+    if report.is_clean:
+        return narrative
+
+    broken_lines = "\n".join(
+        f"- [[{b.slug}|{b.display}]] (no page exists; context: …{b.context.strip()}…)"
+        for b in report.broken
+    )
+    inventory_lines = "\n".join(
+        f"- {e['slug']} — {e['title']}" for e in inventory
+    )
+    user_msg = (
+        f"Original narrative:\n\n{narrative}\n\n---\n\n"
+        f"Broken wikilinks:\n{broken_lines}\n\n"
+        f"Available entity inventory:\n{inventory_lines or '(none)'}\n\n"
+        "Return the corrected narrative."
+    )
+
+    try:
+        return chat(
+            system=_REVISE_NARRATIVE_SYSTEM,
+            messages=[{"role": "user", "content": user_msg}],
+            max_tokens=4096,
+            model_hint="revision",
+            temperature=0.0,
+        ).strip()
+    except Exception as e:
+        print(f"[synthesis_validation] revise_narrative failed; returning original: {e}")
+        return narrative
