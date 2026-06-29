@@ -43,13 +43,13 @@ def test_gather_strategy_entities_returns_empty_for_unknown_strategy(tmp_path):
 
 LOG_FIXTURE = """# Ingest Log
 
-## 2026-06-15 — cap-2020
+## [2026-06-15 | cap-2020]
 Pass 3 complete — index rebuilt.
 
-## 2026-06-25 — a2zero-year1
+## [2026-06-25 | a2zero-year1]
 Pass 3 complete — index rebuilt.
 
-## 2026-06-26 — a2zero-year2
+## [2026-06-26 | a2zero-year2]
 Pass 3 complete — index rebuilt.
 """
 

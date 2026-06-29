@@ -1,14 +1,54 @@
 ---
 type: strategy
-title: "Strategy 3: Building Energy Efficiency"
+title: 'Strategy 3: Building Energy Efficiency'
 strategy-number: 3
 tags:
-  - efficiency
-  - buildings
-  - weatherization
-  - energy-use
-  - strategy-3
+- efficiency
+- buildings
+- weatherization
+- energy-use
+- strategy-3
 last-updated: 2026-06-22
+synthesis:
+  core-initiatives:
+  - initiatives/benchmarking-ordinance
+  - initiatives/energy-concierge-and-community-engagement-program
+  - initiatives/weatherization-expansion
+  - initiatives/update-building-codes
+  - initiatives/green-rental-housing-program
+  - initiatives/geothermal-districts
+  - initiatives/city-buildings-decarbonization
+  - initiatives/on-bill-financing-renewables-efficiency
+  core-actors:
+  - actors/city-of-ann-arbor
+  - actors/ann-arbor-housing-commission
+  - actors/dte-energy
+  - actors/washtenaw-county
+  - actors/office-of-sustainability-and-innovations
+  - actors/university-of-michigan
+  year-over-year-arc: Building efficiency focus evolved from foundational programs
+    (benchmarking ordinance implementation, weatherization expansion, building code
+    updates) toward innovative district-scale approaches (geothermal districts, Bryant
+    neighborhood pilot) and enhanced financing mechanisms (on-bill financing, loan
+    loss reserves) to accelerate residential and commercial retrofits.
+  open-questions:
+  - What is the actual uptake rate and energy savings from the commercial benchmarking
+    ordinance since implementation?
+  - How will financing mechanisms (on-bill, loan loss reserve) scale beyond pilot
+    phase to reach majority of building stock?
+  - What is the timeline and funding pathway for geothermal district expansion beyond
+    initial demonstration sites?
+  - How will equity considerations be embedded in green rental housing program to
+    prevent displacement?
+  cross-strategy-links:
+  - initiatives/solarize-ann-arbor
+  - initiatives/geothermal-districts
+  - initiatives/dte-on-bill-financing-efficiency
+  - initiatives/arpa-city-facilities-solar
+  - initiatives/bulk-buy-renewable-energy-ev
+  - initiatives/energy-information-sessions-sectors
+  - initiatives/a2zero-carbon-neutrality-plan
+  last-rebuilt: '2026-06-29'
 ---
 
 Strategy 3 targets a dramatic improvement in the energy efficiency of all building types through 11 specific actions projected to reduce community-wide emissions by 13.4% at a combined cost of approximately $14.5 million ([[sources/cap/cap-2020]]). The flagship action is a bulk purchase program for energy efficiency retrofits targeting 85% of owner-occupied homes and 80% of tenant-occupied and commercial buildings achieving a 20% electricity savings and 15% natural gas savings by 2030 — projected to reduce 242,500 MTCO₂e (11.1% of community-wide emissions) with UM participation ([[sources/cap/cap-2020]]). The plan notes that as much as 80% of energy consumed in buildings is wasted through envelope gaps and unnecessary operation.

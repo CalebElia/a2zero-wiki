@@ -1,13 +1,41 @@
 ---
 type: strategy
-title: "Strategy 5: Materials & Waste"
+title: 'Strategy 5: Materials & Waste'
 strategy-number: 5
 tags:
-  - waste
-  - materials
-  - circular-economy
-  - strategy-5
+- waste
+- materials
+- circular-economy
+- strategy-5
 last-updated: 2026-06-22
+synthesis:
+  core-initiatives:
+  - initiatives/circular-economy-strategy
+  - initiatives/composting-expansion
+  - initiatives/zero-waste-plan
+  - initiatives/commercial-recycling
+  - initiatives/sustainable-food-framework
+  - initiatives/a2r3-reduce-reuse-return
+  - initiatives/waste-truck-fleet-electrification
+  - initiatives/materials-recovery-facility-renovation
+  core-actors: []
+  year-over-year-arc: Materials & Waste strategy establishes foundational circular
+    economy infrastructure with composting expansion, commercial recycling services,
+    and A2R3 reuse programs while planning transformative investments in MRF renovation,
+    regional methane digestion, and electric refuse fleet transition.
+  open-questions:
+  - Timeline and funding for Materials Recovery Facility renovation or new development
+  - Regional methane digester feasibility and partnerships beyond Ann Arbor
+  - Adoption rates and impact metrics for circular economy programs (A2R3, reusable
+    containers)
+  - Integration of sustainable materials requirements into development approval processes
+  cross-strategy-links:
+  - initiatives/waste-truck-fleet-electrification
+  - initiatives/natural-area-preservation-carbon-sequestration
+  - initiatives/sustainable-purchasing-policy
+  - initiatives/green-business-challenge
+  - initiatives/a2zero-carbon-neutrality-plan
+  last-rebuilt: '2026-06-29'
 ---
 
 Strategy 5 addresses the community's relationship with materials — how goods are purchased, used, reused, and disposed of — through six actions. The plan is candid that this strategy contributes only 0.3% of community-wide emissions reductions in the near term, at a combined cost of approximately $45 million, because calculations are limited to disposal-phase emissions and do not yet capture upstream or embedded emissions from production ([[sources/cap/cap-2020]]). Year-round composting expansion is projected to divert over 5,000 tons of waste annually by 2022, contributing 400 MTCO₂e in modeled GHG reductions at a cost of $26 million, while [[initiatives/commercial-recycling|commercial recycling expansion]] is projected to reduce 5,600 MTCO₂e (0.3%) at a cost of $18.4 million ([[sources/cap/cap-2020]]).

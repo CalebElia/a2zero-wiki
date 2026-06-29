@@ -15,7 +15,7 @@ _ENTITY_DIRS = [
     "funding-events", "meetings", "political-events",
 ]
 
-_LOG_ENTRY_RE = re.compile(r"^## (\d{4}-\d{2}-\d{2}) — (.+?)$", re.MULTILINE)
+_LOG_ENTRY_RE = re.compile(r"^## \[(\d{4}-\d{2}-\d{2}) \| (.+?)\]$", re.MULTILINE)
 
 
 def _parse_frontmatter(text: str) -> dict:
