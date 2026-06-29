@@ -76,14 +76,18 @@ future LLM ingest passes as prior context.
 
 Given the strategy and its inventory of entity pages, return JSON with EXACTLY these keys:
 - core-initiatives: list of up to 8 slugs of the most important initiatives (most \
-central to the strategy's outcomes)
-- core-actors: list of up to 6 slugs of the most important actors
+central to the strategy's outcomes). ONLY use slugs that appear verbatim in the \
+entity inventory provided — do not invent new slugs.
+- core-actors: list of up to 6 slugs of the most important actors. ONLY use slugs \
+that appear verbatim in the entity inventory provided — do not invent new slugs. \
+Only include actors/ slugs — do not place initiatives or locations here.
 - year-over-year-arc: one sentence describing the trajectory across ingested sources \
 (e.g. "Residential solar grew 31% Y1→Y2; commercial pilot launched"). If only one \
 source is ingested, describe the baseline state.
 - open-questions: list of 2–4 short strings flagging what is unresolved or pending
 - cross-strategy-links: list of slugs of entities you would expect to also appear in \
-other strategies' core-initiatives (initiatives spanning multiple strategies)
+other strategies' core-initiatives (initiatives spanning multiple strategies). These \
+may reference entities outside the current inventory.
 
 Return ONLY the JSON object. Slugs use the form `actors/foo` or `initiatives/bar` — \
 the same format as the inputs.
@@ -222,7 +226,10 @@ def _slug_label(slug: str) -> str:
 
 
 _SUPPRESS_SLUGS: frozenset[str] = frozenset({
-    "actors/systems-planning-unit",  # not a real entity
+    "actors/systems-planning-unit",            # not a real entity
+    "actors/city-of-ann-arbor-systems-planning",  # hallucinated subdivision
+    "actors/ann-arbor-recycling-and-solid-waste",  # hallucinated subdivision
+    "actors/neighborhood-organizations",       # too non-specific to be useful
 })
 
 
@@ -250,14 +257,17 @@ def _resolve_synthesis_slugs(synthesis: dict, aliases: dict) -> dict:
     for field in ("core-initiatives", "core-actors", "cross-strategy-links"):
         resolved[field] = _resolve_list(resolved.get(field) or [])
 
-    # Move any initiatives/ slug that the LLM misclassified into core-actors
-    misplaced = [s for s in resolved.get("core-actors", []) if s.startswith("initiatives/")]
-    if misplaced:
-        resolved["core-actors"] = [s for s in resolved["core-actors"] if s not in misplaced]
+    # Move initiatives/ misclassified as actors into core-initiatives; drop locations/ from actors
+    misplaced_inits = [s for s in resolved.get("core-actors", []) if s.startswith("initiatives/")]
+    misplaced_locs = [s for s in resolved.get("core-actors", []) if s.startswith("locations/")]
+    bad_actors = set(misplaced_inits) | set(misplaced_locs)
+    if bad_actors:
+        resolved["core-actors"] = [s for s in resolved["core-actors"] if s not in bad_actors]
         existing = set(resolved.get("core-initiatives", []))
         resolved["core-initiatives"] = resolved.get("core-initiatives", []) + [
-            s for s in misplaced if s not in existing
+            s for s in misplaced_inits if s not in existing
         ]
+        # locations are simply dropped — they're cited in the narrative but shouldn't be actors
 
     return resolved
 
