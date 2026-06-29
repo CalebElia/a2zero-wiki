@@ -9,6 +9,13 @@ import yaml
 from pathlib import Path
 from pipeline.llm import chat
 from pipeline.alias_registry import load_aliases
+from pipeline.synthesis_validation import (
+    validate_synthesis,
+    validate_narrative,
+    revise_synthesis,
+    revise_narrative,
+    log_dropped_ghosts,
+)
 
 
 _ENTITY_DIRS = [
@@ -76,18 +83,14 @@ future LLM ingest passes as prior context.
 
 Given the strategy and its inventory of entity pages, return JSON with EXACTLY these keys:
 - core-initiatives: list of up to 8 slugs of the most important initiatives (most \
-central to the strategy's outcomes). ONLY use slugs that appear verbatim in the \
-entity inventory provided — do not invent new slugs.
-- core-actors: list of up to 6 slugs of the most important actors. ONLY use slugs \
-that appear verbatim in the entity inventory provided — do not invent new slugs. \
-Only include actors/ slugs — do not place initiatives or locations here.
+central to the strategy's outcomes)
+- core-actors: list of up to 6 slugs of the most important actors
 - year-over-year-arc: one sentence describing the trajectory across ingested sources \
 (e.g. "Residential solar grew 31% Y1→Y2; commercial pilot launched"). If only one \
 source is ingested, describe the baseline state.
 - open-questions: list of 2–4 short strings flagging what is unresolved or pending
 - cross-strategy-links: list of slugs of entities you would expect to also appear in \
-other strategies' core-initiatives (initiatives spanning multiple strategies). These \
-may reference entities outside the current inventory.
+other strategies' core-initiatives (initiatives spanning multiple strategies)
 
 Return ONLY the JSON object. Slugs use the form `actors/foo` or `initiatives/bar` — \
 the same format as the inputs.
@@ -223,53 +226,6 @@ def _slug_label(slug: str) -> str:
     """Convert 'initiatives/community-choice-aggregation' → 'Community Choice Aggregation'."""
     name = slug.split("/")[-1]
     return name.replace("-", " ").title()
-
-
-_SUPPRESS_SLUGS: frozenset[str] = frozenset({
-    "actors/systems-planning-unit",            # not a real entity
-    "actors/city-of-ann-arbor-systems-planning",  # hallucinated subdivision
-    "actors/ann-arbor-recycling-and-solid-waste",  # hallucinated subdivision
-    "actors/neighborhood-organizations",       # too non-specific to be useful
-})
-
-
-def _resolve_synthesis_slugs(synthesis: dict, aliases: dict) -> dict:
-    """Resolve alias slugs in LLM synthesis output through the entity alias registry.
-
-    - Substitutes known aliases with their canonical paths.
-    - Suppresses ghost slugs with no real entity.
-    - Moves any initiatives/ slug that landed in core-actors into core-initiatives.
-    - Deduplicates all three lists.
-    """
-    resolved = dict(synthesis)
-
-    def _resolve_list(items: list[str]) -> list[str]:
-        seen: set[str] = set()
-        out: list[str] = []
-        for slug in items:
-            canonical = aliases.get(slug.split("/")[-1], {}).get("canonical") or slug
-            if canonical in _SUPPRESS_SLUGS or canonical in seen:
-                continue
-            seen.add(canonical)
-            out.append(canonical)
-        return out
-
-    for field in ("core-initiatives", "core-actors", "cross-strategy-links"):
-        resolved[field] = _resolve_list(resolved.get(field) or [])
-
-    # Move initiatives/ misclassified as actors into core-initiatives; drop locations/ from actors
-    misplaced_inits = [s for s in resolved.get("core-actors", []) if s.startswith("initiatives/")]
-    misplaced_locs = [s for s in resolved.get("core-actors", []) if s.startswith("locations/")]
-    bad_actors = set(misplaced_inits) | set(misplaced_locs)
-    if bad_actors:
-        resolved["core-actors"] = [s for s in resolved["core-actors"] if s not in bad_actors]
-        existing = set(resolved.get("core-initiatives", []))
-        resolved["core-initiatives"] = resolved.get("core-initiatives", []) + [
-            s for s in misplaced_inits if s not in existing
-        ]
-        # locations are simply dropped — they're cited in the narrative but shouldn't be actors
-
-    return resolved
 
 
 def assemble_digest(
@@ -408,7 +364,24 @@ def synthesize_wiki(
                 strategy_title=title,
                 entities=entities,
             )
-            synthesis = _resolve_synthesis_slugs(synthesis, aliases)
+            # Validate → Revise loop
+            synthesis, report = validate_synthesis(synthesis, wiki_root, aliases)
+            if not report.is_clean:
+                print(f"[synthesize_wiki] {strategy_slug}: {len(report.broken)} broken refs; revising")
+                synthesis = revise_synthesis(synthesis, report, entities)
+                # Re-validate to compute final dropped set for the log
+                synthesis, post_report = validate_synthesis(synthesis, wiki_root, aliases)
+                log_dropped_ghosts(
+                    log_path=str(Path(wiki_root) / "meta" / "synthesis-ghosts.log"),
+                    run_date=run_date,
+                    context_label=strategy_slug,
+                    ghosts=post_report.broken,
+                )
+                # Strip any still-broken slugs so the frontmatter is clean
+                for field in ("core-initiatives", "core-actors", "cross-strategy-links"):
+                    bad = {b.slug for b in post_report.broken if b.location == field}
+                    synthesis[field] = [s for s in synthesis[field] if s not in bad]
+
             page = Path(wiki_root) / (strategy_slug + ".md")
             if page.exists():
                 write_strategy_synthesis(str(page), synthesis, run_date=run_date)
@@ -419,6 +392,22 @@ def synthesize_wiki(
         strategies_data[strategy_slug] = {"title": title, "synthesis": copy.deepcopy(synthesis)}
 
     narrative = build_digest_narrative(strategies_data=strategies_data)
+    # Validate → Revise the narrative
+    narrative_report = validate_narrative(narrative, wiki_root, aliases)
+    if not narrative_report.is_clean:
+        print(f"[synthesize_wiki] digest narrative: {len(narrative_report.broken)} broken wikilinks; revising")
+        # Build a combined inventory from every strategy for the narrative reviser
+        combined_inventory: list[dict] = []
+        for strategy_slug in targets:
+            combined_inventory.extend(gather_strategy_entities(wiki_root, strategy_slug))
+        narrative = revise_narrative(narrative, narrative_report, combined_inventory)
+        post_narrative_report = validate_narrative(narrative, wiki_root, aliases)
+        log_dropped_ghosts(
+            log_path=str(Path(wiki_root) / "meta" / "synthesis-ghosts.log"),
+            run_date=run_date,
+            context_label="digest-narrative",
+            ghosts=post_narrative_report.broken,
+        )
     delta = extract_recent_delta(str(Path(wiki_root) / "log.md"))
 
     digest_text = assemble_digest(

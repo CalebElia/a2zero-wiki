@@ -296,8 +296,8 @@ def test_synthesize_wiki_orchestrates_end_to_end(tmp_path):
     narrative_output = "## Cross-strategy synthesis\n\nStrategy 1 has solarized 430+ homes.\n"
 
     with patch("pipeline.synthesize_wiki.chat") as mock_chat:
-        # Strategy synthesis call returns the JSON; digest narrative call returns prose.
-        # Match call order: 1 strategy (since we limit to strategy-1) then 1 narrative.
+        # Writer calls only — validators are deterministic and the fixture is clean
+        # so no Reviser calls fire. Call order: 1 strategy synth + 1 narrative.
         mock_chat.side_effect = [strategy_llm_output, narrative_output]
 
         result = synthesize_wiki(
