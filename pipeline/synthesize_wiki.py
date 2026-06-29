@@ -170,8 +170,10 @@ produce markdown prose. Required structure:
 ## Cross-strategy synthesis
 
 <One short paragraph per strategy — what it has accomplished, the year-over-year \
-arc, key actors. Reference entities as Obsidian wikilinks: [[initiatives/foo]] or \
-[[actors/bar]]. Keep each paragraph to 3–5 sentences.>
+arc, key actors. Reference entities as Obsidian wikilinks with a display name: \
+[[initiatives/foo|Display Name]] or [[actors/bar|Actor Name]]. \
+Always include the pipe and display name — never use bare [[slug]] links. \
+Keep each paragraph to 3–5 sentences.>
 
 <Closing paragraph titled "### Connections" describing where strategies intersect \
 — which initiatives or actors span multiple strategies, where work in one strategy \
@@ -212,6 +214,12 @@ def build_digest_narrative(strategies_data: dict) -> str:
         )
 
 
+def _slug_label(slug: str) -> str:
+    """Convert 'initiatives/community-choice-aggregation' → 'Community Choice Aggregation'."""
+    name = slug.split("/")[-1]
+    return name.replace("-", " ").title()
+
+
 def assemble_digest(
     narrative: str,
     strategies_data: dict,
@@ -242,16 +250,16 @@ def assemble_digest(
         s = info["synthesis"]
         parts.append(f"### [[{slug}|{info['title']}]]")
         if s.get("core-initiatives"):
-            inits = ", ".join(f"[[{x}]]" for x in s["core-initiatives"])
+            inits = ", ".join(f"[[{x}|{_slug_label(x)}]]" for x in s["core-initiatives"])
             parts.append(f"- **core initiatives:** {inits}")
         if s.get("core-actors"):
-            actors = ", ".join(f"[[{x}]]" for x in s["core-actors"])
+            actors = ", ".join(f"[[{x}|{_slug_label(x)}]]" for x in s["core-actors"])
             parts.append(f"- **core actors:** {actors}")
         parts.append(f"- **arc:** {s.get('year-over-year-arc', '—')}")
         if s.get("open-questions"):
             parts.append(f"- **open:** {'; '.join(s['open-questions'])}")
         if s.get("cross-strategy-links"):
-            xs = ", ".join(f"[[{x}]]" for x in s["cross-strategy-links"])
+            xs = ", ".join(f"[[{x}|{_slug_label(x)}]]" for x in s["cross-strategy-links"])
             parts.append(f"- **cross-strategy links:** {xs}")
         parts.append("")
 

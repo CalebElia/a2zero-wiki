@@ -256,7 +256,7 @@ def test_assemble_digest_combines_all_sections():
     assert "Cross-strategy synthesis" in text
     # Entity map section
     assert "## Strategy entity map" in text
-    assert "[[initiatives/solarize-ann-arbor]]" in text
+    assert "[[initiatives/solarize-ann-arbor|Solarize Ann Arbor]]" in text
     # Recent delta section
     assert "## Recent delta" in text
     assert "a2zero-year2" in text
