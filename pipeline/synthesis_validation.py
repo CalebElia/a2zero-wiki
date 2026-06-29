@@ -25,3 +25,74 @@ class ValidationReport:
     @property
     def is_clean(self) -> bool:
         return len(self.broken) == 0
+
+
+from pathlib import Path
+
+
+SUPPRESS_SLUGS: frozenset[str] = frozenset({
+    "actors/systems-planning-unit",
+    "actors/city-of-ann-arbor-systems-planning",
+    "actors/ann-arbor-recycling-and-solid-waste",
+    "actors/neighborhood-organizations",
+})
+
+
+def _exists(slug: str, wiki_root: str) -> bool:
+    return (Path(wiki_root) / f"{slug}.md").exists()
+
+
+def _resolve_alias(slug: str, aliases: dict) -> str:
+    """Substitute alias -> canonical, if known."""
+    key = slug.split("/")[-1]
+    return aliases.get(key, {}).get("canonical") or slug
+
+
+def validate_synthesis(
+    synthesis: dict,
+    wiki_root: str,
+    aliases: dict,
+) -> tuple[dict, ValidationReport]:
+    """Apply alias resolution + type-sort + suppress list, then check
+    every remaining slug against the filesystem.
+
+    Returns (partially-corrected synthesis, report of what's still broken).
+    """
+    corrected = dict(synthesis)
+
+    def _clean(items: list[str]) -> list[str]:
+        seen: set[str] = set()
+        out: list[str] = []
+        for slug in items or []:
+            resolved = _resolve_alias(slug, aliases)
+            if resolved in SUPPRESS_SLUGS or resolved in seen:
+                continue
+            seen.add(resolved)
+            out.append(resolved)
+        return out
+
+    for field in ("core-initiatives", "core-actors", "cross-strategy-links"):
+        corrected[field] = _clean(corrected.get(field) or [])
+
+    # Type-sort: initiatives misplaced in core-actors → move to core-initiatives;
+    # locations in core-actors → drop.
+    misplaced_inits = [s for s in corrected["core-actors"] if s.startswith("initiatives/")]
+    bad_actors = {s for s in corrected["core-actors"]
+                  if s.startswith("initiatives/") or s.startswith("locations/")}
+    if bad_actors:
+        corrected["core-actors"] = [s for s in corrected["core-actors"] if s not in bad_actors]
+        existing = set(corrected["core-initiatives"])
+        corrected["core-initiatives"] = corrected["core-initiatives"] + [
+            s for s in misplaced_inits if s not in existing
+        ]
+
+    # Filesystem check on what's left
+    broken: list[BrokenRef] = []
+    for field in ("core-initiatives", "core-actors", "cross-strategy-links"):
+        for slug in corrected[field]:
+            if not _exists(slug, wiki_root):
+                broken.append(BrokenRef(
+                    slug=slug, location=field, display=slug.split("/")[-1], context=""
+                ))
+
+    return corrected, ValidationReport(broken=broken)
