@@ -12,30 +12,40 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/community-choice-aggregation
-  - initiatives/solarize-ann-arbor
-  - initiatives/lmi-solar-access-program
-  - initiatives/landfill-solar-project
-  - initiatives/city-buildings-solar-design
-  - initiatives/community-solar-program
+  - initiatives/bulk-purchase-of-renewables
   - initiatives/sustainable-energy-utility
+  - initiatives/lmi-solar-access-program
   - initiatives/grid-capacity-expansion-electrification
-  core-actors: []
-  year-over-year-arc: Residential solar programs (Solarize) matured with bulk-buy
-    mechanisms; city-scale infrastructure projects (landfill, municipal rooftops)
-    moved from feasibility to implementation; community choice aggregation and sustainable
-    energy utility concepts emerged as strategic policy tools; low-to-moderate income
-    access programs initiated to address equity gaps.
+  - initiatives/arpa-city-facilities-solar
+  - initiatives/community-solar-pilot
+  - initiatives/dte-utility-case-u-20836-intervention
+  core-actors:
+  - actors/dte-energy
+  - actors/city-of-ann-arbor
+  - actors/university-of-michigan
+  - actors/washtenaw-county
+  - actors/ann-arbor-public-schools
+  - actors/world-resources-institute
+  year-over-year-arc: Baseline state reflects a multi-pronged push to decarbonize
+    the grid through utility intervention, community aggregation, and distributed
+    solar deployment across city, institutional, and low-income residential properties,
+    with financing mechanisms and zoning reforms still in early development.
   open-questions:
-  - Community Choice Aggregation regulatory approval and implementation timeline
-  - Financing mechanisms for LMI solar access at scale
-  - Grid capacity expansion pace relative to electrification demand
-  - Community solar program deployment model and subscriber uptake
+  - Whether Community Choice Aggregation is legally and operationally feasible under
+    Michigan's regulated utility framework with DTE
+  - How the Sustainable Energy Utility will be capitalized and governed long-term
+  - Extent to which LMI households can access solar programs given upfront cost and
+    renter barriers
+  - Whether grid capacity expansion will keep pace with accelerating electrification
+    demand
   cross-strategy-links:
   - initiatives/whole-home-decarbonization-assessment
   - initiatives/carbon-neutral-districts
   - initiatives/high-energy-district-targeting
   - initiatives/on-bill-financing-renewables-efficiency
   - initiatives/energy-concierge-service
+  - initiatives/community-ev-solar-bulk-buy
+  - initiatives/a2zero-carbon-neutrality-plan
   last-rebuilt: '2026-06-29'
 ---
 

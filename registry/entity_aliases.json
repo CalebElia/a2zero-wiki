@@ -3384,6 +3384,17 @@
     ],
     "relationship": "name-variant"
   },
+  "a2zero-program": {
+    "canonical": "actors/office-of-sustainability-and-innovations",
+    "type": "actor",
+    "aliases": [
+      "A2Zero Program",
+      "A2ZERO Program",
+      "a2zero program"
+    ],
+    "relationship": "name-variant",
+    "notes": "Recurring ghost surfaced via synthesis-ghosts.log; A2Zero is the plan, OSI is the implementing actor"
+  },
   "local-businesses-green-business-challenge": {
     "canonical": "initiatives/green-business-challenge",
     "type": "initiative",

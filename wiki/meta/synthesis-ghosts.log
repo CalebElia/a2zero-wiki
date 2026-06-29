@@ -1,0 +1,14 @@
+
+## [2026-06-29 | strategies/strategy-1-renewable-grid]
+- actors/a2zero-program (location=core-actors, display='a2zero-program')
+
+## [2026-06-29 | strategies/strategy-3-building-efficiency]
+- actors/a2zero-program (location=core-actors, display='a2zero-program')
+
+## [2026-06-29 | strategies/strategy-4-vmt-reduction]
+- actors/michigan-department-of-transportation (location=core-actors, display='michigan-department-of-transportation')
+
+## [2026-06-29 | strategies/strategy-5-materials-waste]
+- actors/nextcycle-michigan (location=core-actors, display='nextcycle-michigan')
+- actors/ann-arbor-greenbelt-advisory-commission (location=core-actors, display='ann-arbor-greenbelt-advisory-commission')
+- actors/local-businesses (location=core-actors, display='local-businesses')

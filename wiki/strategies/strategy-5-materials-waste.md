@@ -11,30 +11,40 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/circular-economy-strategy
-  - initiatives/composting-expansion
+  - initiatives/solid-waste-resource-management-plan
   - initiatives/zero-waste-plan
-  - initiatives/commercial-recycling
-  - initiatives/sustainable-food-framework
+  - initiatives/composting-expansion
   - initiatives/a2r3-reduce-reuse-return
-  - initiatives/waste-truck-fleet-electrification
+  - initiatives/electric-refuse-truck-program
   - initiatives/materials-recovery-facility-renovation
-  core-actors: []
-  year-over-year-arc: Materials & Waste strategy establishes foundational circular
-    economy infrastructure with composting expansion, commercial recycling services,
-    and A2R3 reuse programs while planning transformative investments in MRF renovation,
-    regional methane digestion, and electric refuse fleet transition.
+  - initiatives/regional-methane-digester
+  core-actors:
+  - actors/city-of-ann-arbor
+  - actors/office-of-sustainability-and-innovations
+  - actors/ann-arbor-downtown-development-authority
+  - actors/washtenaw-county
+  year-over-year-arc: Baseline state reflects early-stage circular economy framework
+    development, with composting expansion and electric refuse truck pilots underway,
+    commercial recycling services being extended, and a Zero Waste Plan and Solid
+    Waste Resource Management Plan guiding longer-term diversion and emissions reduction
+    targets.
   open-questions:
-  - Timeline and funding for Materials Recovery Facility renovation or new development
-  - Regional methane digester feasibility and partnerships beyond Ann Arbor
-  - Adoption rates and impact metrics for circular economy programs (A2R3, reusable
-    containers)
-  - Integration of sustainable materials requirements into development approval processes
+  - What diversion rate and landfill methane reduction targets are formally adopted
+    and on what timeline?
+  - Has the Materials Recovery Facility renovation secured funding and a construction
+    timeline?
+  - How will the Regional Methane Digester be financed and which regional partners
+    will participate?
+  - What enforcement or incentive mechanisms will drive sustainable materials requirements
+    in new developments?
   cross-strategy-links:
+  - initiatives/electric-refuse-truck-program
   - initiatives/waste-truck-fleet-electrification
   - initiatives/natural-area-preservation-carbon-sequestration
-  - initiatives/sustainable-purchasing-policy
+  - initiatives/carbon-sequestration-ann-arbor
   - initiatives/green-business-challenge
-  - initiatives/a2zero-carbon-neutrality-plan
+  - initiatives/sustainable-purchasing-policy
+  - initiatives/local-food-production-expansion
   last-rebuilt: '2026-06-29'
 ---
 

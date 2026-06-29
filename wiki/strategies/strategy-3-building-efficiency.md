@@ -11,43 +11,42 @@ tags:
 last-updated: 2026-06-22
 synthesis:
   core-initiatives:
+  - initiatives/transition-to-more-energy-efficient-homes-and-businesses
   - initiatives/benchmarking-ordinance
+  - initiatives/update-building-codes
   - initiatives/energy-concierge-and-community-engagement-program
   - initiatives/weatherization-expansion
-  - initiatives/update-building-codes
-  - initiatives/green-rental-housing-program
-  - initiatives/geothermal-districts
-  - initiatives/city-buildings-decarbonization
+  - initiatives/net-zero-energy-affordable-housing
   - initiatives/on-bill-financing-renewables-efficiency
+  - initiatives/bryant-neighborhood-decarbonization
   core-actors:
   - actors/city-of-ann-arbor
   - actors/ann-arbor-housing-commission
   - actors/dte-energy
-  - actors/washtenaw-county
   - actors/office-of-sustainability-and-innovations
-  - actors/university-of-michigan
-  year-over-year-arc: Building efficiency focus evolved from foundational programs
-    (benchmarking ordinance implementation, weatherization expansion, building code
-    updates) toward innovative district-scale approaches (geothermal districts, Bryant
-    neighborhood pilot) and enhanced financing mechanisms (on-bill financing, loan
-    loss reserves) to accelerate residential and commercial retrofits.
+  - actors/washtenaw-county
+  - actors/washtenaw-area-apartment-association
+  year-over-year-arc: Strategy 3 establishes a broad baseline portfolio of building
+    efficiency initiatives spanning code updates, benchmarking, weatherization, affordable
+    housing decarbonization, and financing mechanisms, with no multi-year trend data
+    yet ingested to show progression.
   open-questions:
-  - What is the actual uptake rate and energy savings from the commercial benchmarking
-    ordinance since implementation?
-  - How will financing mechanisms (on-bill, loan loss reserve) scale beyond pilot
-    phase to reach majority of building stock?
-  - What is the timeline and funding pathway for geothermal district expansion beyond
-    initial demonstration sites?
-  - How will equity considerations be embedded in green rental housing program to
-    prevent displacement?
+  - What is the adoption rate and enforcement mechanism for the commercial/multi-family
+    benchmarking ordinance?
+  - How will financing tools (on-bill financing, loan loss reserve) be capitalized
+    and who administers them?
+  - What is the timeline and funding source for scaling weatherization to low-income
+    households at meaningful volume?
+  - How will updated building codes be adopted given state preemption constraints
+    on local energy codes in Michigan?
   cross-strategy-links:
   - initiatives/solarize-ann-arbor
   - initiatives/geothermal-districts
-  - initiatives/dte-on-bill-financing-efficiency
+  - initiatives/carbon-neutral-districts
   - initiatives/arpa-city-facilities-solar
+  - initiatives/zoning-density-increase
   - initiatives/bulk-buy-renewable-energy-ev
-  - initiatives/energy-information-sessions-sectors
-  - initiatives/a2zero-carbon-neutrality-plan
+  - initiatives/aahc-energy-improvements
   last-rebuilt: '2026-06-29'
 ---
 

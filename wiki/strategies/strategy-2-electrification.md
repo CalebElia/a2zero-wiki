@@ -11,41 +11,41 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/home-and-business-electrification
-  - initiatives/city-buildings-decarbonization
-  - initiatives/ev-charging-infrastructure-expansion
-  - initiatives/theride-electrification-expansion
+  - initiatives/appliance-hvac-electrification-requirement
   - initiatives/sustainable-energy-utility
-  - initiatives/green-rental-housing
-  - initiatives/whole-home-decarbonization-assessment
-  - initiatives/ev-readiness-ordinance
+  - initiatives/ev-charger-deployment
+  - initiatives/geothermal-districts
+  - initiatives/aahc-energy-improvements
+  - initiatives/electrification-contractor-training-and-badging
+  - initiatives/bryant-neighborhood-decarbonization
   core-actors:
   - actors/city-of-ann-arbor
-  - actors/theride
-  - actors/dte-energy
   - actors/ann-arbor-housing-commission
-  - actors/washtenaw-county
+  - actors/ann-arbor-area-transit-authority
+  - actors/dte-energy
+  - actors/ibew-252
   - actors/rmi
-  year-over-year-arc: Building electrification expanded from municipal demonstrations
-    (fire station design, city fleet pilots) to comprehensive residential/commercial
-    programs including contractor training, bulk-buy campaigns, SEU establishment,
-    and regulatory frameworks (EV readiness ordinance); transit electrification progressed
-    from initial bus pilots to fleet-wide conversion planning with charging infrastructure
-    deployment across public and private sectors.
+  year-over-year-arc: Strategy 2 establishes a broad baseline of building and fleet
+    electrification initiatives spanning residential, commercial, and municipal sectors,
+    with foundational programs (SEU, EV charging, contractor training, neighborhood
+    pilots) in early deployment but no multi-year trend data yet ingested.
   open-questions:
-  - Grid capacity expansion timeline and coordination with DTE to support widespread
-    electrification demand
-  - Financing mechanisms and loan loss reserve implementation for residential electrification
-    barriers
-  - Enforcement and compliance pathway for appliance/HVAC electrification requirements
-  - Scalability of geothermal districts and carbon-neutral neighborhood models beyond
-    Bryant pilot
+  - What is the funding mechanism and capitalization level for the Loan Loss Reserve
+    and SEU, and are they operational?
+  - How will the mandatory appliance/HVAC electrification requirement be enforced
+    and phased for existing buildings?
+  - What is the timeline and scale for expanding geothermal districts beyond pilot
+    zones?
+  - How will equity and affordability be ensured for low-income renters and homeowners
+    facing electrification costs?
   cross-strategy-links:
+  - initiatives/sustainable-energy-utility
+  - initiatives/geothermal-districts
+  - initiatives/ev-charger-deployment
   - initiatives/solarize-ann-arbor
   - initiatives/carbon-neutral-districts
   - initiatives/aahc-energy-improvements
-  - initiatives/financing-loan-loss-reserve
-  - initiatives/city-facilities-energy-audits
-  - initiatives/mobility-hubs
+  - initiatives/theride-electrification-expansion
   last-rebuilt: '2026-06-29'
 ---
 

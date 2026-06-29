@@ -12,32 +12,40 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/a2zero-ambassadors-program
+  - initiatives/neighborhood-resiliency-plans
   - initiatives/sa2t-grant-program
   - initiatives/energy-concierge-and-community-engagement-program
-  - initiatives/neighborhood-resiliency-plans
-  - initiatives/a2zero-collaborators-network
-  - initiatives/net-zero-energy-affordable-housing
-  - initiatives/electrification-campaign
-  - initiatives/a2zero-metrics-dashboard
-  core-actors: []
-  year-over-year-arc: Community engagement infrastructure established with Ambassadors
-    Program, SA2T grants, and Energy Concierge launching; equity-focused initiatives
-    like net-zero affordable housing and neighborhood resiliency plans in early implementation;
-    public-facing tools (dashboard, pledges) creating baseline participation mechanisms.
+  - initiatives/advance-equity-programs
+  - initiatives/bryant-neighborhood-decarbonization
+  - initiatives/a2zero-public-engagement-process
+  - initiatives/youth-education-carbon-neutrality
+  - initiatives/carbon-neutrality-coordinating-committee
+  core-actors:
+  - actors/city-of-ann-arbor
+  - actors/office-of-sustainability-and-innovations
+  - actors/ann-arbor-public-schools
+  - actors/dte-energy
+  year-over-year-arc: Baseline state reflects a community engagement and equity strategy
+    centered on grassroots outreach infrastructure (Ambassadors, SA2T grants, Energy
+    Concierge), neighborhood-scale decarbonization pilots (Bryant), and equity-focused
+    programs, with no multi-year trend data yet ingested to show progression.
   open-questions:
-  - What participation rates and demographic reach have the Ambassadors Program and
-    SA2T grants achieved?
-  - How are equity outcomes being measured across neighborhood-based initiatives?
-  - What feedback mechanisms exist to incorporate community input into plan revisions?
-  - How is coordination managed across the numerous overlapping engagement initiatives?
+  - What measurable equity outcomes and participation metrics have been achieved by
+    the Ambassadors Program and SA2T grants to date?
+  - How is the Bryant Neighborhood Decarbonization pilot being evaluated for replication
+    in other underserved neighborhoods?
+  - What is the funding sustainability plan for the Energy Concierge and community
+    engagement programs beyond initial allocations?
+  - How are Neighborhood Resiliency Plans being integrated with city emergency management
+    and other departmental planning processes?
   cross-strategy-links:
   - initiatives/net-zero-energy-affordable-housing
   - initiatives/electrification-campaign
+  - initiatives/bryant-neighborhood-decarbonization
   - initiatives/tree-planting-underserved-areas
   - initiatives/a2zero-metrics-dashboard
-  - initiatives/bryant-neighborhood-decarbonization
-  - initiatives/forth-mobility-education-outreach
   - initiatives/contractor-electrification-education-badging
+  - initiatives/offset-greenhouse-gas-emissions
   last-rebuilt: '2026-06-29'
 ---
 

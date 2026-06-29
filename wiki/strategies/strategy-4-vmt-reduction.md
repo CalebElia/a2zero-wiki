@@ -11,31 +11,38 @@ tags:
 last-updated: 2026-06-22
 synthesis:
   core-initiatives:
+  - initiatives/non-motorized-transportation-plan
   - initiatives/expand-improve-local-transit
   - initiatives/active-transportation-infrastructure
-  - initiatives/protected-bike-lanes-expansion
   - initiatives/transit-oriented-development-zoning
-  - initiatives/parking-reform
-  - initiatives/non-motorized-transportation-plan
-  - initiatives/develop-mixed-use-neighborhoods
   - initiatives/go-pass-expansion
-  core-actors: []
-  year-over-year-arc: Strategy establishes baseline VMT reduction framework through
-    land-use reform (TOD zoning, parking minimums removal), transit expansion (TheRide
-    route growth, Go-Pass coverage), and active transportation infrastructure (protected
-    bike lanes, non-motorized plan implementation).
+  - initiatives/parking-reform
+  - initiatives/mobility-hubs
+  - initiatives/theride-electrification-expansion
+  core-actors:
+  - actors/city-of-ann-arbor
+  - actors/ann-arbor-area-transit-authority
+  - actors/office-of-sustainability-and-innovations
+  - actors/ann-arbor-public-schools
+  - actors/forth-mobility
+  year-over-year-arc: Strategy 4 establishes a baseline multi-modal VMT reduction
+    framework combining active transportation infrastructure, transit expansion, land-use
+    upzoning, and parking reform, with no multi-year trend data yet ingested.
   open-questions:
-  - Actual VMT metrics and reduction percentages achieved versus targets
-  - Integration timeline between land-use changes and transit service expansion
-  - Funding mechanism for sustained transit expansion and bike infrastructure
-  - Equity distribution of transit access and active transportation infrastructure
-    across neighborhoods
+  - What measurable VMT reduction targets and timelines are established, and how is
+    progress tracked?
+  - How will Act 51 reform lobbying outcomes affect local transit funding and route
+    expansion feasibility?
+  - To what extent have zoning and parking minimum changes been adopted and implemented?
+  - How are equity considerations integrated to ensure Go-Pass and mobility hub access
+    reaches low-income and underserved communities?
   cross-strategy-links:
   - initiatives/electrify-buses
   - initiatives/ev-charger-deployment
-  - initiatives/ev-charging-infrastructure-expansion
-  - initiatives/urban-heat-island-mitigation
+  - initiatives/expand-ev-charging-infrastructure
   - initiatives/a2zero-unified-development-code-integration
+  - initiatives/develop-mixed-use-neighborhoods
+  - initiatives/urban-heat-island-mitigation
   - initiatives/a2zero-carbon-neutrality-plan
   last-rebuilt: '2026-06-29'
 ---

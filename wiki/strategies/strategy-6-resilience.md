@@ -10,30 +10,36 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/resilience-hubs
+  - initiatives/northside-resilience-hub
+  - initiatives/resilience-fund-equity
   - initiatives/preserve-and-enhance-local-tree-canopy
   - initiatives/10000-trees-initiative
   - initiatives/decentralized-energy-microgrids
-  - initiatives/aqmesh-air-quality-monitoring
-  - initiatives/resilience-fund-equity
   - initiatives/neighborhood-climate-ambassadors
   - initiatives/environmental-sensors-monitoring
-  core-actors: []
-  year-over-year-arc: Community resilience infrastructure is in early deployment phase
-    with pilot resilience hubs (Northside), AQMesh air quality monitoring network
-    operational, 10,000 Trees Initiative launched to expand urban canopy, and foundational
-    work on microgrids and equity-focused funding mechanisms underway.
+  core-actors:
+  - actors/city-of-ann-arbor
+  - actors/office-of-sustainability-and-innovations
+  - actors/avalon-housing
+  year-over-year-arc: Baseline state establishes equity-centered resilience infrastructure
+    through physical hubs (Northside), tree canopy expansion targeting underserved
+    areas, distributed energy microgrids, and community ambassador networks, with
+    monitoring tools and needs mapping laying groundwork for future adaptive capacity.
   open-questions:
-  - What is the timeline and funding secured for scaling resilience hubs beyond Northside
-    pilot?
-  - How will the Resilience Fund prioritize and distribute resources to achieve equity
-    goals?
-  - What are the technical and regulatory barriers to microgrid deployment at scale?
-  - How will tree canopy preservation targets be reconciled with development pressures?
+  - Which additional neighborhood sites will be designated as resilience hubs beyond
+    Northside Community Center?
+  - What is the funding mechanism and capitalization level for the Resilience Fund
+    focused on equity?
+  - How will microgrid development be financed and integrated with DTE Energy's grid
+    infrastructure?
+  - Has the asset and needs mapping of neighborhoods been completed, and how will
+    findings drive resource allocation?
   cross-strategy-links:
-  - initiatives/decentralized-energy-microgrids
   - initiatives/affordable-housing-net-zero-energy
+  - initiatives/decentralized-energy-microgrids
+  - initiatives/preserve-and-enhance-local-tree-canopy
+  - initiatives/a2zero-ambassadors-program
   - initiatives/a2zero-carbon-neutrality-plan
-  - initiatives/soil-carbon-calculator
   - initiatives/carbon-sequestration-ann-arbor
   last-rebuilt: '2026-06-29'
 ---
