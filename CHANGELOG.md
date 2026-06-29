@@ -5,6 +5,22 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 
 ---
 
+## 2026-06-29 — Synthesis validation loop
+
+**What changed:**
+- **`pipeline/synthesis_validation.py`** — new module implementing a Write → Validate → Revise loop for `synthesize_wiki`. Deterministic validator checks every entity slug emitted by the synthesis and narrative LLM calls against the filesystem; broken references trigger a scoped Reviser LLM call that substitutes from the inventory, drops from structured fields, or demotes wikilinks to plain text in prose.
+- **Two validation points** in `synthesize_wiki()`: after `build_strategy_synthesis()` (catches ghosts before they are written to strategy frontmatter) and after `build_digest_narrative()` (catches ghosts the narrative LLM invents during digest assembly).
+- **Reverted the inventory-binding language** from `_STRATEGY_SYNTHESIS_SYSTEM` — the Writer is again free to reach for plausible entities; correctness is enforced at the validation boundary instead of via prompt constraints.
+- **Removed `_resolve_synthesis_slugs`, `_SUPPRESS_SLUGS`** from `synthesize_wiki.py` (moved into the Validator).
+- **`wiki/meta/synthesis-ghosts.log`** — append-only log of dropped ghost slugs for human review. Recurring entries signal entities worth either creating as pages or adding to `SUPPRESS_SLUGS` permanently.
+- **20 new tests** in `tests/test_synthesis_validation.py` covering BrokenRef/ValidationReport dataclasses, structured validation (alias resolution, type-sort, suppress list, deduplication), narrative wikilink parsing, ghost logging, and Reviser fallback behavior. Total suite: 187 passed, 1 skipped.
+- **`registry/entity_aliases.json`** — added `a2zero-program` alias (recurring ghost surfaced via the new log) → OSI.
+- **Spec:** `docs/architecture/synthesis-validation-loop.md`. **Plan:** `docs/superpowers/plans/2026-06-29-synthesis-validation-loop.md`.
+
+**Why:** We were responding to every ghost-reference by tightening the synthesis prompt and growing an inline suppress list. That doesn't generalize (novel ghosts kept appearing across runs) and over-constrains (last iteration's "only use inventory slugs" rule wiped out `core-actors` for four strategies whose inventories were sparse). Separating the analytical pass (Writer) from the mechanical correctness pass (Validator + Reviser) lets each be optimized independently. The post-implementation smoke test produced zero ghost references in any strategy synthesis frontmatter and zero broken wikilinks in `digest.md` — the cleanest output of the entire session.
+
+---
+
 ## 2026-06-28 — Multi-provider LLM switching layer
 
 **What changed:**

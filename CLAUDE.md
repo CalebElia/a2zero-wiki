@@ -95,6 +95,8 @@ python -m pipeline.synthesize_wiki --wiki-root wiki --strategy strategies/strate
 python -m pipeline.synthesize_wiki --wiki-root wiki --digest-only                              # rebuild digest from existing synthesis: blocks
 ```
 
+The synthesizer runs each LLM output through a deterministic validator that checks every entity slug against the filesystem. Broken references trigger a scoped Reviser LLM call that either substitutes a real entity or drops the bad slug; dropped slugs are logged to `wiki/meta/synthesis-ghosts.log` for human review. Recurring entries in that log signal entities worth either creating as pages or adding to `SUPPRESS_SLUGS` in `pipeline/synthesis_validation.py`. See `docs/architecture/synthesis-validation-loop.md`.
+
 ## Pipeline Modules
 
 | File | Role |
@@ -108,6 +110,8 @@ python -m pipeline.synthesize_wiki --wiki-root wiki --digest-only               
 | `alias_registry.py` | Pass 1.5 alias resolution |
 | `merge_pages.py` | LLM merge for duplicate page bodies |
 | `lint_wiki.py` | Post-ingest linting (structural, semantic, backlink, apply) |
+| `synthesize_wiki.py` | Phase C synthesis: L1 strategy blocks + L2 digest |
+| `synthesis_validation.py` | Validate → Revise loop for synthesize_wiki outputs |
 | `enrich_strategy_links.py` | One-time pass to inject entity wikilinks into strategy bodies |
 | `raw_to_sources.py` | PDF → cleaned markdown (currently paused) |
 | `post_ingest.py` + `quad_linter.py` | Quad pipeline review-queue generation (paused pending schema design) |
