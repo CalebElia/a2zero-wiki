@@ -172,3 +172,33 @@ def test_validate_narrative_handles_bare_wikilinks(tmp_path):
     report = validate_narrative(narrative, str(root), aliases={})
     assert not report.is_clean
     assert report.broken[0].slug == "actors/missing"
+
+
+from pipeline.synthesis_validation import log_dropped_ghosts
+
+
+def test_log_dropped_ghosts_appends_entries(tmp_path):
+    log_path = tmp_path / "synthesis-ghosts.log"
+    log_dropped_ghosts(
+        log_path=str(log_path),
+        run_date="2026-06-29",
+        context_label="strategy-5-materials-waste",
+        ghosts=[
+            BrokenRef(slug="actors/foo", location="core-actors", display="Foo", context=""),
+            BrokenRef(slug="actors/bar", location="narrative", display="Bar", context="..."),
+        ],
+    )
+    content = log_path.read_text(encoding="utf-8")
+    assert "2026-06-29" in content
+    assert "strategy-5-materials-waste" in content
+    assert "actors/foo" in content
+    assert "actors/bar" in content
+
+
+def test_log_dropped_ghosts_is_noop_on_empty_list(tmp_path):
+    log_path = tmp_path / "synthesis-ghosts.log"
+    log_dropped_ghosts(
+        log_path=str(log_path), run_date="2026-06-29",
+        context_label="strategy-1", ghosts=[],
+    )
+    assert not log_path.exists()

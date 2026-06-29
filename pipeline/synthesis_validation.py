@@ -142,3 +142,27 @@ def validate_narrative(
             ))
 
     return ValidationReport(broken=broken)
+
+
+def log_dropped_ghosts(
+    log_path: str,
+    run_date: str,
+    context_label: str,
+    ghosts: list[BrokenRef],
+) -> None:
+    """Append dropped-ghost entries to the synthesis-ghosts log for human review.
+
+    Recurring entries in this log signal entities worth either creating as pages
+    or adding to SUPPRESS_SLUGS permanently.
+    """
+    if not ghosts:
+        return
+    p = Path(log_path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    lines = [f"\n## [{run_date} | {context_label}]"]
+    for g in ghosts:
+        lines.append(f"- {g.slug} (location={g.location}, display={g.display!r})")
+        if g.context:
+            lines.append(f"  context: …{g.context.strip()}…")
+    with p.open("a", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
