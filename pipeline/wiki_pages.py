@@ -1,4 +1,4 @@
-import anthropic
+from pipeline.llm import stream_chat
 import json
 import re
 import yaml
@@ -131,27 +131,19 @@ def extract_quads_from_source(
     source_uuid: str,
     out_path: str,
 ) -> list[dict]:
-    client = anthropic.Anthropic()
     # strip frontmatter before sending to LLM
     body = re.sub(r"^---\n.*?\n---\n", "", source_content, flags=re.DOTALL).strip()
 
-    with client.messages.stream(
-        model="claude-sonnet-4-6",
-        max_tokens=16384,
+    raw = stream_chat(
         system=QUADS_SYSTEM,
-        messages=[
-            {
-                "role": "user",
-                "content": build_quads_prompt(body, source_uuid),
-            }
-        ],
-    ) as stream:
-        response = stream.get_final_message()
-
-    if response.stop_reason == "max_tokens":
-        print(f"[quads] WARNING: response truncated for {source_uuid} — partial recovery will be attempted")
-
-    raw = response.content[0].text
+        messages=[{"role": "user", "content": build_quads_prompt(body, source_uuid)}],
+        max_tokens=16384,
+        model_hint="extraction",
+        temperature=0.0,
+    )
+    if raw is None:
+        print(f"[quads] WARNING: response truncated for {source_uuid}")
+        return []
     quads = parse_llm_quads_response(raw)
     append_quads(quads, out_path)
     return quads
