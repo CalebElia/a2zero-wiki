@@ -3320,5 +3320,58 @@
       "Ann Arbor City Council — 2022-03-21 (Sustainable Food Purchasing Policy Resolution)"
     ],
     "relationship": "name-variant"
+  },
+  "a2zero": {
+    "canonical": "actors/office-of-sustainability-and-innovations",
+    "type": "actor",
+    "aliases": [
+      "A2Zero",
+      "A2ZERO",
+      "A²ZERO"
+    ],
+    "relationship": "name-variant",
+    "notes": "A2Zero is the plan/brand name; the implementing body is OSI"
+  },
+  "a2zero-office": {
+    "canonical": "actors/office-of-sustainability-and-innovations",
+    "type": "actor",
+    "aliases": [
+      "A2Zero Office",
+      "A2ZERO Office",
+      "a2zero office"
+    ],
+    "relationship": "name-variant"
+  },
+  "community-ambassadors": {
+    "canonical": "initiatives/a2zero-ambassadors-program",
+    "type": "initiative",
+    "aliases": [
+      "Community Ambassadors",
+      "community ambassadors",
+      "A2Zero Community Ambassadors"
+    ],
+    "relationship": "name-variant"
+  },
+  "community-climate-ambassadors": {
+    "canonical": "initiatives/a2zero-ambassadors-program",
+    "type": "initiative",
+    "aliases": [
+      "Community Climate Ambassadors",
+      "Climate Ambassadors",
+      "community climate ambassadors"
+    ],
+    "relationship": "name-variant"
+  },
+  "local-landlords-property-owners": {
+    "canonical": "actors/washtenaw-area-apartment-association",
+    "type": "actor",
+    "aliases": [
+      "Local landlords and property owners",
+      "local landlords",
+      "property owners",
+      "local property owners"
+    ],
+    "relationship": "name-variant",
+    "notes": "Generic grouping — redirected to WAAA as closest organized body representing rental property owners in Washtenaw County"
   }
 }

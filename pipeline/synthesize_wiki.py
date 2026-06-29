@@ -8,6 +8,7 @@ import re
 import yaml
 from pathlib import Path
 from pipeline.llm import chat
+from pipeline.alias_registry import load_aliases
 
 
 _ENTITY_DIRS = [
@@ -220,6 +221,23 @@ def _slug_label(slug: str) -> str:
     return name.replace("-", " ").title()
 
 
+def _resolve_synthesis_slugs(synthesis: dict, aliases: dict) -> dict:
+    """Resolve alias slugs in LLM synthesis output through the entity alias registry.
+
+    The LLM may emit ghost slugs (e.g. actors/theride, actors/a2zero-office) that are
+    known aliases. Strip the type prefix to get the registry key, then substitute the
+    canonical path if one exists.
+    """
+    resolved = dict(synthesis)
+    for field in ("core-initiatives", "core-actors", "cross-strategy-links"):
+        items = resolved.get(field) or []
+        resolved[field] = [
+            aliases.get(slug.split("/")[-1], {}).get("canonical") or slug
+            for slug in items
+        ]
+    return resolved
+
+
 def assemble_digest(
     narrative: str,
     strategies_data: dict,
@@ -333,6 +351,7 @@ def synthesize_wiki(
     from datetime import date
     run_date = date.today().isoformat()
     targets = strategies or ALL_STRATEGIES
+    aliases = load_aliases(aliases_path)
 
     strategies_data: dict = {}
     rebuilt: list[str] = []
@@ -355,6 +374,7 @@ def synthesize_wiki(
                 strategy_title=title,
                 entities=entities,
             )
+            synthesis = _resolve_synthesis_slugs(synthesis, aliases)
             page = Path(wiki_root) / (strategy_slug + ".md")
             if page.exists():
                 write_strategy_synthesis(str(page), synthesis, run_date=run_date)
