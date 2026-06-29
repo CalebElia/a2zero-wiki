@@ -36,30 +36,12 @@ MOCK_QUADS = [
 
 
 @patch("pipeline.raw_to_sources.extract_pdf_text", return_value="Raw PDF text")
-@patch("anthropic.Anthropic")
+@patch("pipeline.wiki_pages.stream_chat", return_value=None)
+@patch("pipeline.raw_to_sources.chat", return_value=MOCK_SOURCE_BODY)
 def test_run_ingest_creates_source_file(
-    mock_anthropic_class, mock_extract, tmp_path
+    mock_chat, mock_stream_chat, mock_extract, tmp_path
 ):
-    import pipeline.raw_to_sources as rts
-    rts._DEFAULT_CLIENT = None
-
-    mock_source_client = MagicMock()
-    mock_source_client.messages.create.return_value = MagicMock(
-        content=[MagicMock(text=MOCK_SOURCE_BODY)]
-    )
-    # quad client uses messages.stream() context manager
-    mock_quad_response = MagicMock(
-        stop_reason="end_turn",
-        content=[MagicMock(text=json.dumps(MOCK_QUADS))],
-    )
-    mock_quad_stream = MagicMock()
-    mock_quad_stream.__enter__ = MagicMock(return_value=mock_quad_stream)
-    mock_quad_stream.__exit__ = MagicMock(return_value=False)
-    mock_quad_stream.get_final_message.return_value = mock_quad_response
-    mock_quad_client = MagicMock()
-    mock_quad_client.messages.stream.return_value = mock_quad_stream
-    # First Anthropic() call → source client (raw_to_sources); second → quad client (wiki_pages)
-    mock_anthropic_class.side_effect = [mock_source_client, mock_quad_client]
+    mock_stream_chat.return_value = json.dumps(MOCK_QUADS)
 
     source_dir = tmp_path / "sources" / "annual-reports"
     quads_file = tmp_path / "blackboard" / "quads.jsonl"

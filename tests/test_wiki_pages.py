@@ -129,8 +129,8 @@ def test_parse_llm_quads_response_raises_on_prose_prefix():
 
 
 @pytest.mark.skipif(
-    not os.getenv("ANTHROPIC_API_KEY"),
-    reason="requires ANTHROPIC_API_KEY",
+    not os.getenv("ANTHROPIC_API_KEY") or os.getenv("LLM_PROVIDER", "anthropic") != "anthropic",
+    reason="requires ANTHROPIC_API_KEY and LLM_PROVIDER=anthropic",
 )
 def test_integration_extract_quads_from_fixture(tmp_path):
     from pipeline.wiki_pages import extract_quads_from_source
