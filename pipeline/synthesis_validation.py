@@ -96,3 +96,49 @@ def validate_synthesis(
                 ))
 
     return corrected, ValidationReport(broken=broken)
+
+
+import re
+
+
+# Matches [[path/slug|Display]] or [[path/slug]] — captures slug and optional display
+_WIKILINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
+
+
+def validate_narrative(
+    narrative: str,
+    wiki_root: str,
+    aliases: dict,
+) -> ValidationReport:
+    """Parse wikilinks in narrative prose; report broken ones.
+
+    Does not modify the narrative — narratives are revised in-place by the Reviser.
+    """
+    broken: list[BrokenRef] = []
+    seen: set[str] = set()
+
+    for match in _WIKILINK_RE.finditer(narrative):
+        slug = match.group(1).strip()
+        display = (match.group(2) or slug.split("/")[-1]).strip()
+
+        # Skip non-entity wikilinks (e.g. sources/, strategies/)
+        type_prefix = slug.split("/")[0]
+        if type_prefix not in {"actors", "initiatives", "locations", "technology",
+                               "funding-events", "meetings", "political-events"}:
+            continue
+
+        resolved = _resolve_alias(slug, aliases)
+        if resolved in seen or resolved in SUPPRESS_SLUGS:
+            continue
+        seen.add(resolved)
+
+        if not _exists(resolved, wiki_root):
+            # Pull ±40 chars around the wikilink as context
+            start = max(0, match.start() - 40)
+            end = min(len(narrative), match.end() + 40)
+            broken.append(BrokenRef(
+                slug=resolved, location="narrative", display=display,
+                context=narrative[start:end],
+            ))
+
+    return ValidationReport(broken=broken)

@@ -128,3 +128,47 @@ def test_validate_synthesis_deduplicates(tmp_path):
     }
     corrected, _ = validate_synthesis(synthesis, str(root), aliases={})
     assert corrected["core-actors"] == ["actors/foo"]
+
+
+from pipeline.synthesis_validation import validate_narrative
+
+
+def test_validate_narrative_passes_clean_prose(tmp_path):
+    root = _make_wiki(tmp_path, actors=["foo"], initiatives=["bar"])
+    narrative = "The [[actors/foo|Foo Org]] led [[initiatives/bar|Bar Program]] this year."
+    report = validate_narrative(narrative, str(root), aliases={})
+    assert report.is_clean
+
+
+def test_validate_narrative_flags_broken_wikilinks(tmp_path):
+    root = _make_wiki(tmp_path, actors=["foo"])
+    narrative = "The [[actors/foo|Foo Org]] partnered with [[actors/ghost|Ghost Inc]]."
+    report = validate_narrative(narrative, str(root), aliases={})
+    assert not report.is_clean
+    assert len(report.broken) == 1
+    assert report.broken[0].slug == "actors/ghost"
+    assert report.broken[0].display == "Ghost Inc"
+    assert report.broken[0].location == "narrative"
+    assert "Ghost Inc" in report.broken[0].context
+
+
+def test_validate_narrative_resolves_aliases(tmp_path):
+    root = _make_wiki(tmp_path, actors=["office-of-sustainability-and-innovations"])
+    narrative = "[[actors/a2zero-office|A2Zero Office]] coordinated the program."
+    aliases = {
+        "a2zero-office": {
+            "canonical": "actors/office-of-sustainability-and-innovations",
+            "type": "actor", "aliases": [], "relationship": "name-variant",
+        }
+    }
+    report = validate_narrative(narrative, str(root), aliases=aliases)
+    assert report.is_clean
+
+
+def test_validate_narrative_handles_bare_wikilinks(tmp_path):
+    """[[slug]] without pipe-display should still validate."""
+    root = _make_wiki(tmp_path, actors=["foo"])
+    narrative = "Background on [[actors/foo]] and [[actors/missing]]."
+    report = validate_narrative(narrative, str(root), aliases={})
+    assert not report.is_clean
+    assert report.broken[0].slug == "actors/missing"
