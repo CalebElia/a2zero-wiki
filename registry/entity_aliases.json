@@ -3373,5 +3373,25 @@
     ],
     "relationship": "name-variant",
     "notes": "Generic grouping — redirected to WAAA as closest organized body representing rental property owners in Washtenaw County"
+  },
+  "a2zero-program-office": {
+    "canonical": "actors/office-of-sustainability-and-innovations",
+    "type": "actor",
+    "aliases": [
+      "A2Zero Program Office",
+      "A2ZERO Program Office",
+      "a2zero program office"
+    ],
+    "relationship": "name-variant"
+  },
+  "local-businesses-green-business-challenge": {
+    "canonical": "initiatives/green-business-challenge",
+    "type": "initiative",
+    "aliases": [
+      "Local Businesses Green Business Challenge",
+      "local businesses (Green Business Challenge)",
+      "Green Business Challenge participants"
+    ],
+    "relationship": "name-variant"
   }
 }

@@ -221,20 +221,44 @@ def _slug_label(slug: str) -> str:
     return name.replace("-", " ").title()
 
 
+_SUPPRESS_SLUGS: frozenset[str] = frozenset({
+    "actors/systems-planning-unit",  # not a real entity
+})
+
+
 def _resolve_synthesis_slugs(synthesis: dict, aliases: dict) -> dict:
     """Resolve alias slugs in LLM synthesis output through the entity alias registry.
 
-    The LLM may emit ghost slugs (e.g. actors/theride, actors/a2zero-office) that are
-    known aliases. Strip the type prefix to get the registry key, then substitute the
-    canonical path if one exists.
+    - Substitutes known aliases with their canonical paths.
+    - Suppresses ghost slugs with no real entity.
+    - Moves any initiatives/ slug that landed in core-actors into core-initiatives.
+    - Deduplicates all three lists.
     """
     resolved = dict(synthesis)
+
+    def _resolve_list(items: list[str]) -> list[str]:
+        seen: set[str] = set()
+        out: list[str] = []
+        for slug in items:
+            canonical = aliases.get(slug.split("/")[-1], {}).get("canonical") or slug
+            if canonical in _SUPPRESS_SLUGS or canonical in seen:
+                continue
+            seen.add(canonical)
+            out.append(canonical)
+        return out
+
     for field in ("core-initiatives", "core-actors", "cross-strategy-links"):
-        items = resolved.get(field) or []
-        resolved[field] = [
-            aliases.get(slug.split("/")[-1], {}).get("canonical") or slug
-            for slug in items
+        resolved[field] = _resolve_list(resolved.get(field) or [])
+
+    # Move any initiatives/ slug that the LLM misclassified into core-actors
+    misplaced = [s for s in resolved.get("core-actors", []) if s.startswith("initiatives/")]
+    if misplaced:
+        resolved["core-actors"] = [s for s in resolved["core-actors"] if s not in misplaced]
+        existing = set(resolved.get("core-initiatives", []))
+        resolved["core-initiatives"] = resolved.get("core-initiatives", []) + [
+            s for s in misplaced if s not in existing
         ]
+
     return resolved
 
 
