@@ -166,3 +166,78 @@ def log_dropped_ghosts(
             lines.append(f"  context: …{g.context.strip()}…")
     with p.open("a", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
+
+
+import json
+from pipeline.llm import chat
+
+
+_REVISE_SYNTHESIS_SYSTEM = """You are correcting wikilinks in a structured synthesis \
+JSON document.
+
+You will receive:
+1. The original synthesis (JSON)
+2. A list of broken references — slugs that don't exist as wiki pages
+3. The inventory of entities that DO exist for this strategy
+
+For each broken reference, choose ONE action:
+- SUBSTITUTE with a slug from the inventory, ONLY if there is a clear match \
+(same entity, different name)
+- DROP the slug entirely from its list
+
+Do not invent new slugs. Do not add new content. Do not modify the year-over-year-arc \
+or open-questions fields. Only touch the slug lists (core-initiatives, core-actors, \
+cross-strategy-links).
+
+Return ONLY the corrected JSON object — no preamble, no code fences.
+"""
+
+
+def _strip_code_fence(text: str) -> str:
+    t = text.strip()
+    if t.startswith("```"):
+        lines = t.split("\n")
+        t = "\n".join(lines[1:-1]) if len(lines) > 2 else t
+    return t.strip()
+
+
+def revise_synthesis(
+    synthesis: dict,
+    report: ValidationReport,
+    inventory: list[dict],
+) -> dict:
+    """LLM call: correct broken slugs in a structured synthesis dict.
+
+    Falls back to the original synthesis if the LLM call fails — a synthesis with
+    ghosts is more useful than no synthesis.
+    """
+    if report.is_clean:
+        return synthesis
+
+    broken_lines = "\n".join(
+        f"- {b.slug} (in {b.location}, displayed as '{b.display}')"
+        for b in report.broken
+    )
+    inventory_lines = "\n".join(
+        f"- {e['slug']} — {e['title']}: {e.get('one-liner','')}"
+        for e in inventory
+    )
+    user_msg = (
+        f"Original synthesis:\n```json\n{json.dumps(synthesis, indent=2)}\n```\n\n"
+        f"Broken references:\n{broken_lines}\n\n"
+        f"Available entity inventory:\n{inventory_lines}\n\n"
+        "Return the corrected JSON."
+    )
+
+    try:
+        raw = chat(
+            system=_REVISE_SYNTHESIS_SYSTEM,
+            messages=[{"role": "user", "content": user_msg}],
+            max_tokens=2048,
+            model_hint="revision",
+            temperature=0.0,
+        )
+        return json.loads(_strip_code_fence(raw))
+    except Exception as e:
+        print(f"[synthesis_validation] revise_synthesis failed; returning original: {e}")
+        return synthesis

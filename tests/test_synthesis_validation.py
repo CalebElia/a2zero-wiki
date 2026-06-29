@@ -202,3 +202,44 @@ def test_log_dropped_ghosts_is_noop_on_empty_list(tmp_path):
         context_label="strategy-1", ghosts=[],
     )
     assert not log_path.exists()
+
+
+import json
+from unittest.mock import patch
+from pipeline.synthesis_validation import revise_synthesis
+
+
+def test_revise_synthesis_calls_llm_and_returns_corrected_dict():
+    synthesis = {
+        "core-initiatives": [],
+        "core-actors": ["actors/foo", "actors/ghost"],
+        "cross-strategy-links": [],
+    }
+    report = ValidationReport(broken=[
+        BrokenRef(slug="actors/ghost", location="core-actors", display="Ghost", context="")
+    ])
+    inventory = [
+        {"slug": "actors/foo", "title": "Foo Org", "type": "actor", "one-liner": ""},
+    ]
+    corrected_json = json.dumps({
+        "core-initiatives": [],
+        "core-actors": ["actors/foo"],
+        "cross-strategy-links": [],
+    })
+    with patch("pipeline.synthesis_validation.chat") as mock_chat:
+        mock_chat.return_value = corrected_json
+        result = revise_synthesis(synthesis, report, inventory)
+    assert "actors/ghost" not in result["core-actors"]
+    assert result["core-actors"] == ["actors/foo"]
+
+
+def test_revise_synthesis_returns_original_on_llm_failure():
+    synthesis = {"core-initiatives": [], "core-actors": ["actors/foo"], "cross-strategy-links": []}
+    report = ValidationReport(broken=[
+        BrokenRef(slug="actors/foo", location="core-actors", display="Foo", context="")
+    ])
+    with patch("pipeline.synthesis_validation.chat") as mock_chat:
+        mock_chat.side_effect = Exception("api error")
+        result = revise_synthesis(synthesis, report, inventory=[])
+    # Falls back to original synthesis (with the ghost still in it) rather than crashing
+    assert result == synthesis
