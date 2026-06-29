@@ -56,16 +56,10 @@ def test_write_source_frontmatter_is_valid_yaml(tmp_path):
     assert parsed["uuid"] == "test-doc"
 
 
-@patch("pipeline.raw_to_sources.anthropic.Anthropic")
-def test_clean_with_llm_calls_anthropic(mock_anthropic_class):
-    mock_client = MagicMock()
-    mock_anthropic_class.return_value = mock_client
-    mock_client.messages.create.return_value = MagicMock(
-        content=[MagicMock(text="## Cleaned content")]
-    )
-    import pipeline.raw_to_sources as rts
+@patch("pipeline.raw_to_sources.chat")
+def test_clean_with_llm_calls_chat(mock_chat):
+    mock_chat.return_value = "## Cleaned content"
     from pipeline.raw_to_sources import clean_with_llm
-    rts._DEFAULT_CLIENT = None  # reset singleton so mock is picked up
     result = clean_with_llm("Raw extracted text", uuid="test-year1")
-    assert mock_client.messages.create.called
+    assert mock_chat.called
     assert "Cleaned content" in result

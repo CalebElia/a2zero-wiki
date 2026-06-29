@@ -10,9 +10,9 @@ Usage:
 import re
 import json
 import argparse
-import anthropic
 from datetime import date
 from pathlib import Path
+from pipeline.llm import chat
 
 # Pages exempt from orphan and empty-page checks — hub pages, auto-generated, or top-level containers
 ORPHAN_EXEMPT_NAMES = frozenset({"index.md", "log.md", "hot.md"})
@@ -269,7 +269,6 @@ def _llm_filter_candidates(
     page_rel: str,
     body: str,
     candidates: list[dict],
-    client: anthropic.Anthropic,
 ) -> list[dict]:
     """Stage 2: ask the LLM which string-matched candidates are genuine entity references."""
     catalogue_lines = "\n".join(
@@ -280,14 +279,14 @@ def _llm_filter_candidates(
     # sending large bodies causes empty responses on long strategy/overview pages.
     user_msg = f"PAGE: {page_rel}\n\nCANDIDATES:\n{catalogue_lines}"
     try:
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=1024,
-            temperature=0,
+        raw = chat(
             system=BACKLINK_FILTER_SYSTEM,
             messages=[{"role": "user", "content": user_msg}],
+            max_tokens=1024,
+            model_hint="extraction",
+            temperature=0.0,
         )
-        raw = response.content[0].text.strip()
+        raw = raw.strip()
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw)
         if not raw:
@@ -311,7 +310,6 @@ def backlink_lint(wiki_root: str, scope: list[str] | None = None) -> list[dict]:
     root = Path(wiki_root)
     catalogue = _build_entity_catalogue(root)
     scan_dirs = scope or _BACKLINK_DEFAULT_SCOPE
-    client = anthropic.Anthropic()
     proposals = []
 
     for type_dir in scan_dirs:
@@ -330,7 +328,7 @@ def backlink_lint(wiki_root: str, scope: list[str] | None = None) -> list[dict]:
 
             page_rel = str(page.relative_to(root))
             print(f"[lint_wiki:backlink] {page_rel}: {len(candidates)} candidates → LLM filter…")
-            confirmed = _llm_filter_candidates(page_rel, body, candidates, client)
+            confirmed = _llm_filter_candidates(page_rel, body, candidates)
 
             for c in confirmed:
                 proposals.append({
@@ -450,7 +448,6 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
 
     root = Path(wiki_root)
     proposals = []
-    client = anthropic.Anthropic()
 
     # Collect misrouted pages from topics/ that have a non-topic type frontmatter.
     # These are pooled into the comparison group for their declared type so they
@@ -507,14 +504,14 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
                     f"Entry B: {title_b}\n{excerpt_b}"
                 )
                 try:
-                    response = client.messages.create(
-                        model="claude-sonnet-4-6",
-                        max_tokens=256,
-                        temperature=0,
+                    raw = chat(
                         system=SEMANTIC_VERDICT_SYSTEM,
                         messages=[{"role": "user", "content": prompt}],
+                        max_tokens=256,
+                        model_hint="extraction",
+                        temperature=0.0,
                     )
-                    raw = response.content[0].text.strip()
+                    raw = raw.strip()
                     raw = re.sub(r"^```(?:json)?\s*", "", raw)
                     raw = re.sub(r"\s*```$", "", raw)
                     if not raw:
