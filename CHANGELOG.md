@@ -5,6 +5,21 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 
 ---
 
+## 2026-06-28 — Multi-provider LLM switching layer
+
+**What changed:**
+- **`pipeline/llm.py`** — new provider-agnostic adapter. `chat()` (non-streaming) and `stream_chat()` (streaming, returns `None` on max_tokens truncation) read `LLM_PROVIDER` (default `"anthropic"`) and `LLM_MODEL_OVERRIDE` from the environment. Strips Anthropic-specific `cache_control` keys from message content before sending to OpenAI — OpenAI caches automatically and rejects explicit annotations.
+- **All 7 pipeline modules** migrated off direct Anthropic SDK calls: `holistic_synthesizer`, `wiki_pages`, `wiki_writer`, `lint_wiki`, `merge_pages`, `raw_to_sources`, `ldp`, `synthesize_wiki`.
+- **15 new tests** in `tests/test_llm.py` covering both providers, model selection, `LLM_MODEL_OVERRIDE` env var, `_strip_cache_control` behavioral tests, and Anthropic/OpenAI streaming.
+- **All existing test mocks simplified** — `patch("pipeline.X.anthropic.Anthropic")` chains → `patch("pipeline.X.chat")` or `patch("pipeline.X.stream_chat")` returning plain strings.
+- **`requirements.txt`** — added `openai>=1.0.0`.
+- **`.env.example`** — documents `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `LLM_PROVIDER`, `LLM_MODEL_OVERRIDE`.
+- **`CLAUDE.md`** — new Environment Variables section.
+
+**Why:** Two-provider A/B capability — GPT-5.4 ($2.50/M input, 1.05M context, 128k output) vs Claude Sonnet 4.6. Setting `LLM_PROVIDER=openai` switches the entire pipeline with no code changes. `cache_control` is stripped because OpenAI rejects explicit cache annotations (OpenAI caches automatically based on common prefixes).
+
+---
+
 ## 2026-06-28 — Phase C: synthesize_wiki command (L1 + L2)
 
 **What changed:**
