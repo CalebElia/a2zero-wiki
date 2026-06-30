@@ -64,6 +64,21 @@ python -m pipeline.orchestrator source \
 Optional flags on the `source` subcommand:
 - `--wiki-only` — Pass 1 + Pass 2 wiki extraction only; skip quad extraction and review-queue
 - `--quads-only` — Pass 2 quad extraction only; skip Pass 1 and wiki writes
+- `--auto-approve` — Bypass the chunking gate (see below); generate section map mechanically
+
+### Chunking gate (HITL — required for LDP-routed sources)
+
+Long documents that route to LDP (Pass 2 chunked extraction) require a human-reviewed section map. Three-step workflow:
+
+```
+python -m pipeline.orchestrator preflight --source prepared/<type>/<uuid>.md --uuid <uuid>
+# Review blackboard/section_maps/<uuid>_preview.md
+# Optionally edit blackboard/section_maps/<uuid>_proposed.json directly
+python -m pipeline.orchestrator approve --uuid <uuid>
+python -m pipeline.orchestrator source --source ... --uuid <uuid> ...
+```
+
+If `source` runs without an approved map and `--auto-approve` is not passed, it refuses with a clear error. Small documents (those that don't trigger LDP) bypass the gate entirely. See `docs/architecture/chunking-gate.md`.
 
 **Pass 0 (copy + YAML inject):** Source file copied from `prepared/<type>/<uuid>.md` → `wiki/sources/<type>/<uuid>.md`. If the prepared file has no YAML frontmatter, one is injected (`uuid`, `source_type` inferred from directory, `title`, `ingest_date`).
 
@@ -105,6 +120,7 @@ The synthesizer runs each LLM output through a deterministic validator that chec
 |---|---|
 | `orchestrator.py` | CLI entry point + three-pass orchestration |
 | `pass1a_comprehend.py` | Pass 1A Comprehend: read digest + source → integration plan |
+| `pass2a_pre_chunking.py` | HITL chunking gate: preflight + approve subcommands |
 | `pass1b_synthesize.py` | Pass 1B Writer→Evaluator→Editor loop |
 | `pass2a_chunk_loop.py` | Long-document chunk loop with section maps |
 | `pass2b_extract.py` | Pass 2 chunk extraction (calls chunk loop for long docs) |

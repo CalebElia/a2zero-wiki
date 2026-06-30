@@ -5,6 +5,22 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 
 ---
 
+## 2026-06-30 — Chunking gate (HITL review before LDP)
+
+**What changed:**
+- **`pipeline/pass2a_pre_chunking.py`** — new module implementing the chunking gate: `generate_proposed_map`, `approve_proposed_map`, `load_approved_map`, `render_preview_markdown`, `validate_section_map`. No LLM calls; pure mechanical orchestration.
+- **`pipeline/orchestrator.py`** — added `preflight` and `approve` subcommands; modified `source` subcommand to require an approved section map (with `--auto-approve` escape hatch for trusted batch ingests).
+- **`pipeline/pass2a_chunk_loop.py`** — `parse_section_map` now produces v1.1 section maps with per-section `is_chunk` and `notes` fields. `get_chunks` honors `is_chunk` when present, falls back to depth-1-or-2 rule for legacy v1.0 maps. `run_ldp_ingest` loads from `<uuid>_approved.json` instead of generating mechanically; raises clear error when no approved map exists.
+- **Workflow change:** Every new LDP-routed ingest now requires `preflight` → human review → `approve` → `source`. Small documents (those that don't trigger LDP) bypass the gate.
+- **Backward compat:** Existing `<uuid>_structure.json` files from CAP/Year1/Year2 ingests are untouched. The new `<uuid>_proposed.json` / `<uuid>_approved.json` filenames don't collide.
+- **18 new tests** (16 in `tests/test_pass2a_pre_chunking.py` covering preflight/approve/validation/load + 2 orchestrator gate tests + 5 chunk_loop integration tests across `test_ldp.py` for the new is_chunk and auto_approve behavior). Total suite: 228 passed, 1 skipped.
+
+**Why:** Mechanical chunking via markdown headings works for clean sources like A2Zero annual reports, but will fail on council transcripts, news articles, OCR'd PDFs, and other heading-poor formats. Bad chunks have outsized downstream cost — split entities fragment, fused topics dilute extraction. The HITL gate is cheap (one click-through per ingest) and forces human review of chunk quality before extraction commits any LLM tokens. Year 3 is the shakedown on a clean source.
+
+**Spec:** `docs/architecture/chunking-gate.md`. **Plan:** `docs/superpowers/plans/2026-06-30-chunking-gate.md`. **Branch:** `feat/chunking-gate` (draft PR).
+
+---
+
 ## 2026-06-29 — Comprehend → Plan → Write architecture
 
 **What changed:**
