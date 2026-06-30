@@ -171,3 +171,67 @@ def test_validate_plan_slugs_resolves_aliases(tmp_path):
     cleaned = validate_plan_slugs(plan, wiki_root=str(wiki), aliases=aliases)
     assert cleaned["extends"][0]["slug"] == "actors/office-of-sustainability-and-innovations"
     assert cleaned["retrieve-for-context"] == ["actors/office-of-sustainability-and-innovations"]
+
+
+from pipeline.comprehend import load_retrieved_bodies, RETRIEVE_TOKEN_BUDGET
+
+
+def test_load_retrieved_bodies_returns_under_budget(tmp_path):
+    """Small wiki, all pages fit → all returned."""
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    for slug_stem in ["a", "b", "c"]:
+        (wiki / "initiatives" / f"{slug_stem}.md").write_text(
+            f"---\ntype: initiative\n---\nShort body {slug_stem}\n", encoding="utf-8"
+        )
+    plan = {
+        "extends": [],
+        "retrieve-for-context": ["initiatives/a", "initiatives/b", "initiatives/c"],
+        "theme-connections": [],
+    }
+    bodies = load_retrieved_bodies(plan, str(wiki))
+    assert set(bodies.keys()) == {"initiatives/a", "initiatives/b", "initiatives/c"}
+    for slug, body in bodies.items():
+        assert "Short body" in body
+
+
+def test_load_retrieved_bodies_prioritizes_extends_when_over_budget(tmp_path, monkeypatch):
+    """When over budget: extends entries kept first, others dropped."""
+    # Shrink budget for the test
+    monkeypatch.setattr("pipeline.comprehend.RETRIEVE_TOKEN_BUDGET", 200)
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    # Create pages where each body is roughly ~100 tokens (400+ chars)
+    big_body = "word " * 200  # ~200 tokens
+    for stem in ["in-extends", "not-in-extends-1", "not-in-extends-2"]:
+        (wiki / "initiatives" / f"{stem}.md").write_text(
+            f"---\ntype: initiative\n---\n{big_body}\n", encoding="utf-8"
+        )
+    plan = {
+        "extends": [{"slug": "initiatives/in-extends", "new-data": "x"}],
+        "retrieve-for-context": [
+            "initiatives/not-in-extends-1",
+            "initiatives/in-extends",
+            "initiatives/not-in-extends-2",
+        ],
+        "theme-connections": [],
+    }
+    bodies = load_retrieved_bodies(plan, str(wiki))
+    # Extends entry is included; one or both of the others gets dropped
+    assert "initiatives/in-extends" in bodies
+    total_chars = sum(len(b) for b in bodies.values())
+    assert total_chars < 200 * 5  # under budget (4 chars/token heuristic)
+
+
+def test_load_retrieved_bodies_skips_missing_files(tmp_path):
+    """Ghost slugs in retrieve-for-context are silently dropped."""
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    (wiki / "initiatives" / "real.md").write_text("---\ntype: initiative\n---\nbody\n", encoding="utf-8")
+    plan = {
+        "extends": [],
+        "retrieve-for-context": ["initiatives/real", "initiatives/ghost"],
+        "theme-connections": [],
+    }
+    bodies = load_retrieved_bodies(plan, str(wiki))
+    assert set(bodies.keys()) == {"initiatives/real"}

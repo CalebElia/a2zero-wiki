@@ -178,3 +178,50 @@ def validate_plan_slugs(plan: dict, wiki_root: str, aliases: dict) -> dict:
     cleaned["retrieve-for-context"] = cleaned_retrieve
 
     return cleaned
+
+
+RETRIEVE_TOKEN_BUDGET = 30000  # ~4 chars/token heuristic → ~120k chars
+_CHARS_PER_TOKEN = 4
+
+
+def load_retrieved_bodies(plan: dict, wiki_root: str) -> dict[str, str]:
+    """Load entity page bodies for slugs in `retrieve-for-context`, prioritized
+    by `extends` then plan-mention frequency, capped at RETRIEVE_TOKEN_BUDGET.
+
+    Returns dict mapping slug → body text. Pages whose load would exceed budget
+    are silently dropped (long-tail entities fall back to existing _merge_pages).
+    """
+    extends_slugs = {e.get("slug", "") for e in plan.get("extends") or []}
+    retrieve_slugs = plan.get("retrieve-for-context") or []
+
+    # Mention frequency across plan fields (used as secondary priority)
+    text_blob = json.dumps(plan)
+    def _mention_count(slug: str) -> int:
+        return text_blob.count(slug)
+
+    # Sort: extends-first, then by mention frequency (desc), then by slug for stability
+    ordered = sorted(
+        retrieve_slugs,
+        key=lambda s: (s not in extends_slugs, -_mention_count(s), s),
+    )
+
+    bodies: dict[str, str] = {}
+    char_budget = RETRIEVE_TOKEN_BUDGET * _CHARS_PER_TOKEN
+    used = 0
+    for slug in ordered:
+        page_path = Path(wiki_root) / f"{slug}.md"
+        if not page_path.exists():
+            continue
+        try:
+            raw = page_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            continue
+        # Strip frontmatter; keep body only
+        body = re.sub(r"^---\n.*?\n---\n", "", raw, flags=re.DOTALL).strip()
+        body_len = len(body)
+        is_extends = slug in extends_slugs
+        if used + body_len > char_budget and not is_extends:
+            continue  # drop overflow silently (extends always included)
+        bodies[slug] = body
+        used += body_len
+    return bodies
