@@ -281,3 +281,42 @@ def test_run_source_ingest_uses_single_pass_without_ldp_flag(tmp_path):
         mock_extract.assert_called_once()
         mock_rebuild.assert_called_once()
         mock_log.assert_called_once()
+
+
+def test_get_chunks_honors_is_chunk_field_when_present():
+    from pipeline.pass2a_chunk_loop import get_chunks
+    section_map = {
+        "document_uuid": "t", "total_lines": 100, "ldp_version": "1.1",
+        "sections": [
+            {"id": "a", "title": "A", "depth": 1, "line_start": 1, "line_end": 50,
+             "is_chunk": False},  # explicit: don't extract
+            {"id": "b", "title": "B", "depth": 2, "line_start": 51, "line_end": 75,
+             "is_chunk": True},
+            {"id": "c", "title": "C", "depth": 3, "line_start": 76, "line_end": 100,
+             "is_chunk": True},  # explicit: extract even though depth 3
+        ],
+    }
+    chunks = get_chunks(section_map)
+    titles = [c["title"] for c in chunks]
+    assert "A" not in titles
+    assert "B" in titles
+    assert "C" in titles  # depth-3 promoted to chunk
+
+
+def test_get_chunks_falls_back_to_depth_rule_when_is_chunk_missing():
+    """Legacy section maps without is_chunk should still work — defaults to depth 1-2."""
+    from pipeline.pass2a_chunk_loop import get_chunks
+    legacy_section_map = {
+        "document_uuid": "t", "total_lines": 100, "ldp_version": "1.0",
+        "sections": [
+            {"id": "a", "title": "A", "depth": 1, "line_start": 1, "line_end": 50},
+            {"id": "b", "title": "B", "depth": 2, "line_start": 51, "line_end": 75},
+            {"id": "c", "title": "C", "depth": 3, "line_start": 76, "line_end": 100},
+        ],
+    }
+    chunks = get_chunks(legacy_section_map)
+    titles = [c["title"] for c in chunks]
+    # depth 1 and 2 included, depth 3 excluded — same as today
+    assert "A" in titles
+    assert "B" in titles
+    assert "C" not in titles

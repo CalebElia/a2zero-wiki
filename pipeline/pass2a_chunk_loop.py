@@ -134,39 +134,45 @@ def save_section_map(section_map: dict, maps_dir: str) -> str:
 
 
 def get_chunks(section_map: dict) -> list[dict]:
-    """Return chunks for LLM extraction at depth 1 and depth 2.
+    """Return chunks for LLM extraction.
 
-    Depth-2 sections are included as-is (they contain the action-level detail).
-    Depth-1 sections are clipped to end just before their first depth-2 child,
-    so the LLM only sees the intro prose for that section — not a re-send of all
-    descendant content that the depth-2 chunks already cover. If clipping leaves
-    no content (heading immediately followed by a child), the depth-1 chunk is
-    dropped entirely.
+    Honors the per-section `is_chunk` field when present (v1.1+ section maps).
+    Falls back to "depth 1 and depth 2 become chunks" for legacy v1.0 maps
+    that don't carry the is_chunk field.
+
+    Depth-1 sections that become chunks are clipped to end just before their
+    first depth-2 child to avoid double-extraction with their child chunks.
     """
     all_sections = section_map["sections"]
-    chunks = []
 
+    def _is_chunk(s: dict) -> bool:
+        if "is_chunk" in s:
+            return bool(s["is_chunk"])
+        return s["depth"] in (1, 2)  # legacy fallback
+
+    chunks = []
     for s in all_sections:
-        if s["depth"] == 2:
-            chunks.append(s)
-        elif s["depth"] == 1:
-            # Find the first depth-2 child that falls inside this section.
+        if not _is_chunk(s):
+            continue
+
+        if s["depth"] == 1:
+            # Clip depth-1 chunks to end just before their first depth-2 child chunk
             first_child = next(
                 (c for c in all_sections
                  if c["depth"] == 2
+                 and _is_chunk(c)
                  and s["line_start"] < c["line_start"] <= s["line_end"]),
                 None,
             )
             if first_child is None:
-                # No depth-2 children — use the full range unchanged.
                 chunks.append(s)
             else:
                 clipped_end = first_child["line_start"] - 1
                 if clipped_end > s["line_start"]:
-                    # There is at least one line of prose between the heading
-                    # and the first child — worth sending to the LLM.
                     chunks.append({**s, "line_end": clipped_end})
-                # else: heading is immediately followed by a child; skip.
+                # else: skip — heading is immediately followed by a child
+        else:
+            chunks.append(s)
 
     chunks.sort(key=lambda c: c["line_start"])
     return chunks
