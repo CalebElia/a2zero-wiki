@@ -5,6 +5,22 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 
 ---
 
+## 2026-06-29 — Comprehend → Plan → Write architecture
+
+**What changed:**
+- **`pipeline/comprehend.py`** — new module implementing Pass 1A: reads `wiki/digest.md` plus the source, calls an LLM to produce a structured integration plan, validates the plan's slugs via the existing `synthesis_validation` machinery, persists to `wiki/integration-plans/<source-uuid>.json`, and pre-loads entity page bodies for `retrieve-for-context` (capped at 30k tokens, prioritized by `extends` + mention frequency).
+- **`pipeline/holistic_synthesizer.py`** — `synthesize_source()` now accepts `integration_plan` and `digest_content` kwargs. Replaces the legacy `integration_block` (raw strategy bodies) with a plan + digest injection block. Legacy fallback preserved for callers that don't pass the new kwargs.
+- **`pipeline/ldp.py`** — `extract_quads_chunked()` and `run_ldp_ingest()` accept `integration_plan` + `retrieved_bodies` kwargs and prepend them as a cached prefix to each chunk's context. Plan is a prior, not a constraint — LDP still creates pages for entities outside the plan as before.
+- **`pipeline/run_ingest.py`** — orchestrates Comprehend before Pass 1. Hard-fails the ingest when `digest.md` exists but the Comprehend LLM call errors (don't waste downstream tokens). Graceful fallback (no LLM call, empty plan) when no digest exists (first-ingest path). Per-ingest telemetry appended to `wiki/meta/ingest-stats.jsonl`.
+- **`wiki/integration-plans/`** — new directory for integration plan artifacts, committed for audit trail. Each `<source-uuid>.json` records how that ingest mapped the source onto existing wiki state.
+- **`wiki/meta/ingest-stats.jsonl`** — per-ingest telemetry (Comprehend skipped flag, plan size, extends/new-entities/retrieve counts, retrieved-chars total).
+- **18 new tests** in `tests/test_comprehend.py` (13) + integration tests added to `tests/test_holistic_synthesizer.py`, `tests/test_ldp.py`, `tests/test_run_ingest.py` (5 collectively). Total suite: 205 passed, 1 skipped.
+- **Spec:** `docs/architecture/comprehend-plan-write.md`. **Plan:** `docs/superpowers/plans/2026-06-29-comprehend-plan-write.md`. **Branch:** `feat/digest-injection` (draft PR opened for review).
+
+**Why:** Year 1 and Year 2 ingests both produced visible entity fragmentation because the LLM responsible for the integration decision never saw what the wiki already knew. We compensated downstream with alias resolution and lint cycles, but the *fundamental* problem was upstream: the holistic synthesizer conflated reading with writing, treating each source as if it were the only one. The Comprehend split makes the integration decision an explicit, structured artifact (the plan), and the plan flows downstream to inform both the Writer pass and the LDP chunk extraction. Per-ingest cost stops growing with wiki size — the digest is constant-size regardless of how many entities exist.
+
+---
+
 ## 2026-06-29 — Synthesis validation loop
 
 **What changed:**
