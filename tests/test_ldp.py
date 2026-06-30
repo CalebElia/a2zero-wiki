@@ -185,6 +185,39 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_chat, mock_wiki_writer_e
     assert isinstance(pages_written, int)
 
 
+@patch("pipeline.wiki_writer.extract_wiki_pages_from_chunk")
+@patch("pipeline.ldp.chat")
+def test_extract_quads_chunked_passes_plan_context_to_writer(mock_chat, mock_wiki_writer_extract, tmp_path):
+    """When integration_plan + retrieved_bodies are supplied, they appear in the chunk's context_header."""
+    section_map = {
+        "uuid": "test", "sections": [
+            {"id": "strategy-1", "depth": 1, "title": "Strategy 1", "line_start": 1, "line_end": 5, "section_num": "1"}
+        ]
+    }
+    source = "# Strategy 1\nSome chunk content.\n"
+    mock_chat.return_value = "[]"
+    mock_wiki_writer_extract.return_value = []
+
+    plan = {"strategies-touched": ["strategies/strategy-1-x"], "extends": [{"slug": "initiatives/x", "new-data": "y"}], "new-entities": [], "retrieve-for-context": ["initiatives/x"], "theme-connections": []}
+    bodies = {"initiatives/x": "Existing body text for X"}
+
+    from pipeline.ldp import extract_quads_chunked
+    extract_quads_chunked(
+        source_content=source,
+        section_map=section_map,
+        source_uuid="test", document_title="T",
+        wiki_root=str(tmp_path),
+        run_date="2026-06-29",
+        integration_plan=plan,
+        retrieved_bodies=bodies,
+    )
+    # The wiki_writer call should have received a context_header containing the plan + body
+    assert mock_wiki_writer_extract.called
+    context_header = mock_wiki_writer_extract.call_args.kwargs["context_header"]
+    assert "INTEGRATION PLAN" in context_header
+    assert "Existing body text for X" in context_header
+
+
 def test_run_source_ingest_routes_to_ldp_when_flagged(tmp_path):
     from unittest.mock import patch, MagicMock
     source_file = tmp_path / "cap-2020.md"

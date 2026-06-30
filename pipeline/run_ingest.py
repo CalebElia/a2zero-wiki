@@ -241,7 +241,8 @@ def run_source_ingest(
             wiki_only=wiki_only,
             quads_only=quads_only,
             entity_context=entity_context,
-            # integration_plan and retrieved_bodies passed in Task 9
+            integration_plan=integration_plan,
+            retrieved_bodies=retrieved_bodies,
         )
     else:
         if not wiki_only:
@@ -253,11 +254,22 @@ def run_source_ingest(
         if not quads_only:
             from pipeline.wiki_writer import extract_wiki_pages_from_chunk
             body = re.sub(r"^---\n.*?\n---\n", "", source_content, flags=re.DOTALL).strip()
+            _plan_ctx = ""
+            if integration_plan or retrieved_bodies:
+                _lines = []
+                if integration_plan:
+                    _lines.append("[INTEGRATION PLAN]\n" + json.dumps(integration_plan, indent=2) + "\n[END INTEGRATION PLAN]")
+                if retrieved_bodies:
+                    _lines.append("[RETRIEVED ENTITY PAGES]")
+                    for _s, _b in retrieved_bodies.items():
+                        _lines.append(f"--- {_s} ---\n{_b}")
+                    _lines.append("[END RETRIEVED ENTITY PAGES]")
+                _plan_ctx = "\n".join(_lines) + "\n"
             extract_wiki_pages_from_chunk(
                 chunk_text=body,
                 source_uuid=uuid,
                 source_rel_path=source_rel_path,
-                context_header=entity_context,
+                context_header=_plan_ctx + entity_context,
                 source_type=source_type,
                 wiki_root=wiki_root,
                 run_date=run_date,

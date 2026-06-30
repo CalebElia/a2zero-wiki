@@ -219,11 +219,15 @@ def extract_quads_chunked(
     wiki_only: bool = False,
     quads_only: bool = False,
     entity_context: str = "",
+    integration_plan: dict | None = None,
+    retrieved_bodies: dict[str, str] | None = None,
 ) -> tuple[list[dict], int]:
     """Extract quads and/or wiki pages from all depth-1 and depth-2 chunks.
 
     wiki_only=True  — skip quad extraction, run only wiki page writes.
     quads_only=True — skip wiki page writes, run only quad extraction.
+    integration_plan / retrieved_bodies: Comprehend-pass artifacts, prepended as a
+    cached prefix to every chunk's context_header to guide entity integration.
     Returns a tuple of (all_quads, total_pages_written).
     """
     from datetime import date as _date
@@ -243,6 +247,21 @@ def extract_quads_chunked(
     # Skip alias load when quads_only — wiki_writer never runs.
     if quads_only:
         aliases = {}
+
+    plan_context = ""
+    if integration_plan or retrieved_bodies:
+        import json as _json
+        lines = []
+        if integration_plan:
+            lines.append("\n[INTEGRATION PLAN — Comprehend pass output]")
+            lines.append(_json.dumps(integration_plan, indent=2))
+            lines.append("[END INTEGRATION PLAN]\n")
+        if retrieved_bodies:
+            lines.append("\n[RETRIEVED ENTITY PAGES — integrate new findings into these]")
+            for slug, body in retrieved_bodies.items():
+                lines.append(f"\n--- {slug} ---\n{body}")
+            lines.append("\n[END RETRIEVED ENTITY PAGES]\n")
+        plan_context = "\n".join(lines)
 
     for i, chunk in enumerate(chunks):
         parent_title = _find_parent_title(chunk, section_map["sections"])
@@ -279,7 +298,7 @@ def extract_quads_chunked(
         # Pass 3: wiki pages — skip when quads_only.
         if quads_only:
             continue
-        combined_context = entity_context + context_header if entity_context else context_header
+        combined_context = (entity_context or "") + (plan_context or "") + context_header
         pages_written = extract_wiki_pages_from_chunk(
             chunk_text=chunk_text,
             source_uuid=source_uuid,
@@ -308,12 +327,15 @@ def run_ldp_ingest(
     wiki_only: bool = False,
     quads_only: bool = False,
     entity_context: str = "",
+    integration_plan: dict | None = None,
+    retrieved_bodies: dict[str, str] | None = None,
 ):
     """Full LDP pipeline: parse section map → chunked extraction → append quads.
 
     wiki_only=True  — skip quad extraction; quads_path is untouched.
     quads_only=True — skip wiki page writes; entity_context is ignored.
     entity_context: known-entity block from Pass 1 holistic read, prepended to each chunk header.
+    integration_plan / retrieved_bodies: Comprehend-pass artifacts, threaded into chunk extraction.
     """
     section_map = parse_section_map(source_content, uuid)
     save_section_map(section_map, section_maps_dir)
@@ -332,6 +354,8 @@ def run_ldp_ingest(
         wiki_only=wiki_only,
         quads_only=quads_only,
         entity_context=entity_context,
+        integration_plan=integration_plan,
+        retrieved_bodies=retrieved_bodies,
     )
     if not wiki_only:
         append_quads(quads, quads_path)
