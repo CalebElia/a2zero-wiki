@@ -105,6 +105,8 @@ def parse_section_map(source_content: str, document_uuid: str) -> dict:
             "depth": depth,
             "line_start": current_line,
             "line_end": None,
+            "is_chunk": depth <= 2,
+            "notes": "",
         })
 
     # close remaining open sections
@@ -118,7 +120,7 @@ def parse_section_map(source_content: str, document_uuid: str) -> dict:
     return {
         "document_uuid": document_uuid,
         "total_lines": total_lines,
-        "ldp_version": "1.0",
+        "ldp_version": "1.1",
         "sections": sections,
     }
 

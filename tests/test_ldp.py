@@ -83,7 +83,7 @@ def test_parse_section_map_metadata():
     from pipeline.pass2a_chunk_loop import parse_section_map
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     assert sm["document_uuid"] == "test-cap"
-    assert sm["ldp_version"] == "1.0"
+    assert sm["ldp_version"] == "1.1"
     assert sm["total_lines"] > 0
 
 
