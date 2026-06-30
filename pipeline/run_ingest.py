@@ -1,3 +1,4 @@
+import json
 import re
 import shutil
 import yaml
@@ -150,6 +151,59 @@ def run_source_ingest(
         lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
         return "\n".join(lines)
 
+    # ── Pass 1A: Comprehend → integration plan ───────────────────────────────
+    from pipeline.comprehend import (
+        build_integration_plan,
+        validate_plan_slugs,
+        write_integration_plan,
+        load_retrieved_bodies,
+        log_ingest_stats,
+    )
+    from pipeline.alias_registry import load_aliases
+    import time as _time
+
+    digest_path = Path(wiki_root) / "digest.md"
+    digest_content = digest_path.read_text(encoding="utf-8") if digest_path.exists() else None
+
+    integration_plan = None
+    retrieved_bodies: dict[str, str] = {}
+    if not quads_only:
+        comprehend_start = _time.time()
+        # Hard-fail when digest exists; graceful fallback only when no digest at all.
+        # build_integration_plan() raises if the LLM call fails with a digest present.
+        integration_plan = build_integration_plan(
+            source_content=source_content,
+            source_uuid=uuid,
+            digest_content=digest_content,
+            run_date=run_date,
+        )
+        # Strip ghost slugs (reuses synthesis_validation machinery)
+        _aliases = load_aliases("registry/entity_aliases.json")
+        integration_plan = validate_plan_slugs(integration_plan, wiki_root, _aliases)
+        # Persist plan for audit trail and for LDP to consume
+        plans_dir = Path(wiki_root) / "integration-plans"
+        plan_path = write_integration_plan(integration_plan, str(plans_dir))
+        print(f"[ingest] {uuid}: integration plan written → {plan_path}")
+        # Pre-load entity bodies for retrieve-for-context (token-budget capped)
+        retrieved_bodies = load_retrieved_bodies(integration_plan, wiki_root)
+        # Telemetry: per-ingest stats
+        stats_path = Path(wiki_root) / "meta" / "ingest-stats.jsonl"
+        log_ingest_stats(
+            log_path=str(stats_path),
+            source_uuid=uuid,
+            run_date=run_date,
+            comprehend_skipped=(digest_content is None),
+            plan_size_bytes=len(json.dumps(integration_plan)),
+            extends_count=len(integration_plan.get("extends", [])),
+            new_entities_count=len(integration_plan.get("new-entities", [])),
+            retrieve_count=len(integration_plan.get("retrieve-for-context", [])),
+            retrieved_chars=sum(len(b) for b in retrieved_bodies.values()),
+        )
+        print(f"[ingest] {uuid}: comprehend took {_time.time() - comprehend_start:.1f}s "
+              f"(extends={len(integration_plan.get('extends', []))}, "
+              f"new={len(integration_plan.get('new-entities', []))}, "
+              f"retrieve={len(integration_plan.get('retrieve-for-context', []))})")
+
     if quads_only:
         entity_context = ""
         print(f"[ingest] {uuid}: quads-only — skipping Pass 1 holistic synthesis")
@@ -161,6 +215,8 @@ def run_source_ingest(
             source_type=source_type,
             wiki_root=wiki_root,
             run_date=run_date,
+            integration_plan=integration_plan,
+            digest_content=digest_content,
         )
         known_entities: list[dict] = []
         if synthesis_result:
@@ -185,6 +241,7 @@ def run_source_ingest(
             wiki_only=wiki_only,
             quads_only=quads_only,
             entity_context=entity_context,
+            # integration_plan and retrieved_bodies passed in Task 9
         )
     else:
         if not wiki_only:
