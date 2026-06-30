@@ -98,3 +98,74 @@ def test_load_approved_map_returns_dict_when_present(tmp_path):
     (maps_dir / "test_approved.json").write_text(json.dumps(payload), encoding="utf-8")
     result = load_approved_map("test", str(maps_dir))
     assert result == payload
+
+
+from pipeline.pass2a_pre_chunking import validate_section_map
+
+
+def _make_valid_map():
+    return {
+        "document_uuid": "test",
+        "total_lines": 100,
+        "ldp_version": "1.1",
+        "approved": False,
+        "sections": [
+            {"id": "a", "title": "A", "depth": 1, "line_start": 1, "line_end": 50,
+             "is_chunk": True, "notes": ""},
+            {"id": "b", "title": "B", "depth": 1, "line_start": 51, "line_end": 100,
+             "is_chunk": True, "notes": ""},
+        ],
+    }
+
+
+def test_validate_section_map_accepts_valid():
+    errors = validate_section_map(_make_valid_map())
+    assert errors == []
+
+
+def test_validate_section_map_rejects_negative_range():
+    m = _make_valid_map()
+    m["sections"][0]["line_end"] = 0  # 0 < line_start=1
+    errors = validate_section_map(m)
+    assert any("line_end" in e and "line_start" in e for e in errors)
+
+
+def test_validate_section_map_rejects_overlapping_chunks():
+    m = _make_valid_map()
+    m["sections"][1]["line_start"] = 30  # overlaps with section[0] which ends at 50
+    errors = validate_section_map(m)
+    assert any("overlap" in e.lower() for e in errors)
+
+
+def test_validate_section_map_rejects_out_of_bounds():
+    m = _make_valid_map()
+    m["sections"][1]["line_end"] = 200  # total_lines is 100
+    errors = validate_section_map(m)
+    assert any("bounds" in e.lower() or "total_lines" in e for e in errors)
+
+
+def test_validate_section_map_requires_at_least_one_chunk():
+    m = _make_valid_map()
+    for s in m["sections"]:
+        s["is_chunk"] = False
+    errors = validate_section_map(m)
+    assert any("at least one" in e.lower() or "no chunks" in e.lower() for e in errors)
+
+
+def test_validate_section_map_rejects_already_approved():
+    m = _make_valid_map()
+    m["approved"] = True
+    errors = validate_section_map(m)
+    assert any("already approved" in e.lower() for e in errors)
+
+
+def test_validate_section_map_ignores_overlap_when_one_side_is_not_chunk():
+    """Sections marked is_chunk=False can overlap with chunks (they're not extracted)."""
+    m = _make_valid_map()
+    m["sections"].append({
+        "id": "c", "title": "C", "depth": 3, "line_start": 5, "line_end": 10,
+        "is_chunk": False, "notes": "nested",
+    })
+    errors = validate_section_map(m)
+    # No overlap error — the depth-3 isn't a chunk
+    assert not any("overlap" in e.lower() for e in errors)

@@ -105,3 +105,45 @@ def render_preview_markdown(section_map: dict, source_content: str) -> str:
         out.append("")
 
     return "\n".join(out)
+
+
+def validate_section_map(section_map: dict) -> list[str]:
+    """Return list of validation errors (empty if valid)."""
+    errors: list[str] = []
+
+    if section_map.get("approved") is True:
+        errors.append("section map is already approved (approved=true); cannot re-approve")
+
+    total_lines = section_map.get("total_lines", 0)
+    sections = section_map.get("sections", [])
+
+    chunk_sections = [s for s in sections if s.get("is_chunk")]
+    if not chunk_sections:
+        errors.append("no sections marked is_chunk=true — at least one chunk required for extraction")
+
+    for s in sections:
+        start, end = s.get("line_start"), s.get("line_end")
+        if start is None or end is None:
+            errors.append(f"section {s.get('id', '?')!r}: line_start or line_end missing")
+            continue
+        if start > end:
+            errors.append(
+                f"section {s.get('id', '?')!r}: line_start ({start}) > line_end ({end})"
+            )
+        if start < 1 or end > total_lines:
+            errors.append(
+                f"section {s.get('id', '?')!r}: lines {start}-{end} outside bounds 1-{total_lines}"
+            )
+
+    # Check overlap among chunk sections only
+    sorted_chunks = sorted(chunk_sections, key=lambda s: s.get("line_start", 0))
+    for a, b in zip(sorted_chunks, sorted_chunks[1:]):
+        a_end = a.get("line_end", 0)
+        b_start = b.get("line_start", 0)
+        if a_end >= b_start:
+            errors.append(
+                f"chunks {a.get('id', '?')!r} (ends {a_end}) and {b.get('id', '?')!r} "
+                f"(starts {b_start}) overlap"
+            )
+
+    return errors
