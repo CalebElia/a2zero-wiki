@@ -136,3 +136,45 @@ def build_integration_plan(
         if k in parsed:
             plan[k] = parsed[k]
     return plan
+
+
+from pipeline.synthesis_validation import _exists, _resolve_alias, SUPPRESS_SLUGS
+
+
+def validate_plan_slugs(plan: dict, wiki_root: str, aliases: dict) -> dict:
+    """Strip ghost slugs from `extends` and `retrieve-for-context`.
+
+    Reuses synthesis_validation helpers — applies alias resolution, suppress list,
+    then drops anything whose page doesn't exist. `new-entities` is left alone
+    (those slugs are intentionally for pages that DON'T exist yet).
+    """
+    cleaned = dict(plan)
+
+    # extends: list of {slug, new-data} — filter on slug
+    cleaned_extends = []
+    seen_extends: set[str] = set()
+    for item in plan.get("extends") or []:
+        slug = item.get("slug", "")
+        resolved = _resolve_alias(slug, aliases)
+        if not resolved or resolved in SUPPRESS_SLUGS or resolved in seen_extends:
+            continue
+        if not _exists(resolved, wiki_root):
+            continue
+        seen_extends.add(resolved)
+        cleaned_extends.append({**item, "slug": resolved})
+    cleaned["extends"] = cleaned_extends
+
+    # retrieve-for-context: list of slugs — filter directly
+    cleaned_retrieve = []
+    seen_retrieve: set[str] = set()
+    for slug in plan.get("retrieve-for-context") or []:
+        resolved = _resolve_alias(slug, aliases)
+        if not resolved or resolved in SUPPRESS_SLUGS or resolved in seen_retrieve:
+            continue
+        if not _exists(resolved, wiki_root):
+            continue
+        seen_retrieve.add(resolved)
+        cleaned_retrieve.append(resolved)
+    cleaned["retrieve-for-context"] = cleaned_retrieve
+
+    return cleaned

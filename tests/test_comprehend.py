@@ -115,3 +115,59 @@ def test_build_integration_plan_hard_fails_on_llm_error_when_digest_present():
             assert "comprehend" in str(e).lower() or "API error" in str(e)
             return
         raise AssertionError("Expected hard fail, got silent return")
+
+
+from pipeline.comprehend import validate_plan_slugs
+
+
+def test_validate_plan_slugs_strips_ghost_entries(tmp_path):
+    """Plan with slugs pointing to nonexistent pages → ghosts removed."""
+    # Set up a tiny wiki with one real entity
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    (wiki / "initiatives" / "solarize.md").write_text("---\ntype: initiative\n---\n", encoding="utf-8")
+
+    plan = {
+        "source-uuid": "test",
+        "generated-at": "2026-06-29",
+        "digest-rebuilt": "2026-06-29",
+        "strategies-touched": [],
+        "extends": [
+            {"slug": "initiatives/solarize", "new-data": "real"},
+            {"slug": "initiatives/ghost-entity", "new-data": "fake"},
+        ],
+        "new-entities": [],
+        "retrieve-for-context": ["initiatives/solarize", "initiatives/another-ghost"],
+        "theme-connections": [],
+    }
+    cleaned = validate_plan_slugs(plan, wiki_root=str(wiki), aliases={})
+    # extends: ghost dropped
+    extend_slugs = [e["slug"] for e in cleaned["extends"]]
+    assert extend_slugs == ["initiatives/solarize"]
+    # retrieve-for-context: ghost dropped
+    assert cleaned["retrieve-for-context"] == ["initiatives/solarize"]
+    # new-entities: untouched (these are proposed pages that don't exist YET)
+    assert cleaned["new-entities"] == []
+
+
+def test_validate_plan_slugs_resolves_aliases(tmp_path):
+    wiki = tmp_path / "wiki"
+    (wiki / "actors").mkdir(parents=True)
+    (wiki / "actors" / "office-of-sustainability-and-innovations.md").write_text(
+        "---\ntype: actor\n---\n", encoding="utf-8"
+    )
+    aliases = {
+        "a2zero-office": {
+            "canonical": "actors/office-of-sustainability-and-innovations",
+            "type": "actor", "aliases": [], "relationship": "name-variant",
+        }
+    }
+    plan = {
+        "source-uuid": "t", "generated-at": "x", "digest-rebuilt": "y",
+        "strategies-touched": [], "new-entities": [], "theme-connections": [],
+        "extends": [{"slug": "actors/a2zero-office", "new-data": "x"}],
+        "retrieve-for-context": ["actors/a2zero-office"],
+    }
+    cleaned = validate_plan_slugs(plan, wiki_root=str(wiki), aliases=aliases)
+    assert cleaned["extends"][0]["slug"] == "actors/office-of-sustainability-and-innovations"
+    assert cleaned["retrieve-for-context"] == ["actors/office-of-sustainability-and-innovations"]
