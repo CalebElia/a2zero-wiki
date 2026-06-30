@@ -320,6 +320,8 @@ def synthesize_source(
     wiki_root: str,
     run_date: str,
     max_retries: int = 2,
+    integration_plan: dict | None = None,
+    digest_content: str | None = None,
 ) -> dict | None:
     """Pass 1 — Writer → Evaluator → Editor holistic synthesis."""
     overview_path = Path(wiki_root) / "overviews" / f"{source_uuid}.md"
@@ -329,27 +331,48 @@ def synthesize_source(
 
     doc_body = re.sub(r"^---\n.*?\n---\n", "", source_content, flags=re.DOTALL).strip()
 
-    existing_strategy_content: dict[str, str] = {}
-    strategies_dir = Path(wiki_root) / "strategies"
-    if strategies_dir.exists():
-        for strat_file in sorted(strategies_dir.glob("*.md")):
-            content = strat_file.read_text(encoding="utf-8")
-            body = re.sub(r"^---\n.*?\n---\n", "", content, flags=re.DOTALL).strip()
-            if re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL).strip():
-                existing_strategy_content[f"strategies/{strat_file.stem}"] = body
-
+    # Build the integration block from the digest + integration plan (preferred).
+    # Falls back to raw strategy bodies if no digest is available (first-ingest path).
     integration_block = ""
-    if existing_strategy_content:
+    if digest_content or integration_plan:
         lines = [
-            "\n\n[EXISTING STRATEGY WIKI CONTENT]",
-            "READ-UNDERSTAND-INTEGRATE: these strategy pages already contain synthesis",
-            "from prior source ingests. Integrate new learnings from this source —",
-            "preserve prior facts, add new depth, do not duplicate.\n",
+            "\n\n[INTEGRATION PLAN — read this first]",
+            "The Comprehend pass has produced a structured plan for how this source",
+            "should be integrated. Use it to guide which strategies to extend, which",
+            "entities to update vs. create, and which existing content to preserve.\n",
+            json.dumps(integration_plan or {}, indent=2),
+            "[END INTEGRATION PLAN]\n",
         ]
-        for slug, body in sorted(existing_strategy_content.items()):
-            lines.append(f"--- {slug} ---\n{body}\n")
-        lines.append("[END EXISTING STRATEGY WIKI CONTENT]")
+        if digest_content:
+            lines.extend([
+                "\n[WIKI DIGEST — current state of the wiki]",
+                "READ-UNDERSTAND-INTEGRATE: this digest reflects what the wiki already",
+                "knows. Build on it rather than re-stating known facts.\n",
+                digest_content,
+                "[END WIKI DIGEST]",
+            ])
         integration_block = "\n".join(lines)
+    else:
+        # Fallback: legacy behavior — inject raw strategy bodies
+        existing_strategy_content: dict[str, str] = {}
+        strategies_dir = Path(wiki_root) / "strategies"
+        if strategies_dir.exists():
+            for strat_file in sorted(strategies_dir.glob("*.md")):
+                content = strat_file.read_text(encoding="utf-8")
+                body = re.sub(r"^---\n.*?\n---\n", "", content, flags=re.DOTALL).strip()
+                if re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL).strip():
+                    existing_strategy_content[f"strategies/{strat_file.stem}"] = body
+        if existing_strategy_content:
+            lines = [
+                "\n\n[EXISTING STRATEGY WIKI CONTENT]",
+                "READ-UNDERSTAND-INTEGRATE: these strategy pages already contain synthesis",
+                "from prior source ingests. Integrate new learnings from this source —",
+                "preserve prior facts, add new depth, do not duplicate.\n",
+            ]
+            for slug, body in sorted(existing_strategy_content.items()):
+                lines.append(f"--- {slug} ---\n{body}\n")
+            lines.append("[END EXISTING STRATEGY WIKI CONTENT]")
+            integration_block = "\n".join(lines)
 
     document_block_text = (
         f"Source UUID: {source_uuid}\n"

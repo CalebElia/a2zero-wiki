@@ -400,3 +400,84 @@ def test_stub_creation_redirects_known_alias(tmp_path):
     # Stub should be written at the canonical path, NOT the alias path
     assert (tmp_path / "actors" / "osi.md").exists(), "Canonical osi.md should have been created"
     assert not (tmp_path / "actors" / "office-of-sustainability.md").exists(), "Alias path should not exist"
+
+
+@patch("pipeline.holistic_synthesizer.stream_chat")
+def test_synthesize_source_injects_integration_plan_and_digest(mock_stream_chat, tmp_path):
+    """Plan + digest replace the legacy strategy-body integration block."""
+    writer_draft = {
+        "overview": {
+            "slug": "overviews/test",
+            "frontmatter": {
+                "type": "overview",
+                "title": "T",
+                "source-ref": "[[sources/test/test]]",
+            },
+            "body": "Overview body",
+        },
+        "strategy_bodies": [
+            {"slug": f"strategies/strategy-{i}-x", "body": "body"} for i in range(1, 8)
+        ],
+        "stub_pages": [],
+        "log_summary": "ok",
+    }
+    editor_final = {
+        "overview": {
+            "slug": "overviews/test",
+            "frontmatter": {
+                "type": "overview",
+                "title": "T",
+                "source-ref": "[[sources/test/test]]",
+            },
+            "body": "Edited overview",
+        },
+        "strategy_bodies": [
+            {"slug": f"strategies/strategy-{i}-x", "body": "edited"} for i in range(1, 8)
+        ],
+        "stub_pages": [],
+        "log_summary": "edited",
+    }
+    mock_stream_chat.side_effect = [
+        json.dumps(writer_draft),
+        json.dumps({"proceed_to_edit": True, "overall_score": 9}),
+        json.dumps(editor_final),
+    ]
+    # Stage minimum strategy stubs so validate_synthesis_output passes
+    strategies = tmp_path / "strategies"
+    strategies.mkdir()
+    for i in range(1, 8):
+        (strategies / f"strategy-{i}-x.md").write_text(
+            "---\ntype: strategy\n---\n", encoding="utf-8"
+        )
+    (tmp_path / "overviews").mkdir()
+    (tmp_path / "sources" / "test").mkdir(parents=True)
+
+    plan = {
+        "source-uuid": "test",
+        "extends": [{"slug": "x", "new-data": "y"}],
+        "strategies-touched": ["strategies/strategy-1-x"],
+        "new-entities": [],
+        "retrieve-for-context": [],
+        "theme-connections": [],
+    }
+    digest = "# Wiki Digest\n\nDigest content here.\n"
+
+    from pipeline.holistic_synthesizer import synthesize_source
+    synthesize_source(
+        source_content="---\nuuid: test\n---\nSource body",
+        source_uuid="test",
+        source_rel_path="sources/test/test",
+        source_type="test",
+        wiki_root=str(tmp_path),
+        run_date="2026-06-29",
+        integration_plan=plan,
+        digest_content=digest,
+    )
+
+    # The first call (Writer) should have received the plan + digest in its user content
+    first_call_user_content = mock_stream_chat.call_args_list[0].kwargs["messages"][0]["content"]
+    # Content is a list with one cache_control block whose 'text' contains both
+    text = first_call_user_content[0]["text"] if isinstance(first_call_user_content, list) else first_call_user_content
+    assert "INTEGRATION PLAN" in text
+    assert "WIKI DIGEST" in text
+    assert "Digest content here" in text
