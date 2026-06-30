@@ -37,6 +37,7 @@ def run_source_ingest(
     run_date: str | None = None,
     wiki_only: bool = False,
     quads_only: bool = False,
+    auto_approve_chunks: bool = False,
 ):
     """Ingest a source markdown file through the three-pass wiki pipeline.
 
@@ -243,6 +244,7 @@ def run_source_ingest(
             entity_context=entity_context,
             integration_plan=integration_plan,
             retrieved_bodies=retrieved_bodies,
+            auto_approve_chunks=auto_approve_chunks,
         )
     else:
         if not wiki_only:
@@ -386,6 +388,36 @@ if __name__ == "__main__":
         "--quads-only", action="store_true", default=False,
         help="Run Pass 2 quad extraction only; skip holistic synthesis, wiki writes, and Pass 3",
     )
+    p_source.add_argument(
+        "--auto-approve",
+        action="store_true",
+        help="Bypass the chunking-gate human review; generate section map mechanically",
+    )
+
+    # preflight subcommand
+    p_preflight = sub.add_parser(
+        "preflight",
+        help="Generate proposed section map + preview for human review",
+    )
+    p_preflight.add_argument("--source", required=True)
+    p_preflight.add_argument("--uuid", required=True)
+    p_preflight.add_argument(
+        "--section-maps-dir", default="blackboard/section_maps"
+    )
+    p_preflight.add_argument(
+        "--force", action="store_true",
+        help="Regenerate proposed map even if approved.json already exists",
+    )
+
+    # approve subcommand
+    p_approve = sub.add_parser(
+        "approve",
+        help="Validate proposed section map and promote to approved",
+    )
+    p_approve.add_argument("--uuid", required=True)
+    p_approve.add_argument(
+        "--section-maps-dir", default="blackboard/section_maps"
+    )
 
     # PDF-first ingest (future use when raw PDF → prepared markdown pipeline is wired up)
     p_pdf = sub.add_parser("pdf", help="Ingest from PDF (raw → prepared → wiki)")
@@ -400,7 +432,30 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.command == "source":
+    if args.command == "preflight":
+        from pipeline.pass2a_pre_chunking import generate_proposed_map
+        source_content = Path(args.source).read_text(encoding="utf-8")
+        json_path, preview_path = generate_proposed_map(
+            source_content=source_content,
+            source_uuid=args.uuid,
+            section_maps_dir=args.section_maps_dir,
+            force=args.force,
+        )
+        print(f"[preflight] proposed map: {json_path}")
+        print(f"[preflight] preview:       {preview_path}")
+        print(f"[preflight] Review the preview. When ready:")
+        print(f"           python -m pipeline.orchestrator approve --uuid {args.uuid}")
+
+    elif args.command == "approve":
+        from pipeline.pass2a_pre_chunking import approve_proposed_map
+        approved_path = approve_proposed_map(
+            source_uuid=args.uuid,
+            section_maps_dir=args.section_maps_dir,
+        )
+        print(f"[approve] approved map: {approved_path}")
+        print(f"[approve] Run: python -m pipeline.orchestrator source --source ... --uuid {args.uuid} ...")
+
+    elif args.command == "source":
         run_source_ingest(
             source_path=args.source,
             uuid=args.uuid,
@@ -411,6 +466,7 @@ if __name__ == "__main__":
             section_maps_dir=args.section_maps_dir,
             wiki_only=args.wiki_only,
             quads_only=args.quads_only,
+            auto_approve_chunks=args.auto_approve,
         )
     elif args.command == "pdf":
         run_annual_report_ingest(

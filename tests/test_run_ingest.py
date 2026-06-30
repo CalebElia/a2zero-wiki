@@ -196,3 +196,58 @@ def test_run_source_ingest_skips_comprehend_when_no_digest(
     # synthesize_source received digest_content=None
     synth_kwargs = mock_synth.call_args.kwargs
     assert synth_kwargs.get("digest_content") is None
+
+
+def test_source_ingest_refuses_without_approved_map(tmp_path):
+    import pytest
+    from unittest.mock import patch
+    # Stage a wiki + source that would route to LDP
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    (wiki / "sources" / "annual-reports").mkdir(parents=True)
+    src_path = wiki / "sources" / "annual-reports" / "t.md"
+    # Long enough to route to LDP: 150+ lines, 5+ headings
+    headings_and_body = "\n".join([f"# H{i}\nbody{i}" for i in range(10)]) + ("\nfiller\n" * 200)
+    src_path.write_text(f"---\nuuid: t\n---\n{headings_and_body}", encoding="utf-8")
+
+    from pipeline.orchestrator import run_source_ingest
+    with pytest.raises(RuntimeError, match="approved section map"):
+        run_source_ingest(
+            source_path=str(src_path),
+            uuid="t", title="T",
+            quads_path=str(tmp_path / "q.jsonl"),
+            wiki_root=str(wiki),
+            review_queue_path=str(tmp_path / "queue.md"),
+            section_maps_dir=str(tmp_path / "maps"),
+            run_date="2026-06-30",
+            wiki_only=True,
+            auto_approve_chunks=False,  # gate ON
+        )
+
+
+def test_source_ingest_small_doc_bypasses_gate(tmp_path):
+    """Small docs route to the non-LDP path and don't need approval."""
+    from unittest.mock import patch
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    (wiki / "sources" / "annual-reports").mkdir(parents=True)
+    src_path = wiki / "sources" / "annual-reports" / "tiny.md"
+    src_path.write_text("---\nuuid: tiny\n---\n# Just one heading\nBrief.\n", encoding="utf-8")
+
+    with patch("pipeline.pass1b_synthesize.synthesize_source", return_value={"stub_pages": []}), \
+         patch("pipeline.pass2b_extract.extract_wiki_pages_from_chunk", return_value=[]), \
+         patch("pipeline.pass2b_extract.chat", return_value="[]"), \
+         patch("pipeline.pass1a_comprehend.chat") as mock_comprehend:
+        # No digest exists → comprehend graceful fallback (no LLM)
+        from pipeline.orchestrator import run_source_ingest
+        run_source_ingest(
+            source_path=str(src_path),
+            uuid="tiny", title="T",
+            quads_path=str(tmp_path / "q.jsonl"),
+            wiki_root=str(wiki),
+            review_queue_path=str(tmp_path / "queue.md"),
+            run_date="2026-06-30",
+            wiki_only=True,
+            auto_approve_chunks=False,  # gate ON but irrelevant for small docs
+        )
+        # No exception — gate was bypassed because LDP wasn't used
