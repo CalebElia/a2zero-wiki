@@ -102,7 +102,7 @@ def _strategy_stub(tmp_path):
     (tmp_path / "overviews").mkdir(exist_ok=True)
 
 
-@patch("pipeline.holistic_synthesizer.stream_chat")
+@patch("pipeline.pass1b_synthesize.stream_chat")
 def test_synthesize_source_makes_three_calls(mock_stream_chat, tmp_path):
     """Writer → Evaluator → Editor: exactly 3 API calls on the happy path."""
     mock_stream_chat.side_effect = [
@@ -112,7 +112,7 @@ def test_synthesize_source_makes_three_calls(mock_stream_chat, tmp_path):
     ]
     _strategy_stub(tmp_path)
 
-    from pipeline.holistic_synthesizer import synthesize_source
+    from pipeline.pass1b_synthesize import synthesize_source
     result = synthesize_source(
         source_content="---\nuuid: cap-2020\n---\n\nDocument body.",
         source_uuid="cap-2020",
@@ -126,7 +126,7 @@ def test_synthesize_source_makes_three_calls(mock_stream_chat, tmp_path):
     assert mock_stream_chat.call_count == 3
 
 
-@patch("pipeline.holistic_synthesizer.stream_chat")
+@patch("pipeline.pass1b_synthesize.stream_chat")
 def test_synthesize_source_writes_overview(mock_stream_chat, tmp_path):
     mock_stream_chat.side_effect = [
         json.dumps(MOCK_SYNTHESIS),
@@ -135,7 +135,7 @@ def test_synthesize_source_writes_overview(mock_stream_chat, tmp_path):
     ]
     _strategy_stub(tmp_path)
 
-    from pipeline.holistic_synthesizer import synthesize_source
+    from pipeline.pass1b_synthesize import synthesize_source
     result = synthesize_source(
         source_content="---\nuuid: cap-2020\n---\n\nDocument body.",
         source_uuid="cap-2020",
@@ -153,7 +153,7 @@ def test_synthesize_source_writes_overview(mock_stream_chat, tmp_path):
     assert "type: overview" in content
 
 
-@patch("pipeline.holistic_synthesizer.stream_chat")
+@patch("pipeline.pass1b_synthesize.stream_chat")
 def test_synthesize_source_appends_strategy_body(mock_stream_chat, tmp_path):
     mock_stream_chat.side_effect = [
         json.dumps(MOCK_SYNTHESIS),
@@ -163,7 +163,7 @@ def test_synthesize_source_appends_strategy_body(mock_stream_chat, tmp_path):
     _strategy_stub(tmp_path)
     stub = tmp_path / "strategies" / "strategy-1-renewable-grid.md"
 
-    from pipeline.holistic_synthesizer import synthesize_source
+    from pipeline.pass1b_synthesize import synthesize_source
     synthesize_source(
         source_content="---\nuuid: cap-2020\n---\n\nDoc.",
         source_uuid="cap-2020",
@@ -177,12 +177,12 @@ def test_synthesize_source_appends_strategy_body(mock_stream_chat, tmp_path):
     assert "Strategy 1 focuses on 100% renewable electricity" in content
 
 
-@patch("pipeline.holistic_synthesizer.stream_chat")
+@patch("pipeline.pass1b_synthesize.stream_chat")
 def test_synthesize_source_skips_if_overview_exists(mock_stream_chat, tmp_path):
     (tmp_path / "overviews").mkdir()
     (tmp_path / "overviews" / "cap-2020.md").write_text("existing overview")
 
-    from pipeline.holistic_synthesizer import synthesize_source
+    from pipeline.pass1b_synthesize import synthesize_source
     result = synthesize_source(
         source_content="---\nuuid: cap-2020\n---\n\nDoc.",
         source_uuid="cap-2020",
@@ -196,7 +196,7 @@ def test_synthesize_source_skips_if_overview_exists(mock_stream_chat, tmp_path):
     assert not mock_stream_chat.called
 
 
-@patch("pipeline.holistic_synthesizer.stream_chat")
+@patch("pipeline.pass1b_synthesize.stream_chat")
 def test_evaluator_proceed_false_reruns_writer(mock_stream_chat, tmp_path):
     """If evaluator says proceed_to_edit=False, Writer re-runs, then Editor runs."""
     bad_critique = {**MOCK_CRITIQUE, "overall_score": 2, "proceed_to_edit": False}
@@ -208,7 +208,7 @@ def test_evaluator_proceed_false_reruns_writer(mock_stream_chat, tmp_path):
     ]
     _strategy_stub(tmp_path)
 
-    from pipeline.holistic_synthesizer import synthesize_source
+    from pipeline.pass1b_synthesize import synthesize_source
     result = synthesize_source(
         source_content="---\nuuid: cap-2020\n---\n\nDoc.",
         source_uuid="cap-2020",
@@ -222,7 +222,7 @@ def test_evaluator_proceed_false_reruns_writer(mock_stream_chat, tmp_path):
     assert mock_stream_chat.call_count == 4
 
 
-@patch("pipeline.holistic_synthesizer.stream_chat")
+@patch("pipeline.pass1b_synthesize.stream_chat")
 def test_editor_retries_on_validation_failure(mock_stream_chat, tmp_path):
     """Editor output that fails structural validation causes Editor to retry."""
     bad_editor_output = {"overview": None, "strategy_bodies": []}
@@ -234,7 +234,7 @@ def test_editor_retries_on_validation_failure(mock_stream_chat, tmp_path):
     ]
     _strategy_stub(tmp_path)
 
-    from pipeline.holistic_synthesizer import synthesize_source
+    from pipeline.pass1b_synthesize import synthesize_source
     result = synthesize_source(
         source_content="---\nuuid: cap-2020\n---\n\nDoc.",
         source_uuid="cap-2020",
@@ -250,7 +250,7 @@ def test_editor_retries_on_validation_failure(mock_stream_chat, tmp_path):
 
 
 def test_validate_synthesis_output_catches_missing_overview(tmp_path):
-    from pipeline.holistic_synthesizer import _validate_synthesis_output
+    from pipeline.pass1b_synthesize import _validate_synthesis_output
     errors = _validate_synthesis_output(
         {"strategy_bodies": []}, source_uuid="cap-2020", wiki_root=str(tmp_path)
     )
@@ -258,7 +258,7 @@ def test_validate_synthesis_output_catches_missing_overview(tmp_path):
 
 
 def test_validate_synthesis_output_catches_bad_source_ref(tmp_path):
-    from pipeline.holistic_synthesizer import _validate_synthesis_output
+    from pipeline.pass1b_synthesize import _validate_synthesis_output
     result = {
         "overview": {
             "slug": "overviews/cap-2020",
@@ -275,7 +275,7 @@ def test_validate_synthesis_output_catches_bad_source_ref(tmp_path):
     assert any("source-ref" in e for e in errors)
 
 
-@patch("pipeline.holistic_synthesizer.stream_chat")
+@patch("pipeline.pass1b_synthesize.stream_chat")
 def test_synthesize_source_integrates_existing_strategy_body(mock_stream_chat, tmp_path):
     """When a strategy page already has real content, body is replaced not appended."""
     mock_stream_chat.side_effect = [
@@ -291,7 +291,7 @@ def test_synthesize_source_integrates_existing_strategy_body(mock_stream_chat, t
     )
     (tmp_path / "overviews").mkdir(exist_ok=True)
 
-    from pipeline.holistic_synthesizer import synthesize_source
+    from pipeline.pass1b_synthesize import synthesize_source
     synthesize_source(
         source_content="---\nuuid: annual-report-year1\n---\n\nNew content.",
         source_uuid="annual-report-year1",
@@ -309,7 +309,7 @@ def test_synthesize_source_integrates_existing_strategy_body(mock_stream_chat, t
 
 
 def test_replace_wiki_page_body_preserves_frontmatter(tmp_path):
-    from pipeline.holistic_synthesizer import _replace_wiki_page_body
+    from pipeline.pass1b_synthesize import _replace_wiki_page_body
     page = tmp_path / "test.md"
     page.write_text("---\ntype: strategy\ntitle: Test\n---\n\nOld body.\n")
     _replace_wiki_page_body(str(page), "New integrated body.")
@@ -320,7 +320,7 @@ def test_replace_wiki_page_body_preserves_frontmatter(tmp_path):
 
 
 def test_validate_synthesis_output_catches_unknown_strategy_slug(tmp_path):
-    from pipeline.holistic_synthesizer import _validate_synthesis_output
+    from pipeline.pass1b_synthesize import _validate_synthesis_output
     (tmp_path / "strategies").mkdir()
     result = {
         "overview": {
@@ -344,7 +344,7 @@ def test_stub_creation_redirects_known_alias(tmp_path):
     """Pass 1.5: a stub whose slug is a known alias should write to the canonical path."""
     import json
     from unittest.mock import patch
-    from pipeline.holistic_synthesizer import _write_synthesis
+    from pipeline.pass1b_synthesize import _write_synthesis
 
     # Set up minimal wiki structure
     (tmp_path / "strategies").mkdir()
@@ -388,7 +388,7 @@ def test_stub_creation_redirects_known_alias(tmp_path):
         "log_summary": "Test run.",
     }
 
-    with patch("pipeline.holistic_synthesizer.alias_registry_path", str(aliases_path)):
+    with patch("pipeline.pass1b_synthesize.alias_registry_path", str(aliases_path)):
         _write_synthesis(
             result=result,
             wiki_root=str(tmp_path),
@@ -402,7 +402,7 @@ def test_stub_creation_redirects_known_alias(tmp_path):
     assert not (tmp_path / "actors" / "office-of-sustainability.md").exists(), "Alias path should not exist"
 
 
-@patch("pipeline.holistic_synthesizer.stream_chat")
+@patch("pipeline.pass1b_synthesize.stream_chat")
 def test_synthesize_source_injects_integration_plan_and_digest(mock_stream_chat, tmp_path):
     """Plan + digest replace the legacy strategy-body integration block."""
     writer_draft = {
@@ -462,7 +462,7 @@ def test_synthesize_source_injects_integration_plan_and_digest(mock_stream_chat,
     }
     digest = "# Wiki Digest\n\nDigest content here.\n"
 
-    from pipeline.holistic_synthesizer import synthesize_source
+    from pipeline.pass1b_synthesize import synthesize_source
     synthesize_source(
         source_content="---\nuuid: test\n---\nSource body",
         source_uuid="test",

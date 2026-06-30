@@ -3,17 +3,17 @@
 
 def test_module_imports():
     """Smoke test: the module exists and exposes the expected public API."""
-    from pipeline import synthesize_wiki
-    assert hasattr(synthesize_wiki, "synthesize_wiki")
-    assert callable(synthesize_wiki.synthesize_wiki)
-    assert hasattr(synthesize_wiki, "ALL_STRATEGIES")
-    assert len(synthesize_wiki.ALL_STRATEGIES) == 7
+    from pipeline import phase_c_synthesize
+    assert hasattr(phase_c_synthesize, "synthesize_wiki")
+    assert callable(phase_c_synthesize.synthesize_wiki)
+    assert hasattr(phase_c_synthesize, "ALL_STRATEGIES")
+    assert len(phase_c_synthesize.ALL_STRATEGIES) == 7
 
 
 def test_gather_strategy_entities_filters_by_strategy(tmp_path):
     """Returns only entities tagged to the given strategy."""
     import shutil
-    from pipeline.synthesize_wiki import gather_strategy_entities
+    from pipeline.phase_c_synthesize import gather_strategy_entities
 
     fixture = "tests/fixtures/synthesize_wiki/wiki"
     shutil.copytree(fixture, tmp_path / "wiki")
@@ -32,7 +32,7 @@ def test_gather_strategy_entities_filters_by_strategy(tmp_path):
 
 def test_gather_strategy_entities_returns_empty_for_unknown_strategy(tmp_path):
     import shutil
-    from pipeline.synthesize_wiki import gather_strategy_entities
+    from pipeline.phase_c_synthesize import gather_strategy_entities
     shutil.copytree("tests/fixtures/synthesize_wiki/wiki", tmp_path / "wiki")
     entities = gather_strategy_entities(
         wiki_root=str(tmp_path / "wiki"),
@@ -55,7 +55,7 @@ Pass 3 complete — index rebuilt.
 
 
 def test_extract_recent_delta_returns_last_entry(tmp_path):
-    from pipeline.synthesize_wiki import extract_recent_delta
+    from pipeline.phase_c_synthesize import extract_recent_delta
     log_path = tmp_path / "log.md"
     log_path.write_text(LOG_FIXTURE, encoding="utf-8")
     delta = extract_recent_delta(str(log_path))
@@ -64,7 +64,7 @@ def test_extract_recent_delta_returns_last_entry(tmp_path):
 
 
 def test_extract_recent_delta_handles_empty_log(tmp_path):
-    from pipeline.synthesize_wiki import extract_recent_delta
+    from pipeline.phase_c_synthesize import extract_recent_delta
     log_path = tmp_path / "log.md"
     log_path.write_text("# Ingest Log\n", encoding="utf-8")
     delta = extract_recent_delta(str(log_path))
@@ -84,7 +84,7 @@ SAMPLE_ENTITIES = [
 
 
 def test_build_strategy_synthesis_calls_anthropic_and_returns_dict():
-    from pipeline.synthesize_wiki import build_strategy_synthesis
+    from pipeline.phase_c_synthesize import build_strategy_synthesis
 
     llm_output = json.dumps({
         "core-initiatives": ["initiatives/solarize-ann-arbor"],
@@ -93,7 +93,7 @@ def test_build_strategy_synthesis_calls_anthropic_and_returns_dict():
         "open-questions": ["5MW Y3 target on track?"],
         "cross-strategy-links": [],
     })
-    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
+    with patch("pipeline.phase_c_synthesize.chat") as mock_chat:
         mock_chat.return_value = llm_output
         result = build_strategy_synthesis(
             strategy_slug="strategies/strategy-1-renewable-grid",
@@ -105,12 +105,12 @@ def test_build_strategy_synthesis_calls_anthropic_and_returns_dict():
 
 
 def test_build_strategy_synthesis_handles_fenced_json():
-    from pipeline.synthesize_wiki import build_strategy_synthesis
+    from pipeline.phase_c_synthesize import build_strategy_synthesis
     llm_output = "```json\n" + json.dumps({
         "core-initiatives": [], "core-actors": [],
         "year-over-year-arc": "—", "open-questions": [], "cross-strategy-links": [],
     }) + "\n```"
-    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
+    with patch("pipeline.phase_c_synthesize.chat") as mock_chat:
         mock_chat.return_value = llm_output
         result = build_strategy_synthesis(
             strategy_slug="strategies/strategy-1-renewable-grid",
@@ -121,8 +121,8 @@ def test_build_strategy_synthesis_handles_fenced_json():
 
 
 def test_build_strategy_synthesis_returns_empty_skeleton_on_api_failure():
-    from pipeline.synthesize_wiki import build_strategy_synthesis
-    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
+    from pipeline.phase_c_synthesize import build_strategy_synthesis
+    with patch("pipeline.phase_c_synthesize.chat") as mock_chat:
         mock_chat.side_effect = Exception("api error")
         result = build_strategy_synthesis(
             strategy_slug="strategies/strategy-1-renewable-grid",
@@ -145,7 +145,7 @@ The Solarize program is the flagship initiative. ([[sources/cap/cap-2020|cap-202
 
 
 def test_write_strategy_synthesis_injects_synthesis_block(tmp_path):
-    from pipeline.synthesize_wiki import write_strategy_synthesis
+    from pipeline.phase_c_synthesize import write_strategy_synthesis
     page = tmp_path / "strategy-1-renewable-grid.md"
     page.write_text(STRATEGY_FIXTURE, encoding="utf-8")
 
@@ -171,7 +171,7 @@ def test_write_strategy_synthesis_injects_synthesis_block(tmp_path):
 
 
 def test_write_strategy_synthesis_overwrites_existing_block(tmp_path):
-    from pipeline.synthesize_wiki import write_strategy_synthesis
+    from pipeline.phase_c_synthesize import write_strategy_synthesis
     page = tmp_path / "s1.md"
     page.write_text(STRATEGY_FIXTURE, encoding="utf-8")
     write_strategy_synthesis(str(page),
@@ -216,13 +216,13 @@ SAMPLE_STRATEGIES_DATA = {
 
 
 def test_build_digest_narrative_calls_anthropic():
-    from pipeline.synthesize_wiki import build_digest_narrative
+    from pipeline.phase_c_synthesize import build_digest_narrative
     narrative_text = (
         "## Cross-strategy synthesis\n\n"
         "Strategy 1 has built a 1.7MW residential rooftop base anchored by "
         "[[initiatives/solarize-ann-arbor]]...\n"
     )
-    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
+    with patch("pipeline.phase_c_synthesize.chat") as mock_chat:
         mock_chat.return_value = narrative_text
         result = build_digest_narrative(strategies_data=SAMPLE_STRATEGIES_DATA)
     assert "Strategy 1" in result
@@ -230,8 +230,8 @@ def test_build_digest_narrative_calls_anthropic():
 
 
 def test_build_digest_narrative_returns_placeholder_on_failure():
-    from pipeline.synthesize_wiki import build_digest_narrative
-    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
+    from pipeline.phase_c_synthesize import build_digest_narrative
+    with patch("pipeline.phase_c_synthesize.chat") as mock_chat:
         mock_chat.side_effect = Exception("api error")
         result = build_digest_narrative(strategies_data=SAMPLE_STRATEGIES_DATA)
     # Falls back to a placeholder rather than crashing the synthesis run
@@ -239,7 +239,7 @@ def test_build_digest_narrative_returns_placeholder_on_failure():
 
 
 def test_assemble_digest_combines_all_sections():
-    from pipeline.synthesize_wiki import assemble_digest
+    from pipeline.phase_c_synthesize import assemble_digest
     text = assemble_digest(
         narrative="## Cross-strategy synthesis\n\nStrategy 1 ...\n",
         strategies_data=SAMPLE_STRATEGIES_DATA,
@@ -263,7 +263,7 @@ def test_assemble_digest_combines_all_sections():
 
 
 def test_write_digest_writes_to_vault_root(tmp_path):
-    from pipeline.synthesize_wiki import write_digest
+    from pipeline.phase_c_synthesize import write_digest
     (tmp_path / "wiki").mkdir()
     out = write_digest(wiki_root=str(tmp_path / "wiki"), content="# Hello digest")
     assert (tmp_path / "wiki" / "digest.md").read_text(encoding="utf-8") == "# Hello digest"
@@ -283,7 +283,7 @@ def _setup_full_fixture(tmp_path):
 
 
 def test_synthesize_wiki_orchestrates_end_to_end(tmp_path):
-    from pipeline.synthesize_wiki import synthesize_wiki
+    from pipeline.phase_c_synthesize import synthesize_wiki
 
     root = _setup_full_fixture(tmp_path)
     strategy_llm_output = json.dumps({
@@ -295,7 +295,7 @@ def test_synthesize_wiki_orchestrates_end_to_end(tmp_path):
     })
     narrative_output = "## Cross-strategy synthesis\n\nStrategy 1 has solarized 430+ homes.\n"
 
-    with patch("pipeline.synthesize_wiki.chat") as mock_chat:
+    with patch("pipeline.phase_c_synthesize.chat") as mock_chat:
         # Writer calls only — validators are deterministic and the fixture is clean
         # so no Reviser calls fire. Call order: 1 strategy synth + 1 narrative.
         mock_chat.side_effect = [strategy_llm_output, narrative_output]

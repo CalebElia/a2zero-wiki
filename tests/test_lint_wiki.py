@@ -33,7 +33,7 @@ def _make_wiki(tmp_path: Path) -> Path:
 
 
 def test_structural_finds_broken_link(tmp_path):
-    from pipeline.lint_wiki import structural_lint
+    from pipeline.phase_b_lint import structural_lint
     wiki = _make_wiki(tmp_path)
     findings = structural_lint(str(wiki))
     broken = [f for f in findings if f["type"] == "BROKEN_LINK"]
@@ -41,7 +41,7 @@ def test_structural_finds_broken_link(tmp_path):
 
 
 def test_structural_finds_orphan(tmp_path):
-    from pipeline.lint_wiki import structural_lint
+    from pipeline.phase_b_lint import structural_lint
     wiki = _make_wiki(tmp_path)
     findings = structural_lint(str(wiki))
     orphans = [f for f in findings if f["type"] == "ORPHAN"]
@@ -49,7 +49,7 @@ def test_structural_finds_orphan(tmp_path):
 
 
 def test_structural_no_false_positive_for_osi(tmp_path):
-    from pipeline.lint_wiki import structural_lint
+    from pipeline.phase_b_lint import structural_lint
     wiki = _make_wiki(tmp_path)
     findings = structural_lint(str(wiki))
     orphans = [f for f in findings if f["type"] == "ORPHAN"]
@@ -57,7 +57,7 @@ def test_structural_no_false_positive_for_osi(tmp_path):
 
 
 def test_structural_skips_exempt_pages(tmp_path):
-    from pipeline.lint_wiki import structural_lint
+    from pipeline.phase_b_lint import structural_lint
     wiki = _make_wiki(tmp_path)
     # index.md is exempt from orphan check
     findings = structural_lint(str(wiki))
@@ -85,9 +85,9 @@ def test_semantic_lint_calls_llm_for_candidates(tmp_path):
 
     verdict = {"relationship": "same", "confidence": 0.92, "reasoning": "Same office."}
 
-    with patch("pipeline.lint_wiki.chat") as mock_chat:
+    with patch("pipeline.phase_b_lint.chat") as mock_chat:
         mock_chat.return_value = json.dumps(verdict)
-        from pipeline.lint_wiki import semantic_lint
+        from pipeline.phase_b_lint import semantic_lint
         proposals = semantic_lint(str(wiki))
 
     assert len(proposals) == 1
@@ -96,7 +96,7 @@ def test_semantic_lint_calls_llm_for_candidates(tmp_path):
 
 
 def test_parse_approved_proposals_finds_checked_merge(tmp_path):
-    from pipeline.lint_wiki import _parse_approved_proposals
+    from pipeline.phase_b_lint import _parse_approved_proposals
     rq = tmp_path / "review-queue.md"
     rq.write_text(
         "## Semantic Lint — 2026-06-25\n\n"
@@ -113,7 +113,7 @@ def test_parse_approved_proposals_finds_checked_merge(tmp_path):
 
 
 def test_structural_finds_empty_page(tmp_path):
-    from pipeline.lint_wiki import structural_lint
+    from pipeline.phase_b_lint import structural_lint
     wiki = _make_wiki(tmp_path)
     (wiki / "actors" / "ghost.md").write_text("", encoding="utf-8")
     findings = structural_lint(str(wiki))
@@ -122,7 +122,7 @@ def test_structural_finds_empty_page(tmp_path):
 
 
 def test_structural_finds_stub_page(tmp_path):
-    from pipeline.lint_wiki import structural_lint
+    from pipeline.phase_b_lint import structural_lint
     wiki = _make_wiki(tmp_path)
     (wiki / "actors" / "stub-actor.md").write_text(
         "---\ntype: actor\ntitle: Stub Actor\n---\n<!-- Body populated by holistic synthesizer -->\n",
@@ -134,7 +134,7 @@ def test_structural_finds_stub_page(tmp_path):
 
 
 def test_structural_exempt_pages_skip_empty_check(tmp_path):
-    from pipeline.lint_wiki import structural_lint
+    from pipeline.phase_b_lint import structural_lint
     wiki = _make_wiki(tmp_path)
     # index.md is already empty-ish in _make_wiki; confirm it is not flagged
     findings = structural_lint(str(wiki))
@@ -143,7 +143,7 @@ def test_structural_exempt_pages_skip_empty_check(tmp_path):
 
 
 def test_write_structural_findings_replaces_existing_section(tmp_path):
-    from pipeline.lint_wiki import write_structural_findings
+    from pipeline.phase_b_lint import write_structural_findings
     wiki = tmp_path / "wiki"
     wiki.mkdir()
     rq = tmp_path / "review-queue.md"
@@ -165,7 +165,7 @@ def test_write_structural_findings_replaces_existing_section(tmp_path):
 
 
 def test_write_structural_findings_clears_section_when_no_findings(tmp_path):
-    from pipeline.lint_wiki import write_structural_findings
+    from pipeline.phase_b_lint import write_structural_findings
     wiki = tmp_path / "wiki"
     wiki.mkdir()
     rq = tmp_path / "review-queue.md"
@@ -182,7 +182,7 @@ def test_write_structural_findings_clears_section_when_no_findings(tmp_path):
 
 
 def test_write_semantic_proposals_replaces_unannotated_section(tmp_path):
-    from pipeline.lint_wiki import write_semantic_proposals
+    from pipeline.phase_b_lint import write_semantic_proposals
     wiki = tmp_path / "wiki"
     wiki.mkdir()
     rq = tmp_path / "review-queue.md"
@@ -211,7 +211,7 @@ def test_write_semantic_proposals_replaces_unannotated_section(tmp_path):
 
 
 def test_write_semantic_proposals_appends_when_annotations_present(tmp_path):
-    from pipeline.lint_wiki import write_semantic_proposals
+    from pipeline.phase_b_lint import write_semantic_proposals
     wiki = tmp_path / "wiki"
     wiki.mkdir()
     rq = tmp_path / "review-queue.md"
@@ -238,7 +238,7 @@ def test_write_semantic_proposals_appends_when_annotations_present(tmp_path):
 
 
 def test_cleanup_review_queue_removes_approved_keeps_deferred(tmp_path):
-    from pipeline.lint_wiki import _cleanup_review_queue
+    from pipeline.phase_b_lint import _cleanup_review_queue
     rq = tmp_path / "review-queue.md"
     rq.write_text(
         "# Queue\n"
@@ -268,7 +268,7 @@ def test_cleanup_review_queue_removes_approved_keeps_deferred(tmp_path):
 
 
 def test_build_entity_catalogue(tmp_path):
-    from pipeline.lint_wiki import _build_entity_catalogue
+    from pipeline.phase_b_lint import _build_entity_catalogue
     from pathlib import Path
     wiki = tmp_path / "wiki"
     (wiki / "actors").mkdir(parents=True)
@@ -282,7 +282,7 @@ def test_build_entity_catalogue(tmp_path):
 
 
 def test_find_unlinked_candidates_returns_match(tmp_path):
-    from pipeline.lint_wiki import _find_unlinked_candidates
+    from pipeline.phase_b_lint import _find_unlinked_candidates
     catalogue = {"Solarize Ann Arbor": "initiatives/solarize-ann-arbor"}
     body = "The Solarize Ann Arbor program installed 1.3 MW of solar in Year One."
     candidates = _find_unlinked_candidates(body, catalogue)
@@ -290,7 +290,7 @@ def test_find_unlinked_candidates_returns_match(tmp_path):
 
 
 def test_find_unlinked_candidates_skips_already_linked(tmp_path):
-    from pipeline.lint_wiki import _find_unlinked_candidates
+    from pipeline.phase_b_lint import _find_unlinked_candidates
     catalogue = {"Solarize Ann Arbor": "initiatives/solarize-ann-arbor"}
     body = "The [[initiatives/solarize-ann-arbor|Solarize Ann Arbor]] program runs city-wide."
     candidates = _find_unlinked_candidates(body, catalogue)
@@ -298,7 +298,7 @@ def test_find_unlinked_candidates_skips_already_linked(tmp_path):
 
 
 def test_find_unlinked_candidates_skips_short_titles(tmp_path):
-    from pipeline.lint_wiki import _find_unlinked_candidates
+    from pipeline.phase_b_lint import _find_unlinked_candidates
     catalogue = {"EV": "technology/ev", "OSI": "actors/osi"}
     body = "The EV program is run by OSI."
     candidates = _find_unlinked_candidates(body, catalogue)
@@ -307,7 +307,7 @@ def test_find_unlinked_candidates_skips_short_titles(tmp_path):
 
 
 def test_parse_approved_proposals_finds_link(tmp_path):
-    from pipeline.lint_wiki import _parse_approved_proposals
+    from pipeline.phase_b_lint import _parse_approved_proposals
     rq = tmp_path / "review-queue.md"
     rq.write_text(
         "## Backlink Lint — 2026-06-26\n\n"
@@ -327,7 +327,7 @@ def test_parse_approved_proposals_finds_link(tmp_path):
 
 
 def test_cleanup_removes_approved_link(tmp_path):
-    from pipeline.lint_wiki import _cleanup_review_queue
+    from pipeline.phase_b_lint import _cleanup_review_queue
     rq = tmp_path / "review-queue.md"
     rq.write_text(
         "## Backlink Lint — 2026-06-26\n\n"
@@ -346,7 +346,7 @@ def test_cleanup_removes_approved_link(tmp_path):
 
 
 def test_cleanup_review_queue_keeps_unannotated_blocks(tmp_path):
-    from pipeline.lint_wiki import _cleanup_review_queue
+    from pipeline.phase_b_lint import _cleanup_review_queue
     rq = tmp_path / "review-queue.md"
     rq.write_text(
         "\n## Semantic Lint — 2026-06-26\n\n"
@@ -363,7 +363,7 @@ def test_cleanup_review_queue_keeps_unannotated_blocks(tmp_path):
 
 
 def test_rewrite_inbound_links(tmp_path):
-    from pipeline.lint_wiki import _rewrite_inbound_links
+    from pipeline.phase_b_lint import _rewrite_inbound_links
     wiki = tmp_path / "wiki"
     wiki.mkdir()
     (wiki / "actors").mkdir()

@@ -2,17 +2,17 @@
 On-demand post-ingest wiki linter.
 
 Usage:
-  python -m pipeline.lint_wiki --wiki-root wiki --structural
-  python -m pipeline.lint_wiki --wiki-root wiki --semantic
-  python -m pipeline.lint_wiki --wiki-root wiki --backlink [--scope strategies overviews]
-  python -m pipeline.lint_wiki --wiki-root wiki --apply
+  python -m pipeline.phase_b_lint --wiki-root wiki --structural
+  python -m pipeline.phase_b_lint --wiki-root wiki --semantic
+  python -m pipeline.phase_b_lint --wiki-root wiki --backlink [--scope strategies overviews]
+  python -m pipeline.phase_b_lint --wiki-root wiki --apply
 """
 import re
 import json
 import argparse
 from datetime import date
 from pathlib import Path
-from pipeline.llm import chat
+from pipeline._llm import chat
 
 # Pages exempt from orphan and empty-page checks — hub pages, auto-generated, or top-level containers
 ORPHAN_EXEMPT_NAMES = frozenset({"index.md", "log.md", "hot.md"})
@@ -444,7 +444,7 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
     Returns list of proposal dicts with keys:
       type, page_a, page_b, confidence, reasoning
     """
-    from pipeline.alias_registry import fuzzy_candidates
+    from pipeline._aliases import fuzzy_candidates
 
     root = Path(wiki_root)
     proposals = []
@@ -721,8 +721,8 @@ def _append_merge_log(merge_log_path: str, entry: dict) -> None:
 
 def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> None:
     """Execute approved proposals from review-queue.md, then clean resolved items from the queue."""
-    from pipeline.merge_pages import merge_pages as _merge_pages
-    from pipeline.alias_registry import add_alias
+    from pipeline.pass2c_merge import merge_pages as _merge_pages
+    from pipeline._aliases import add_alias
 
     rq_path = str(Path(wiki_root).parent / "review-queue.md")
     if not Path(rq_path).exists():

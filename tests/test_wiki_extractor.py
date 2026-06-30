@@ -78,7 +78,7 @@ MOCK_PAGES = [
 
 
 def test_parse_llm_pages_response_returns_list():
-    from pipeline.wiki_writer import parse_llm_pages_response
+    from pipeline.pass2b_extract import parse_llm_pages_response
     raw = json.dumps(MOCK_PAGES)
     pages = parse_llm_pages_response(raw)
     assert len(pages) == 2
@@ -86,26 +86,26 @@ def test_parse_llm_pages_response_returns_list():
 
 
 def test_parse_llm_pages_response_handles_markdown_fence():
-    from pipeline.wiki_writer import parse_llm_pages_response
+    from pipeline.pass2b_extract import parse_llm_pages_response
     raw = f"```json\n{json.dumps(MOCK_PAGES)}\n```"
     pages = parse_llm_pages_response(raw)
     assert len(pages) == 2
 
 
 def test_parse_llm_pages_response_returns_empty_list():
-    from pipeline.wiki_writer import parse_llm_pages_response
+    from pipeline.pass2b_extract import parse_llm_pages_response
     pages = parse_llm_pages_response("[]")
     assert pages == []
 
 
 def test_validate_page_spec_accepts_valid_initiative():
-    from pipeline.wiki_writer import validate_page_spec
+    from pipeline.pass2b_extract import validate_page_spec
     errors = validate_page_spec(MOCK_PAGES[0])
     assert errors == []
 
 
 def test_validate_page_spec_rejects_missing_fields():
-    from pipeline.wiki_writer import validate_page_spec
+    from pipeline.pass2b_extract import validate_page_spec
     bad = {"page_type": "initiative"}
     errors = validate_page_spec(bad)
     assert any("slug" in e for e in errors)
@@ -114,7 +114,7 @@ def test_validate_page_spec_rejects_missing_fields():
 
 
 def test_validate_page_spec_rejects_invalid_page_type():
-    from pipeline.wiki_writer import validate_page_spec
+    from pipeline.pass2b_extract import validate_page_spec
     bad = {**MOCK_PAGES[0], "page_type": "unknown-type"}
     errors = validate_page_spec(bad)
     assert any("page_type" in e for e in errors)
@@ -122,7 +122,7 @@ def test_validate_page_spec_rejects_invalid_page_type():
 
 def test_validate_page_spec_rejects_funding_legacy_name():
     """The old 'funding' type is gone — must use 'funding-event'."""
-    from pipeline.wiki_writer import validate_page_spec
+    from pipeline.pass2b_extract import validate_page_spec
     bad = {**MOCK_PAGES[0], "page_type": "funding"}
     errors = validate_page_spec(bad)
     assert any("page_type" in e for e in errors)
@@ -130,7 +130,7 @@ def test_validate_page_spec_rejects_funding_legacy_name():
 
 def test_validate_page_spec_rejects_forbidden_types():
     """Overview, strategy, topic, mechanism, synthesis must never be created by Pass 2."""
-    from pipeline.wiki_writer import validate_page_spec
+    from pipeline.pass2b_extract import validate_page_spec
     for forbidden in ("overview", "strategy", "topic", "synthesis", "mechanism"):
         spec = {**MOCK_PAGES[0], "page_type": forbidden}
         errors = validate_page_spec(spec)
@@ -141,7 +141,7 @@ def test_validate_page_spec_rejects_forbidden_types():
 
 def test_validate_page_spec_accepts_all_llm_writable_types():
     """All Pass 2 LLM-writable types pass type validation (strategy removed — now Pass 1 only)."""
-    from pipeline.wiki_writer import validate_page_spec
+    from pipeline.pass2b_extract import validate_page_spec
     for pt in ("initiative", "actor", "funding-event", "technology",
                "location", "meeting", "framing", "political-event", "contradiction"):
         spec = {
@@ -157,7 +157,7 @@ def test_validate_page_spec_accepts_all_llm_writable_types():
 
 def test_validate_page_spec_rejects_strategy_and_commitment_types():
     """strategy and commitment are forbidden in Pass 2."""
-    from pipeline.wiki_writer import validate_page_spec
+    from pipeline.pass2b_extract import validate_page_spec
     for pt in ("commitment", "strategy"):
         spec = {**MOCK_PAGES[0], "page_type": pt}
         errors = validate_page_spec(spec)
@@ -167,7 +167,7 @@ def test_validate_page_spec_rejects_strategy_and_commitment_types():
 
 
 def test_write_or_append_page_creates_new_file(tmp_path):
-    from pipeline.wiki_writer import write_or_append_page
+    from pipeline.pass2b_extract import write_or_append_page
     write_or_append_page(MOCK_PAGES[0], wiki_root=str(tmp_path), source_uuid="cap-2020")
     out = tmp_path / "initiatives" / "community-choice-aggregation.md"
     assert out.exists()
@@ -177,7 +177,7 @@ def test_write_or_append_page_creates_new_file(tmp_path):
 
 
 def test_write_or_append_page_appends_to_existing(tmp_path):
-    from pipeline.wiki_writer import write_or_append_page
+    from pipeline.pass2b_extract import write_or_append_page
     write_or_append_page(MOCK_PAGES[0], wiki_root=str(tmp_path), source_uuid="cap-2020")
     original_path = tmp_path / "initiatives" / "community-choice-aggregation.md"
     original_content = original_path.read_text()
@@ -193,7 +193,7 @@ def test_write_or_append_page_appends_to_existing(tmp_path):
 
 
 def test_write_or_append_page_frontmatter_is_valid_yaml(tmp_path):
-    from pipeline.wiki_writer import write_or_append_page
+    from pipeline.pass2b_extract import write_or_append_page
     write_or_append_page(MOCK_PAGES[1], wiki_root=str(tmp_path), source_uuid="cap-2020")
     out = tmp_path / "actors" / "osi.md"
     content = out.read_text()
@@ -203,11 +203,11 @@ def test_write_or_append_page_frontmatter_is_valid_yaml(tmp_path):
     assert parsed["actor-type"] == "government-office"
 
 
-@patch("pipeline.wiki_writer.chat")
+@patch("pipeline.pass2b_extract.chat")
 def test_extract_wiki_pages_from_chunk_calls_llm(mock_chat, tmp_path):
     mock_chat.return_value = json.dumps(MOCK_PAGES)
 
-    from pipeline.wiki_writer import extract_wiki_pages_from_chunk
+    from pipeline.pass2b_extract import extract_wiki_pages_from_chunk
     pages = extract_wiki_pages_from_chunk(
         chunk_text=SAMPLE_CHUNK,
         source_uuid="cap-2020",
@@ -223,11 +223,11 @@ def test_extract_wiki_pages_from_chunk_calls_llm(mock_chat, tmp_path):
     assert (tmp_path / "actors" / "osi.md").exists()
 
 
-@patch("pipeline.wiki_writer.chat")
+@patch("pipeline.pass2b_extract.chat")
 def test_extract_wiki_pages_from_chunk_handles_llm_failure(mock_chat, tmp_path):
     mock_chat.side_effect = Exception("API error")
 
-    from pipeline.wiki_writer import extract_wiki_pages_from_chunk
+    from pipeline.pass2b_extract import extract_wiki_pages_from_chunk
     pages = extract_wiki_pages_from_chunk(
         chunk_text=SAMPLE_CHUNK,
         source_uuid="cap-2020",
@@ -240,11 +240,11 @@ def test_extract_wiki_pages_from_chunk_handles_llm_failure(mock_chat, tmp_path):
     assert pages == []
 
 
-@patch("pipeline.wiki_writer.chat")
+@patch("pipeline.pass2b_extract.chat")
 def test_extract_wiki_pages_from_chunk_handles_json_error(mock_chat, tmp_path):
     mock_chat.return_value = "invalid json {"
 
-    from pipeline.wiki_writer import extract_wiki_pages_from_chunk
+    from pipeline.pass2b_extract import extract_wiki_pages_from_chunk
     pages = extract_wiki_pages_from_chunk(
         chunk_text=SAMPLE_CHUNK,
         source_uuid="cap-2020",

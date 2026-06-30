@@ -1,9 +1,9 @@
-from pipeline.llm import stream_chat
+from pipeline._llm import stream_chat
 import json
 import re
 import yaml
 from pathlib import Path
-from pipeline.models import validate_quad, WikiPage
+from pipeline._models import validate_quad, WikiPage
 
 
 QUADS_SYSTEM = """You are a temporal fact extractor for the A2Zero climate wiki.

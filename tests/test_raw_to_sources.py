@@ -2,7 +2,7 @@ import pytest
 import yaml
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from pipeline.raw_to_sources import write_source, build_frontmatter
+from pipeline._legacy.raw_to_sources import write_source, build_frontmatter
 
 
 def test_build_frontmatter_annual_report():
@@ -56,10 +56,10 @@ def test_write_source_frontmatter_is_valid_yaml(tmp_path):
     assert parsed["uuid"] == "test-doc"
 
 
-@patch("pipeline.raw_to_sources.chat")
+@patch("pipeline._legacy.raw_to_sources.chat")
 def test_clean_with_llm_calls_chat(mock_chat):
     mock_chat.return_value = "## Cleaned content"
-    from pipeline.raw_to_sources import clean_with_llm
+    from pipeline._legacy.raw_to_sources import clean_with_llm
     result = clean_with_llm("Raw extracted text", uuid="test-year1")
     assert mock_chat.called
     assert "Cleaned content" in result

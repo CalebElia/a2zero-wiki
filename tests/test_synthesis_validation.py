@@ -1,7 +1,7 @@
-from pipeline.synthesis_validation import BrokenRef, ValidationReport
+from pipeline.phase_c_validate import BrokenRef, ValidationReport
 import json
 from pathlib import Path
-from pipeline.synthesis_validation import validate_synthesis
+from pipeline.phase_c_validate import validate_synthesis
 
 
 def test_broken_ref_dataclass():
@@ -130,7 +130,7 @@ def test_validate_synthesis_deduplicates(tmp_path):
     assert corrected["core-actors"] == ["actors/foo"]
 
 
-from pipeline.synthesis_validation import validate_narrative
+from pipeline.phase_c_validate import validate_narrative
 
 
 def test_validate_narrative_passes_clean_prose(tmp_path):
@@ -174,7 +174,7 @@ def test_validate_narrative_handles_bare_wikilinks(tmp_path):
     assert report.broken[0].slug == "actors/missing"
 
 
-from pipeline.synthesis_validation import log_dropped_ghosts
+from pipeline.phase_c_validate import log_dropped_ghosts
 
 
 def test_log_dropped_ghosts_appends_entries(tmp_path):
@@ -206,7 +206,7 @@ def test_log_dropped_ghosts_is_noop_on_empty_list(tmp_path):
 
 import json
 from unittest.mock import patch
-from pipeline.synthesis_validation import revise_synthesis
+from pipeline.phase_c_validate import revise_synthesis
 
 
 def test_revise_synthesis_calls_llm_and_returns_corrected_dict():
@@ -226,7 +226,7 @@ def test_revise_synthesis_calls_llm_and_returns_corrected_dict():
         "core-actors": ["actors/foo"],
         "cross-strategy-links": [],
     })
-    with patch("pipeline.synthesis_validation.chat") as mock_chat:
+    with patch("pipeline.phase_c_validate.chat") as mock_chat:
         mock_chat.return_value = corrected_json
         result = revise_synthesis(synthesis, report, inventory)
     assert "actors/ghost" not in result["core-actors"]
@@ -238,14 +238,14 @@ def test_revise_synthesis_returns_original_on_llm_failure():
     report = ValidationReport(broken=[
         BrokenRef(slug="actors/foo", location="core-actors", display="Foo", context="")
     ])
-    with patch("pipeline.synthesis_validation.chat") as mock_chat:
+    with patch("pipeline.phase_c_validate.chat") as mock_chat:
         mock_chat.side_effect = Exception("api error")
         result = revise_synthesis(synthesis, report, inventory=[])
     # Falls back to original synthesis (with the ghost still in it) rather than crashing
     assert result == synthesis
 
 
-from pipeline.synthesis_validation import revise_narrative
+from pipeline.phase_c_validate import revise_narrative
 
 
 def test_revise_narrative_calls_llm_and_returns_corrected_prose():
@@ -256,7 +256,7 @@ def test_revise_narrative_calls_llm_and_returns_corrected_prose():
     ])
     inventory = []
     corrected = "The [[actors/foo|Foo]] partnered with Ghost Inc."
-    with patch("pipeline.synthesis_validation.chat") as mock_chat:
+    with patch("pipeline.phase_c_validate.chat") as mock_chat:
         mock_chat.return_value = corrected
         result = revise_narrative(narrative, report, inventory)
     assert "[[actors/ghost" not in result
@@ -268,7 +268,7 @@ def test_revise_narrative_returns_original_on_llm_failure():
     report = ValidationReport(broken=[
         BrokenRef(slug="actors/foo", location="narrative", display="Foo", context="")
     ])
-    with patch("pipeline.synthesis_validation.chat") as mock_chat:
+    with patch("pipeline.phase_c_validate.chat") as mock_chat:
         mock_chat.side_effect = Exception("api error")
         result = revise_narrative(narrative, report, inventory=[])
     assert result == narrative

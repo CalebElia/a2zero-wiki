@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from pipeline.comprehend import empty_plan, write_integration_plan, load_integration_plan
+from pipeline.pass1a_comprehend import empty_plan, write_integration_plan, load_integration_plan
 
 
 def test_empty_plan_has_all_required_fields():
@@ -40,12 +40,12 @@ def test_load_integration_plan_returns_empty_when_missing(tmp_path):
 
 
 from unittest.mock import patch
-from pipeline.comprehend import build_integration_plan
+from pipeline.pass1a_comprehend import build_integration_plan
 
 
 def test_build_integration_plan_returns_empty_when_no_digest():
     """First-ingest path: no digest yet → empty plan, no LLM call."""
-    with patch("pipeline.comprehend.chat") as mock_chat:
+    with patch("pipeline.pass1a_comprehend.chat") as mock_chat:
         plan = build_integration_plan(
             source_content="some source text",
             source_uuid="first-source",
@@ -66,7 +66,7 @@ def test_build_integration_plan_calls_llm_and_parses_json():
         "retrieve-for-context": ["initiatives/solarize-ann-arbor"],
         "theme-connections": [],
     })
-    with patch("pipeline.comprehend.chat") as mock_chat:
+    with patch("pipeline.pass1a_comprehend.chat") as mock_chat:
         mock_chat.return_value = llm_output
         plan = build_integration_plan(
             source_content="source text",
@@ -89,7 +89,7 @@ def test_build_integration_plan_handles_fenced_json():
         "retrieve-for-context": [],
         "theme-connections": [],
     }) + "\n```"
-    with patch("pipeline.comprehend.chat") as mock_chat:
+    with patch("pipeline.pass1a_comprehend.chat") as mock_chat:
         mock_chat.return_value = llm_output
         plan = build_integration_plan(
             source_content="x",
@@ -102,7 +102,7 @@ def test_build_integration_plan_handles_fenced_json():
 
 def test_build_integration_plan_hard_fails_on_llm_error_when_digest_present():
     """Per spec: digest exists + LLM fails → hard fail (do not silently degrade)."""
-    with patch("pipeline.comprehend.chat") as mock_chat:
+    with patch("pipeline.pass1a_comprehend.chat") as mock_chat:
         mock_chat.side_effect = Exception("API error")
         try:
             build_integration_plan(
@@ -117,7 +117,7 @@ def test_build_integration_plan_hard_fails_on_llm_error_when_digest_present():
         raise AssertionError("Expected hard fail, got silent return")
 
 
-from pipeline.comprehend import validate_plan_slugs
+from pipeline.pass1a_comprehend import validate_plan_slugs
 
 
 def test_validate_plan_slugs_strips_ghost_entries(tmp_path):
@@ -173,7 +173,7 @@ def test_validate_plan_slugs_resolves_aliases(tmp_path):
     assert cleaned["retrieve-for-context"] == ["actors/office-of-sustainability-and-innovations"]
 
 
-from pipeline.comprehend import load_retrieved_bodies, RETRIEVE_TOKEN_BUDGET
+from pipeline.pass1a_comprehend import load_retrieved_bodies, RETRIEVE_TOKEN_BUDGET
 
 
 def test_load_retrieved_bodies_returns_under_budget(tmp_path):
@@ -198,7 +198,7 @@ def test_load_retrieved_bodies_returns_under_budget(tmp_path):
 def test_load_retrieved_bodies_prioritizes_extends_when_over_budget(tmp_path, monkeypatch):
     """When over budget: extends entries kept first, others dropped."""
     # Shrink budget for the test
-    monkeypatch.setattr("pipeline.comprehend.RETRIEVE_TOKEN_BUDGET", 200)
+    monkeypatch.setattr("pipeline.pass1a_comprehend.RETRIEVE_TOKEN_BUDGET", 200)
     wiki = tmp_path / "wiki"
     (wiki / "initiatives").mkdir(parents=True)
     # Create pages where each body is roughly ~100 tokens (400+ chars)
@@ -237,7 +237,7 @@ def test_load_retrieved_bodies_skips_missing_files(tmp_path):
     assert set(bodies.keys()) == {"initiatives/real"}
 
 
-from pipeline.comprehend import log_ingest_stats
+from pipeline.pass1a_comprehend import log_ingest_stats
 
 
 def test_log_ingest_stats_appends_jsonl(tmp_path):

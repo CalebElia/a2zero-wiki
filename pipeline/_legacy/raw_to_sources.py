@@ -2,7 +2,7 @@ import yaml
 import pdfplumber
 from pathlib import Path
 from datetime import date
-from pipeline.llm import chat
+from pipeline._llm import chat
 
 
 CLEAN_SYSTEM = """You are a document cleaning assistant for the A2Zero climate wiki pipeline.

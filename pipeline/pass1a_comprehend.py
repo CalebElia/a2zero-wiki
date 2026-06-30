@@ -42,7 +42,7 @@ def load_integration_plan(plans_dir: str, source_uuid: str) -> dict:
 
 import re
 from datetime import datetime, timezone
-from pipeline.llm import chat
+from pipeline._llm import chat
 
 
 _COMPREHEND_SYSTEM = """You are the Comprehend pass for the A2Zero knowledge wiki ingest pipeline.
@@ -146,7 +146,7 @@ def build_integration_plan(
     return plan
 
 
-from pipeline.synthesis_validation import _exists, _resolve_alias, SUPPRESS_SLUGS
+from pipeline.phase_c_validate import _exists, _resolve_alias, SUPPRESS_SLUGS
 
 
 def validate_plan_slugs(plan: dict, wiki_root: str, aliases: dict) -> dict:

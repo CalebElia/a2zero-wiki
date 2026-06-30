@@ -4,12 +4,12 @@ import shutil
 import yaml
 from datetime import date
 from pathlib import Path
-from pipeline.raw_to_sources import convert_annual_report
-from pipeline.wiki_pages import extract_quads_from_source
-from pipeline.post_ingest import run_post_ingest
-from pipeline.ldp import run_ldp_ingest
-from pipeline.holistic_synthesizer import synthesize_source
-from pipeline.wiki_index import rebuild_index, append_log as wiki_append_log
+from pipeline._legacy.raw_to_sources import convert_annual_report
+from pipeline._pages import extract_quads_from_source
+from pipeline._legacy.post_ingest import run_post_ingest
+from pipeline.pass2a_chunk_loop import run_ldp_ingest
+from pipeline.pass1b_synthesize import synthesize_source
+from pipeline.pass3_finalize import rebuild_index, append_log as wiki_append_log
 
 
 def _should_use_ldp(source_content: str) -> bool:
@@ -152,14 +152,14 @@ def run_source_ingest(
         return "\n".join(lines)
 
     # ── Pass 1A: Comprehend → integration plan ───────────────────────────────
-    from pipeline.comprehend import (
+    from pipeline.pass1a_comprehend import (
         build_integration_plan,
         validate_plan_slugs,
         write_integration_plan,
         load_retrieved_bodies,
         log_ingest_stats,
     )
-    from pipeline.alias_registry import load_aliases
+    from pipeline._aliases import load_aliases
     import time as _time
 
     digest_path = Path(wiki_root) / "digest.md"
@@ -252,7 +252,7 @@ def run_source_ingest(
                 out_path=quads_path,
             )
         if not quads_only:
-            from pipeline.wiki_writer import extract_wiki_pages_from_chunk
+            from pipeline.pass2b_extract import extract_wiki_pages_from_chunk
             body = re.sub(r"^---\n.*?\n---\n", "", source_content, flags=re.DOTALL).strip()
             _plan_ctx = ""
             if integration_plan or retrieved_bodies:
@@ -288,7 +288,7 @@ def run_source_ingest(
         # in this source.  On subsequent ingests, Pass 1.5 can fuzzy-match against
         # these titles and redirect to the canonical slug instead of creating
         # year-over-year name-drift duplicates.
-        from pipeline.alias_registry import seed_aliases_from_ingest
+        from pipeline._aliases import seed_aliases_from_ingest
         _source_wikilink = f"sources/{Path(source_path).stem}" if "/" not in source_rel_path else source_rel_path
         _seeded = seed_aliases_from_ingest(
             wiki_root=wiki_root,

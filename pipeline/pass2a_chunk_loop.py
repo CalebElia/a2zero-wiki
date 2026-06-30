@@ -1,8 +1,8 @@
 import json
 import re
 from pathlib import Path
-from pipeline.llm import chat
-from pipeline.wiki_pages import (
+from pipeline._llm import chat
+from pipeline._pages import (
     parse_llm_quads_response,
     append_quads,
 )
@@ -232,8 +232,8 @@ def extract_quads_chunked(
     """
     from datetime import date as _date
     # Function-level import to avoid circular-import risk at module load time.
-    from pipeline.wiki_writer import extract_wiki_pages_from_chunk
-    from pipeline.alias_registry import load_aliases as _load_aliases
+    from pipeline.pass2b_extract import extract_wiki_pages_from_chunk
+    from pipeline._aliases import load_aliases as _load_aliases
 
     if run_date is None:
         run_date = _date.today().isoformat()

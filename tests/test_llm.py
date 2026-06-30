@@ -25,8 +25,8 @@ def _make_stream_ctx(text: str):
 def test_chat_anthropic_returns_text(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    from pipeline.llm import chat
-    with patch("pipeline.llm.anthropic") as mock_anthropic:
+    from pipeline._llm import chat
+    with patch("pipeline._llm.anthropic") as mock_anthropic:
         mock_anthropic.Anthropic.return_value.messages.create.return_value = (
             _make_anthropic_response("hello world")
         )
@@ -42,8 +42,8 @@ def test_chat_anthropic_returns_text(monkeypatch):
 def test_chat_uses_correct_anthropic_model(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    from pipeline.llm import chat
-    with patch("pipeline.llm.anthropic") as mock_anthropic:
+    from pipeline._llm import chat
+    with patch("pipeline._llm.anthropic") as mock_anthropic:
         mock_client = mock_anthropic.Anthropic.return_value
         mock_client.messages.create.return_value = _make_anthropic_response("ok")
         chat(system="s", messages=[{"role": "user", "content": "u"}],
@@ -55,8 +55,8 @@ def test_chat_uses_correct_anthropic_model(monkeypatch):
 def test_chat_model_override_bypasses_map(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
     monkeypatch.setenv("LLM_MODEL_OVERRIDE", "claude-haiku-4-5-20251001")
-    from pipeline.llm import chat
-    with patch("pipeline.llm.anthropic") as mock_anthropic:
+    from pipeline._llm import chat
+    with patch("pipeline._llm.anthropic") as mock_anthropic:
         mock_client = mock_anthropic.Anthropic.return_value
         mock_client.messages.create.return_value = _make_anthropic_response("ok")
         chat(system="s", messages=[{"role": "user", "content": "u"}],
@@ -70,8 +70,8 @@ def test_chat_model_override_bypasses_map(monkeypatch):
 def test_stream_chat_anthropic_returns_text(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    from pipeline.llm import stream_chat
-    with patch("pipeline.llm.anthropic") as mock_anthropic:
+    from pipeline._llm import stream_chat
+    with patch("pipeline._llm.anthropic") as mock_anthropic:
         mock_anthropic.Anthropic.return_value.messages.stream.return_value = (
             _make_stream_ctx("streamed response")
         )
@@ -87,8 +87,8 @@ def test_stream_chat_anthropic_returns_text(monkeypatch):
 def test_stream_chat_returns_none_on_max_tokens(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    from pipeline.llm import stream_chat
-    with patch("pipeline.llm.anthropic") as mock_anthropic:
+    from pipeline._llm import stream_chat
+    with patch("pipeline._llm.anthropic") as mock_anthropic:
         truncated = _make_anthropic_response("partial...")
         truncated.stop_reason = "max_tokens"
         ctx = MagicMock()
@@ -106,20 +106,20 @@ def test_stream_chat_returns_none_on_max_tokens(monkeypatch):
 def test_chat_raises_on_unknown_provider(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "groq")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    from pipeline.llm import chat
+    from pipeline._llm import chat
     with pytest.raises(ValueError, match="Unknown LLM_PROVIDER"):
         chat(system="s", messages=[], max_tokens=10, model_hint="extraction")
 
 
 def test_strip_cache_control_is_importable():
-    from pipeline.llm import _strip_cache_control
+    from pipeline._llm import _strip_cache_control
     assert callable(_strip_cache_control)
 
 
 # ── _strip_cache_control (behavioral) ────────────────────────────────────────
 
 def test_strip_cache_control_removes_key_from_content_blocks():
-    from pipeline.llm import _strip_cache_control
+    from pipeline._llm import _strip_cache_control
     messages = [
         {
             "role": "user",
@@ -138,7 +138,7 @@ def test_strip_cache_control_removes_key_from_content_blocks():
 
 
 def test_strip_cache_control_leaves_string_content_untouched():
-    from pipeline.llm import _strip_cache_control
+    from pipeline._llm import _strip_cache_control
     messages = [{"role": "user", "content": "just a string"}]
     result = _strip_cache_control(messages)
     assert result == messages
@@ -149,8 +149,8 @@ def test_strip_cache_control_leaves_string_content_untouched():
 def test_chat_openai_returns_text(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "openai")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    from pipeline.llm import chat
-    with patch("pipeline.llm.openai") as mock_openai:
+    from pipeline._llm import chat
+    with patch("pipeline._llm.openai") as mock_openai:
         choice = MagicMock()
         choice.message.content = "openai response"
         mock_openai.OpenAI.return_value.chat.completions.create.return_value = (
@@ -168,8 +168,8 @@ def test_chat_openai_returns_text(monkeypatch):
 def test_chat_openai_prepends_system_message(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "openai")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    from pipeline.llm import chat
-    with patch("pipeline.llm.openai") as mock_openai:
+    from pipeline._llm import chat
+    with patch("pipeline._llm.openai") as mock_openai:
         choice = MagicMock()
         choice.message.content = "ok"
         mock_openai.OpenAI.return_value.chat.completions.create.return_value = (
@@ -185,8 +185,8 @@ def test_chat_openai_prepends_system_message(monkeypatch):
 def test_chat_openai_strips_cache_control(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "openai")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    from pipeline.llm import chat
-    with patch("pipeline.llm.openai") as mock_openai:
+    from pipeline._llm import chat
+    with patch("pipeline._llm.openai") as mock_openai:
         choice = MagicMock()
         choice.message.content = "ok"
         mock_openai.OpenAI.return_value.chat.completions.create.return_value = (
@@ -209,8 +209,8 @@ def test_chat_openai_strips_cache_control(monkeypatch):
 def test_chat_openai_uses_correct_model(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "openai")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    from pipeline.llm import chat
-    with patch("pipeline.llm.openai") as mock_openai:
+    from pipeline._llm import chat
+    with patch("pipeline._llm.openai") as mock_openai:
         choice = MagicMock()
         choice.message.content = "ok"
         mock_openai.OpenAI.return_value.chat.completions.create.return_value = (
@@ -227,7 +227,7 @@ def test_chat_openai_uses_correct_model(monkeypatch):
 def test_stream_chat_openai_returns_text(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "openai")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    from pipeline.llm import stream_chat
+    from pipeline._llm import stream_chat
 
     def _make_chunks(words):
         for w in words:
@@ -236,7 +236,7 @@ def test_stream_chat_openai_returns_text(monkeypatch):
             chunk.choices[0].delta.content = w
             yield chunk
 
-    with patch("pipeline.llm.openai") as mock_openai:
+    with patch("pipeline._llm.openai") as mock_openai:
         stream_ctx = MagicMock()
         stream_ctx.__enter__ = MagicMock(return_value=_make_chunks(["hello", " ", "world"]))
         stream_ctx.__exit__ = MagicMock(return_value=False)
@@ -253,7 +253,7 @@ def test_stream_chat_openai_returns_text(monkeypatch):
 def test_stream_chat_openai_strips_cache_control(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "openai")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
-    from pipeline.llm import stream_chat
+    from pipeline._llm import stream_chat
 
     def _single_chunk(text):
         chunk = MagicMock()
@@ -261,7 +261,7 @@ def test_stream_chat_openai_strips_cache_control(monkeypatch):
         chunk.choices[0].delta.content = text
         yield chunk
 
-    with patch("pipeline.llm.openai") as mock_openai:
+    with patch("pipeline._llm.openai") as mock_openai:
         stream_ctx = MagicMock()
         stream_ctx.__enter__ = MagicMock(return_value=_single_chunk("ok"))
         stream_ctx.__exit__ = MagicMock(return_value=False)

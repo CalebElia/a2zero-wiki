@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
-from pipeline.post_ingest import generate_review_queue
-from pipeline.quad_linter import LintReport
+from pipeline._legacy.post_ingest import generate_review_queue
+from pipeline._legacy.quad_linter import LintReport
 
 
 def test_generate_review_queue_creates_file(tmp_path):

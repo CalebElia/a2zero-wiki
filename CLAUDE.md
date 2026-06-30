@@ -51,7 +51,7 @@ review-queue.md       ← Live inbox: structural/semantic/backlink lint findings
 
 Run with:
 ```
-python -m pipeline.run_ingest source \
+python -m pipeline.orchestrator source \
   --source prepared/<type>/<uuid>.md \
   --uuid <uuid> \
   --title "<title>" \
@@ -79,47 +79,48 @@ Optional flags on the `source` subcommand:
 
 Post-ingest linting (on-demand):
 ```
-python -m pipeline.lint_wiki --wiki-root wiki --structural    # broken links, orphans
-python -m pipeline.lint_wiki --wiki-root wiki --semantic      # near-duplicate detection (LLM)
-python -m pipeline.lint_wiki --wiki-root wiki --backlink      # find missed entity mentions in strategy/overview bodies
-python -m pipeline.lint_wiki --wiki-root wiki --apply         # execute approved proposals from review-queue.md
+python -m pipeline.phase_b_lint --wiki-root wiki --structural    # broken links, orphans
+python -m pipeline.phase_b_lint --wiki-root wiki --semantic      # near-duplicate detection (LLM)
+python -m pipeline.phase_b_lint --wiki-root wiki --backlink      # find missed entity mentions in strategy/overview bodies
+python -m pipeline.phase_b_lint --wiki-root wiki --apply         # execute approved proposals from review-queue.md
 ```
 
 One-time enrichment (rarely needed; used after prompt changes):
 ```
-python -m pipeline.enrich_strategy_links --wiki-root wiki [--dry-run]
+python -m pipeline._legacy.enrich_strategy_links --wiki-root wiki [--dry-run]
 ```
 
 Phase C synthesis (run after lint + apply, before next ingest):
 ```
-python -m pipeline.synthesize_wiki --wiki-root wiki                                             # rebuild all 7 strategies + digest
-python -m pipeline.synthesize_wiki --wiki-root wiki --strategy strategies/strategy-1-renewable-grid  # single strategy
-python -m pipeline.synthesize_wiki --wiki-root wiki --digest-only                              # rebuild digest from existing synthesis: blocks
+python -m pipeline.phase_c_synthesize --wiki-root wiki                                             # rebuild all 7 strategies + digest
+python -m pipeline.phase_c_synthesize --wiki-root wiki --strategy strategies/strategy-1-renewable-grid  # single strategy
+python -m pipeline.phase_c_synthesize --wiki-root wiki --digest-only                              # rebuild digest from existing synthesis: blocks
 ```
 
-The synthesizer runs each LLM output through a deterministic validator that checks every entity slug against the filesystem. Broken references trigger a scoped Reviser LLM call that either substitutes a real entity or drops the bad slug; dropped slugs are logged to `wiki/meta/synthesis-ghosts.log` for human review. Recurring entries in that log signal entities worth either creating as pages or adding to `SUPPRESS_SLUGS` in `pipeline/synthesis_validation.py`. See `docs/architecture/synthesis-validation-loop.md`.
+The synthesizer runs each LLM output through a deterministic validator that checks every entity slug against the filesystem. Broken references trigger a scoped Reviser LLM call that either substitutes a real entity or drops the bad slug; dropped slugs are logged to `wiki/meta/synthesis-ghosts.log` for human review. Recurring entries in that log signal entities worth either creating as pages or adding to `SUPPRESS_SLUGS` in `pipeline/phase_c_validate.py`. See `docs/architecture/synthesis-validation-loop.md`.
 
 ## Pipeline Modules
 
 | File | Role |
 |---|---|
-| `run_ingest.py` | CLI entry point + three-pass orchestration |
-| `holistic_synthesizer.py` | Pass 1 Writer→Evaluator→Editor loop |
-| `wiki_writer.py` | Pass 2 chunk extraction (calls LDP for long docs) |
-| `ldp.py` | Long-document chunk loop with section maps |
-| `wiki_pages.py` | Page primitives (build/write/append) + `VALID_PAGE_TYPES` + quad extraction |
-| `wiki_index.py` | Pass 3 helpers: `rebuild_index`, `append_log`, `update_hot` |
-| `alias_registry.py` | Pass 1.5 alias resolution |
-| `merge_pages.py` | LLM merge for duplicate page bodies |
-| `lint_wiki.py` | Post-ingest linting (structural, semantic, backlink, apply) |
-| `synthesize_wiki.py` | Phase C synthesis: L1 strategy blocks + L2 digest |
-| `synthesis_validation.py` | Validate → Revise loop for synthesize_wiki outputs |
-| `comprehend.py` | Pass 1A Comprehend: read digest + source → integration plan |
-| `enrich_strategy_links.py` | One-time pass to inject entity wikilinks into strategy bodies |
-| `raw_to_sources.py` | PDF → cleaned markdown (currently paused) |
-| `post_ingest.py` + `quad_linter.py` | Quad pipeline review-queue generation (paused pending schema design) |
-| `models.py` | `WikiPage` dataclass + quad schema validation |
-| `registry.py` | Legacy entity registry (used by quad linter) |
+| `orchestrator.py` | CLI entry point + three-pass orchestration |
+| `pass1a_comprehend.py` | Pass 1A Comprehend: read digest + source → integration plan |
+| `pass1b_synthesize.py` | Pass 1B Writer→Evaluator→Editor loop |
+| `pass2a_chunk_loop.py` | Long-document chunk loop with section maps |
+| `pass2b_extract.py` | Pass 2 chunk extraction (calls chunk loop for long docs) |
+| `pass2c_merge.py` | LLM merge for duplicate page bodies |
+| `pass3_finalize.py` | Pass 3 helpers: `rebuild_index`, `append_log`, `update_hot` |
+| `phase_b_lint.py` | Post-ingest linting (structural, semantic, backlink, apply) |
+| `phase_c_synthesize.py` | Phase C synthesis: L1 strategy blocks + L2 digest |
+| `phase_c_validate.py` | Validate → Revise loop for phase_c_synthesize outputs |
+| `_aliases.py` | Pass 1.5 alias resolution |
+| `_pages.py` | Page primitives (build/write/append) + `VALID_PAGE_TYPES` + quad extraction |
+| `_models.py` | `WikiPage` dataclass + quad schema validation |
+| `_llm.py` | Multi-provider LLM client (Anthropic / OpenAI) |
+| `_legacy/enrich_strategy_links.py` | One-time pass to inject entity wikilinks into strategy bodies |
+| `_legacy/raw_to_sources.py` | PDF → cleaned markdown (currently paused) |
+| `_legacy/post_ingest.py` + `_legacy/quad_linter.py` | Quad pipeline review-queue generation (paused pending schema design) |
+| `_legacy/registry.py` | Legacy entity registry (used by quad linter) |
 
 ## Key Conventions
 

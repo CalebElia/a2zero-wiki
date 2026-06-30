@@ -3,12 +3,12 @@ import pytest
 import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from pipeline.wiki_pages import (
+from pipeline._pages import (
     append_quads,
     parse_llm_quads_response,
     build_quads_prompt,
 )
-from pipeline.models import validate_quad
+from pipeline._models import validate_quad
 
 
 FIXTURE_SOURCE = (Path(__file__).parent / "fixtures" / "sample_annual_report.md").read_text()
@@ -133,7 +133,7 @@ def test_parse_llm_quads_response_raises_on_prose_prefix():
     reason="requires ANTHROPIC_API_KEY and LLM_PROVIDER=anthropic",
 )
 def test_integration_extract_quads_from_fixture(tmp_path):
-    from pipeline.wiki_pages import extract_quads_from_source
+    from pipeline._pages import extract_quads_from_source
     out_file = tmp_path / "quads.jsonl"
     quads = extract_quads_from_source(FIXTURE_SOURCE, source_uuid="test-year1", out_path=str(out_file))
     assert len(quads) >= 1

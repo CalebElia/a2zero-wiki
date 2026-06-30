@@ -1,5 +1,5 @@
 # pipeline/merge_pages.py
-from pipeline.llm import chat
+from pipeline._llm import chat
 
 MERGE_SYSTEM = """You are integrating two wiki page bodies into one unified page body.
 

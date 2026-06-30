@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from pipeline.models import validate_quad
+from pipeline._models import validate_quad
 
 
 @dataclass

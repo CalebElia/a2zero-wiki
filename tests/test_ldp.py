@@ -46,7 +46,7 @@ Thank you for your commitment.
 
 
 def test_parse_section_map_finds_top_level_sections():
-    from pipeline.ldp import parse_section_map
+    from pipeline.pass2a_chunk_loop import parse_section_map
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     titles = [s["title"] for s in sm["sections"]]
     assert "WELCOME LETTER" in titles
@@ -54,7 +54,7 @@ def test_parse_section_map_finds_top_level_sections():
 
 
 def test_parse_section_map_finds_strategy_sections():
-    from pipeline.ldp import parse_section_map
+    from pipeline.pass2a_chunk_loop import parse_section_map
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     titles = [s["title"] for s in sm["sections"]]
     assert "Strategy 1: Renewable Grid" in titles
@@ -62,7 +62,7 @@ def test_parse_section_map_finds_strategy_sections():
 
 
 def test_parse_section_map_records_depth():
-    from pipeline.ldp import parse_section_map
+    from pipeline.pass2a_chunk_loop import parse_section_map
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     strat1 = next(s for s in sm["sections"] if s["title"] == "Strategy 1: Renewable Grid")
     assert strat1["depth"] == 2
@@ -71,7 +71,7 @@ def test_parse_section_map_records_depth():
 
 
 def test_parse_section_map_has_line_ranges():
-    from pipeline.ldp import parse_section_map
+    from pipeline.pass2a_chunk_loop import parse_section_map
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     for section in sm["sections"]:
         assert "line_start" in section
@@ -80,7 +80,7 @@ def test_parse_section_map_has_line_ranges():
 
 
 def test_parse_section_map_metadata():
-    from pipeline.ldp import parse_section_map
+    from pipeline.pass2a_chunk_loop import parse_section_map
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     assert sm["document_uuid"] == "test-cap"
     assert sm["ldp_version"] == "1.0"
@@ -88,7 +88,7 @@ def test_parse_section_map_metadata():
 
 
 def test_save_section_map_writes_json(tmp_path):
-    from pipeline.ldp import parse_section_map, save_section_map
+    from pipeline.pass2a_chunk_loop import parse_section_map, save_section_map
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     path = save_section_map(sm, str(tmp_path))
     assert Path(path).exists()
@@ -98,7 +98,7 @@ def test_save_section_map_writes_json(tmp_path):
 
 
 def test_build_chunk_context_header_contains_section_title():
-    from pipeline.ldp import build_chunk_context_header
+    from pipeline.pass2a_chunk_loop import build_chunk_context_header
     header = build_chunk_context_header(
         document_title="Ann Arbor A2Zero CAP",
         document_uuid="cap-2020",
@@ -115,7 +115,7 @@ def test_build_chunk_context_header_contains_section_title():
 
 
 def test_build_chunk_context_header_no_parent():
-    from pipeline.ldp import build_chunk_context_header
+    from pipeline.pass2a_chunk_loop import build_chunk_context_header
     header = build_chunk_context_header(
         document_title="Test Doc",
         document_uuid="test",
@@ -129,7 +129,7 @@ def test_build_chunk_context_header_no_parent():
 
 
 def test_get_chunks_returns_depth1_and_depth2_only():
-    from pipeline.ldp import parse_section_map, get_chunks
+    from pipeline.pass2a_chunk_loop import parse_section_map, get_chunks
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     chunks = get_chunks(sm)
     depths = {c["depth"] for c in chunks}
@@ -137,15 +137,15 @@ def test_get_chunks_returns_depth1_and_depth2_only():
 
 
 def test_extract_chunk_lines_returns_correct_text():
-    from pipeline.ldp import extract_chunk_lines
+    from pipeline.pass2a_chunk_loop import extract_chunk_lines
     lines = SAMPLE_SILVER.splitlines()
     # grab a known range
     text = extract_chunk_lines(lines, line_start=1, line_end=3)
     assert "---" in text
 
 
-@patch("pipeline.wiki_writer.extract_wiki_pages_from_chunk")
-@patch("pipeline.ldp.chat")
+@patch("pipeline.pass2b_extract.extract_wiki_pages_from_chunk")
+@patch("pipeline.pass2a_chunk_loop.chat")
 def test_extract_quads_chunked_calls_llm_per_chunk(mock_chat, mock_wiki_writer_extract):
     import json
     valid_quad = {
@@ -172,7 +172,7 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_chat, mock_wiki_writer_e
     mock_chat.return_value = json.dumps([valid_quad])
     # Pass 3 is stubbed out entirely — not under test here
     mock_wiki_writer_extract.return_value = []
-    from pipeline.ldp import parse_section_map, extract_quads_chunked
+    from pipeline.pass2a_chunk_loop import parse_section_map, extract_quads_chunked
     sm = parse_section_map(SAMPLE_SILVER, "test-cap")
     quads, pages_written = extract_quads_chunked(
         source_content=SAMPLE_SILVER,
@@ -185,8 +185,8 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_chat, mock_wiki_writer_e
     assert isinstance(pages_written, int)
 
 
-@patch("pipeline.wiki_writer.extract_wiki_pages_from_chunk")
-@patch("pipeline.ldp.chat")
+@patch("pipeline.pass2b_extract.extract_wiki_pages_from_chunk")
+@patch("pipeline.pass2a_chunk_loop.chat")
 def test_extract_quads_chunked_passes_plan_context_to_writer(mock_chat, mock_wiki_writer_extract, tmp_path):
     """When integration_plan + retrieved_bodies are supplied, they appear in the chunk's context_header."""
     section_map = {
@@ -201,7 +201,7 @@ def test_extract_quads_chunked_passes_plan_context_to_writer(mock_chat, mock_wik
     plan = {"strategies-touched": ["strategies/strategy-1-x"], "extends": [{"slug": "initiatives/x", "new-data": "y"}], "new-entities": [], "retrieve-for-context": ["initiatives/x"], "theme-connections": []}
     bodies = {"initiatives/x": "Existing body text for X"}
 
-    from pipeline.ldp import extract_quads_chunked
+    from pipeline.pass2a_chunk_loop import extract_quads_chunked
     extract_quads_chunked(
         source_content=source,
         section_map=section_map,
@@ -225,16 +225,16 @@ def test_run_source_ingest_routes_to_ldp_when_flagged(tmp_path):
     quads_file = tmp_path / "quads.jsonl"
     queue_file = tmp_path / "review-queue.md"
 
-    with patch("pipeline.run_ingest.synthesize_source") as mock_synth, \
-         patch("pipeline.run_ingest.run_ldp_ingest") as mock_ldp, \
-         patch("pipeline.run_ingest.rebuild_index") as mock_rebuild, \
-         patch("pipeline.run_ingest.wiki_append_log") as mock_log, \
-         patch("pipeline.run_ingest.run_post_ingest") as mock_post:
+    with patch("pipeline.orchestrator.synthesize_source") as mock_synth, \
+         patch("pipeline.orchestrator.run_ldp_ingest") as mock_ldp, \
+         patch("pipeline.orchestrator.rebuild_index") as mock_rebuild, \
+         patch("pipeline.orchestrator.wiki_append_log") as mock_log, \
+         patch("pipeline.orchestrator.run_post_ingest") as mock_post:
         mock_synth.return_value = {"stub_pages": []}
         mock_post.return_value = MagicMock(
             total_quads=0, schema_errors=[], dark_matter_ids=[]
         )
-        from pipeline.run_ingest import run_source_ingest
+        from pipeline.orchestrator import run_source_ingest
         run_source_ingest(
             source_path=str(source_file),
             uuid="test-cap",
@@ -256,19 +256,19 @@ def test_run_source_ingest_uses_single_pass_without_ldp_flag(tmp_path):
     quads_file = tmp_path / "quads.jsonl"
     queue_file = tmp_path / "review-queue.md"
 
-    with patch("pipeline.run_ingest.synthesize_source") as mock_synth, \
-         patch("pipeline.run_ingest.extract_quads_from_source") as mock_extract, \
-         patch("pipeline.run_ingest.rebuild_index") as mock_rebuild, \
-         patch("pipeline.run_ingest.wiki_append_log") as mock_log, \
-         patch("pipeline.run_ingest.run_post_ingest") as mock_post, \
-         patch("pipeline.wiki_writer.chat") as mock_wiki_writer_chat:
+    with patch("pipeline.orchestrator.synthesize_source") as mock_synth, \
+         patch("pipeline.orchestrator.extract_quads_from_source") as mock_extract, \
+         patch("pipeline.orchestrator.rebuild_index") as mock_rebuild, \
+         patch("pipeline.orchestrator.wiki_append_log") as mock_log, \
+         patch("pipeline.orchestrator.run_post_ingest") as mock_post, \
+         patch("pipeline.pass2b_extract.chat") as mock_wiki_writer_chat:
         mock_synth.return_value = {"stub_pages": []}
         mock_extract.return_value = []
         mock_post.return_value = MagicMock(
             total_quads=0, schema_errors=[], dark_matter_ids=[]
         )
         mock_wiki_writer_chat.return_value = "[]"
-        from pipeline.run_ingest import run_source_ingest
+        from pipeline.orchestrator import run_source_ingest
         run_source_ingest(
             source_path=str(source_file),
             uuid="short-doc",

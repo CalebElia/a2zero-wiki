@@ -35,9 +35,9 @@ MOCK_QUADS = [
 ]
 
 
-@patch("pipeline.raw_to_sources.extract_pdf_text", return_value="Raw PDF text")
-@patch("pipeline.wiki_pages.stream_chat", return_value=None)
-@patch("pipeline.raw_to_sources.chat", return_value=MOCK_SOURCE_BODY)
+@patch("pipeline._legacy.raw_to_sources.extract_pdf_text", return_value="Raw PDF text")
+@patch("pipeline._pages.stream_chat", return_value=None)
+@patch("pipeline._legacy.raw_to_sources.chat", return_value=MOCK_SOURCE_BODY)
 def test_run_ingest_creates_source_file(
     mock_chat, mock_stream_chat, mock_extract, tmp_path
 ):
@@ -48,7 +48,7 @@ def test_run_ingest_creates_source_file(
     wiki_root = tmp_path / "wiki"
     queue_file = tmp_path / "review-queue.md"
 
-    from pipeline.run_ingest import run_annual_report_ingest
+    from pipeline.orchestrator import run_annual_report_ingest
     run_annual_report_ingest(
         pdf_path="raw/annual-reports/a2zero-year1.pdf",
         uuid="a2zero-year1",
@@ -69,13 +69,13 @@ def test_run_ingest_creates_source_file(
     assert queue_file.exists(), "review-queue.md not created"
 
 
-@patch("pipeline.run_ingest.synthesize_source")
-@patch("pipeline.run_ingest.run_ldp_ingest")
-@patch("pipeline.run_ingest.extract_quads_from_source")
-@patch("pipeline.run_ingest.rebuild_index")
-@patch("pipeline.run_ingest.wiki_append_log")
-@patch("pipeline.run_ingest.run_post_ingest")
-@patch("pipeline.comprehend.chat")
+@patch("pipeline.orchestrator.synthesize_source")
+@patch("pipeline.orchestrator.run_ldp_ingest")
+@patch("pipeline.orchestrator.extract_quads_from_source")
+@patch("pipeline.orchestrator.rebuild_index")
+@patch("pipeline.orchestrator.wiki_append_log")
+@patch("pipeline.orchestrator.run_post_ingest")
+@patch("pipeline.pass1a_comprehend.chat")
 def test_run_source_ingest_calls_comprehend_when_digest_exists(
     mock_comprehend_chat, mock_post, mock_log, mock_rebuild, mock_extract, mock_ldp, mock_synth, tmp_path
 ):
@@ -103,8 +103,8 @@ def test_run_source_ingest_calls_comprehend_when_digest_exists(
     mock_extract.return_value = []
     mock_post.return_value = type("R", (), {"total_quads": 0, "schema_errors": [], "dark_matter_ids": []})()
 
-    from pipeline.run_ingest import run_source_ingest
-    with patch("pipeline.wiki_writer.chat", return_value="[]"):
+    from pipeline.orchestrator import run_source_ingest
+    with patch("pipeline.pass2b_extract.chat", return_value="[]"):
         run_source_ingest(
             source_path=str(src_path),
             uuid="test",
@@ -127,11 +127,11 @@ def test_run_source_ingest_calls_comprehend_when_digest_exists(
     assert synth_kwargs.get("digest_content") is not None
 
 
-@patch("pipeline.run_ingest.synthesize_source")
-@patch("pipeline.run_ingest.rebuild_index")
-@patch("pipeline.run_ingest.wiki_append_log")
-@patch("pipeline.run_ingest.run_post_ingest")
-@patch("pipeline.comprehend.chat")
+@patch("pipeline.orchestrator.synthesize_source")
+@patch("pipeline.orchestrator.rebuild_index")
+@patch("pipeline.orchestrator.wiki_append_log")
+@patch("pipeline.orchestrator.run_post_ingest")
+@patch("pipeline.pass1a_comprehend.chat")
 def test_run_source_ingest_hard_fails_when_comprehend_errors_with_digest(
     mock_comprehend_chat, mock_post, mock_log, mock_rebuild, mock_synth, tmp_path
 ):
@@ -145,7 +145,7 @@ def test_run_source_ingest_hard_fails_when_comprehend_errors_with_digest(
 
     mock_comprehend_chat.side_effect = Exception("API down")
 
-    from pipeline.run_ingest import run_source_ingest
+    from pipeline.orchestrator import run_source_ingest
     with pytest.raises(Exception, match="API down"):
         run_source_ingest(
             source_path=str(src_path),
@@ -158,13 +158,13 @@ def test_run_source_ingest_hard_fails_when_comprehend_errors_with_digest(
     assert mock_rebuild.call_count == 0
 
 
-@patch("pipeline.run_ingest.synthesize_source")
-@patch("pipeline.run_ingest.run_ldp_ingest")
-@patch("pipeline.run_ingest.extract_quads_from_source")
-@patch("pipeline.run_ingest.rebuild_index")
-@patch("pipeline.run_ingest.wiki_append_log")
-@patch("pipeline.run_ingest.run_post_ingest")
-@patch("pipeline.comprehend.chat")
+@patch("pipeline.orchestrator.synthesize_source")
+@patch("pipeline.orchestrator.run_ldp_ingest")
+@patch("pipeline.orchestrator.extract_quads_from_source")
+@patch("pipeline.orchestrator.rebuild_index")
+@patch("pipeline.orchestrator.wiki_append_log")
+@patch("pipeline.orchestrator.run_post_ingest")
+@patch("pipeline.pass1a_comprehend.chat")
 def test_run_source_ingest_skips_comprehend_when_no_digest(
     mock_comprehend_chat, mock_post, mock_log, mock_rebuild, mock_extract, mock_ldp, mock_synth, tmp_path
 ):
@@ -180,8 +180,8 @@ def test_run_source_ingest_skips_comprehend_when_no_digest(
     mock_extract.return_value = []
     mock_post.return_value = type("R", (), {"total_quads": 0, "schema_errors": [], "dark_matter_ids": []})()
 
-    from pipeline.run_ingest import run_source_ingest
-    with patch("pipeline.wiki_writer.chat", return_value="[]"):
+    from pipeline.orchestrator import run_source_ingest
+    with patch("pipeline.pass2b_extract.chat", return_value="[]"):
         run_source_ingest(
             source_path=str(src_path),
             uuid="test", title="T", quads_path=str(tmp_path / "q.jsonl"),

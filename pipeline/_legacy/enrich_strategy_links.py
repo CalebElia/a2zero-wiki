@@ -2,7 +2,7 @@
 One-time enrichment pass: inject entity wikilinks into existing strategy body text.
 
 Usage:
-  python -m pipeline.enrich_strategy_links --wiki-root wiki [--dry-run]
+  python -m pipeline._legacy.enrich_strategy_links --wiki-root wiki [--dry-run]
 
 For each of the 7 strategy pages, the LLM receives the current body text and the
 full entity slug/title catalogue, then rewrites the body inserting [[slug|Name]]
@@ -13,7 +13,7 @@ Idempotent: already-linked text is preserved as-is.
 import re
 import json
 import argparse
-from pipeline.llm import chat
+from pipeline._llm import chat
 from pathlib import Path
 
 STRATEGY_SLUGS = [

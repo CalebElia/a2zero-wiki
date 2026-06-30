@@ -1,5 +1,5 @@
 from pathlib import Path
-from pipeline.quad_linter import LintReport
+from pipeline._legacy.quad_linter import LintReport
 
 
 def generate_review_queue(
@@ -68,7 +68,7 @@ def generate_review_queue(
 
 
 def run_post_ingest(quads_path: str, source_uuid: str, out_path: str, run_date: str):
-    from pipeline.quad_linter import lint_quads
+    from pipeline._legacy.quad_linter import lint_quads
     report = lint_quads(quads_path)
     generate_review_queue(report=report, source_uuid=source_uuid,
                           out_path=out_path, run_date=run_date)

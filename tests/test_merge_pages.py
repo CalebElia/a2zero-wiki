@@ -12,8 +12,8 @@ MERGED_BODY = """The Office of Sustainability and Innovations (OSI) leads A2Zero
 
 
 def test_merge_pages_calls_chat():
-    from pipeline.merge_pages import merge_pages
-    with patch("pipeline.merge_pages.chat") as mock_chat:
+    from pipeline.pass2c_merge import merge_pages
+    with patch("pipeline.pass2c_merge.chat") as mock_chat:
         mock_chat.return_value = MERGED_BODY
         result = merge_pages(
             canonical_slug="actors/osi",
@@ -26,8 +26,8 @@ def test_merge_pages_calls_chat():
 
 
 def test_merge_pages_returns_existing_on_api_failure():
-    from pipeline.merge_pages import merge_pages
-    with patch("pipeline.merge_pages.chat") as mock_chat:
+    from pipeline.pass2c_merge import merge_pages
+    with patch("pipeline.pass2c_merge.chat") as mock_chat:
         mock_chat.side_effect = Exception("API error")
         result = merge_pages(
             canonical_slug="actors/osi",
@@ -39,8 +39,8 @@ def test_merge_pages_returns_existing_on_api_failure():
 
 
 def test_merge_pages_strips_whitespace():
-    from pipeline.merge_pages import merge_pages
-    with patch("pipeline.merge_pages.chat") as mock_chat:
+    from pipeline.pass2c_merge import merge_pages
+    with patch("pipeline.pass2c_merge.chat") as mock_chat:
         mock_chat.return_value = "  " + MERGED_BODY + "  "
         result = merge_pages(
             canonical_slug="actors/osi",

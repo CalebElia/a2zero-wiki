@@ -7,9 +7,9 @@ import json
 import re
 import yaml
 from pathlib import Path
-from pipeline.llm import chat
-from pipeline.alias_registry import load_aliases
-from pipeline.synthesis_validation import (
+from pipeline._llm import chat
+from pipeline._aliases import load_aliases
+from pipeline.phase_c_validate import (
     validate_synthesis,
     validate_narrative,
     revise_synthesis,

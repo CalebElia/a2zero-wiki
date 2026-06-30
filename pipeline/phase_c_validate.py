@@ -169,7 +169,7 @@ def log_dropped_ghosts(
 
 
 import json
-from pipeline.llm import chat
+from pipeline._llm import chat
 
 
 _REVISE_SYNTHESIS_SYSTEM = """You are correcting wikilinks in a structured synthesis \

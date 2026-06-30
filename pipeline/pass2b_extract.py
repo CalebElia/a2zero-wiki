@@ -1,10 +1,10 @@
 import json
 import re
 from pathlib import Path
-from pipeline.llm import chat
-from pipeline.alias_registry import load_aliases, resolve_slug, resolve_slug_for_title, fuzzy_resolve_slug_for_title
-from pipeline.merge_pages import merge_pages as _merge_pages
-from pipeline.wiki_pages import (
+from pipeline._llm import chat
+from pipeline._aliases import load_aliases, resolve_slug, resolve_slug_for_title, fuzzy_resolve_slug_for_title
+from pipeline.pass2c_merge import merge_pages as _merge_pages
+from pipeline._pages import (
     VALID_PAGE_TYPES,
     build_wiki_page,
     write_wiki_page,

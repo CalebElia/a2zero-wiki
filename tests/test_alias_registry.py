@@ -2,7 +2,7 @@
 import json
 import pytest
 from pathlib import Path
-from pipeline.alias_registry import (
+from pipeline._aliases import (
     load_aliases,
     save_aliases,
     resolve_slug,
