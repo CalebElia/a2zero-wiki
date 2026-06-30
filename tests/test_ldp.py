@@ -320,3 +320,70 @@ def test_get_chunks_falls_back_to_depth_rule_when_is_chunk_missing():
     assert "A" in titles
     assert "B" in titles
     assert "C" not in titles
+
+
+def test_run_ldp_ingest_raises_when_no_approved_map(tmp_path):
+    import pytest
+    maps_dir = tmp_path / "section_maps"
+    maps_dir.mkdir()
+    with pytest.raises(RuntimeError, match="approved section map"):
+        from pipeline.pass2a_chunk_loop import run_ldp_ingest
+        run_ldp_ingest(
+            source_content="---\nuuid: t\n---\n# X\nbody",
+            uuid="t", title="T",
+            quads_path=str(tmp_path / "q.jsonl"),
+            section_maps_dir=str(maps_dir),
+            wiki_root=str(tmp_path / "wiki"),
+            wiki_only=True,
+        )
+
+
+def test_run_ldp_ingest_uses_approved_map_when_present(tmp_path):
+    import json as _json
+    from unittest.mock import patch
+    maps_dir = tmp_path / "section_maps"
+    maps_dir.mkdir()
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    approved = {
+        "document_uuid": "t", "total_lines": 5, "ldp_version": "1.1", "approved": True,
+        "sections": [
+            {"id": "x", "title": "X", "depth": 2, "line_start": 1, "line_end": 5,
+             "is_chunk": True},
+        ],
+    }
+    (maps_dir / "t_approved.json").write_text(_json.dumps(approved), encoding="utf-8")
+
+    with patch("pipeline.pass2b_extract.extract_wiki_pages_from_chunk", return_value=[]):
+        from pipeline.pass2a_chunk_loop import run_ldp_ingest
+        run_ldp_ingest(
+            source_content="---\n---\n# X\nline2\nline3\nline4\nline5\n",
+            uuid="t", title="T",
+            quads_path=str(tmp_path / "q.jsonl"),
+            section_maps_dir=str(maps_dir),
+            wiki_root=str(wiki),
+            wiki_only=True,
+        )
+    # Should NOT have generated a fresh structure.json
+    assert not (maps_dir / "t_structure.json").exists()
+
+
+def test_run_ldp_ingest_auto_approve_bypasses_gate(tmp_path):
+    from unittest.mock import patch
+    maps_dir = tmp_path / "section_maps"
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    # No approved map — auto-approve should fall back to generating mechanically
+    with patch("pipeline.pass2b_extract.extract_wiki_pages_from_chunk", return_value=[]):
+        from pipeline.pass2a_chunk_loop import run_ldp_ingest
+        run_ldp_ingest(
+            source_content="---\n---\n# X\ncontent\n## Sub\nsubcontent\n",
+            uuid="t", title="T",
+            quads_path=str(tmp_path / "q.jsonl"),
+            section_maps_dir=str(maps_dir),
+            wiki_root=str(wiki),
+            wiki_only=True,
+            auto_approve_chunks=True,
+        )
+    # Fresh structure.json IS generated in auto-approve mode
+    assert (maps_dir / "t_structure.json").exists()

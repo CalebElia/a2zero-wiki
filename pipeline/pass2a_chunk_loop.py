@@ -337,6 +337,7 @@ def run_ldp_ingest(
     entity_context: str = "",
     integration_plan: dict | None = None,
     retrieved_bodies: dict[str, str] | None = None,
+    auto_approve_chunks: bool = False,
 ):
     """Full LDP pipeline: parse section map → chunked extraction → append quads.
 
@@ -344,9 +345,23 @@ def run_ldp_ingest(
     quads_only=True — skip wiki page writes; entity_context is ignored.
     entity_context: known-entity block from Pass 1 holistic read, prepended to each chunk header.
     integration_plan / retrieved_bodies: Comprehend-pass artifacts, threaded into chunk extraction.
+    auto_approve_chunks: bypass the chunking gate; generate section map mechanically.
     """
-    section_map = parse_section_map(source_content, uuid)
-    save_section_map(section_map, section_maps_dir)
+    from pipeline.pass2a_pre_chunking import load_approved_map
+
+    section_map = load_approved_map(uuid, section_maps_dir)
+    if section_map is None:
+        if not auto_approve_chunks:
+            raise RuntimeError(
+                f"No approved section map for {uuid!r}. "
+                f"Run 'python -m pipeline.orchestrator preflight --source ... --uuid {uuid}' first, "
+                f"review the preview, then 'approve'. "
+                f"Or pass --auto-approve to bypass the chunking gate."
+            )
+        # auto-approve path: generate mechanically (legacy behavior)
+        print(f"[ldp] WARNING: --auto-approve bypassed the chunking gate for {uuid!r}")
+        section_map = parse_section_map(source_content, uuid)
+        save_section_map(section_map, section_maps_dir)
     mode = "wiki-only" if wiki_only else ("quads-only" if quads_only else "quads+wiki")
     print(f"[ldp] {uuid}: {len(section_map['sections'])} sections, "
           f"{len(get_chunks(section_map))} chunks to extract [{mode}]")
