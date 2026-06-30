@@ -235,3 +235,40 @@ def test_load_retrieved_bodies_skips_missing_files(tmp_path):
     }
     bodies = load_retrieved_bodies(plan, str(wiki))
     assert set(bodies.keys()) == {"initiatives/real"}
+
+
+from pipeline.comprehend import log_ingest_stats
+
+
+def test_log_ingest_stats_appends_jsonl(tmp_path):
+    log_path = tmp_path / "ingest-stats.jsonl"
+    log_ingest_stats(
+        log_path=str(log_path),
+        source_uuid="a2zero-year3",
+        run_date="2026-07-15",
+        comprehend_skipped=False,
+        plan_size_bytes=2048,
+        extends_count=4,
+        new_entities_count=2,
+        retrieve_count=8,
+        retrieved_chars=12000,
+    )
+    # Append a second entry
+    log_ingest_stats(
+        log_path=str(log_path),
+        source_uuid="a2zero-year4",
+        run_date="2026-08-01",
+        comprehend_skipped=False,
+        plan_size_bytes=1500,
+        extends_count=2,
+        new_entities_count=0,
+        retrieve_count=5,
+        retrieved_chars=6000,
+    )
+    lines = log_path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 2
+    entry1 = json.loads(lines[0])
+    assert entry1["source-uuid"] == "a2zero-year3"
+    assert entry1["extends-count"] == 4
+    entry2 = json.loads(lines[1])
+    assert entry2["source-uuid"] == "a2zero-year4"

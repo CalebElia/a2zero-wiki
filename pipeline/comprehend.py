@@ -225,3 +225,31 @@ def load_retrieved_bodies(plan: dict, wiki_root: str) -> dict[str, str]:
         bodies[slug] = body
         used += body_len
     return bodies
+
+
+def log_ingest_stats(
+    log_path: str,
+    source_uuid: str,
+    run_date: str,
+    comprehend_skipped: bool,
+    plan_size_bytes: int,
+    extends_count: int,
+    new_entities_count: int,
+    retrieve_count: int,
+    retrieved_chars: int,
+) -> None:
+    """Append one JSON line of per-ingest stats. Cheap monitoring for ingest health."""
+    entry = {
+        "source-uuid": source_uuid,
+        "run-date": run_date,
+        "comprehend-skipped": comprehend_skipped,
+        "plan-size-bytes": plan_size_bytes,
+        "extends-count": extends_count,
+        "new-entities-count": new_entities_count,
+        "retrieve-count": retrieve_count,
+        "retrieved-chars": retrieved_chars,
+    }
+    p = Path(log_path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    with p.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(entry) + "\n")
