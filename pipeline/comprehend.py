@@ -69,8 +69,16 @@ Return ONLY a JSON object with EXACTLY these keys:
 - theme-connections: list of 2-5 short strings describing cross-strategy patterns this \
   source surfaces (e.g. "Source ties grid capacity to building electrification timeline").
 
-Use slug references from the digest's entity map. Do not invent slugs for existing entities. \
-For `new-entities`, use kebab-case slugs that follow project conventions.
+For EXISTING entities (extends, retrieve-for-context): use the exact canonical slugs as they \
+appear in the digest's entity map and narrative wikilinks (e.g. `actors/dte-energy`, \
+`initiatives/sustainable-energy-utility`). Do not invent slug variants for entities the \
+digest already names.
+
+For NEW entities the source introduces that the wiki does not yet know about: actively \
+identify and propose them in `new-entities`. Use kebab-case slugs that follow project \
+conventions (e.g. `initiatives/electrification-expo-2023`). Do not over-constrain yourself \
+to only entities already in the digest — surfacing genuinely new entities is part of \
+your job.
 
 Return ONLY the JSON object. No preamble, no code fences, no commentary.
 """
@@ -222,6 +230,16 @@ def load_retrieved_bodies(plan: dict, wiki_root: str) -> dict[str, str]:
         is_extends = slug in extends_slugs
         if used + body_len > char_budget and not is_extends:
             continue  # drop overflow silently (extends always included)
+        if is_extends and body_len > char_budget // 2:
+            # Safety log: a single extends body is dominating the budget.
+            # Worth checking if the page should be split or if Comprehend is
+            # overreaching by extending a page that's grown unwieldy.
+            print(
+                f"[comprehend] WARNING: extends entity {slug!r} body is "
+                f"{body_len} chars (~{body_len // _CHARS_PER_TOKEN} tokens) — "
+                f"exceeds half the {RETRIEVE_TOKEN_BUDGET}-token budget. "
+                f"Bypassing budget cap to honor extends-first contract."
+            )
         bodies[slug] = body
         used += body_len
     return bodies
