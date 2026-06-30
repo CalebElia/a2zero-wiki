@@ -147,3 +147,35 @@ def validate_section_map(section_map: dict) -> list[str]:
             )
 
     return errors
+
+
+def approve_proposed_map(source_uuid: str, section_maps_dir: str) -> str:
+    """Validate proposed.json, set approved=true, rename to approved.json.
+
+    Returns the approved.json path. Raises FileNotFoundError if proposed is
+    missing, or ValueError listing all validation errors if invalid.
+    """
+    maps_dir = Path(section_maps_dir)
+    proposed_path = maps_dir / f"{source_uuid}_proposed.json"
+    approved_path = maps_dir / f"{source_uuid}_approved.json"
+
+    if not proposed_path.exists():
+        raise FileNotFoundError(
+            f"no proposed section map for {source_uuid!r} at {proposed_path}. "
+            f"Run 'preflight' first."
+        )
+
+    section_map = json.loads(proposed_path.read_text(encoding="utf-8"))
+    errors = validate_section_map(section_map)
+    if errors:
+        raise ValueError(
+            f"section map for {source_uuid!r} is invalid:\n  - " + "\n  - ".join(errors)
+        )
+
+    section_map["approved"] = True
+    approved_path.write_text(
+        json.dumps(section_map, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    proposed_path.unlink()
+    return str(approved_path)

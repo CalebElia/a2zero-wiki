@@ -169,3 +169,48 @@ def test_validate_section_map_ignores_overlap_when_one_side_is_not_chunk():
     errors = validate_section_map(m)
     # No overlap error — the depth-3 isn't a chunk
     assert not any("overlap" in e.lower() for e in errors)
+
+
+from pipeline.pass2a_pre_chunking import approve_proposed_map
+
+
+def test_approve_proposed_map_promotes_to_approved(tmp_path):
+    maps_dir = tmp_path / "section_maps"
+    maps_dir.mkdir()
+    proposed = _make_valid_map()
+    (maps_dir / "test_proposed.json").write_text(
+        json.dumps(proposed) + "\n", encoding="utf-8"
+    )
+
+    approved_path = approve_proposed_map("test", str(maps_dir))
+
+    assert approved_path.endswith("test_approved.json")
+    assert Path(approved_path).exists()
+    assert not (maps_dir / "test_proposed.json").exists()  # proposed deleted
+    loaded = json.loads(Path(approved_path).read_text())
+    assert loaded["approved"] is True
+
+
+def test_approve_proposed_map_raises_on_invalid(tmp_path):
+    import pytest
+    maps_dir = tmp_path / "section_maps"
+    maps_dir.mkdir()
+    invalid = _make_valid_map()
+    invalid["sections"][1]["line_start"] = 30  # overlap
+    (maps_dir / "test_proposed.json").write_text(
+        json.dumps(invalid) + "\n", encoding="utf-8"
+    )
+
+    with pytest.raises(ValueError, match="overlap"):
+        approve_proposed_map("test", str(maps_dir))
+    # Proposed file is untouched on failure
+    assert (maps_dir / "test_proposed.json").exists()
+    assert not (maps_dir / "test_approved.json").exists()
+
+
+def test_approve_proposed_map_raises_when_proposed_missing(tmp_path):
+    import pytest
+    maps_dir = tmp_path / "section_maps"
+    maps_dir.mkdir()
+    with pytest.raises(FileNotFoundError, match="proposed"):
+        approve_proposed_map("nonexistent", str(maps_dir))
