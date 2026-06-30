@@ -37,3 +37,81 @@ def test_load_integration_plan_returns_empty_when_missing(tmp_path):
     # Falls back to empty plan rather than raising
     assert loaded["extends"] == []
     assert loaded["strategies-touched"] == []
+
+
+from unittest.mock import patch
+from pipeline.comprehend import build_integration_plan
+
+
+def test_build_integration_plan_returns_empty_when_no_digest():
+    """First-ingest path: no digest yet → empty plan, no LLM call."""
+    with patch("pipeline.comprehend.chat") as mock_chat:
+        plan = build_integration_plan(
+            source_content="some source text",
+            source_uuid="first-source",
+            digest_content=None,
+            run_date="2026-06-29",
+        )
+    assert mock_chat.call_count == 0  # No LLM call when digest is absent
+    assert plan["source-uuid"] == "first-source"
+    assert plan["extends"] == []
+    assert plan["strategies-touched"] == []
+
+
+def test_build_integration_plan_calls_llm_and_parses_json():
+    llm_output = json.dumps({
+        "strategies-touched": ["strategies/strategy-1-renewable-grid"],
+        "extends": [{"slug": "initiatives/solarize-ann-arbor", "new-data": "Y3 totals"}],
+        "new-entities": [],
+        "retrieve-for-context": ["initiatives/solarize-ann-arbor"],
+        "theme-connections": [],
+    })
+    with patch("pipeline.comprehend.chat") as mock_chat:
+        mock_chat.return_value = llm_output
+        plan = build_integration_plan(
+            source_content="source text",
+            source_uuid="test-source",
+            digest_content="# Wiki Digest\n\n## Cross-strategy synthesis\n...",
+            run_date="2026-06-29",
+        )
+    assert mock_chat.call_count == 1
+    assert plan["source-uuid"] == "test-source"
+    assert "digest-rebuilt" in plan
+    assert plan["strategies-touched"] == ["strategies/strategy-1-renewable-grid"]
+    assert plan["extends"][0]["slug"] == "initiatives/solarize-ann-arbor"
+
+
+def test_build_integration_plan_handles_fenced_json():
+    llm_output = "```json\n" + json.dumps({
+        "strategies-touched": [],
+        "extends": [],
+        "new-entities": [],
+        "retrieve-for-context": [],
+        "theme-connections": [],
+    }) + "\n```"
+    with patch("pipeline.comprehend.chat") as mock_chat:
+        mock_chat.return_value = llm_output
+        plan = build_integration_plan(
+            source_content="x",
+            source_uuid="t",
+            digest_content="d",
+            run_date="2026-06-29",
+        )
+    assert plan["extends"] == []
+
+
+def test_build_integration_plan_hard_fails_on_llm_error_when_digest_present():
+    """Per spec: digest exists + LLM fails → hard fail (do not silently degrade)."""
+    with patch("pipeline.comprehend.chat") as mock_chat:
+        mock_chat.side_effect = Exception("API error")
+        try:
+            build_integration_plan(
+                source_content="source",
+                source_uuid="test",
+                digest_content="# Digest",
+                run_date="2026-06-29",
+            )
+        except Exception as e:
+            assert "comprehend" in str(e).lower() or "API error" in str(e)
+            return
+        raise AssertionError("Expected hard fail, got silent return")
