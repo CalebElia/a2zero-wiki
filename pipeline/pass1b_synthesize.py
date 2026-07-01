@@ -535,14 +535,18 @@ def _write_synthesis(
             continue
         existing = strat_path.read_text(encoding="utf-8")
         existing_body = re.sub(r"^---\n.*?\n---\n", "", existing, flags=re.DOTALL).strip()
-        is_stub_only = not bool(re.sub(r"<!--.*?-->", "", existing_body, flags=re.DOTALL).strip())
-        if is_stub_only:
-            # First ingest: replace the stub comment entirely with the synthesis body
-            _replace_wiki_page_body(str(strat_path), sb["body"])
-            print(f"[holistic] Strategy body written: {strat_path.name}")
-        else:
-            _replace_wiki_page_body(str(strat_path), sb["body"])
-            print(f"[holistic] Strategy body integrated: {strat_path.name}")
+        foundation, _ = _split_strategy_sections(existing_body)
+
+        if foundation is None:
+            raise RuntimeError(
+                f"{strat_path} has no Foundation section. Run the one-time "
+                f"Foundation migration (docs/architecture/strategy-foundation-progression.md) "
+                f"before ingesting further sources."
+            )
+
+        new_body = _assemble_strategy_body(foundation, sb["body"])
+        _replace_wiki_page_body(str(strat_path), new_body)
+        print(f"[holistic] Progress Synthesis updated: {strat_path.name}")
 
     aliases = load_aliases(alias_registry_path)
 

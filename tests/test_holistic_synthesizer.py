@@ -78,27 +78,21 @@ MOCK_CRITIQUE = {
 
 def _strategy_stub(tmp_path):
     (tmp_path / "strategies").mkdir(exist_ok=True)
-    (tmp_path / "strategies" / "strategy-1-renewable-grid.md").write_text(
-        "---\ntype: strategy\ntitle: Strategy 1\n---\n\n<!-- stub -->\n"
-    )
-    (tmp_path / "strategies" / "strategy-2-electrification.md").write_text(
-        "---\ntype: strategy\ntitle: Strategy 2\n---\n\n<!-- stub -->\n"
-    )
-    (tmp_path / "strategies" / "strategy-3-building-efficiency.md").write_text(
-        "---\ntype: strategy\ntitle: Strategy 3\n---\n\n<!-- stub -->\n"
-    )
-    (tmp_path / "strategies" / "strategy-4-vmt-reduction.md").write_text(
-        "---\ntype: strategy\ntitle: Strategy 4\n---\n\n<!-- stub -->\n"
-    )
-    (tmp_path / "strategies" / "strategy-5-materials-waste.md").write_text(
-        "---\ntype: strategy\ntitle: Strategy 5\n---\n\n<!-- stub -->\n"
-    )
-    (tmp_path / "strategies" / "strategy-6-resilience.md").write_text(
-        "---\ntype: strategy\ntitle: Strategy 6\n---\n\n<!-- stub -->\n"
-    )
-    (tmp_path / "strategies" / "strategy-7-engagement.md").write_text(
-        "---\ntype: strategy\ntitle: Strategy 7\n---\n\n<!-- stub -->\n"
-    )
+    for i in range(1, 8):
+        name = {
+            1: "strategy-1-renewable-grid",
+            2: "strategy-2-electrification",
+            3: "strategy-3-building-efficiency",
+            4: "strategy-4-vmt-reduction",
+            5: "strategy-5-materials-waste",
+            6: "strategy-6-resilience",
+            7: "strategy-7-engagement",
+        }[i]
+        (tmp_path / "strategies" / f"{name}.md").write_text(
+            f"---\ntype: strategy\ntitle: Strategy {i}\n---\n\n"
+            f"## Foundation\n\nFoundation text for strategy {i}.\n\n"
+            f"## Progress Synthesis\n\n<!-- stub -->\n"
+        )
     (tmp_path / "overviews").mkdir(exist_ok=True)
 
 
@@ -287,7 +281,9 @@ def test_synthesize_source_integrates_existing_strategy_body(mock_stream_chat, t
     # Write existing real content to strategy page (not a stub comment)
     strat_path = tmp_path / "strategies" / "strategy-1-renewable-grid.md"
     strat_path.write_text(
-        "---\ntype: strategy\ntitle: Strategy 1\n---\n\nExisting synthesis paragraph.\n"
+        "---\ntype: strategy\ntitle: Strategy 1\n---\n\n"
+        "## Foundation\n\nFoundation text for strategy 1.\n\n"
+        "## Progress Synthesis\n\nExisting synthesis paragraph.\n"
     )
     (tmp_path / "overviews").mkdir(exist_ok=True)
 
