@@ -50,3 +50,5 @@ type: initiative
 ---
 
 The A2Zero plan identifies the Green Business Challenge as an existing program to be accelerated and scaled as part of community engagement with the commercial and institutional sector on resource reduction ([[sources/cap/cap-2020|cap-2020]]). The challenge is listed alongside a commercial reuse packaging program, engagement with the private sector, and requirements or encouragement for disclosure from businesses and community groups ([[sources/cap/cap-2020|cap-2020]]).
+
+The program is being designed in collaboration with [[actors/spark-ann-arbor|SPARK]] and local businesses to encourage sustainable business practices in Ann Arbor, with design work beginning in Year 3 of A2Zero ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).

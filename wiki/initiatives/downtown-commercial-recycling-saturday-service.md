@@ -3,7 +3,6 @@ funding-events: []
 last-updated: '2026-06-26'
 launched: 2022
 locations:
-- '[[locations/downtown-ann-arbor]]'
 milestones:
 - source: '[[sources/annual-reports/a2zero-year2]]'
   status: unverified

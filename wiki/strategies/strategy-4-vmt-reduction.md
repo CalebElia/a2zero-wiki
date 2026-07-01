@@ -11,44 +11,45 @@ tags:
 last-updated: 2026-06-22
 synthesis:
   core-initiatives:
-  - initiatives/non-motorized-transportation-plan
   - initiatives/expand-improve-local-transit
   - initiatives/active-transportation-infrastructure
+  - initiatives/protected-bike-lanes-expansion
   - initiatives/transit-oriented-development-zoning
   - initiatives/go-pass-expansion
   - initiatives/parking-reform
   - initiatives/mobility-hubs
-  - initiatives/theride-electrification-expansion
+  - initiatives/develop-mixed-use-neighborhoods
   core-actors:
   - actors/city-of-ann-arbor
   - actors/ann-arbor-area-transit-authority
   - actors/office-of-sustainability-and-innovations
-  - actors/ann-arbor-public-schools
+  - actors/ann-arbor-city-council
   - actors/forth-mobility
-  year-over-year-arc: Strategy 4 establishes a baseline multi-modal VMT reduction
-    framework combining active transportation infrastructure, transit expansion, land-use
-    upzoning, and parking reform, with no multi-year trend data yet ingested.
+  year-over-year-arc: Baseline state establishes a multi-pronged VMT reduction framework
+    combining transit expansion, active transportation infrastructure, parking reform,
+    and land-use upzoning, with electrification of buses and e-mobility programs layered
+    in as complementary measures.
   open-questions:
-  - What measurable VMT reduction targets and timelines are established, and how is
-    progress tracked?
-  - How will Act 51 reform lobbying outcomes affect local transit funding and route
-    expansion feasibility?
-  - To what extent have zoning and parking minimum changes been adopted and implemented?
-  - How are equity considerations integrated to ensure Go-Pass and mobility hub access
-    reaches low-income and underserved communities?
+  - What measurable VMT reduction targets have been set and are they being tracked
+    against baseline GHG inventory data?
+  - How will Act 51 reform lobbying progress affect local and regional transit funding
+    timelines?
+  - Is the Go-Pass area expansion sufficiently funded and politically supported to
+    achieve meaningful mode shift?
+  - How will parking reform and minimum removal be coordinated with zoning density
+    increases to avoid displacement?
   cross-strategy-links:
   - initiatives/electrify-buses
   - initiatives/ev-charger-deployment
-  - initiatives/expand-ev-charging-infrastructure
+  - initiatives/ev-charging-infrastructure-expansion
   - initiatives/a2zero-unified-development-code-integration
-  - initiatives/develop-mixed-use-neighborhoods
-  - initiatives/urban-heat-island-mitigation
+  - initiatives/zoning-density-increase
+  - initiatives/ghg-inventory
   - initiatives/a2zero-carbon-neutrality-plan
-  last-rebuilt: '2026-06-29'
+  - initiatives/urban-heat-island-mitigation
+  last-rebuilt: '2026-06-30'
 ---
 
-Strategy 4 targets a reduction of at least 50% in vehicle miles traveled (VMT) through seven actions spanning active transportation infrastructure, transit expansion, land use reform, and parking policy. Combined, these actions are projected to reduce just over 8% of community-wide emissions at a cost exceeding $901 million — the most capital-intensive strategy in the plan, driven primarily by transit infrastructure costs ([[sources/cap/cap-2020]]). The plan notes that transportation emissions are on the rise, making VMT reduction essential to prevent gains in other sectors from being offset.
+Strategy 4 saw concrete infrastructure delivery, landmark policy actions, and significant recognition of [[locations/ann-arbor|Ann Arbor]]'s active transportation progress during year three. The City installed 3.1 miles of new or improved bike lanes and enhanced multiple bike lane intersections, filled 2.5 miles of sidewalk gaps, installed two new crosswalks, and passed a resolution restricting turns on red lights downtown to reduce vehicle-bicyclist conflicts ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). Ann Arbor received Gold-level Walk Friendly Community designation from the Walk Friendly Communities program — one of only 23 U.S. cities so recognized — and Gold-level Bicycle Friendly Community designation from the League of American Bicyclists. The [[actors/downtown-development-authority|Ann Arbor Downtown Development Authority (DDA)]] won the League of Michigan Bicyclists Outstanding Infrastructure Award for most improved bicycle-friendly infrastructure in the past year, reflecting the pace of recent investment.
 
-The two largest investments are transit-focused. Expanding and improving local transit — including bus rapid transit along major corridors, quadrupling current bus ridership, and extending the Get Downtown Program to all Ann Arbor employers with more than 20 employees — is projected to reduce 93,200 MTCO₂e (4.3%) at a cost of $656.8 million ([[sources/cap/cap-2020]]). The [[initiatives/non-motorized-transportation-plan|Non-Motorized Transportation Plan]] calls for 5 miles of new protected bike lanes per year, filling 90% of sidewalk gaps by 2030, and achieving 25% of in-city trips by walking or bicycling — projected to reduce 60,400 MTCO₂e (2.8%) at a cost of $2.4 million ([[sources/cap/cap-2020]]). Land use actions address structural drivers of VMT: increasing housing diversity, mixed-use zoning, and tiered parking rates including dynamic pricing and elimination of parking minimums ([[sources/cap/cap-2020]]).
-
-Year 2 activity under this strategy remained comparatively limited but included several meaningful steps. [[actors/office-of-sustainability-and-innovations|OSI]] launched a collaboration with the Planning Department to integrate A2ZERO into the [[initiatives/unified-development-code|Unified Development Code]], and the Planning Department removed parking minimums from plan review requirements — a structural land use reform aligned with the strategy's goals ([[sources/annual-reports/a2zero-year2]]). OSI supported expansion of protected bike lanes and continued the [[initiatives/bike-discount-program|bicycle discount program]] with local vendors ([[sources/annual-reports/a2zero-year2]]). OSI also initiated co-development of a 'carbon calculator' using transportation metrics to inform the plan review process, embedding VMT considerations directly into development approvals ([[sources/annual-reports/a2zero-year2]]). Year 3 plans include embedding A2ZERO in the community's comprehensive land use plan and Unified Development Code ([[sources/annual-reports/a2zero-year2]]). The modest Year 2 footprint continues to reflect the capital-intensive and multi-agency nature of transit and infrastructure investments, which require longer lead times and external partnerships before significant progress can be reported.
+On transit, the community passed a millage to support [[actors/ann-arbor-area-transit-authority|TheRide]] in improving and expanding public transit, effective 2024 — a significant funding milestone that directly enables the [[initiatives/expand-improve-local-transit|transit expansion]] goals of Strategy 4. OSI also supported an AAATA propulsion study to identify solutions for carbon-free busing through the [[initiatives/theride-electrification-expansion|TheRide electrification expansion]] initiative. Land-use reform advanced with approximately 400 acres rezoned to TC1 (transit corridor) status, deepening the [[initiatives/transit-oriented-development-zoning|transit-oriented development zoning]] framework ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). A request for proposals was released for a Comprehensive Plan update with carbon neutrality and equity as priority areas, and a new speed management program was initiated to advance Vision Zero goals. Looking ahead, 20+ additional miles of protected bike lanes are slated for development over the next five years, and the [[initiatives/washington-street-bike-boulevard|Washington Street Bike Boulevard]] was funded through a $200,000 SEMCOG Carbon Reduction Program grant with a fall 2025 start date. As context for the scale of work remaining: vehicle miles traveled in 2022 had returned to only 3% below 2018 levels after a 36% pandemic-era drop in 2020, underscoring the challenge of achieving the 50% VMT reduction goal ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).

@@ -42,3 +42,10 @@
 {"date": "2026-06-26", "action": "delete", "slug": "sustainable-energy-utility-seu", "approved-by": "human+claude", "notes": "Hallucinated alias entry — incorrectly mapped SEU as predecessor to OSI; removed entirely"}
 {"date": "2026-06-26", "action": "merge", "from": "initiatives/ann-arbor-solarize-program", "into": "initiatives/solarize-ann-arbor", "approved-by": "human+claude", "notes": "Year 2 duplicate name for same initiative; GLREA and missy-stults inbound links rewritten"}
 {"date": "2026-06-26", "action": "merge", "from": "initiatives/solarize-toolkit", "into": "initiatives/solarize-ann-arbor", "approved-by": "human+claude", "notes": "Toolkit is a deliverable of the Solarize program; absorbed as milestone; strategy-1 body link updated"}
+{"date": "2026-06-30", "action": "MERGE", "from": "actors/ann-arbor-downtown-development-authority.md", "into": "actors/downtown-development-authority.md", "approved-by": "manual"}
+{"date": "2026-06-30", "action": "MERGE", "from": "initiatives/neighborhood-climate-ambassadors.md", "into": "initiatives/a2zero-ambassadors-program.md", "approved-by": "manual"}
+{"date": "2026-06-30", "action": "TEMPORAL_SUCCESSION", "predecessor": "initiatives/community-solar-program.md", "successor": "initiatives/community-solar-pilot.md", "approved-by": "manual"}
+{"date": "2026-06-30", "action": "MERGE", "from": "initiatives/city-buildings-decarbonization.md", "into": "initiatives/municipal-building-decarbonization-audits.md", "approved-by": "manual"}
+{"date": "2026-06-30", "action": "TEMPORAL_SUCCESSION", "predecessor": "initiatives/commercial-benchmarking-ordinance.md", "successor": "initiatives/benchmarking-ordinance.md", "approved-by": "manual"}
+{"date": "2026-06-30", "action": "MERGE", "from": "locations/veterans-park.md", "into": "locations/veterans-memorial-park.md", "approved-by": "manual"}
+{"date": "2026-06-30", "action": "MERGE", "from": "funding-events/state-michigan-ev-charger-2023.md", "into": "funding-events/michigan-ev-charger-grant-2023.md", "approved-by": "manual"}

@@ -11,7 +11,7 @@ milestones:
   year: 2021
 parent-strategy: '[[strategies/strategy-4-vmt-reduction]]'
 partners:
-- '[[actors/a2zero]]'
+- '[[actors/office-of-sustainability-and-innovations]]'
 party-responsible: '[[actors/city-of-ann-arbor-planning-department]]'
 related-strategies:
 - '[[strategies/strategy-4-vmt-reduction]]'

@@ -1,0 +1,293 @@
+{
+  "source-uuid": "a2zero-year3",
+  "generated-at": "2026-06-30T22:48:35.701152+00:00",
+  "digest-rebuilt": "2026-06-29",
+  "strategies-touched": [
+    "strategies/strategy-1-renewable-grid",
+    "strategies/strategy-2-electrification",
+    "strategies/strategy-3-building-efficiency",
+    "strategies/strategy-4-vmt-reduction",
+    "strategies/strategy-5-materials-waste",
+    "strategies/strategy-6-resilience",
+    "strategies/strategy-7-engagement"
+  ],
+  "extends": [
+    {
+      "slug": "initiatives/community-solar-pilot",
+      "new-data": "Source reports 4MW+ of rooftop solar installed via Solarize Ann Arbor with 540+ residential installations in Year 3."
+    },
+    {
+      "slug": "initiatives/dte-utility-case-u-20836-intervention",
+      "new-data": "Source confirms testimony submitted in U-20836 plus three additional MPSC cases (U-21172, U-21297, U-21376) challenging rates and promoting clean energy."
+    },
+    {
+      "slug": "initiatives/sustainable-energy-utility",
+      "new-data": "Source reports an Energy Options Analysis commissioned and a DOE grant submitted to formally create the SEU, with decisions expected mid-2024."
+    },
+    {
+      "slug": "initiatives/arpa-city-facilities-solar",
+      "new-data": "Source confirms $2.5M federal funding secured, RFP released, vendors selected (Enerlogics and Melink Solar) for ~3MW on Wheeler, Water/Wastewater, and airport; 1MW at Parks facilities underway."
+    },
+    {
+      "slug": "initiatives/geothermal-districts",
+      "new-data": "Source reports DOE planning grant won for Bryant district geothermal loop design and NREL support secured for Veterans Park geothermal data needs study."
+    },
+    {
+      "slug": "initiatives/bryant-neighborhood-decarbonization",
+      "new-data": "Source reports $500K MI-HOPE grant won, 19 households receiving improvements, Bryant Community Center targeted as carbon-negative building, and $580K DOE geothermal planning grant awarded."
+    },
+    {
+      "slug": "initiatives/electrification-contractor-training-and-badging",
+      "new-data": "Source reports 22 contractors statewide now hold Michigan Saves Electrification Badge and a 30+ contractor convening was held to discuss rebates and best practices."
+    },
+    {
+      "slug": "initiatives/aahc-energy-improvements",
+      "new-data": "Source reports $3M in federal aid secured with Ann Arbor Housing Commission to advance net-zero energy affordable housing and geothermal studies at two AAHC sites."
+    },
+    {
+      "slug": "initiatives/ev-charger-deployment",
+      "new-data": "Source reports $54K state grant received for first curbside/utility-pole EV chargers, city light fleet reached 20% electric, and first heavy electric truck introduced."
+    },
+    {
+      "slug": "initiatives/benchmarking-ordinance",
+      "new-data": "Source confirms commercial energy and water benchmarking ordinance implemented, described as the first in the State of Michigan."
+    },
+    {
+      "slug": "initiatives/net-zero-energy-affordable-housing",
+      "new-data": "Source confirms $3M federal aid secured in collaboration with Ann Arbor Housing Commission for net-zero energy affordable housing."
+    },
+    {
+      "slug": "initiatives/non-motorized-transportation-plan",
+      "new-data": "Source reports 3.1 miles of new/improved bike lanes, 2.5 miles of sidewalk gaps filled, Ann Arbor achieved Gold Walk Friendly and Gold Bicycle Friendly Community designations."
+    },
+    {
+      "slug": "initiatives/transit-oriented-development-zoning",
+      "new-data": "Source reports approximately 400 acres rezoned to TC1 (transit corridor) status."
+    },
+    {
+      "slug": "initiatives/expand-improve-local-transit",
+      "new-data": "Source reports community passed a millage to support TheRide in improving and expanding public transit, effective 2024."
+    },
+    {
+      "slug": "initiatives/circular-economy-strategy",
+      "new-data": "Source reports three community working sessions held, circular economy GIS map updated, video series launched, and co-design process planned for Year 4."
+    },
+    {
+      "slug": "initiatives/a2r3-reduce-reuse-return",
+      "new-data": "Source reports A2R3 returnable containers program maintained at four restaurants, EPA grant applied for, and partnership with Perpetual on reusable landscape design."
+    },
+    {
+      "slug": "initiatives/resilience-hubs",
+      "new-data": "Source reports second resilience hub completed at Bryant Neighborhood Community Center and EPA grant applied for to formally launch a resilience network and expand hubs county-wide."
+    },
+    {
+      "slug": "initiatives/northside-resilience-hub",
+      "new-data": "Source reports Northside hub was activated as emergency preparedness shelter during February ice storm for five days."
+    },
+    {
+      "slug": "initiatives/10000-trees-initiative",
+      "new-data": "Source reports approximately 5,750 trees planted/distributed to date and a USDA Forest Service Urban Forestry IRA grant proposal submitted for canopy assessment and tree nursery feasibility."
+    },
+    {
+      "slug": "initiatives/environmental-sensors-monitoring",
+      "new-data": "Source reports two additional air quality monitors installed (total now four) and a data visualization platform launched at a2gov.org/airdata."
+    },
+    {
+      "slug": "initiatives/a2zero-ambassadors-program",
+      "new-data": "Source reports Ambassador program grew to 85 members with next cohort targeting 100+, and $229K AmeriCorps grant secured to bring 10 members to OSI."
+    },
+    {
+      "slug": "initiatives/sa2t-grant-program",
+      "new-data": "Source reports over $70,000 granted through the SA2T program in Year 3 for community climate activities."
+    },
+    {
+      "slug": "initiatives/weatherization-expansion",
+      "new-data": "Source reports $300K in grants provided to local housing providers for energy efficiency improvements for lower-income residents."
+    },
+    {
+      "slug": "initiatives/update-building-codes",
+      "new-data": "Source reports active promotion of Michigan's adoption of the 2021 International Model Building Code."
+    },
+    {
+      "slug": "initiatives/theride-electrification-expansion",
+      "new-data": "Source reports AAATA propulsion study supported to identify solutions for carbon-free busing."
+    },
+    {
+      "slug": "actors/office-of-sustainability-and-innovations",
+      "new-data": "Source names full OSI team (13 staff) and reports $229K AmeriCorps grant, CDP A-List recognition for second year, and Michigan Green Communities Gold Level award."
+    },
+    {
+      "slug": "actors/ibew-252",
+      "new-data": "Source reports collaboration with IBEW/NECA on 'The Future is Electric' campaign, informational video series, and workforce development conversations initiated."
+    },
+    {
+      "slug": "actors/ann-arbor-housing-commission",
+      "new-data": "Source reports $3M federal aid secured for net-zero affordable housing and geothermal studies at two AAHC sites supported."
+    },
+    {
+      "slug": "actors/ann-arbor-downtown-development-authority",
+      "new-data": "Source reports DDA won League of Michigan Bicyclists Outstanding Infrastructure Award for most improved bicycle-friendly infrastructure."
+    },
+    {
+      "slug": "actors/university-of-michigan",
+      "new-data": "Source reports UM purchased equivalent of 39% of electricity from renewables in 2022 (offsetting 6% of community emissions) and joint RFP released for up to 20MW solar at UM sites."
+    },
+    {
+      "slug": "actors/washtenaw-county",
+      "new-data": "Source reports Washtenaw County coordinated on GHG inventory completion and $4K waste reduction sponsorship secured for A2R3."
+    },
+    {
+      "slug": "actors/ann-arbor-public-schools",
+      "new-data": "Source reports AAPS GHG inventory completed and small grant program launched to support sustainability projects in public schools."
+    },
+    {
+      "slug": "actors/rmi",
+      "new-data": "Source references ReDirect (likely related organization) providing three summer fellows for sustainability behavior change activities."
+    }
+  ],
+  "new-entities": [
+    {
+      "slug": "initiatives/home-energy-advisor-program",
+      "type": "initiative",
+      "title": "A2ZERO Home Energy Advisor Program",
+      "rationale": "New pilot service with Elevate and EcoWorks providing residents personalized home electrification assessments and contractor support."
+    },
+    {
+      "slug": "initiatives/electrification-expo",
+      "type": "initiative",
+      "title": "Annual Electrification Expo",
+      "rationale": "New annual public event launched in Year 3 with 25 vendors and ~450 attendees to promote home electrification."
+    },
+    {
+      "slug": "initiatives/landfill-solar-project",
+      "type": "initiative",
+      "title": "Wheeler Center Landfill Solar Project",
+      "rationale": "Planned 20MW solar installation on City's capped landfill, potentially one of the largest landfill solar projects nationally."
+    },
+    {
+      "slug": "initiatives/commercial-solar-program",
+      "type": "initiative",
+      "title": "Commercial Solar Program (2030 District Partnership)",
+      "rationale": "New program launched with the 2030 District to incentivize commercial solar adoption in Washtenaw County."
+    },
+    {
+      "slug": "initiatives/heating-franchise",
+      "type": "initiative",
+      "title": "Ann Arbor Heating Franchise Initiative",
+      "rationale": "New City-led process to ensure all residents have access to safe, clean, affordable heating and cooling choices."
+    },
+    {
+      "slug": "initiatives/home-energy-rating-disclosure",
+      "type": "initiative",
+      "title": "Home Energy Rating Disclosure Policy",
+      "rationale": "Drafted policy requiring energy rating disclosure at time of home listing, targeting introduction in summer 2023."
+    },
+    {
+      "slug": "initiatives/aging-in-place-efficiently",
+      "type": "initiative",
+      "title": "Aging in Place Efficiently (AIP) Program",
+      "rationale": "Pilot program completing energy efficiency and aging-in-place retrofits for 17 lower-income homeowners, now closed pending refunding."
+    },
+    {
+      "slug": "initiatives/resident-race-to-zero-energy",
+      "type": "initiative",
+      "title": "Resident Race to Zero Energy",
+      "rationale": "City's first residential energy reduction competition, completed in Year 3 with over 100 participants."
+    },
+    {
+      "slug": "initiatives/led-streetlight-conversion",
+      "type": "initiative",
+      "title": "LED Streetlight Conversion Program",
+      "rationale": "City-wide streetlight LED replacement program funded by $980K SEMCOG grant, starting fall 2023."
+    },
+    {
+      "slug": "initiatives/green-rental-housing-initiative",
+      "type": "initiative",
+      "title": "Green Rental Housing Initiative",
+      "rationale": "New program under development to establish energy and sustainability standards for rental housing in Ann Arbor."
+    },
+    {
+      "slug": "initiatives/plant-based-challenge",
+      "type": "initiative",
+      "title": "A2ZERO Plant-Based Challenge",
+      "rationale": "Week-long community challenge promoting plant-forward diets with ~200 participants and 300+ event attendees."
+    },
+    {
+      "slug": "initiatives/pollinator-aware-yard-care",
+      "type": "initiative",
+      "title": "Pollinator-Aware Yard Care Program",
+      "rationale": "New program restructured from No Mow May with 250+ registered participants supporting urban biodiversity."
+    },
+    {
+      "slug": "initiatives/resilience-network",
+      "type": "initiative",
+      "title": "Ann Arbor Resilience Network",
+      "rationale": "Emerging network of community organizations exploring coordinated resilience hub expansion across Washtenaw County."
+    },
+    {
+      "slug": "initiatives/community-climate-action-millage",
+      "type": "political-event",
+      "title": "Community Climate Action Millage",
+      "rationale": "20-year voter-approved millage passed November 2022, making Ann Arbor the 8th U.S. city to self-tax for local climate action."
+    },
+    {
+      "slug": "initiatives/washington-street-bike-boulevard",
+      "type": "initiative",
+      "title": "Washington Street Bike Boulevard",
+      "rationale": "New protected bike infrastructure project funded by $200K SEMCOG grant, starting fall 2025."
+    },
+    {
+      "slug": "initiatives/a2zero-collaborators-network",
+      "type": "initiative",
+      "title": "A2ZERO Collaborators Network",
+      "rationale": "Growing network of 120+ organizations engaged as planning and implementation partners for A2ZERO strategies."
+    },
+    {
+      "slug": "actors/elevate",
+      "type": "actor",
+      "title": "Elevate",
+      "rationale": "Nonprofit partner co-piloting the Home Energy Advisor service with OSI and EcoWorks."
+    },
+    {
+      "slug": "actors/ecoworks",
+      "type": "actor",
+      "title": "EcoWorks",
+      "rationale": "Nonprofit partner co-piloting the Home Energy Advisor service with OSI and Elevate."
+    },
+    {
+      "slug": "actors/live-zero-waste",
+      "type": "actor",
+      "title": "Live Zero Waste",
+      "rationale": "Nonprofit partner maintaining the A2R3 returnable containers program at local restaurants."
+    },
+    {
+      "slug": "funding-event/doe-seu-grant-2023",
+      "type": "funding-event",
+      "title": "DOE Grant Application for Sustainable Energy Utility (2023)",
+      "rationale": "Federal DOE grant submitted to formally create the SEU; decisions expected mid-2024."
+    }
+  ],
+  "retrieve-for-context": [
+    "initiatives/sustainable-energy-utility",
+    "initiatives/bryant-neighborhood-decarbonization",
+    "initiatives/arpa-city-facilities-solar",
+    "initiatives/geothermal-districts",
+    "initiatives/community-solar-pilot",
+    "initiatives/resilience-hubs",
+    "initiatives/northside-resilience-hub",
+    "initiatives/a2zero-ambassadors-program",
+    "initiatives/electrification-contractor-training-and-badging",
+    "initiatives/benchmarking-ordinance",
+    "initiatives/10000-trees-initiative",
+    "initiatives/circular-economy-strategy",
+    "actors/office-of-sustainability-and-innovations",
+    "initiatives/dte-utility-case-u-20836-intervention"
+  ],
+  "theme-connections": [
+    "Community Climate Action Millage passage unlocks new residential rebate and incentive funding that spans Strategies 1, 2, and 3.",
+    "Bryant neighborhood is consolidating multiple strategy threads\u2014geothermal, carbon-negative building, weatherization, and resilience hub\u2014into a single replicable decarbonization model.",
+    "MPSC utility case interventions (U-20836, U-21172, U-21297, U-21376) link grid decarbonization goals in Strategy 1 to rate equity and distributed generation access across all electrification strategies.",
+    "Workforce development through IBEW/NECA and Michigan Saves badging ties contractor capacity building in Strategy 2 to the pace of building efficiency retrofits in Strategy 3.",
+    "Resilience hub network expansion and EPA grant application connect Strategy 6 infrastructure goals to county-wide climate collaboration emerging across all strategies."
+  ]
+}

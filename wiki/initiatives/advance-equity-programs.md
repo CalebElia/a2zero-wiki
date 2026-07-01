@@ -25,7 +25,7 @@ partners:
 - '[[actors/washtenaw-county-racial-equity-program-manager]]'
 - '[[actors/tony-reames]]'
 - '[[actors/urban-sustainability-directors-network]]'
-- '[[actors/city-administrator]]'
+- '[[actors/ann-arbor-city-administrator]]'
 - '[[actors/osi-equity-fellow]]'
 - '[[actors/city-of-ann-arbor-diversity-equity-inclusion-manager]]'
 party-responsible: '[[actors/office-of-sustainability-and-innovations]]'

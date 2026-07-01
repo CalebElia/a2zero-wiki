@@ -12,40 +12,41 @@ synthesis:
   - initiatives/resilience-hubs
   - initiatives/northside-resilience-hub
   - initiatives/resilience-fund-equity
+  - initiatives/decentralized-energy-microgrids
   - initiatives/preserve-and-enhance-local-tree-canopy
   - initiatives/10000-trees-initiative
-  - initiatives/decentralized-energy-microgrids
-  - initiatives/neighborhood-climate-ambassadors
   - initiatives/environmental-sensors-monitoring
+  - initiatives/asset-and-needs-mapping-of-neighborhoods
+  - initiatives/a2zero-ambassadors-program
+  - initiatives/resilience-network
   core-actors:
   - actors/city-of-ann-arbor
   - actors/office-of-sustainability-and-innovations
   - actors/avalon-housing
-  year-over-year-arc: Baseline state establishes equity-centered resilience infrastructure
-    through physical hubs (Northside), tree canopy expansion targeting underserved
-    areas, distributed energy microgrids, and community ambassador networks, with
-    monitoring tools and needs mapping laying groundwork for future adaptive capacity.
+  year-over-year-arc: Baseline state establishes foundational resilience infrastructure
+    including the Northside Community Center as a pilot resilience hub, early-stage
+    microgrid planning, a 10,000 Trees Initiative targeting underserved areas, and
+    equity-centered tools such as the Resilience Fund and neighborhood asset mapping,
+    with monitoring networks (AQMesh, environmental sensors) beginning deployment.
   open-questions:
-  - Which additional neighborhood sites will be designated as resilience hubs beyond
-    Northside Community Center?
-  - What is the funding mechanism and capitalization level for the Resilience Fund
-    focused on equity?
-  - How will microgrid development be financed and integrated with DTE Energy's grid
-    infrastructure?
-  - Has the asset and needs mapping of neighborhoods been completed, and how will
-    findings drive resource allocation?
+  - How many resilience hubs will be operationalized beyond the Northside pilot, and
+    on what timeline?
+  - What funding mechanisms will sustain the Resilience Fund focused on equity long-term?
+  - How will microgrid development be financed and which sites are prioritized for
+    decentralized energy?
+  - How will tree canopy equity goals be tracked and enforced in underserved neighborhoods?
   cross-strategy-links:
   - initiatives/affordable-housing-net-zero-energy
   - initiatives/decentralized-energy-microgrids
-  - initiatives/preserve-and-enhance-local-tree-canopy
-  - initiatives/a2zero-ambassadors-program
+  - initiatives/microgrid-creation
   - initiatives/a2zero-carbon-neutrality-plan
   - initiatives/carbon-sequestration-ann-arbor
-  last-rebuilt: '2026-06-29'
+  - initiatives/aqmesh-air-quality-monitoring
+  last-rebuilt: '2026-06-30'
 ---
 
-Strategy 6 focuses on climate adaptation — enhancing the resilience of [[locations/ann-arbor|Ann Arbor]]'s people and place to withstand and recover from climate disruptions — through six actions. While GHG reduction is not the primary purpose of this strategy, the six actions collectively contribute a modest 0.1% reduction in community-wide emissions at a cost of approximately $7.5 million ([[sources/cap/cap-2020]]). The plan grounds this strategy in documented local climate impacts: average annual temperature has already risen nearly 1°F since the 1900s, precipitation has increased 44% since the 1950s, and extreme rainfall events have grown 37% since 1981, with Ann Arbor projected to have 12–36 more days per year above 90°F by 2050 ([[sources/cap/cap-2020]]).
+Strategy 6 achieved a significant physical infrastructure milestone in year three with the completion of the second resilience hub in Ann Arbor, located at the [[locations/bryant-neighborhood-community-center|Bryant Neighborhood Community Center]] ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The [[initiatives/northside-resilience-hub|Northside Community Center Resilience Hub]] demonstrated its operational value when it was activated as an emergency preparedness shelter for five days during a February ice storm, providing direct community benefit and validating the hub model. An EPA grant was applied for to formally launch a [[initiatives/resilience-network|resilience network]] and expand hubs throughout [[actors/washtenaw-county|Washtenaw County]], and over a dozen community-based organizations were convened to explore creation of that network. Year four priorities include creating Ann Arbor's third and fourth resilience hubs, indicating a planned acceleration of the hub expansion program.
 
-The centerpiece action is [[initiatives/resilience-hubs|Resilience Hubs]] — community-serving facilities augmented with renewable energy, battery storage, and EV charging to support residents before, during, and after natural hazard events. The plan envisions five hubs, at least one per City Ward, co-designed and co-operated with communities, prioritized in underserved neighborhoods, projected to reduce 2,500 MTCO₂e (0.1%) at a cost of $5.025 million ([[sources/cap/cap-2020]]). The resilience hub at [[locations/northside-community-center|Northside Community Center]] was created in Year One ([[sources/annual-reports/a2zero-year1]]); Year 2 saw the design of second and third centers at [[locations/bryant-community-center|Bryant Community Center]] and [[locations/ann-arbor-senior-center|Ann Arbor Senior Center]], to be implemented in Year 3 ([[sources/annual-reports/a2zero-year2]]). The City also established and staffed an emergency preparedness shelter during a 5-day power outage in August 2021, and deployed over 200 emergency preparedness kits to residents ([[sources/annual-reports/a2zero-year2]]). OSI is working with Emergency Management to fully integrate climate change and resilience projects into the City's updated multi-hazard mitigation plan. Year 3 plans call for creating Ann Arbor's second and third resilience hubs and installing at least four more air quality monitors throughout the city ([[sources/annual-reports/a2zero-year2]]).
+The [[initiatives/10000-trees-initiative|10,000 Trees initiative]] reached approximately 5,750 trees planted or distributed to date, and OSI presented on the program's progress and success at the 2023 Partners in Community Forestry conference and ArborCon 2023. OSI also submitted a USDA Forest Service Urban and Community Forestry Inflation Reduction Act grant proposal to fund an update to Ann Arbor's Urban Tree Canopy assessment, advance private property tree planting, create a Natural Areas Preservation management plan, and conduct a feasibility study for a City- and County-owned tree nursery ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The [[locations/ann-arbor-greenbelt|Greenbelt]] reached 7,600 acres of farmland and natural areas permanently protected surrounding the City, with the protected farmland estimated to have the potential to produce calories sufficient to feed over 52,000 people.
 
-The [[initiatives/a2zero-ambassadors-program|A2ZERO Ambassadors Program]] completed its 2nd and 3rd cohorts in Year 2, bringing the total number of trained ambassadors to over 50 individuals — up from 22 trained in Year One ([[sources/annual-reports/a2zero-year1]], [[sources/annual-reports/a2zero-year2]]). Year 3 plans call for engaging the next two rounds, bringing the total to nearly 100 — approaching the plan's goal of 100 trained ambassadors by 2025 ([[sources/cap/cap-2020]], [[sources/annual-reports/a2zero-year2]]). The [[initiatives/10000-trees-initiative|10,000 Trees Initiative]] distributed almost 2,500 trees through FreeTree Giveaways and Community Tree Plantings since spring 2021, with two FreeTree Giveaways held annually in celebration of fall and spring growing seasons. Year 3 plans include planting 1,500 more trees through the program ([[sources/annual-reports/a2zero-year2]]). Two [[initiatives/aqmesh-air-quality-monitors|AQMesh air quality monitors]] were installed — one at the [[locations/kerrytown-farmers-market|Kerrytown Farmers Market]] and one at the [[locations/bryant-community-center|Bryant Community Center]] — with all data publicly available on the City's website; two more monitors are ordered and ready for installation in Year 3 ([[sources/annual-reports/a2zero-year2]]). OSI also initiated a resilience assessment with [[actors/avalon-housing|Avalon Housing]] to support the resilience of affordable housing providers, undertook [[initiatives/master-rain-gardener-training|Master Rain Gardener training]] to support residents with installing green infrastructure, developed a [[initiatives/soil-carbon-calculator|soil carbon calculator tool]] with support from [[actors/university-of-michigan|University of Michigan]] students, developed a tree maintenance and care app to support those receiving trees through the [[initiatives/10000-trees-initiative|10,000 Trees Initiative]], and supported the No Mow May initiative ([[sources/annual-reports/a2zero-year2]]).
+The [[initiatives/environmental-sensors-monitoring|environmental sensor network]] expanded with two additional air quality monitors installed, bringing the total to four, and a new data visualization platform was launched at a2gov.org/airdata to make monitoring data publicly accessible. The [[initiatives/pollinator-aware-yard-care|Pollinator-Aware Yard Care Program]] — a restructuring of the prior year's No Mow May program — launched with over 250 registered participants, broadening the urban biodiversity program's reach and framing. The [[initiatives/a2zero-ambassadors-program|A2Zero Ambassadors Program]] grew to 85 members with the next cohort targeting over 100; Ambassador activities in this period included resilience-related community engagement as well as composting outreach and swap day hosting documented under Strategy 5 ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).

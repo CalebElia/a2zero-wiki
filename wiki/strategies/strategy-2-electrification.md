@@ -10,49 +10,48 @@ tags:
 last-updated: 2026-06-22
 synthesis:
   core-initiatives:
-  - initiatives/home-and-business-electrification
   - initiatives/appliance-hvac-electrification-requirement
+  - initiatives/community-climate-action-millage-rebates
   - initiatives/sustainable-energy-utility
-  - initiatives/ev-charger-deployment
-  - initiatives/geothermal-districts
+  - initiatives/home-energy-advisor-program
   - initiatives/aahc-energy-improvements
+  - initiatives/grid-capacity-expansion-electrification
   - initiatives/electrification-contractor-training-and-badging
   - initiatives/bryant-neighborhood-decarbonization
   core-actors:
   - actors/city-of-ann-arbor
   - actors/ann-arbor-housing-commission
   - actors/ann-arbor-area-transit-authority
-  - actors/dte-energy
+  - actors/office-of-sustainability-and-innovations
   - actors/ibew-252
   - actors/rmi
   year-over-year-arc: Strategy 2 establishes a broad baseline of building and fleet
-    electrification initiatives spanning residential, commercial, and municipal sectors,
-    with foundational programs (SEU, EV charging, contractor training, neighborhood
-    pilots) in early deployment but no multi-year trend data yet ingested.
+    electrification programs—spanning residential rebates, municipal audits, EV infrastructure,
+    contractor training, and neighborhood-scale pilots—with no multi-year trend data
+    yet ingested, indicating the strategy is in early deployment and program-building
+    phase.
   open-questions:
-  - What is the funding mechanism and capitalization level for the Loan Loss Reserve
-    and SEU, and are they operational?
-  - How will the mandatory appliance/HVAC electrification requirement be enforced
-    and phased for existing buildings?
-  - What is the timeline and scale for expanding geothermal districts beyond pilot
-    zones?
-  - How will equity and affordability be ensured for low-income renters and homeowners
-    facing electrification costs?
+  - What is the timeline and funding mechanism for the Sustainable Energy Utility
+    (SEU) to become fully operational?
+  - How will the appliance/HVAC electrification requirement be enforced for existing
+    buildings, and what are the compliance deadlines?
+  - Is grid capacity sufficient to support simultaneous large-scale building electrification
+    and EV charging expansion without major utility upgrades?
+  - How will equity and affordability be ensured for low-income and renter households
+    who cannot self-finance electrification upgrades?
   cross-strategy-links:
-  - initiatives/sustainable-energy-utility
-  - initiatives/geothermal-districts
-  - initiatives/ev-charger-deployment
   - initiatives/solarize-ann-arbor
-  - initiatives/carbon-neutral-districts
-  - initiatives/aahc-energy-improvements
+  - initiatives/ev-charger-deployment
   - initiatives/theride-electrification-expansion
-  last-rebuilt: '2026-06-29'
+  - initiatives/community-climate-action-millage-rebates
+  - initiatives/ghg-inventory
+  - initiatives/carbon-neutral-districts
+  - initiatives/mobility-hubs
+  last-rebuilt: '2026-06-30'
 ---
 
-Strategy 2 addresses the conversion of fossil-fuel-powered appliances, heating systems, and vehicles to electric, and is projected to reduce community-wide emissions by 23% at a combined cost of approximately $143 million ([[sources/cap/cap-2020]]). The strategy's effectiveness is explicitly contingent on Strategy 1: electrification only achieves its full GHG reduction potential when the electricity powering those systems is sourced from renewables. The dominant action is [[initiatives/home-and-business-electrification|Home and Business Electrification]], targeting 100% of city facilities, 30% of owner-occupied homes, and 25% of rental properties fully electrified by 2030. Natural gas for space heating, water heating, and cooking represents over 25% of community emissions. Projected: 362,200 MTCO₂e reduced (16.5% of community-wide emissions) with UM participation ([[sources/cap/cap-2020]]).
+Year three of Strategy 2 was explicitly framed as foundational — designing and piloting programs intended to scale in year four — with the dominant approach being the simultaneous development of resident-facing advisory services, contractor workforce capacity, fleet electrification, and neighborhood-scale geothermal pilots. The [[initiatives/home-energy-advisor-program|A2Zero Home Energy Advisor Program]] was designed and piloted in partnership with [[actors/elevate|Elevate]] and [[actors/ecoworks|EcoWorks]], providing residents with needs assessments, technical advice, contractor engagement, incentive navigation, bid reviews, and customized decarbonization pathways; full launch is a named year four priority ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The first annual [[initiatives/electrification-expo|Electrification Expo]] drew 25 vendors and approximately 450 attendees, with a second expo planned for August 2023. OSI also created an A2Zero sustainability review for new buildings — now integrated into the City's plan review process — and began developing an HOA and multi-unit development toolkit to overcome barriers to solar and EV charger installation for residents in those settings. The [[initiatives/heating-franchise|Ann Arbor Heating Franchise Initiative]] was launched, including community listening sessions, a request for ideas, and a dedicated public comment channel, to ensure all residents have access to safe, clean, and affordable heating and cooling choices. The public health rationale for this work is explicit: combusting fossil gas has been associated with childhood asthma, cancer, and lung disease.
 
-Year 2 saw the launch of the [[initiatives/electrification-contractor-training|Electrification Contractor Training and Badging Program]], designed to ensure contractors are knowledgeable about electrification opportunities in Michigan and to connect residents with qualified professionals through the [[actors/michigan-saves|Michigan Saves]] Locator ([[sources/annual-reports/a2zero-year2]]). OSI facilitated multiple resident-facing educational workshops on heat pumps and electrification, joined an [[actors/rmi|RMI]] cohort of cities and front-line organizations working collaboratively on [[initiatives/electrification-campaign|electrification campaigns]], and partnered with [[actors/ibew-neca|IBEW/NECA]] — the local Electrical Workers Union — to launch a joint campaign entitled 'The Future is Electric' to bolster electrification readiness among residents ([[sources/annual-reports/a2zero-year2]]). An [[initiatives/electrification-expo|Electrification Expo]] was planned for July 15, 2022 at the Farmer's Market. OSI also drafted the [[initiatives/green-rental-housing-program|Green Rental Housing (GRH)]] initiative, which includes appliance electrification requirements alongside broader rental quality standards; the draft was in review and expected to proceed to Council in Year 3 ([[sources/annual-reports/a2zero-year2]]). The [[initiatives/energy-concierge|Energy Concierge]] service — a one-on-one program to help residents design personalized decarbonization roadmaps, co-listed under both Strategy 2 and Strategy 3 in the source — was co-designed with community partners and gearing up for pilot testing in Year 3, with early testing in the [[locations/bryant-neighborhood|Bryant neighborhood]] ([[sources/annual-reports/a2zero-year2]]). A [[initiatives/whole-home-decarbonization-assessment|whole-home decarbonization assessment]] covering energy waste reduction, electrification, and renewable energy opportunities was also developed and tested in the [[locations/bryant-neighborhood|Bryant neighborhood]], with a goal of expanding citywide in Year 3 ([[sources/annual-reports/a2zero-year2]]).
+Contractor workforce development deepened significantly: 22 contractors statewide now hold the [[actors/michigan-saves|Michigan Saves]] Electrification Badge — a badging program created by Michigan Saves with City assistance — and OSI convened over 30 contractors across disciplines to address electrification misconceptions, promote City programs, gather feedback on forthcoming rebate programs, and identify best practices. Collaboration with [[actors/ibew-252|IBEW/NECA]] on the 'The Future is Electric' campaign produced a series of informational videos for residents on home electrification upgrades ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). These contractor-facing investments directly address the workforce capacity constraint identified as a barrier to scaling building electrification.
 
-On the vehicle side, Year 2 delivered substantial progress. The City installed 40 dual-port EV chargers in [[actors/downtown-development-authority|Downtown Development Authority]] garages and 4 Direct Current Fast Chargers at City Hall, supported by $170,000 in grant funding ([[sources/annual-reports/a2zero-year2]]). The municipal fleet reached a 20% electrification rate — up from 10% in Year One — and the City won awards to bring two electric refuse trucks into service, supported by $270,000 from the [[actors/american-lung-association|American Lung Association]] and $406,000 from the [[actors/state-of-michigan|State of Michigan]] ([[sources/annual-reports/a2zero-year2]]). The permitting system was updated to track household-level transitions to electric vehicles, heat pumps, and stoves — building the data infrastructure needed to measure progress toward the 2030 electrification targets. Year 3 plans call for deploying 50 more EV chargers in coordination with the [[actors/university-of-michigan|University of Michigan]], the DDA, and the State of Michigan, as well as launching and pilot testing the full electrification campaign ([[sources/annual-reports/a2zero-year2]]).
-
-Beyond the municipal fleet, vehicle electrification continues to be addressed through parallel tracks including the EV Bulk Buy Program targeting 50% of all vehicle miles traveled in EVs by 2030, projected to reduce 122,900 MTCO₂e (5.6%) at a cost of $700,000 ([[sources/cap/cap-2020]]). [[initiatives/bus-electrification|Bus electrification]] targets [[actors/ann-arbor-area-transit-authority|TheRide]]'s fleet and UM's bus fleet, with a goal of full electrification by 2030 — projected to reduce 13,800 MTCO₂e (0.6%) at a cost of $86 million ([[sources/cap/cap-2020]]). Equity considerations remain embedded throughout: EV charger placement prioritizes renters in multifamily housing and low-income areas, and a $54,000 grant from the State of Michigan was secured to support a [[initiatives/utility-pole-ev-charging-pilot|utility-pole EV charging pilot]] ([[sources/annual-reports/a2zero-year2]]).
+On the geothermal front, a U.S. Department of Energy planning grant was won to design a district geothermal loop in the [[initiatives/bryant-neighborhood-decarbonization|Bryant neighborhood]], and NREL support was secured for a [[locations/veterans-memorial-park|Veterans Park]] geothermal data needs study, advancing two distinct district-scale pilots simultaneously. The [[initiatives/geothermal-districts|geothermal district]] work at two [[actors/ann-arbor-housing-commission|Ann Arbor Housing Commission (AAHC)]] sites also received support through geothermal studies and analysis. Municipal fleet electrification progressed concretely: the City's light fleet reached 20% electric with the first electric pickups and vans integrated, and the first heavy electric truck — a fully electric bucket truck for Signs and Signals — was introduced ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). A $54,000 [[actors/state-of-michigan|State of Michigan]] grant was received to install the City's first curbside EV chargers through the [[initiatives/ev-charger-deployment|EV charger deployment]] program, with installation expected by fall 2023.

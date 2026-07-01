@@ -11,45 +11,46 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/circular-economy-strategy
-  - initiatives/solid-waste-resource-management-plan
   - initiatives/zero-waste-plan
   - initiatives/composting-expansion
   - initiatives/a2r3-reduce-reuse-return
+  - initiatives/solid-waste-resource-management-plan
   - initiatives/electric-refuse-truck-program
-  - initiatives/materials-recovery-facility-renovation
-  - initiatives/regional-methane-digester
+  - initiatives/sustainable-purchasing-policy
+  - initiatives/support-plant-rich-diet
   core-actors:
   - actors/city-of-ann-arbor
   - actors/office-of-sustainability-and-innovations
-  - actors/ann-arbor-downtown-development-authority
+  - actors/downtown-development-authority
+  - actors/university-of-michigan
   - actors/washtenaw-county
-  year-over-year-arc: Baseline state reflects early-stage circular economy framework
-    development, with composting expansion and electric refuse truck pilots underway,
-    commercial recycling services being extended, and a Zero Waste Plan and Solid
-    Waste Resource Management Plan guiding longer-term diversion and emissions reduction
-    targets.
+  year-over-year-arc: Baseline state reflects early-stage circular economy and zero-waste
+    framework development, with composting expansion, commercial recycling pilots,
+    and electric refuse truck procurement underway but most programmatic targets (zero
+    waste plan, sustainable purchasing policy, regional methane digester) still in
+    planning or initial implementation phases.
   open-questions:
-  - What diversion rate and landfill methane reduction targets are formally adopted
-    and on what timeline?
-  - Has the Materials Recovery Facility renovation secured funding and a construction
-    timeline?
-  - How will the Regional Methane Digester be financed and which regional partners
-    will participate?
-  - What enforcement or incentive mechanisms will drive sustainable materials requirements
-    in new developments?
+  - Whether the regional methane digester will secure sufficient multi-jurisdictional
+    partnership and funding to move from concept to construction
+  - How the Solid Waste Resource Management Plan update will set enforceable diversion
+    targets and timelines
+  - Whether sustainable materials requirements for new developments will be adopted
+    into city code or remain voluntary
+  - How equitable access to reuse, repair, and composting programs will be ensured
+    across all Ann Arbor neighborhoods
   cross-strategy-links:
   - initiatives/electric-refuse-truck-program
   - initiatives/waste-truck-fleet-electrification
   - initiatives/natural-area-preservation-carbon-sequestration
   - initiatives/carbon-sequestration-ann-arbor
   - initiatives/green-business-challenge
-  - initiatives/sustainable-purchasing-policy
-  - initiatives/local-food-production-expansion
-  last-rebuilt: '2026-06-29'
+  - initiatives/ghg-inventory
+  - initiatives/a2zero-carbon-neutrality-plan
+  last-rebuilt: '2026-06-30'
 ---
 
-Strategy 5 addresses the community's relationship with materials — how goods are purchased, used, reused, and disposed of — through six actions. The plan is candid that this strategy contributes only 0.3% of community-wide emissions reductions in the near term, at a combined cost of approximately $45 million, because calculations are limited to disposal-phase emissions and do not yet capture upstream or embedded emissions from production ([[sources/cap/cap-2020]]). Year-round composting expansion is projected to divert over 5,000 tons of waste annually by 2022, contributing 400 MTCO₂e in modeled GHG reductions at a cost of $26 million, while [[initiatives/commercial-recycling|commercial recycling expansion]] is projected to reduce 5,600 MTCO₂e (0.3%) at a cost of $18.4 million ([[sources/cap/cap-2020]]).
+Year three was described by OSI as the year of 'circularity,' with the dominant approach being community education, behavior change programming, and framework development rather than large-scale infrastructure deployment. The [[initiatives/circular-economy-strategy|Circular Economy Strategy]] advanced through three working sessions with a broad cross-section of Ann Arbor residents, an updated circular economy GIS map highlighting local businesses and organizations, and a new video series ('Making the Old New: Stories of Circularity') explaining the circular economy concept and profiling local practitioners including the Sister Lakes Association and El Harissa ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). A co-design process for a formal [[initiatives/circular-economy-strategy|circular economy strategy]] is planned for year four. OSI also worked with [[actors/university-of-michigan|University of Michigan]] policy students to develop an initial framework for reducing embodied carbon in buildings, extending the materials lens to the construction sector.
 
-Year 2 saw the launch of the [[initiatives/a2r3-program|Ann Arbor Reduce, Reuse, Return (A2R3)]] program — a zero-waste takeout initiative offering returnable, US-made, USDA-approved, microwave-, freezer-, and dishwasher-safe reusable containers at Zingerman's Next Door Café, Ginger Deli, and El Harissa Market Café. Containers can be returned to any participating business to be cleaned and reused, building Ann Arbor's circular economy. Additional businesses are being added continually, with the program managed through [[actors/live-zero-waste|Live Zero Waste]] ([[sources/annual-reports/a2zero-year2]]). This represents a significant scaling of the [[initiatives/reusable-container-pilot|reusable container pilot]] launched with four restaurants during Green Fare in Year One ([[sources/annual-reports/a2zero-year1]]). The City also moved to year-round residential composting and set up Saturday service for downtown commercial recycling beginning July 1, 2022 ([[sources/annual-reports/a2zero-year2]]). OSI also began looking for refrigerant appliances — including dehumidifiers, air conditioner window units, refrigerators, and freezers — being disposed of when students move on and off campus, advancing the plan's refrigerant recycling action, and began exploring creation of a solid waste disposal plan for new developments ([[sources/annual-reports/a2zero-year2]]).
+Food systems received notable attention: a week-long [[initiatives/plant-based-challenge|A2Zero Plant-Based Challenge]] engaged approximately 200 participants and drew over 300 attendees across in-person and virtual events, supported by eight local restaurants, six A2Zero Ambassadors, and seven nonprofits and government departments. A Local Food Festival at the [[locations/ann-arbor-farmers-market|Ann Arbor Farmers Market]] attracted seventeen businesses and organizations and over 300 residents. A sustainable food framework was drafted in collaboration with local business owners and City staff and is now being implemented. The [[locations/ann-arbor-greenbelt|Greenbelt]] launched an innovative buy-Protect-Sell acquisition framework to provide affordable farmland purchasing opportunities for land-insecure farmers, connecting food system resilience to land conservation.
 
-Year 2 also saw substantial investment in circular economy infrastructure. OSI launched a [[initiatives/circular-economy-working-group|circular economy working group]] to create a circular economy plan for the City and region, along with metrics to measure it. A robust circular economy GIS map was created including more than 100 circular businesses and organizations in Ann Arbor. The City became part of the [[actors/state-of-michigan|State of Michigan]]'s [[initiatives/nextcycle-initiative|NextCycle Intergovernmental Initiative and Public Private Partnership (I2P3)]] challenge track in partnership with local nonprofits, and launched a dedicated circular economy website ([[sources/annual-reports/a2zero-year2]]). OSI is working with [[actors/iclei|ICLEI-Local Governments for Sustainability]] to establish a series of circular economy metrics for the City. An academic article titled 'Envisioning a Circular Economy: The Journey of One Mid-Sized Midwestern City' (2021) was published in the journal Sustainability and is listed among Year 2 accomplishments ([[sources/annual-reports/a2zero-year2]]). A [[initiatives/sustainable-food-working-group|sustainable food working group]] was launched to advance sustainable food practices, and a [[initiatives/sustainable-food-purchasing-policy|sustainable food purchasing policy]] applying to all City food purchases was passed by City Council on March 21, 2022 ([[sources/annual-reports/a2zero-year2]]). The [[initiatives/resident-race-to-zero|Resident Race to Zero]] — a week-long [[initiatives/zero-waste-challenge|zero waste challenge]] occurring three times per year — has now engaged 829 households cumulatively ([[sources/annual-reports/a2zero-year2]]). Year 3 plans include creating a [[initiatives/circular-economy-strategy|circular economy strategy]] and launching a student-focused zero waste challenge ([[sources/annual-reports/a2zero-year2]]).
+The [[initiatives/a2r3-reduce-reuse-return|A2R3 returnable containers program]] was maintained at four local restaurants in partnership with [[actors/live-zero-waste|Live Zero Waste]], and a partnership with Perpetual began to design a broader reusable landscape for Ann Arbor. An EPA grant was applied for to support drop-off station upgrades and scale the A2R3 program. An A2Zero waste challenge was launched for University of Michigan students, and two events were hosted to address waste during student move-in and move-out periods, covering reuse and recycling for scrap metal, foam, and general recycling as well as donations to Kiwanis. Three neighborhood swap days were hosted and a replication guide was created for community self-replication. A2Zero Ambassadors undertook deep engagement to increase composting rates and distributed compost carts to residents without them, while individualized outreach began to more than 300 multifamily complexes on reduce-reuse-recycle guidelines. Work with [[actors/ecology-center|The Ecology Center]] began to improve resource management across five areas: youth field trips (2nd and 7th grade), multi-family units, commercial businesses, events outreach, and a social media marketing campaign for waste reduction ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).

@@ -23,7 +23,7 @@ milestones:
   year: 2030
 parent-strategy: '[[strategies/strategy-7-engagement]]'
 partners:
-- '[[actors/city-administrator]]'
+- '[[actors/ann-arbor-city-administrator]]'
 - '[[actors/dte-energy]]'
 - '[[actors/consumers-energy]]'
 party-responsible: '[[actors/office-of-sustainability-and-innovations]]'

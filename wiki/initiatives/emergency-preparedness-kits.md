@@ -26,7 +26,7 @@ milestones:
   year: 2030
 parent-strategy: '[[strategies/strategy-6-resilience]]'
 partners:
-- '[[actors/emergency-management]]'
+- '[[actors/ann-arbor-emergency-management]]'
 - '[[actors/red-cross]]'
 - '[[actors/ann-arbor-meals-on-wheels]]'
 - '[[actors/ann-arbor-public-schools]]'

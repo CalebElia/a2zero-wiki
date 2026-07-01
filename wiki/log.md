@@ -28,3 +28,12 @@ Pass 1: Writer→Evaluator→Editor complete. 0 stubs, 0 topic candidates.
 ## [2026-06-26 | a2zero-year2]
 
 Pass 3 complete — index rebuilt.
+
+## [2026-06-30 | a2zero-year3]
+
+Ingested the A2Zero Year Three Annual Report (July 2022–June 2023), produced by OSI, reporting a 22% community-wide GHG reduction, over 4 MW of rooftop solar installed via Solarize Ann Arbor, passage of the Community Climate Action Millage, completion of the second resilience hub at Bryant Neighborhood Community Center, and a broad suite of foundational programs, grants, and regulatory interventions across all seven A2Zero strategies.
+Pass 1: Writer→Evaluator→Editor complete. 0 stubs, 0 topic candidates.
+
+## [2026-06-30 | a2zero-year3]
+
+Pass 3 complete — index rebuilt.

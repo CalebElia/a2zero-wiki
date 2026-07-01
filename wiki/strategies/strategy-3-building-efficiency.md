@@ -12,48 +12,46 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/transition-to-more-energy-efficient-homes-and-businesses
-  - initiatives/benchmarking-ordinance
   - initiatives/update-building-codes
+  - initiatives/benchmarking-ordinance
+  - initiatives/community-climate-action-millage-rebates
   - initiatives/energy-concierge-and-community-engagement-program
   - initiatives/weatherization-expansion
-  - initiatives/net-zero-energy-affordable-housing
-  - initiatives/on-bill-financing-renewables-efficiency
-  - initiatives/bryant-neighborhood-decarbonization
+  - initiatives/aahc-energy-improvements
+  - initiatives/home-energy-rating-disclosure-program
   core-actors:
   - actors/city-of-ann-arbor
   - actors/ann-arbor-housing-commission
   - actors/dte-energy
   - actors/office-of-sustainability-and-innovations
   - actors/washtenaw-county
-  - actors/washtenaw-area-apartment-association
-  year-over-year-arc: Strategy 3 establishes a broad baseline portfolio of building
-    efficiency initiatives spanning code updates, benchmarking, weatherization, affordable
-    housing decarbonization, and financing mechanisms, with no multi-year trend data
-    yet ingested to show progression.
+  year-over-year-arc: Baseline state shows a broad portfolio of building efficiency
+    initiatives spanning code updates, weatherization, benchmarking, and affordable
+    housing decarbonization, with the Community Climate Action Millage providing a
+    new funding mechanism and the AAHC energy improvements and Bryant Neighborhood
+    Decarbonization serving as early equity-focused pilots.
   open-questions:
-  - What is the adoption rate and enforcement mechanism for the commercial/multi-family
+  - What is the timeline and enforcement mechanism for the commercial and multi-family
     benchmarking ordinance?
-  - How will financing tools (on-bill financing, loan loss reserve) be capitalized
-    and who administers them?
-  - What is the timeline and funding source for scaling weatherization to low-income
-    households at meaningful volume?
-  - How will updated building codes be adopted given state preemption constraints
-    on local energy codes in Michigan?
+  - How will on-bill financing and loan loss reserve programs be capitalized and administered
+    at scale?
+  - To what extent will updated building codes apply retroactively or only to new
+    construction?
+  - How will equity and affordability be ensured so that low-income renters and homeowners
+    are not left behind in efficiency upgrades?
   cross-strategy-links:
   - initiatives/solarize-ann-arbor
   - initiatives/geothermal-districts
   - initiatives/carbon-neutral-districts
   - initiatives/arpa-city-facilities-solar
   - initiatives/zoning-density-increase
-  - initiatives/bulk-buy-renewable-energy-ev
-  - initiatives/aahc-energy-improvements
-  last-rebuilt: '2026-06-29'
+  - initiatives/a2zero-carbon-neutrality-plan
+  - initiatives/ghg-inventory
+  last-rebuilt: '2026-06-30'
 ---
 
-Strategy 3 targets a dramatic improvement in the energy efficiency of all building types through 11 specific actions projected to reduce community-wide emissions by 13.4% at a combined cost of approximately $14.5 million ([[sources/cap/cap-2020]]). The flagship action is a bulk purchase program for energy efficiency retrofits targeting 85% of owner-occupied homes and 80% of tenant-occupied and commercial buildings achieving a 20% electricity savings and 15% natural gas savings by 2030 — projected to reduce 242,500 MTCO₂e (11.1% of community-wide emissions) with UM participation ([[sources/cap/cap-2020]]). The plan notes that as much as 80% of energy consumed in buildings is wasted through envelope gaps and unnecessary operation.
+Strategy 3 activity in year three spanned regulatory milestones, targeted low-income programs, and municipal building decarbonization, with the [[initiatives/benchmarking-ordinance|commercial energy and water benchmarking ordinance]] standing out as a landmark achievement: it was implemented as the first such ordinance in the [[actors/state-of-michigan|State of Michigan]], establishing a new baseline for commercial building transparency ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). A [[initiatives/home-energy-rating-disclosure-program|Home Energy Rating Disclosure]] policy requiring energy ratings at time of home listing was fully drafted, with introduction of the ordinance targeted for summer 2023 — a companion regulatory tool aimed at the residential market. OSI actively promoted Michigan's adoption of the 2021 International Model Building Code to improve health, safety, and energy performance standards for new construction. An A2Zero sustainability review for new buildings was created and integrated into the City's plan review process, embedding efficiency considerations at the point of development approval. Workforce development conversations with IBEW 252 were also initiated under this strategy, and a grant proposal was submitted to increase electric vehicle charging at public sites throughout the City.
 
-Year 2's most significant regulatory milestone was the passage of Michigan's first [[initiatives/commercial-benchmarking-ordinance|commercial benchmarking ordinance]], requiring large commercial and multifamily buildings throughout Ann Arbor to track and report on building energy and water performance. The first reporting deadline was June 1, 2022. Benchmarking and transparency is anticipated to lead to average energy savings of 2–3% per year ([[sources/annual-reports/a2zero-year2]]). This builds on the Year One drafting of the ordinance and stakeholder engagement process ([[sources/annual-reports/a2zero-year1]]). A [[initiatives/home-energy-rating-disclosure-program|Home Energy Rating Disclosure]] program was also advanced to draft stage and is expected to be considered by Council in Year 3 ([[sources/annual-reports/a2zero-year2]]). Together, these benchmarking and disclosure requirements — targeting 90% compliance across residential, commercial, and institutional sectors by 2025 — are designed as foundational data-gathering tools to drive participation in other efficiency programs ([[sources/cap/cap-2020]]).
+For lower-income residents, OSI provided $300,000 in grants to local housing providers for energy efficiency improvements, and the [[initiatives/aging-in-place-efficiently|Aging in Place Efficiently (AIP)]] pilot program completed energy efficiency and aging-in-place retrofits in 17 homes, saving $45,800 in utility costs and reducing 113 metric tons of carbon emissions before closing pending additional grant funding ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). In collaboration with [[actors/community-action-network|Community Action Network]] (CAN), a $500,000 MI-HOPE grant was won to advance neighborhood decarbonization in Bryant, supporting 19 households with health, safety, and quality-of-life improvements. The [[initiatives/net-zero-energy-affordable-housing|net-zero energy affordable housing]] initiative secured $3 million in federal aid in collaboration with the [[actors/ann-arbor-housing-commission|Ann Arbor Housing Commission]], and an Energy Efficiency and Conservation Block Grant of $180,000 was won to make the [[locations/bryant-community-center|Bryant Community Center]] a carbon-negative building and living demonstration site.
 
-The [[initiatives/aging-in-place-efficiently|Aging in Place Efficiently]] program served 19 older, income-qualified residents in Year 2 through a combination of energy efficiency, mobility, and home safety improvements — up from the pilot phase in Year One ([[sources/annual-reports/a2zero-year2]]). The program targets at least 20 low-income seniors reducing energy bills by 15% by 2023 ([[sources/cap/cap-2020]]). OSI conducted energy audits of 4 City facilities and developed a plan to fully decarbonize those buildings, and integrated multiple sustainability projects into the City's Capital Improvements Plan ([[sources/annual-reports/a2zero-year2]]). OSI also actively worked with the [[actors/ann-arbor-housing-commission|Ann Arbor Housing Commission]] to secure $2.5 million in federal grant funding to transition numerous affordable housing sites to net zero energy (see also Strategy 7 for grant context), and supported the Commission in securing bids to install solar at multiple affordable housing sites — directly advancing the [[initiatives/net-zero-energy-affordable-housing|Net Zero Energy Affordable Housing]] initiative ([[sources/annual-reports/a2zero-year2]]). A Sustainability Review was incorporated into the city's plan review process to gauge new proposed projects against A2ZERO actions. The [[initiatives/energy-concierge|Energy Concierge]] — a one-on-one service co-designed with community partners to help residents map home improvements and decarbonization pathways — is also listed under this strategy and is planned for pilot testing in Year 3 (see Strategy 2 for full description) ([[sources/annual-reports/a2zero-year2]]).
-
-On the regulatory advocacy front, OSI assisted in the design of the State's first carbon neutral fire station and is actively working with the fire department to find funding to operationalize the design. OSI also worked with stakeholders across Michigan to advance adoption of the 2021 international model building code — a critical dependency for the net zero new construction goal of 2,120 new residential units and 160 new commercial units built to net zero standards by 2030 ([[sources/cap/cap-2020]], [[sources/annual-reports/a2zero-year2]]). The City joined a national coalition of cities organized by the White House to advance building energy and water performance, and applied for a federal grant to support neighborhood climate action in the [[locations/bryant-neighborhood|Bryant neighborhood]]. Year 3 plans include finalization of the [[initiatives/green-rental-housing-initiative|Green Rental Housing initiative]], finalization of the [[initiatives/home-energy-rating-disclosure|Home Energy Rating Disclosure initiative]], creation of a plan and beginning implementation of decarbonization of four city buildings, installation of 4 MW of solar at City facilities, launch and pilot testing of the [[initiatives/energy-concierge|Energy Concierge]], and fundraising for the Aging in Place Efficiently program ([[sources/annual-reports/a2zero-year2]]).
+On the municipal side, decarbonization audits began at four municipal buildings with a local engineering team, targeting full decarbonization by 2025. A grant was won to replace all City streetlights with LEDs starting in 2024 through the [[initiatives/led-streetlight-conversion|LED Streetlight Conversion Program]], funded by a $980,000 SEMCOG Carbon Reduction Program grant, with LED conversions beginning fall 2023 per the grants schedule. The City's first [[initiatives/resident-race-to-zero-energy|Resident Race to Zero Energy]] competition concluded with over 100 participants, and a future [[initiatives/green-business-challenge|Green Business Challenge]] was begun in collaboration with SPARK and local businesses ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).
