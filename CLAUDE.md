@@ -51,7 +51,7 @@ review-queue.md       ← Live inbox: structural/semantic/backlink lint findings
 
 Run with:
 ```
-python -m pipeline.run_ingest source \
+python -m pipeline.orchestrator source \
   --source prepared/<type>/<uuid>.md \
   --uuid <uuid> \
   --title "<title>" \
@@ -62,12 +62,33 @@ python -m pipeline.run_ingest source \
 ```
 
 Optional flags on the `source` subcommand:
-- `--wiki-only` — Pass 1 + Pass 2 wiki extraction only; skip quad extraction and review-queue
+- `--include-quads` — Also run quad extraction (off by default; the quad linter is paused pending schema redesign, so quads are token-expensive and unused)
 - `--quads-only` — Pass 2 quad extraction only; skip Pass 1 and wiki writes
+- `--auto-approve` — Bypass the chunking gate (see below); generate section map mechanically
+
+**Default mode is wiki-only.** Quad extraction adds ~1 LLM call per chunk and produces output that no downstream pipeline currently consumes.
+
+For a complete step-by-step run guide with HITL gates, see [docs/how-to-run-ingest.md](docs/how-to-run-ingest.md).
+
+### Chunking gate (HITL — required for LDP-routed sources)
+
+Long documents that route to LDP (Pass 2 chunked extraction) require a human-reviewed section map. Three-step workflow:
+
+```
+python -m pipeline.orchestrator preflight --source prepared/<type>/<uuid>.md --uuid <uuid>
+# Review blackboard/section_maps/<uuid>_preview.md
+# Optionally edit blackboard/section_maps/<uuid>_proposed.json directly
+python -m pipeline.orchestrator approve --uuid <uuid>
+python -m pipeline.orchestrator source --source ... --uuid <uuid> ...
+```
+
+If `source` runs without an approved map and `--auto-approve` is not passed, it refuses with a clear error. Small documents (those that don't trigger LDP) bypass the gate entirely. See `docs/architecture/chunking-gate.md`.
 
 **Pass 0 (copy + YAML inject):** Source file copied from `prepared/<type>/<uuid>.md` → `wiki/sources/<type>/<uuid>.md`. If the prepared file has no YAML frontmatter, one is injected (`uuid`, `source_type` inferred from directory, `title`, `ingest_date`).
 
-**Pass 1 (holistic synthesis):** Full-document read. Writer → Evaluator → Editor loop. Produces: overview page, strategy body text, stub pages for all entities mentioned in the document. Uses streaming API (`max_tokens=64000`).
+**Pass 1A (Comprehend):** Reads `wiki/digest.md` plus the source and produces a structured integration plan saved to `wiki/integration-plans/<source-uuid>.json`. The plan (5 fields: `strategies-touched`, `extends`, `new-entities`, `retrieve-for-context`, `theme-connections`) flows downstream into both the holistic Writer (Pass 1B) and the LDP chunk extraction (Pass 2), informing which entities to extend vs. create and which existing page bodies to pre-load as integration context. Hard-fails when digest exists but the LLM call errors. Graceful fallback (no LLM call, empty plan) when no digest exists yet (first-ingest path). Per-ingest telemetry lands in `wiki/meta/ingest-stats.jsonl`. See `docs/architecture/comprehend-plan-write.md`.
+
+**Pass 1B (holistic synthesis):** Full-document read. Writer → Evaluator → Editor loop, now informed by the integration plan + digest. Produces: overview page, strategy body text, stub pages for all entities mentioned in the document. Uses streaming API (`max_tokens=64000`).
 
 **Pass 1.5 (alias resolution):** Every proposed entity slug is resolved through `registry/entity_aliases.json` before writing. Known aliases redirect to the canonical page and trigger an LLM merge if the canonical page has real content.
 
@@ -77,42 +98,49 @@ Optional flags on the `source` subcommand:
 
 Post-ingest linting (on-demand):
 ```
-python -m pipeline.lint_wiki --wiki-root wiki --structural    # broken links, orphans
-python -m pipeline.lint_wiki --wiki-root wiki --semantic      # near-duplicate detection (LLM)
-python -m pipeline.lint_wiki --wiki-root wiki --backlink      # find missed entity mentions in strategy/overview bodies
-python -m pipeline.lint_wiki --wiki-root wiki --apply         # execute approved proposals from review-queue.md
+python -m pipeline.phase_b_lint --wiki-root wiki --structural    # broken links, orphans
+python -m pipeline.phase_b_lint --wiki-root wiki --semantic      # near-duplicate detection (LLM)
+python -m pipeline.phase_b_lint --wiki-root wiki --backlink      # find missed entity mentions in strategy/overview bodies
+python -m pipeline.phase_b_lint --wiki-root wiki --apply         # execute approved proposals from review-queue.md
 ```
 
 One-time enrichment (rarely needed; used after prompt changes):
 ```
-python -m pipeline.enrich_strategy_links --wiki-root wiki [--dry-run]
+python -m pipeline._legacy.enrich_strategy_links --wiki-root wiki [--dry-run]
 ```
 
 Phase C synthesis (run after lint + apply, before next ingest):
 ```
-python -m pipeline.synthesize_wiki --wiki-root wiki                                             # rebuild all 7 strategies + digest
-python -m pipeline.synthesize_wiki --wiki-root wiki --strategy strategies/strategy-1-renewable-grid  # single strategy
-python -m pipeline.synthesize_wiki --wiki-root wiki --digest-only                              # rebuild digest from existing synthesis: blocks
+python -m pipeline.phase_c_synthesize --wiki-root wiki                                             # rebuild all 7 strategies + digest
+python -m pipeline.phase_c_synthesize --wiki-root wiki --strategy strategies/strategy-1-renewable-grid  # single strategy
+python -m pipeline.phase_c_synthesize --wiki-root wiki --digest-only                              # rebuild digest from existing synthesis: blocks
 ```
+
+The synthesizer runs each LLM output through a deterministic validator that checks every entity slug against the filesystem. Broken references trigger a scoped Reviser LLM call that either substitutes a real entity or drops the bad slug; dropped slugs are logged to `wiki/meta/synthesis-ghosts.log` for human review. Recurring entries in that log signal entities worth either creating as pages or adding to `SUPPRESS_SLUGS` in `pipeline/phase_c_validate.py`. See `docs/architecture/synthesis-validation-loop.md`.
 
 ## Pipeline Modules
 
 | File | Role |
 |---|---|
-| `run_ingest.py` | CLI entry point + three-pass orchestration |
-| `holistic_synthesizer.py` | Pass 1 Writer→Evaluator→Editor loop |
-| `wiki_writer.py` | Pass 2 chunk extraction (calls LDP for long docs) |
-| `ldp.py` | Long-document chunk loop with section maps |
-| `wiki_pages.py` | Page primitives (build/write/append) + `VALID_PAGE_TYPES` + quad extraction |
-| `wiki_index.py` | Pass 3 helpers: `rebuild_index`, `append_log`, `update_hot` |
-| `alias_registry.py` | Pass 1.5 alias resolution |
-| `merge_pages.py` | LLM merge for duplicate page bodies |
-| `lint_wiki.py` | Post-ingest linting (structural, semantic, backlink, apply) |
-| `enrich_strategy_links.py` | One-time pass to inject entity wikilinks into strategy bodies |
-| `raw_to_sources.py` | PDF → cleaned markdown (currently paused) |
-| `post_ingest.py` + `quad_linter.py` | Quad pipeline review-queue generation (paused pending schema design) |
-| `models.py` | `WikiPage` dataclass + quad schema validation |
-| `registry.py` | Legacy entity registry (used by quad linter) |
+| `orchestrator.py` | CLI entry point + three-pass orchestration |
+| `pass1a_comprehend.py` | Pass 1A Comprehend: read digest + source → integration plan |
+| `pass2a_pre_chunking.py` | HITL chunking gate: preflight + approve subcommands |
+| `pass1b_synthesize.py` | Pass 1B Writer→Evaluator→Editor loop |
+| `pass2a_chunk_loop.py` | Long-document chunk loop with section maps |
+| `pass2b_extract.py` | Pass 2 chunk extraction (calls chunk loop for long docs) |
+| `pass2c_merge.py` | LLM merge for duplicate page bodies |
+| `pass3_finalize.py` | Pass 3 helpers: `rebuild_index`, `append_log`, `update_hot` |
+| `phase_b_lint.py` | Post-ingest linting (structural, semantic, backlink, apply) |
+| `phase_c_synthesize.py` | Phase C synthesis: L1 strategy blocks + L2 digest |
+| `phase_c_validate.py` | Validate → Revise loop for phase_c_synthesize outputs |
+| `_aliases.py` | Pass 1.5 alias resolution |
+| `_pages.py` | Page primitives (build/write/append) + `VALID_PAGE_TYPES` + quad extraction |
+| `_models.py` | `WikiPage` dataclass + quad schema validation |
+| `_llm.py` | Multi-provider LLM client (Anthropic / OpenAI) |
+| `_legacy/enrich_strategy_links.py` | One-time pass to inject entity wikilinks into strategy bodies |
+| `_legacy/raw_to_sources.py` | PDF → cleaned markdown (currently paused) |
+| `_legacy/post_ingest.py` + `_legacy/quad_linter.py` | Quad pipeline review-queue generation (paused pending schema design) |
+| `_legacy/registry.py` | Legacy entity registry (used by quad linter) |
 
 ## Key Conventions
 
@@ -202,6 +230,19 @@ The pipeline is being upgraded to close a fundamental LLM-Wiki design gap: the e
 The upgraded ingest cycle: **Phase A** (extraction) → **Phase B** (lint + human review) → **Phase C** (`synthesize_wiki` command rebuilds L1 → L2) → **Phase D** (ready for next ingest). Synthesis must come after lint — the digest encodes the wiki's state and must encode a clean, reviewed state.
 
 Implementation order: `synthesize_wiki` command → digest injection into Comprehend pass → Comprehend/Plan split → strategy `synthesis:` sections.
+
+## Strategy Page Foundation / Progression Split
+
+**Read `docs/architecture/strategy-foundation-progression.md` before touching `pipeline/pass1b_synthesize.py`'s strategy-writing logic or `pipeline/phase_c_synthesize.py`'s `build_strategy_synthesis`.**
+
+A 2026-06-30 content-quality audit found that strategy pages were silently losing CAP-2020 foundational content (targets, cost estimates, dominant mechanisms) on every ingest once `wiki/digest.md` existed — the Writer prompt was only shown a compressed digest, not the actual prior page text, and the write path did an unconditional full-body overwrite. Fixed 2026-07-01.
+
+Every strategy page body now has two `##` sections:
+
+- **`## Foundation`** — CAP-2020's original design intent (target %, cost estimate, dominant mechanism), extracted once directly from `wiki/sources/cap/cap-2020.md` via `scripts/migrate_strategy_foundation.py`. **Frozen forever after that one-time migration.** No pipeline pass may ever regenerate it — `pipeline/pass1b_synthesize.py::_write_synthesis` raises `RuntimeError` if it's ever asked to write a strategy page with no Foundation section, rather than silently proceeding.
+- **`## Progress Synthesis`** — LLM-regenerated each ingest. Pass 1B now always injects the FULL existing Progress Synthesis text into the Writer prompt (not gated on digest absence, per the bug above) so facts accumulate instead of compressing.
+
+Helpers: `_split_strategy_sections(body)` / `_assemble_strategy_body(foundation, progress)` in `pipeline/pass1b_synthesize.py`. Phase C's `build_strategy_synthesis` also now receives `foundation_text` and full `ingest_history` (via `extract_ingest_history`), so the `synthesis.core-target` field and `year-over-year-arc` cite real Foundation figures and real ingest dates instead of boilerplate.
 
 ## GitHub
 

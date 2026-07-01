@@ -12,37 +12,59 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/community-choice-aggregation
+  - initiatives/landfill-solar-project
+  - initiatives/onsite-renewables-bulk-buy
+  - initiatives/community-solar-pilot
   - initiatives/solarize-ann-arbor
   - initiatives/lmi-solar-access-program
-  - initiatives/landfill-solar-project
-  - initiatives/city-buildings-solar-design
-  - initiatives/community-solar-program
-  - initiatives/sustainable-energy-utility
-  - initiatives/grid-capacity-expansion-electrification
-  core-actors: []
-  year-over-year-arc: Residential solar programs (Solarize) matured with bulk-buy
-    mechanisms; city-scale infrastructure projects (landfill, municipal rooftops)
-    moved from feasibility to implementation; community choice aggregation and sustainable
-    energy utility concepts emerged as strategic policy tools; low-to-moderate income
-    access programs initiated to address equity gaps.
+  - initiatives/arpa-city-facilities-solar
+  - initiatives/municipal-rooftop-solar-rfp
+  core-actors:
+  - actors/city-of-ann-arbor
+  - actors/dte-energy
+  - actors/office-of-sustainability-and-innovations
+  - actors/university-of-michigan
+  - actors/ann-arbor-public-schools
+  - actors/washtenaw-county
+  year-over-year-arc: Baseline established 2026-06-24 (cap-2020) with CCA as dominant
+    mechanism and 113 MW local generation target; Year 1 (a2zero-year1, 2026-06-25)
+    showed early groundwork on Solarize Ann Arbor, landfill solar feasibility, and
+    DTE utility interventions; Year 2 (a2zero-year2, 2026-06-26) advanced ARPA-funded
+    city facility solar installations and LMI solar access programming; Year 3 (a2zero-year3,
+    2026-06-30) reflected continued municipal rooftop solar RFP progress and community
+    solar pilot expansion, with CCA still contingent on state enabling legislation.
   open-questions:
-  - Community Choice Aggregation regulatory approval and implementation timeline
-  - Financing mechanisms for LMI solar access at scale
-  - Grid capacity expansion pace relative to electrification demand
-  - Community solar program deployment model and subscriber uptake
+  - Whether Michigan will pass enabling legislation for Community Choice Aggregation,
+    which is the strategy's dominant emissions-reduction mechanism
+  - Whether the 78 MW onsite solar and 11 MW community solar targets are on track
+    to be met by 2030 given current installation rates
+  - How low-to-moderate income households will be equitably included given upfront
+    cost barriers to solar adoption
+  - Whether the DTE utility case interventions will yield meaningful grid decarbonization
+    commitments beyond the city's direct control
   cross-strategy-links:
+  - initiatives/community-climate-action-millage-rebates
+  - initiatives/grid-capacity-expansion-electrification
   - initiatives/whole-home-decarbonization-assessment
   - initiatives/carbon-neutral-districts
-  - initiatives/high-energy-district-targeting
+  - initiatives/sustainable-energy-utility
   - initiatives/on-bill-financing-renewables-efficiency
-  - initiatives/energy-concierge-service
-  last-rebuilt: '2026-06-29'
+  - initiatives/ghg-inventory
+  core-target: Strategy 1 targets a 41% reduction in community-wide greenhouse gas
+    emissions at a cost of just over $4,100,000, achieved through Community Choice
+    Aggregation, 78 MW of onsite renewables with battery storage, an 11 MW community
+    solar program, and a 24 MW landfill solar project by 2030 (cap-2020, p. 21).
+  last-rebuilt: '2026-07-01'
 ---
 
-Strategy 1 is the single largest contributor to A²ZERO's emissions reduction portfolio, targeting a transition to 100% renewable electricity for the entire community through four complementary actions projected to reduce 41% of community-wide emissions at a combined cost of approximately $4.1 million ([[sources/cap/cap-2020]]). The dominant mechanism is [[technology/community-choice-aggregation|Community Choice Aggregation]] (CCA), an opt-out bulk procurement program that would allow the City to purchase 100% new renewable energy on behalf of all residents, businesses, and municipal accounts — projected to reduce 462,100 MTCO₂e (21% of community-wide emissions) without UM participation, rising to 784,000 MTCO₂e (~36%) if the [[actors/university-of-michigan|University of Michigan]] joins. CCA requires state enabling legislation, with the plan's timeline projecting legislation by 2025, a local public vote in 2026, and program launch in 2027. In Year One, the City began working with legislators toward this goal and regularly participated in Michigan Public Service Commission working groups ([[sources/cap/cap-2020]], [[sources/annual-reports/a2zero-year1]]).
+## Foundation
 
-The [[initiatives/solarize-ann-arbor|Solarize]] bulk-purchase program delivered its most concrete Year 2 results to date: an additional 1.7 MW of new residential solar was installed, bringing the two-year program total to over 3 MW across more than 430 households. This represents over $1.5 million in upfront cost savings and an estimated $15 million in lifetime energy savings for participating residents ([[sources/annual-reports/a2zero-year2]]). The program's long-term target remains 78 MW of local generation by 2030, projected to reduce 85,000 MTCO₂e (3.9%) with UM participation ([[sources/cap/cap-2020]]). In Year One, Solarize had installed approximately 1.3 MW on over 200 residential roofs ([[sources/annual-reports/a2zero-year1]]); Year 2's 1.7 MW increment demonstrates continued momentum. OSI also initiated design of a pilot commercial Solarize program in collaboration with the [[actors/ann-arbor-2030-district|2030 District]], extending the bulk-purchase model beyond residential rooftops for the first time, with a Year 3 target of 5 MW of cumulative rooftop solar through Solarize (residential and commercial combined) ([[sources/annual-reports/a2zero-year2]]). OSI also developed a Solarize Toolkit for the [[actors/great-lakes-renewable-energy-association|Great Lakes Renewable Energy Association (GLREA)]] to guide replication of the [[initiatives/solarize-ann-arbor|Solarize]] model beyond [[actors/washtenaw-county|Washtenaw County]], and launched [[initiatives/ann-arbor-solar-stories|Ann Arbor Solar Stories]] with the GLREA to enable residents to share their solar experiences ([[sources/annual-reports/a2zero-year2]]).
+Strategy 1 of CAP-2020 targets powering Ann Arbor's entire electrical grid with 100% renewable energy through four named actions: Implement Community Choice Aggregation, Support Onsite Renewables and Battery Storage, Develop Community Solar Program, and Launch Landfill Solar Project ([[sources/cap/cap-2020|cap-2020]]). Combined, these four actions are projected to reduce community-wide greenhouse gas emissions by "41%" at a cost of "just over $4,100,000" [Source: Page 21] ([[sources/cap/cap-2020|cap-2020]]). The dominant policy mechanism is Community Choice Aggregation (CCA), an opt-out bulk-purchasing program through which the City procures 100% renewable electricity on behalf of residents, businesses, and municipal accounts from an alternative supplier, contingent on enabling state legislation ([[sources/cap/cap-2020|cap-2020]]). The remaining three actions support local generation through discounted bulk-buy programs for onsite solar and battery storage (targeting 78 MW by 2030), a community solar program (targeting 11 MW by 2030), and a 24 MW utility-scale landfill solar project developed in partnership with DTE Energy ([[sources/cap/cap-2020|cap-2020]]).
 
-On utility-scale solar, Year 2 saw the [[initiatives/wheeler-center-solar-park|Wheeler Center Solar Park]] — described in the Year 2 report as a 20 MW solar field at the former Ann Arbor landfill and surrounding areas (the original Climate Action Plan projected 24 MW) — advance through final design ([[sources/cap/cap-2020]], [[sources/annual-reports/a2zero-year2]]). A landmark regulatory settlement in utility case U-20713 secured three outcomes: creation of the first community solar offering in [[actors/dte-energy|DTE Energy]]'s service territory at the Wheeler Center site; launch of a working group to explore carbon reduction offerings including a Virtual Power Reduction Agreement and 24/7 renewable power offerings; and reduced rates for those enrolling in the [[initiatives/migreenpower-program|MIGreenPower]] program ([[sources/annual-reports/a2zero-year2]]). OSI also intervened in utility case U-20836 to challenge DTE's proposed rate increase and changes to compensation for solar system owners — a direct defense of the financial case for residential solar adoption. Year 3 plans call for breaking ground on the [[initiatives/wheeler-center-solar-park|Wheeler Center Solar Park]]. Separately, OSI designed 4 MW of solar systems for City buildings — including at the water treatment facility, water recovery facility, and multiple city parks — with installations planned to begin in summer 2022, supported by $4.5 million from the American Rescue Plan Act ([[sources/annual-reports/a2zero-year2]]).
+## Progress Synthesis
 
-Year 2 also saw the formal development of a proposal for a [[initiatives/sustainable-energy-utility|Sustainable Energy Utility (SEU)]] — a community-owned energy utility that would provide 100% clean, reliable electricity from local solar and battery storage systems installed on homes and businesses throughout the city. Year 3 plans call for continuing to investigate pathways to 100% renewable energy, including both the SEU and traditional municipalization as parallel options under active exploration ([[sources/annual-reports/a2zero-year2]]). The City also joined a [[actors/world-resources-institute|World Resources Institute]] working group with peer cities to advance 24/7 renewable energy offerings — positioning Ann Arbor within a national coalition pursuing the same clean energy goals ([[sources/annual-reports/a2zero-year2]]).
+Strategy 1 continued to advance on multiple simultaneous fronts during year three, with the dominant approach being a combination of distributed solar deployment, utility regulatory intervention, and institutional feasibility analysis for longer-term grid transformation. The [[initiatives/solarize-ann-arbor|Solarize Ann Arbor]] program reached a cumulative milestone of over 4 MW of rooftop solar installed through more than 540 new residential installations, with a year four target of 5 MW set ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). A new [[initiatives/commercial-solar-program|Commercial Solar Program]] was launched in partnership with the 2030 District to extend solar incentives to commercial properties across [[actors/washtenaw-county|Washtenaw County]]. A joint request for proposals was released with the [[actors/university-of-michigan|University of Michigan]] to add 1 MW of solar to City facilities and up to 20 MW at University sites, reflecting the scale of institutional partnership being pursued. OSI led state-wide, regional, and national engagement around the [[initiatives/solarize-ann-arbor|Solarize Ann Arbor]] model, including publication of an updated Toolkit and conference invitations, and OSI staff were recognized by the [[actors/great-lakes-renewable-energy-association|Great Lakes Renewable Energy Association]] with the Exemplary Partnership Award. OSI staff also served on the national SolSmart Advisory Committee.
+
+On the municipal facilities front, the [[initiatives/arpa-city-facilities-solar|ARPA-funded city facilities solar program]] secured $2.5 million in federal support and selected vendors [[actors/enerlogics|Enerlogics]] and [[actors/melink-solar|Melink Solar]] for installation of roughly 3 MW across Wheeler Service Center, the Water and Wastewater Treatment Plants, and the municipal airport, with construction set to begin fall 2023. A separate contract for nearly 1 MW of solar at Parks facilities was executed and installations are underway. The [[initiatives/landfill-solar-project|Wheeler Center Landfill Solar Project]] — a planned 20 MW installation on the City's capped landfill that would rank among the largest landfill solar projects nationally — continued development and is a named year four priority for groundbreaking ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).
+
+The [[initiatives/sustainable-energy-utility|Sustainable Energy Utility (SEU)]] advanced from concept to active federal pursuit: an Energy Options Analysis was commissioned to assess the financial viability of the SEU alongside traditional municipalization and other models, and a grant application was submitted to the U.S. Department of Energy to formally create the SEU, with decisions expected mid-2024. OSI also intervened in multiple Michigan Public Service Commission cases — including [[initiatives/dte-utility-case-u-20836-intervention|U-20836]] and additional cases U-21172, U-21297, and U-21376 — challenging proposed rate increases, contesting distributed generation rate structures, and advocating for clean energy pilots and improved streetlighting. Staff participated in multiple MPSC working groups, technical conferences, and stakeholder meetings related to reliability and distributed energy resources. The [[actors/national-renewable-energy-laboratory|National Renewable Energy Laboratory (NREL)]] provided support for a district geothermal data needs study around Veterans Park, and OSI team members completed an NREL energy modeling course to strengthen internal analytical capacity ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).

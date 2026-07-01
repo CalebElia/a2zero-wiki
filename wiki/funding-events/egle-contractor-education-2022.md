@@ -3,7 +3,7 @@ amount: 8500
 currency: USD
 date: '2022'
 fund-type: state-grant
-funder: '[[actors/egle]]'
+funder: '[[actors/michigan-egle]]'
 funds-initiatives:
 - '[[initiatives/contractor-electrification-education-badging]]'
 last-updated: '2026-06-26'

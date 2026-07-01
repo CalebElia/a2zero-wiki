@@ -29,6 +29,8 @@ superseded-by: '[[initiatives/benchmarking-ordinance]]'
 superseded-date: '2026-06-26'
 superseded-by: '[[initiatives/benchmarking-ordinance]]'
 superseded-date: '2026-06-26'
+superseded-by: '[[initiatives/benchmarking-ordinance]]'
+superseded-date: '2026-06-30'
 ---
 
 The Commercial Benchmarking Ordinance is Michigan's first such ordinance, passed during Year Two of A2Zero, requiring large commercial and multifamily buildings throughout Ann Arbor to track and report on building energy and water performance ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). The first reporting deadline was June 1, and the resulting data is intended to increase awareness and practice of energy and water efficiency among operators and occupants of Ann Arbor's largest buildings ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). Benchmarking and transparency is anticipated to lead to average energy savings of 2–3% each year ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).

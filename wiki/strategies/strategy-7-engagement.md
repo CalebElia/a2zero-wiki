@@ -11,40 +11,56 @@ tags:
 last-updated: 2026-06-22
 synthesis:
   core-initiatives:
-  - initiatives/a2zero-ambassadors-program
+  - initiatives/advance-equity-programs
   - initiatives/sa2t-grant-program
-  - initiatives/energy-concierge-and-community-engagement-program
+  - initiatives/offset-greenhouse-gas-emissions
+  - initiatives/internal-carbon-price
+  - initiatives/a2zero-ambassadors-program
   - initiatives/neighborhood-resiliency-plans
-  - initiatives/a2zero-collaborators-network
-  - initiatives/net-zero-energy-affordable-housing
-  - initiatives/electrification-campaign
-  - initiatives/a2zero-metrics-dashboard
-  core-actors: []
-  year-over-year-arc: Community engagement infrastructure established with Ambassadors
-    Program, SA2T grants, and Energy Concierge launching; equity-focused initiatives
-    like net-zero affordable housing and neighborhood resiliency plans in early implementation;
-    public-facing tools (dashboard, pledges) creating baseline participation mechanisms.
+  - initiatives/bryant-neighborhood-decarbonization
+  - initiatives/energy-concierge-and-community-engagement-program
+  core-actors:
+  - actors/city-of-ann-arbor
+  - actors/office-of-sustainability-and-innovations
+  - actors/ann-arbor-public-schools
+  year-over-year-arc: Baseline established 2026-06-24 (cap-2020) with four named actions
+    targeting ~14% of community-wide emissions reductions at ~$6M; Year 1 (a2zero-year1,
+    2026-06-25) stood up the Ambassadors Program, SA2T grants, and equity program
+    infrastructure; Year 2 (a2zero-year2, 2026-06-26) expanded neighborhood-level
+    engagement including Bryant Neighborhood Decarbonization and resiliency planning;
+    Year 3 (a2zero-year3, 2026-06-30) deepened community outreach channels and continued
+    offset and internal carbon price implementation.
   open-questions:
-  - What participation rates and demographic reach have the Ambassadors Program and
-    SA2T grants achieved?
-  - How are equity outcomes being measured across neighborhood-based initiatives?
-  - What feedback mechanisms exist to incorporate community input into plan revisions?
-  - How is coordination managed across the numerous overlapping engagement initiatives?
+  - Has the internal carbon price been formally adopted and applied across all City
+    Service Areas, and at what dollar-per-ton level?
+  - What volume of carbon offsets and RECs has been purchased and retired to date,
+    and is the program on track to close the remaining emissions gap?
+  - How is equity program impact being measured, and which underserved communities
+    have been reached through the Ambassadors and SA2T grant programs?
+  - Is the SA2T grant program sufficiently funded and scaled to sustain community-led
+    climate action beyond City-directed initiatives?
   cross-strategy-links:
   - initiatives/net-zero-energy-affordable-housing
   - initiatives/electrification-campaign
-  - initiatives/tree-planting-underserved-areas
-  - initiatives/a2zero-metrics-dashboard
   - initiatives/bryant-neighborhood-decarbonization
-  - initiatives/forth-mobility-education-outreach
-  - initiatives/contractor-electrification-education-badging
-  last-rebuilt: '2026-06-29'
+  - initiatives/comprehensive-plan-update
+  - initiatives/tree-planting-underserved-areas
+  - initiatives/carbon-offsets
+  core-target: The strategy's four actions (Advance Equity Programs, Promote SA2T
+    Grant Program, Establish Internal Carbon Price, Offset Greenhouse Gas Emissions)
+    are estimated to achieve just under 14% of community-wide emissions reductions
+    at a combined cost of just under $6,000,000 (cap-2020, p. 113).
+  last-rebuilt: '2026-07-01'
 ---
 
-Strategy 7 — labeled 'Other' in the plan — serves as a catch-all for cross-cutting programs that enable and amplify the other six strategies, while also closing any remaining emissions gap through offsets. The four actions collectively account for just under 14% of community-wide emissions reductions at a cost of approximately $10.7 million, with offsets providing the bulk of that reduction ([[sources/cap/cap-2020]]). Year 2 was particularly active on engagement, institutional recognition, and grant fundraising, with [[actors/office-of-sustainability-and-innovations|OSI]] continuing to build the organizational scaffolding needed to sustain a decade-long community transition.
+## Foundation
 
-The [[initiatives/sustaining-ann-arbor-together-grant-program|Sustaining Ann Arbor Together (SA2T) Grant Program]] granted $100,000 to community groups working on sustainability-related activities in Year 2, consistent with the plan's commitment of $100,000 annually in small grants ([[sources/cap/cap-2020]], [[sources/annual-reports/a2zero-year2]]). OSI hosted over 100 community events, meetings, presentations, or discussions during the year ([[sources/annual-reports/a2zero-year2]]). The [[initiatives/a2zero-collaborators-network|A2ZERO Collaborators Network]] grew to over 110 organizations — up from 92 in Year One ([[sources/annual-reports/a2zero-year1]], [[sources/annual-reports/a2zero-year2]]). OSI is working with peer communities to advance a national decarbonization coalition and created a sustainability scavenger hunt to help surface sustainability activities unfolding in the community ([[sources/annual-reports/a2zero-year2]]). An anti-idling campaign is being developed in partnership with [[actors/ann-arbor-public-schools|Ann Arbor Public Schools]] ([[sources/annual-reports/a2zero-year2]]). OSI is also working with collaborators including Bryant residents, [[actors/community-action-network|Community Action Network]], [[actors/elevate|Elevate]], and the [[actors/university-of-michigan|University of Michigan]] to design and create what is described as the first fully decarbonized existing neighborhood in America — in Bryant — a cross-cutting initiative spanning Strategies 2, 3, and 6 ([[sources/annual-reports/a2zero-year2]]). Year 3 plans include collaborating with County and other regional stakeholders to expand County-wide climate action, launching a metrics dashboard to transparently demonstrate progress toward achieving goals, deepening and sustaining community engagement, and expanding collaboration opportunities with the A2ZERO Collaborators Network ([[sources/annual-reports/a2zero-year2]]).
+The "Other Actions" strategy in CAP-2020 covers programs and activities that do not fit into other strategy areas, plus greenhouse gas emissions offsets to close remaining gaps toward community-wide carbon neutrality. Combined, its four actions are estimated to achieve just under 14% of community-wide emissions reductions at a cost of just under $6,000,000 [Source: Page 113] ([[sources/cap/cap-2020|cap-2020]]). The dominant mechanism for closing the emissions gap is the purchase and retirement of carbon offsets (including renewable energy credits), supplemented by an internal carbon price applied across City Service Areas. The four named actions comprising this strategy are: Advance Equity Programs, Promote Sustaining Ann Arbor Together Grant Program, Establish Internal Carbon Price, and Offset Greenhouse Gas Emissions [Source: Page 113] ([[sources/cap/cap-2020|cap-2020]]).
 
-Year 2 brought significant institutional recognition. The City was recognized by the [[actors/cdp|CDP]] as one of 95 'A List' communities worldwide for transparency of citywide emissions, emissions reduction and renewable energy targets, climate action, and climate risk and vulnerability plans. The City also received a gold-level designation from [[actors/michigan-green-communities|Michigan Green Communities]], one of 22 communities throughout Michigan to receive the recognition ([[sources/annual-reports/a2zero-year2]]). Multiple OSI staff members received individual recognition: [[actors/missy-stults|Missy Stults]] was named by GRIST as one of the 50 'Fixers' of 2022; [[actors/simi-barr|Simi Barr]] was recognized by Crain's as an electric vehicle champion; [[actors/sean-reynolds|Sean Reynolds]] received the Governmental Award for Urban and Community Forestry from the Michigan Urban and Community Forestry Council; [[actors/julie-roth|Julie Roth]] received the George Sexton Public Servant of the Earth Award from the Sierra Club; and [[actors/galen-hardy|Galen Hardy]] was appointed to the Board of the [[actors/great-lakes-renewable-energy-association|Great Lakes Renewable Energy Association]] ([[sources/annual-reports/a2zero-year2]]). The proposed Sustainable Energy Utility also won project of the year from the GLREA ([[sources/annual-reports/a2zero-year2]]).
+## Progress Synthesis
 
-Grant fundraising in Year 2 was extensive, securing over $8 million in new funding across multiple sources. Major awards included $4,500,000 from the American Rescue Plan Act for solar installations and energy savings at City facilities; $2,500,000 from the federal government for energy, comfort, and safety improvements at [[actors/ann-arbor-housing-commission|Ann Arbor Housing Commission]] sites (see also Strategy 3); $270,000 from the [[actors/american-lung-association|American Lung Association]] and $406,000 from the [[actors/state-of-michigan|State of Michigan]] for electric refuse trucks; $170,000 for EV fast chargers; $75,000 from the [[actors/mcknight-foundation|McKnight Foundation]] and $25,000 from the U.S. EPA for work in the [[locations/bryant-neighborhood|Bryant neighborhood]]; $25,000 from [[actors/solar-moonshot|Solar Moonshot]] to install solar on two homes in Bryant; $54,000 from the State of Michigan for a [[initiatives/utility-pole-ev-charging-pilot|utility-pole EV charging pilot]]; $8,500 from EGLE for the contractor education and badging program; $5,000 from [[actors/bright-cities|Bright Cities]] to support [[initiatives/tree-planting-underserved-areas|tree planting in underserved areas]]; and $2,500 from the State of Michigan for the [[initiatives/electrification-expo|electrification expo]] ([[sources/annual-reports/a2zero-year2]]).
+Strategy 7 in year three was anchored by two landmark civic achievements: Ann Arbor voters passed the 20-year [[initiatives/community-climate-action-millage|Community Climate Action Millage]] in November 2022, making the city the 8th in America to self-tax for local climate action, and Ann Arbor was recognized on the CDP's A List for the second consecutive year as one of 122 cities and counties globally taking bold leadership on environmental action and transparency ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The Michigan Green Communities program awarded Ann Arbor a Gold Level achievement award. These recognitions and the millage passage together signal both external validation and a new internal funding foundation for engagement and programmatic work.
+
+The [[initiatives/a2zero-ambassadors-program|A2Zero Ambassadors Program]] grew to 85 members, with the next cohort targeting over 100, and a $229,000 [[actors/americorps|AmeriCorps]] grant was secured to bring 10 AmeriCorps members to OSI to support sustainability-related engagement and education ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). With support from ReDirect, three summer fellows were secured for the second year in a row to advance sustainability-focused behavior change activities. The [[initiatives/sa2t-grant-program|Sustaining Ann Arbor Together (SA2T) grant program]] distributed over $70,000 to community organizations advancing A2Zero activities. The [[initiatives/a2zero-collaborators-network|A2Zero Collaborators Network]] grew to over 120 organizations engaged as planning and implementation partners through virtual and in-person events. OSI hosted over 150 community events, meetings, presentations, and discussions, and re-structured the monthly newsletter 'The Charging Station' to improve reach and consistency.
+
+Equity and racial justice were embedded in staff development: three OSI staff graduated from the Champions for Change racial equity program, bringing the total to five staff who have completed it. OSI coordinated with [[actors/ann-arbor-public-schools|Ann Arbor Public Schools]] and [[actors/washtenaw-county|Washtenaw County]] to complete their GHG emissions inventories, and launched a small grant program with AAPS to support sustainability projects in schools. OSI staff joined the [[actors/southeast-michigan-council-of-governments|Southeast Michigan Council of Governments]] (SEMCOG) Green Task Force to advance regional sustainability, participated in national peer city cohorts on electrification, renewable energy, and equity, and hosted Vice President Kamala Harris to discuss Ann Arbor's sustainability activities. OSI also worked with regional stakeholders to explore the feasibility of a regional climate collaborative, helped organize a session at UMMA about the climate millage, voting, and democracy, joined Ann Arbor Rotary and helped create the local chapter's Environmental Action Group, and participated in multiple national conversations regarding climate-based migration while beginning to explore ways to integrate climate migration into city infrastructure and service planning ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The [[initiatives/bryant-neighborhood-decarbonization|Bryant Neighborhood Decarbonization]] program continued as the flagship integrated engagement and equity pilot, with year four priorities including securing funding to help 20 homes become fully carbon neutral and making the [[locations/bryant-community-center|Bryant Community Center]] a carbon-negative living laboratory.

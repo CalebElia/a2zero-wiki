@@ -2,7 +2,7 @@ import pytest
 import yaml
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-from pipeline.wiki_pages import build_wiki_page, write_wiki_page
+from pipeline._pages import build_wiki_page, write_wiki_page
 
 
 def test_build_wiki_page_actor():
@@ -27,7 +27,7 @@ def test_build_wiki_page_actor():
 
 
 def test_write_wiki_page_creates_file(tmp_path):
-    from pipeline.wiki_pages import build_wiki_page, write_wiki_page
+    from pipeline._pages import build_wiki_page, write_wiki_page
     page = build_wiki_page(
         page_type="actor",
         slug="actors/missy-stults",
@@ -51,7 +51,7 @@ def test_write_wiki_page_creates_file(tmp_path):
 
 
 def test_write_wiki_page_frontmatter_is_valid_yaml(tmp_path):
-    from pipeline.wiki_pages import build_wiki_page, write_wiki_page
+    from pipeline._pages import build_wiki_page, write_wiki_page
     page = build_wiki_page(
         page_type="actor",
         slug="actors/osi",
@@ -75,7 +75,7 @@ def test_write_wiki_page_frontmatter_is_valid_yaml(tmp_path):
 
 
 def test_write_wiki_page_raises_if_exists(tmp_path):
-    from pipeline.wiki_pages import build_wiki_page, write_wiki_page
+    from pipeline._pages import build_wiki_page, write_wiki_page
     page = build_wiki_page(
         page_type="actor",
         slug="actors/test-actor",
@@ -88,7 +88,7 @@ def test_write_wiki_page_raises_if_exists(tmp_path):
 
 
 def test_write_wiki_page_exist_ok_allows_overwrite(tmp_path):
-    from pipeline.wiki_pages import build_wiki_page, write_wiki_page
+    from pipeline._pages import build_wiki_page, write_wiki_page
     page = build_wiki_page(
         page_type="actor",
         slug="actors/test-actor",
@@ -100,7 +100,7 @@ def test_write_wiki_page_exist_ok_allows_overwrite(tmp_path):
 
 
 def test_build_wiki_page_raises_on_invalid_page_type():
-    from pipeline.wiki_pages import build_wiki_page
+    from pipeline._pages import build_wiki_page
     with pytest.raises(ValueError, match="Invalid page_type"):
         build_wiki_page(
             page_type="garbage",

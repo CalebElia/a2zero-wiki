@@ -146,7 +146,7 @@
       "A2Zero Program",
       "a2zero-program",
       "A2ZERO program",
-      "A²ZERO program",
+      "A\u00b2ZERO program",
       "the sustainability office"
     ],
     "relationship": "name-variant"
@@ -397,7 +397,7 @@
       "Community Solar Program"
     ],
     "relationship": "predecessor",
-    "as-of": "2026-06-26"
+    "as-of": "2026-06-30"
   },
   "direct-current-fast-charger": {
     "canonical": "technology/dc-fast-charger",
@@ -484,7 +484,8 @@
     "canonical": "initiatives/city-fleet-electrification",
     "type": "initiative",
     "aliases": [
-      "Municipal Fleet Electrification"
+      "Municipal Fleet Electrification",
+      "municipal fleet electrification"
     ],
     "relationship": "name-variant"
   },
@@ -527,7 +528,7 @@
       "Commercial Benchmarking Ordinance"
     ],
     "relationship": "predecessor",
-    "as-of": "2026-06-26"
+    "as-of": "2026-06-30"
   },
   "ann-arbor-landfill": {
     "canonical": "locations/ann-arbor-capped-landfill",
@@ -941,7 +942,7 @@
     "canonical": "actors/citizens-climate-lobby-ann-arbor",
     "type": "actor",
     "aliases": [
-      "Citizens Climate Lobby — Ann Arbor Chapter"
+      "Citizens Climate Lobby \u2014 Ann Arbor Chapter"
     ],
     "relationship": "name-variant"
   },
@@ -1109,7 +1110,7 @@
     "canonical": "actors/a2zero-partner-organizations",
     "type": "actor",
     "aliases": [
-      "A²ZERO Partner Organizations"
+      "A\u00b2ZERO Partner Organizations"
     ],
     "relationship": "name-variant"
   },
@@ -1490,10 +1491,10 @@
     "relationship": "name-variant"
   },
   "neighborhood-climate-ambassadors": {
-    "canonical": "initiatives/neighborhood-climate-ambassadors",
+    "canonical": "initiatives/a2zero-ambassadors-program",
     "type": "initiative",
     "aliases": [
-      "Neighborhood Climate Ambassadors Program"
+      "Neighborhood Climate Ambassadors"
     ],
     "relationship": "name-variant"
   },
@@ -2277,7 +2278,7 @@
     "canonical": "meetings/2019-12-19-a2zero-partners-equity-training",
     "type": "meeting",
     "aliases": [
-      "A²ZERO Partners — 2019-12-19 (Equity and Climate Training)"
+      "A\u00b2ZERO Partners \u2014 2019-12-19 (Equity and Climate Training)"
     ],
     "relationship": "name-variant"
   },
@@ -2285,7 +2286,7 @@
     "canonical": "meetings/2020-03-20-a2zero-partners-strategy-unveiling",
     "type": "meeting",
     "aliases": [
-      "A²ZERO Partners — 2020-03-20 (Final Strategy Unveiling)"
+      "A\u00b2ZERO Partners \u2014 2020-03-20 (Final Strategy Unveiling)"
     ],
     "relationship": "name-variant"
   },
@@ -2293,7 +2294,7 @@
     "canonical": "meetings/2020-01-14-energy-commission",
     "type": "meeting",
     "aliases": [
-      "Energy Commission — 2020-01-14 (A2Zero presentation and discussion)"
+      "Energy Commission \u2014 2020-01-14 (A2Zero presentation and discussion)"
     ],
     "relationship": "name-variant"
   },
@@ -2301,7 +2302,7 @@
     "canonical": "meetings/2020-02-22-carbon-neutrality-town-hall",
     "type": "meeting",
     "aliases": [
-      "2nd Carbon Neutrality Town Hall — 2020-02-22"
+      "2nd Carbon Neutrality Town Hall \u2014 2020-02-22"
     ],
     "relationship": "name-variant"
   },
@@ -2309,7 +2310,7 @@
     "canonical": "meetings/2020-01-17-transportation-energy-environmental-planning-commissions",
     "type": "meeting",
     "aliases": [
-      "Transportation, Energy, Environmental, and Planning Commissions — 2020-01-17"
+      "Transportation, Energy, Environmental, and Planning Commissions \u2014 2020-01-17"
     ],
     "relationship": "name-variant"
   },
@@ -2317,7 +2318,7 @@
     "canonical": "meetings/2019-12-13-a2zero-partners",
     "type": "meeting",
     "aliases": [
-      "A²ZERO Partners — 2019-12-13 (First Partner Meeting)"
+      "A\u00b2ZERO Partners \u2014 2019-12-13 (First Partner Meeting)"
     ],
     "relationship": "name-variant"
   },
@@ -2325,7 +2326,7 @@
     "canonical": "political-events/2017-06-01-green-fleets-policy-resolution",
     "type": "political-event",
     "aliases": [
-      "Ann Arbor City Council — Resolution R-17-237 (Green Fleets Policy Update)"
+      "Ann Arbor City Council \u2014 Resolution R-17-237 (Green Fleets Policy Update)"
     ],
     "relationship": "name-variant"
   },
@@ -2333,7 +2334,7 @@
     "canonical": "political-events/2019-11-04-climate-emergency-declaration-and-carbon-neutrality-plan-resolution",
     "type": "political-event",
     "aliases": [
-      "Ann Arbor City Council — Climate Emergency Declaration and Resolution to Create"
+      "Ann Arbor City Council \u2014 Climate Emergency Declaration and Resolution to Create"
     ],
     "relationship": "name-variant"
   },
@@ -2565,7 +2566,7 @@
     "canonical": "funding-events/dcfc-city-hall-grant-2021",
     "type": "funding-event",
     "aliases": [
-      "Direct Current Fast Charger Installation Grant — City Hall 2021"
+      "Direct Current Fast Charger Installation Grant \u2014 City Hall 2021"
     ],
     "relationship": "name-variant"
   },
@@ -2685,7 +2686,7 @@
     "canonical": "actors/el-harissa-market-cafe",
     "type": "actor",
     "aliases": [
-      "El Harissa Market Café"
+      "El Harissa Market Caf\u00e9"
     ],
     "relationship": "name-variant"
   },
@@ -2701,7 +2702,7 @@
     "canonical": "actors/zingermans-next-door-cafe",
     "type": "actor",
     "aliases": [
-      "Zingerman's Next Door Café"
+      "Zingerman's Next Door Caf\u00e9"
     ],
     "relationship": "name-variant"
   },
@@ -2730,7 +2731,7 @@
     "relationship": "name-variant"
   },
   "egle": {
-    "canonical": "actors/egle",
+    "canonical": "actors/michigan-egle",
     "type": "actor",
     "aliases": [
       "Michigan Department of Environment, Great Lakes, and Energy (EGLE)"
@@ -2762,7 +2763,7 @@
     "relationship": "name-variant"
   },
   "ann-arbor-downtown-development-authority": {
-    "canonical": "actors/ann-arbor-downtown-development-authority",
+    "canonical": "actors/downtown-development-authority",
     "type": "actor",
     "aliases": [
       "Ann Arbor Downtown Development Authority"
@@ -3090,7 +3091,7 @@
     "relationship": "name-variant"
   },
   "city-buildings-decarbonization": {
-    "canonical": "initiatives/city-buildings-decarbonization",
+    "canonical": "initiatives/municipal-building-decarbonization-audits",
     "type": "initiative",
     "aliases": [
       "City Buildings Decarbonization"
@@ -3298,18 +3299,20 @@
     "relationship": "name-variant"
   },
   "michigan-utility-pole-ev-2022": {
-    "canonical": "funding-events/michigan-utility-pole-ev-2022",
+    "canonical": "funding-events/michigan-ev-charger-grant-2023",
     "type": "funding-event",
     "aliases": [
-      "State of Michigan Grant for Utility-Pole EV Charging Pilot 2022"
+      "State of Michigan Grant for Utility-Pole EV Charging Pilot 2022",
+      "State of Michigan EV Curbside Charger Grant (2023)"
     ],
-    "relationship": "name-variant"
+    "relationship": "name-variant",
+    "notes": "Same $54,000 award reported in both Year 2 (award) and Year 3 (installation progress) annual reports; two funding-event pages created independently across ingests, merged 2026-07-01 after source cross-check."
   },
   "2022-commercial-benchmarking-ordinance-ann-arbor": {
     "canonical": "political-events/2022-commercial-benchmarking-ordinance-ann-arbor",
     "type": "political-event",
     "aliases": [
-      "Ann Arbor City Council — Commercial Benchmarking Ordinance Passed (Michigan's"
+      "Ann Arbor City Council \u2014 Commercial Benchmarking Ordinance Passed (Michigan's"
     ],
     "relationship": "name-variant"
   },
@@ -3317,7 +3320,7 @@
     "canonical": "political-events/2022-03-21-sustainable-food-purchasing-resolution",
     "type": "political-event",
     "aliases": [
-      "Ann Arbor City Council — 2022-03-21 (Sustainable Food Purchasing Policy Resolution)"
+      "Ann Arbor City Council \u2014 2022-03-21 (Sustainable Food Purchasing Policy Resolution)"
     ],
     "relationship": "name-variant"
   },
@@ -3327,7 +3330,7 @@
     "aliases": [
       "A2Zero",
       "A2ZERO",
-      "A²ZERO"
+      "A\u00b2ZERO"
     ],
     "relationship": "name-variant",
     "notes": "A2Zero is the plan/brand name; the implementing body is OSI"
@@ -3372,7 +3375,7 @@
       "local property owners"
     ],
     "relationship": "name-variant",
-    "notes": "Generic grouping — redirected to WAAA as closest organized body representing rental property owners in Washtenaw County"
+    "notes": "Generic grouping \u2014 redirected to WAAA as closest organized body representing rental property owners in Washtenaw County"
   },
   "a2zero-program-office": {
     "canonical": "actors/office-of-sustainability-and-innovations",
@@ -3384,6 +3387,17 @@
     ],
     "relationship": "name-variant"
   },
+  "a2zero-program": {
+    "canonical": "actors/office-of-sustainability-and-innovations",
+    "type": "actor",
+    "aliases": [
+      "A2Zero Program",
+      "A2ZERO Program",
+      "a2zero program"
+    ],
+    "relationship": "name-variant",
+    "notes": "Recurring ghost surfaced via synthesis-ghosts.log; A2Zero is the plan, OSI is the implementing actor"
+  },
   "local-businesses-green-business-challenge": {
     "canonical": "initiatives/green-business-challenge",
     "type": "initiative",
@@ -3391,6 +3405,341 @@
       "Local Businesses Green Business Challenge",
       "local businesses (Green Business Challenge)",
       "Green Business Challenge participants"
+    ],
+    "relationship": "name-variant"
+  },
+  "melink-solar": {
+    "canonical": "actors/melink-solar",
+    "type": "actor",
+    "aliases": [
+      "Melink Solar"
+    ],
+    "relationship": "name-variant"
+  },
+  "enerlogics": {
+    "canonical": "actors/enerlogics",
+    "type": "actor",
+    "aliases": [
+      "Enerlogics"
+    ],
+    "relationship": "name-variant"
+  },
+  "spark-ann-arbor": {
+    "canonical": "actors/spark-ann-arbor",
+    "type": "actor",
+    "aliases": [
+      "SPARK Ann Arbor"
+    ],
+    "relationship": "name-variant"
+  },
+  "ecoworks": {
+    "canonical": "actors/ecoworks",
+    "type": "actor",
+    "aliases": [
+      "EcoWorks"
+    ],
+    "relationship": "name-variant"
+  },
+  "washington-street-bike-boulevard": {
+    "canonical": "initiatives/washington-street-bike-boulevard",
+    "type": "initiative",
+    "aliases": [
+      "Washington Street Bike Boulevard"
+    ],
+    "relationship": "name-variant"
+  },
+  "plant-based-challenge": {
+    "canonical": "initiatives/plant-based-challenge",
+    "type": "initiative",
+    "aliases": [
+      "A2ZERO Plant-Based Challenge"
+    ],
+    "relationship": "name-variant"
+  },
+  "commercial-solar-program": {
+    "canonical": "initiatives/commercial-solar-program",
+    "type": "initiative",
+    "aliases": [
+      "Commercial Solar Program (2030 District Partnership)"
+    ],
+    "relationship": "name-variant"
+  },
+  "resident-race-to-zero-energy": {
+    "canonical": "initiatives/resident-race-to-zero-energy",
+    "type": "initiative",
+    "aliases": [
+      "Resident Race to Zero Energy"
+    ],
+    "relationship": "name-variant"
+  },
+  "community-climate-action-millage-rebates": {
+    "canonical": "initiatives/community-climate-action-millage-rebates",
+    "type": "initiative",
+    "aliases": [
+      "Community Climate Action Millage Residential Rebates and Incentives"
+    ],
+    "relationship": "name-variant"
+  },
+  "home-energy-advisor-program": {
+    "canonical": "initiatives/home-energy-advisor-program",
+    "type": "initiative",
+    "aliases": [
+      "A2ZERO Home Energy Advisor Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "municipal-building-decarbonization-audits": {
+    "canonical": "initiatives/municipal-building-decarbonization-audits",
+    "type": "initiative",
+    "aliases": [
+      "Municipal Building Decarbonization Audits"
+    ],
+    "relationship": "name-variant"
+  },
+  "ghg-inventory": {
+    "canonical": "initiatives/ghg-inventory",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Community-Wide GHG Inventory"
+    ],
+    "relationship": "name-variant"
+  },
+  "resilience-network": {
+    "canonical": "initiatives/resilience-network",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Resilience Network"
+    ],
+    "relationship": "name-variant"
+  },
+  "heating-franchise": {
+    "canonical": "initiatives/heating-franchise",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Heating Franchise Initiative"
+    ],
+    "relationship": "name-variant"
+  },
+  "pollinator-aware-yard-care": {
+    "canonical": "initiatives/pollinator-aware-yard-care",
+    "type": "initiative",
+    "aliases": [
+      "Pollinator-Aware Yard Care Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-assessment-path-to-zero": {
+    "canonical": "initiatives/a2zero-assessment-path-to-zero",
+    "type": "initiative",
+    "aliases": [
+      "A2ZERO Assessment: Path to Zero"
+    ],
+    "relationship": "name-variant"
+  },
+  "led-streetlight-conversion": {
+    "canonical": "initiatives/led-streetlight-conversion",
+    "type": "initiative",
+    "aliases": [
+      "LED Streetlight Conversion Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "comprehensive-plan-update": {
+    "canonical": "initiatives/comprehensive-plan-update",
+    "type": "initiative",
+    "aliases": [
+      "Comprehensive Plan Update (Carbon Neutrality and Equity Focus)"
+    ],
+    "relationship": "name-variant"
+  },
+  "veterans-park": {
+    "canonical": "locations/veterans-memorial-park",
+    "type": "location",
+    "aliases": [
+      "Veterans Park"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-municipal-airport": {
+    "canonical": "locations/ann-arbor-municipal-airport",
+    "type": "location",
+    "aliases": [
+      "Ann Arbor Municipal Airport"
+    ],
+    "relationship": "name-variant"
+  },
+  "doe-geothermal-planning-grant-2023": {
+    "canonical": "funding-events/doe-geothermal-planning-grant-2023",
+    "type": "funding-event",
+    "aliases": [
+      "DOE Community Geothermal Planning Grant for Bryant (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "semcog-led-streetlight-2023": {
+    "canonical": "funding-events/semcog-led-streetlight-2023",
+    "type": "funding-event",
+    "aliases": [
+      "SEMCOG Carbon Reduction Program \u2014 LED Streetlights (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "usdn-mini-grant-aip-2023": {
+    "canonical": "funding-events/usdn-mini-grant-aip-2023",
+    "type": "funding-event",
+    "aliases": [
+      "Urban Sustainability Directors Network Mini-Grant \u2014 Aging in Place (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "state-michigan-led-wheeler-2023": {
+    "canonical": "funding-events/state-michigan-led-wheeler-2023",
+    "type": "funding-event",
+    "aliases": [
+      "State of Michigan LED Lighting Grant for Wheeler Service Center (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "michigan-ev-charger-grant-2023": {
+    "canonical": "funding-events/michigan-ev-charger-grant-2023",
+    "type": "funding-event",
+    "aliases": [
+      "State of Michigan EV Curbside Charger Grant (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-county-a2r3-sponsorship-2023": {
+    "canonical": "funding-events/washtenaw-county-a2r3-sponsorship-2023",
+    "type": "funding-event",
+    "aliases": [
+      "Washtenaw County Waste Reduction Sponsorship for A2R3 (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "usdn-circular-economy-2023": {
+    "canonical": "funding-events/usdn-circular-economy-2023",
+    "type": "funding-event",
+    "aliases": [
+      "Urban Sustainability Directors Network Emergent Learning Fund \u2014 Circular Economy"
+    ],
+    "relationship": "name-variant"
+  },
+  "americorps-osi-2023": {
+    "canonical": "funding-events/americorps-osi-2023",
+    "type": "funding-event",
+    "aliases": [
+      "AmeriCorps Grant to OSI (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "state-michigan-circular-economy-2023": {
+    "canonical": "funding-events/state-michigan-circular-economy-2023",
+    "type": "funding-event",
+    "aliases": [
+      "State of Michigan Circular Economy Grant (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "state-michigan-ev-charger-2023": {
+    "canonical": "funding-events/michigan-ev-charger-grant-2023",
+    "type": "funding-event",
+    "aliases": [
+      "State Michigan Ev Charger 2023"
+    ],
+    "relationship": "name-variant"
+  },
+  "mi-hope-bryant-2023": {
+    "canonical": "funding-events/mi-hope-bryant-2023",
+    "type": "funding-event",
+    "aliases": [
+      "MI-HOPE Grant for Bryant Neighborhood Decarbonization (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "eecbg-bryant-community-center-2023": {
+    "canonical": "funding-events/eecbg-bryant-community-center-2023",
+    "type": "funding-event",
+    "aliases": [
+      "Energy Efficiency and Conservation Block Grant for Bryant Community Center"
+    ],
+    "relationship": "name-variant"
+  },
+  "semcog-bike-boulevard-2023": {
+    "canonical": "funding-events/semcog-bike-boulevard-2023",
+    "type": "funding-event",
+    "aliases": [
+      "SEMCOG Carbon Reduction Program \u2014 Washington Street Bike Boulevard (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "arpa-city-facilities-solar-2023": {
+    "canonical": "funding-events/arpa-city-facilities-solar-2023",
+    "type": "funding-event",
+    "aliases": [
+      "Federal ARPA Funding for City Facilities Solar (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "usda-urban-forestry-ira-2023": {
+    "canonical": "funding-events/usda-urban-forestry-ira-2023",
+    "type": "funding-event",
+    "aliases": [
+      "USDA Forest Service Urban & Community Forestry IRA Grant Proposal (2023)"
+    ],
+    "relationship": "name-variant"
+  },
+  "2022-11-community-climate-action-millage": {
+    "canonical": "political-events/2022-11-community-climate-action-millage",
+    "type": "political-event",
+    "aliases": [
+      "Community Climate Action Millage \u2014 November 2022 (Passed)"
+    ],
+    "relationship": "name-variant"
+  },
+  "semcog": {
+    "canonical": "actors/southeast-michigan-council-of-governments",
+    "type": "actor",
+    "aliases": [
+      "SEMCOG",
+      "semcog",
+      "Southeast Michigan Council of Governments"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-as-actor": {
+    "canonical": "actors/office-of-sustainability-and-innovations",
+    "type": "actor",
+    "aliases": [
+      "a2zero",
+      "A2Zero",
+      "A2ZERO"
+    ],
+    "relationship": "name-variant",
+    "notes": "A2Zero is the plan/program itself, not an organization; references to it as an actor route to OSI (its administering office)."
+  },
+  "city-administrator": {
+    "canonical": "actors/ann-arbor-city-administrator",
+    "type": "actor",
+    "aliases": [
+      "City Administrator",
+      "the city administrator"
+    ],
+    "relationship": "name-variant"
+  },
+  "emergency-management": {
+    "canonical": "actors/ann-arbor-emergency-management",
+    "type": "actor",
+    "aliases": [
+      "Emergency Management",
+      "emergency management"
+    ],
+    "relationship": "name-variant"
+  },
+  "nrel": {
+    "canonical": "actors/national-renewable-energy-laboratory",
+    "type": "actor",
+    "aliases": [
+      "NREL"
     ],
     "relationship": "name-variant"
   }

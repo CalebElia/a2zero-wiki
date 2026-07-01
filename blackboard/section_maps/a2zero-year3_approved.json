@@ -1,0 +1,125 @@
+{
+  "document_uuid": "a2zero-year3",
+  "total_lines": 235,
+  "ldp_version": "1.1",
+  "sections": [
+    {
+      "id": "year-three-annual-report-july-1-2022-june-3-2023",
+      "title": "YEAR THREE ANNUAL REPORT JULY 1, 2022-JUNE 3, 2023",
+      "depth": 1,
+      "line_start": 3,
+      "line_end": 235,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "introduction",
+      "title": "INTRODUCTION",
+      "depth": 2,
+      "line_start": 5,
+      "line_end": 11,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "the-ann-arbor-office-of-sustainability-and-innovations-team",
+      "title": "The Ann Arbor Office of Sustainability and Innovations Team",
+      "depth": 3,
+      "line_start": 9,
+      "line_end": 11,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "greenhouse-gas-emissions-summary",
+      "title": "GREENHOUSE GAS EMISSIONS SUMMARY",
+      "depth": 2,
+      "line_start": 12,
+      "line_end": 43,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-one-power-our-electrical-grid-with-100-renewable-energy",
+      "title": "STRATEGY ONE: POWER OUR ELECTRICAL GRID WITH 100% RENEWABLE ENERGY",
+      "depth": 2,
+      "line_start": 44,
+      "line_end": 65,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-two-switch-our-appliances-and-vehicles-from-gasoline-diesel-propane-coal-and-natural-gas-to-electric",
+      "title": "STRATEGY TWO: SWITCH OUR APPLIANCES AND VEHICLES FROM GASOLINE, DIESEL, PROPANE, COAL, AND NATURAL GAS TO ELECTRIC",
+      "depth": 2,
+      "line_start": 66,
+      "line_end": 82,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-three-significantly-improve-the-energy-efficiency-in-our-homes-business-schools-places-of-worship-recreational-sites-and-government-facilities",
+      "title": "STRATEGY THREE: SIGNIFICANTLY IMPROVE THE ENERGY EFFICIENCY IN OUR HOMES, BUSINESS, SCHOOLS, PLACES OF WORSHIP, RECREATIONAL SITES, AND GOVERNMENT FACILITIES",
+      "depth": 2,
+      "line_start": 83,
+      "line_end": 101,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-four-reduce-the-miles-we-travel-in-our-vehicles-by-at-least-50",
+      "title": "STRATEGY FOUR: REDUCE THE MILES WE TRAVEL IN OUR VEHICLES BY AT LEAST 50%",
+      "depth": 2,
+      "line_start": 102,
+      "line_end": 118,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-five-change-the-way-we-use-reuse-and-dispose-of-materials",
+      "title": "STRATEGY FIVE: CHANGE THE WAY WE USE, REUSE, AND DISPOSE OF MATERIALS",
+      "depth": 2,
+      "line_start": 119,
+      "line_end": 141,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-six-enhance-the-resilience-of-our-people-and-our-place",
+      "title": "STRATEGY SIX: ENHANCE THE RESILIENCE OF OUR PEOPLE AND OUR PLACE",
+      "depth": 2,
+      "line_start": 142,
+      "line_end": 158,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-seven-other-strategies-notable-accomplishments-or-efforts",
+      "title": "STRATEGY SEVEN: OTHER STRATEGIES (NOTABLE ACCOMPLISHMENTS OR EFFORTS)",
+      "depth": 2,
+      "line_start": 159,
+      "line_end": 203,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "year-four-priorities",
+      "title": "YEAR FOUR PRIORITIES",
+      "depth": 2,
+      "line_start": 204,
+      "line_end": 230,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "closing",
+      "title": "CLOSING",
+      "depth": 2,
+      "line_start": 231,
+      "line_end": 235,
+      "is_chunk": true,
+      "notes": ""
+    }
+  ],
+  "approved": true
+}

@@ -5,6 +5,74 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 
 ---
 
+## 2026-07-01 — Content quality audit + Foundation/Progression fix
+
+**What changed:**
+- **Content quality audit** (`docs/architecture/2026-06-30-content-quality-audit.md`) found: (1) strategy pages were losing CAP-2020 foundational content on every ingest once `wiki/digest.md` existed — a compounding-forgetting bug, not a one-off; (2) a duplicate $54K State-of-Michigan EV charger funding event reported across two annual reports; (3) minor entity-page templating, verified as faithful extraction of genuinely shared source sentences, not a defect; (4) confirmed-missing content (ICC Building Code Committees, SolSmart Silver, Year-1 collaborator baseline).
+- **Root cause of the content loss, traced to `pipeline/pass1b_synthesize.py`:** the Writer's fact-preservation instruction only fired via a legacy fallback branch that stopped injecting full prior strategy content once a digest existed — the Writer was shown only a lossy ~83-line summary, and `_write_synthesis` did an unconditional full-body overwrite regardless.
+- **Fix — Strategy Page Foundation/Progression split** (`docs/architecture/strategy-foundation-progression.md`): strategy pages now have a frozen `## Foundation` section (CAP-2020 original design intent — target %, cost, mechanism) and a `## Progress Synthesis` section (LLM-regenerated each ingest from the FULL prior text, not a digest). `_write_synthesis` now refuses to write a page with no Foundation section rather than silently overwriting it.
+- **`pipeline/phase_c_synthesize.py`** — `build_strategy_synthesis` now receives Foundation text and full ingest history (`extract_ingest_history`), fixing a related bug where `year-over-year-arc` always read "no multi-year trend data yet ingested" despite 3 real ingests.
+- **One-time migration** (`scripts/migrate_strategy_foundation.py`) — extracted Foundation content directly from `wiki/sources/cap/cap-2020.md` for all 7 strategies (not from git-recovered wiki state, which was already a lossy blend). Human-verified every extracted target/cost figure against the source before merge. Idempotency-guarded against accidental re-runs.
+- **Fixed a real duplicate**: merged `funding-events/michigan-utility-pole-ev-2022` into `funding-events/michigan-ev-charger-grant-2023` — same $54K grant, reported in both its Year 2 award year and Year 3 installation-progress year.
+- **Azure OpenAI support added** to `pipeline/_llm.py` as a third `LLM_PROVIDER` option (`azure`), using the newer `/openai/v1` unified endpoint. Fixed `max_tokens` → `max_completion_tokens` for newer OpenAI-family models.
+- **11 new tests** across `test_pass1b_synthesize.py` and `test_synthesize_wiki.py`. Total suite: 242 passed, 1 skipped.
+
+**Verified working:** post-fix `wiki/digest.md` rebuild now cites real Foundation figures ("targets 113 MW of local generation by 2030," "$901M cost projection") and real chronological arcs ("Baseline established 2026-06-24 (cap-2020)... Year 3 (a2zero-year3, 2026-06-30)") instead of the prior progress-only, boilerplate-arc output.
+
+**Why:** The pipeline's core value proposition is compounding knowledge across ingests. This audit found it was silently doing the opposite for foundational content. Fixed before Year 4/5 ingest to prevent further loss.
+
+**Spec:** `docs/architecture/strategy-foundation-progression.md`. **Plan:** `docs/superpowers/plans/2026-07-01-strategy-foundation-progression.md`. **Branch:** `feat/chunking-gate` (still stacked; PRs #4/#5/#6 remain unmerged).
+
+---
+
+## 2026-06-30 — Chunking gate (HITL review before LDP)
+
+**What changed:**
+- **`pipeline/pass2a_pre_chunking.py`** — new module implementing the chunking gate: `generate_proposed_map`, `approve_proposed_map`, `load_approved_map`, `render_preview_markdown`, `validate_section_map`. No LLM calls; pure mechanical orchestration.
+- **`pipeline/orchestrator.py`** — added `preflight` and `approve` subcommands; modified `source` subcommand to require an approved section map (with `--auto-approve` escape hatch for trusted batch ingests).
+- **`pipeline/pass2a_chunk_loop.py`** — `parse_section_map` now produces v1.1 section maps with per-section `is_chunk` and `notes` fields. `get_chunks` honors `is_chunk` when present, falls back to depth-1-or-2 rule for legacy v1.0 maps. `run_ldp_ingest` loads from `<uuid>_approved.json` instead of generating mechanically; raises clear error when no approved map exists.
+- **Workflow change:** Every new LDP-routed ingest now requires `preflight` → human review → `approve` → `source`. Small documents (those that don't trigger LDP) bypass the gate.
+- **Backward compat:** Existing `<uuid>_structure.json` files from CAP/Year1/Year2 ingests are untouched. The new `<uuid>_proposed.json` / `<uuid>_approved.json` filenames don't collide.
+- **18 new tests** (16 in `tests/test_pass2a_pre_chunking.py` covering preflight/approve/validation/load + 2 orchestrator gate tests + 5 chunk_loop integration tests across `test_ldp.py` for the new is_chunk and auto_approve behavior). Total suite: 228 passed, 1 skipped.
+
+**Why:** Mechanical chunking via markdown headings works for clean sources like A2Zero annual reports, but will fail on council transcripts, news articles, OCR'd PDFs, and other heading-poor formats. Bad chunks have outsized downstream cost — split entities fragment, fused topics dilute extraction. The HITL gate is cheap (one click-through per ingest) and forces human review of chunk quality before extraction commits any LLM tokens. Year 3 is the shakedown on a clean source.
+
+**Spec:** `docs/architecture/chunking-gate.md`. **Plan:** `docs/superpowers/plans/2026-06-30-chunking-gate.md`. **Branch:** `feat/chunking-gate` (draft PR).
+
+---
+
+## 2026-06-29 — Comprehend → Plan → Write architecture
+
+**What changed:**
+- **`pipeline/comprehend.py`** — new module implementing Pass 1A: reads `wiki/digest.md` plus the source, calls an LLM to produce a structured integration plan, validates the plan's slugs via the existing `synthesis_validation` machinery, persists to `wiki/integration-plans/<source-uuid>.json`, and pre-loads entity page bodies for `retrieve-for-context` (capped at 30k tokens, prioritized by `extends` + mention frequency).
+- **`pipeline/holistic_synthesizer.py`** — `synthesize_source()` now accepts `integration_plan` and `digest_content` kwargs. Replaces the legacy `integration_block` (raw strategy bodies) with a plan + digest injection block. Legacy fallback preserved for callers that don't pass the new kwargs.
+- **`pipeline/ldp.py`** — `extract_quads_chunked()` and `run_ldp_ingest()` accept `integration_plan` + `retrieved_bodies` kwargs and prepend them as a cached prefix to each chunk's context. Plan is a prior, not a constraint — LDP still creates pages for entities outside the plan as before.
+- **`pipeline/run_ingest.py`** — orchestrates Comprehend before Pass 1. Hard-fails the ingest when `digest.md` exists but the Comprehend LLM call errors (don't waste downstream tokens). Graceful fallback (no LLM call, empty plan) when no digest exists (first-ingest path). Per-ingest telemetry appended to `wiki/meta/ingest-stats.jsonl`.
+- **`wiki/integration-plans/`** — new directory for integration plan artifacts, committed for audit trail. Each `<source-uuid>.json` records how that ingest mapped the source onto existing wiki state.
+- **`wiki/meta/ingest-stats.jsonl`** — per-ingest telemetry (Comprehend skipped flag, plan size, extends/new-entities/retrieve counts, retrieved-chars total).
+- **18 new tests** in `tests/test_comprehend.py` (13) + integration tests added to `tests/test_holistic_synthesizer.py`, `tests/test_ldp.py`, `tests/test_run_ingest.py` (5 collectively). Total suite: 205 passed, 1 skipped.
+- **Spec:** `docs/architecture/comprehend-plan-write.md`. **Plan:** `docs/superpowers/plans/2026-06-29-comprehend-plan-write.md`. **Branch:** `feat/digest-injection` (draft PR opened for review).
+
+**Why:** Year 1 and Year 2 ingests both produced visible entity fragmentation because the LLM responsible for the integration decision never saw what the wiki already knew. We compensated downstream with alias resolution and lint cycles, but the *fundamental* problem was upstream: the holistic synthesizer conflated reading with writing, treating each source as if it were the only one. The Comprehend split makes the integration decision an explicit, structured artifact (the plan), and the plan flows downstream to inform both the Writer pass and the LDP chunk extraction. Per-ingest cost stops growing with wiki size — the digest is constant-size regardless of how many entities exist.
+
+---
+
+## 2026-06-29 — Synthesis validation loop
+
+**What changed:**
+- **`pipeline/synthesis_validation.py`** — new module implementing a Write → Validate → Revise loop for `synthesize_wiki`. Deterministic validator checks every entity slug emitted by the synthesis and narrative LLM calls against the filesystem; broken references trigger a scoped Reviser LLM call that substitutes from the inventory, drops from structured fields, or demotes wikilinks to plain text in prose.
+- **Two validation points** in `synthesize_wiki()`: after `build_strategy_synthesis()` (catches ghosts before they are written to strategy frontmatter) and after `build_digest_narrative()` (catches ghosts the narrative LLM invents during digest assembly).
+- **Reverted the inventory-binding language** from `_STRATEGY_SYNTHESIS_SYSTEM` — the Writer is again free to reach for plausible entities; correctness is enforced at the validation boundary instead of via prompt constraints.
+- **Removed `_resolve_synthesis_slugs`, `_SUPPRESS_SLUGS`** from `synthesize_wiki.py` (moved into the Validator).
+- **`wiki/meta/synthesis-ghosts.log`** — append-only log of dropped ghost slugs for human review. Recurring entries signal entities worth either creating as pages or adding to `SUPPRESS_SLUGS` permanently.
+- **20 new tests** in `tests/test_synthesis_validation.py` covering BrokenRef/ValidationReport dataclasses, structured validation (alias resolution, type-sort, suppress list, deduplication), narrative wikilink parsing, ghost logging, and Reviser fallback behavior. Total suite: 187 passed, 1 skipped.
+- **`registry/entity_aliases.json`** — added `a2zero-program` alias (recurring ghost surfaced via the new log) → OSI.
+- **Spec:** `docs/architecture/synthesis-validation-loop.md`. **Plan:** `docs/superpowers/plans/2026-06-29-synthesis-validation-loop.md`.
+
+**Why:** We were responding to every ghost-reference by tightening the synthesis prompt and growing an inline suppress list. That doesn't generalize (novel ghosts kept appearing across runs) and over-constrains (last iteration's "only use inventory slugs" rule wiped out `core-actors` for four strategies whose inventories were sparse). Separating the analytical pass (Writer) from the mechanical correctness pass (Validator + Reviser) lets each be optimized independently. The post-implementation smoke test produced zero ghost references in any strategy synthesis frontmatter and zero broken wikilinks in `digest.md` — the cleanest output of the entire session.
+
+---
+
 ## 2026-06-28 — Multi-provider LLM switching layer
 
 **What changed:**

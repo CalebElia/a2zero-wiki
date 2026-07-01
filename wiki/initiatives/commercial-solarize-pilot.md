@@ -28,4 +28,4 @@ title: Commercial Solarize Pilot Program
 type: initiative
 ---
 
-A pilot commercial Solarize program was initiated in Year 2 to extend the Solarize group-purchasing model to Ann Arbor businesses, developed in collaboration with the [[actors/ann-arbor-2030-district|2030 District]] ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). The program was in the design phase as of the Year 2 report, representing an expansion of the residential-focused [[initiatives/ann-arbor-solarize-program|Ann Arbor Solarize Program]] into the commercial sector ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).
+A pilot commercial Solarize program was initiated in Year 2 to extend the Solarize group-purchasing model to Ann Arbor businesses, developed in collaboration with the [[actors/ann-arbor-2030-district|2030 District]] ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). The program was in the design phase as of the Year 2 report, representing an expansion of the residential-focused [[initiatives/solarize-ann-arbor|Ann Arbor Solarize Program]] into the commercial sector ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).

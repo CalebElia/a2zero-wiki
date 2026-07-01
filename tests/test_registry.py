@@ -1,6 +1,6 @@
 import json
 import pytest
-from pipeline.registry import EntityRegistry
+from pipeline._legacy.registry import EntityRegistry
 
 
 @pytest.fixture

@@ -1,6 +1,6 @@
 import hashlib
 import pytest
-from pipeline.models import make_quad_id, validate_quad
+from pipeline._models import make_quad_id, validate_quad
 
 
 def test_quad_id_is_deterministic():

@@ -1,0 +1,302 @@
+"""Validator + Reviser for synthesize_wiki outputs.
+
+Catches ghost entity references (wikilinks to non-existent pages) before they
+get persisted to strategy synthesis frontmatter or digest.md.
+
+See docs/architecture/synthesis-validation-loop.md for design rationale.
+"""
+from dataclasses import dataclass, field
+
+
+@dataclass
+class BrokenRef:
+    """A single broken entity reference found by the Validator."""
+    slug: str       # e.g. "actors/foo" — the unresolvable slug
+    location: str   # "core-actors" | "core-initiatives" | "cross-strategy-links" | "narrative"
+    display: str    # display name as it appeared in source
+    context: str    # surrounding 80 chars (narrative only; empty for structured)
+
+
+@dataclass
+class ValidationReport:
+    """Report from a single validation pass."""
+    broken: list[BrokenRef] = field(default_factory=list)
+
+    @property
+    def is_clean(self) -> bool:
+        return len(self.broken) == 0
+
+
+from pathlib import Path
+
+
+SUPPRESS_SLUGS: frozenset[str] = frozenset({
+    "actors/systems-planning-unit",
+    "actors/city-of-ann-arbor-systems-planning",
+    "actors/ann-arbor-recycling-and-solid-waste",
+    "actors/neighborhood-organizations",
+})
+
+
+def _exists(slug: str, wiki_root: str) -> bool:
+    return (Path(wiki_root) / f"{slug}.md").exists()
+
+
+def _resolve_alias(slug: str, aliases: dict) -> str:
+    """Substitute alias -> canonical, if known."""
+    key = slug.split("/")[-1]
+    return aliases.get(key, {}).get("canonical") or slug
+
+
+def validate_synthesis(
+    synthesis: dict,
+    wiki_root: str,
+    aliases: dict,
+) -> tuple[dict, ValidationReport]:
+    """Apply alias resolution + type-sort + suppress list, then check
+    every remaining slug against the filesystem.
+
+    Returns (partially-corrected synthesis, report of what's still broken).
+    """
+    corrected = dict(synthesis)
+
+    def _clean(items: list[str]) -> list[str]:
+        seen: set[str] = set()
+        out: list[str] = []
+        for slug in items or []:
+            resolved = _resolve_alias(slug, aliases)
+            if resolved in SUPPRESS_SLUGS or resolved in seen:
+                continue
+            seen.add(resolved)
+            out.append(resolved)
+        return out
+
+    for field in ("core-initiatives", "core-actors", "cross-strategy-links"):
+        corrected[field] = _clean(corrected.get(field) or [])
+
+    # Type-sort: initiatives misplaced in core-actors → move to core-initiatives;
+    # locations in core-actors → drop.
+    misplaced_inits = [s for s in corrected["core-actors"] if s.startswith("initiatives/")]
+    bad_actors = {s for s in corrected["core-actors"]
+                  if s.startswith("initiatives/") or s.startswith("locations/")}
+    if bad_actors:
+        corrected["core-actors"] = [s for s in corrected["core-actors"] if s not in bad_actors]
+        existing = set(corrected["core-initiatives"])
+        corrected["core-initiatives"] = corrected["core-initiatives"] + [
+            s for s in misplaced_inits if s not in existing
+        ]
+
+    # Filesystem check on what's left
+    broken: list[BrokenRef] = []
+    for field in ("core-initiatives", "core-actors", "cross-strategy-links"):
+        for slug in corrected[field]:
+            if not _exists(slug, wiki_root):
+                broken.append(BrokenRef(
+                    slug=slug, location=field, display=slug.split("/")[-1], context=""
+                ))
+
+    return corrected, ValidationReport(broken=broken)
+
+
+import re
+
+
+# Matches [[path/slug|Display]] or [[path/slug]] — captures slug and optional display
+_WIKILINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
+
+
+def validate_narrative(
+    narrative: str,
+    wiki_root: str,
+    aliases: dict,
+) -> ValidationReport:
+    """Parse wikilinks in narrative prose; report broken ones.
+
+    Does not modify the narrative — narratives are revised in-place by the Reviser.
+    """
+    broken: list[BrokenRef] = []
+    seen: set[str] = set()
+
+    for match in _WIKILINK_RE.finditer(narrative):
+        slug = match.group(1).strip()
+        display = (match.group(2) or slug.split("/")[-1]).strip()
+
+        # Skip non-entity wikilinks (e.g. sources/, strategies/)
+        type_prefix = slug.split("/")[0]
+        if type_prefix not in {"actors", "initiatives", "locations", "technology",
+                               "funding-events", "meetings", "political-events"}:
+            continue
+
+        resolved = _resolve_alias(slug, aliases)
+        if resolved in seen or resolved in SUPPRESS_SLUGS:
+            continue
+        seen.add(resolved)
+
+        if not _exists(resolved, wiki_root):
+            # Pull ±40 chars around the wikilink as context
+            start = max(0, match.start() - 40)
+            end = min(len(narrative), match.end() + 40)
+            broken.append(BrokenRef(
+                slug=resolved, location="narrative", display=display,
+                context=narrative[start:end],
+            ))
+
+    return ValidationReport(broken=broken)
+
+
+def log_dropped_ghosts(
+    log_path: str,
+    run_date: str,
+    context_label: str,
+    ghosts: list[BrokenRef],
+) -> None:
+    """Append dropped-ghost entries to the synthesis-ghosts log for human review.
+
+    Recurring entries in this log signal entities worth either creating as pages
+    or adding to SUPPRESS_SLUGS permanently.
+    """
+    if not ghosts:
+        return
+    p = Path(log_path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    lines = [f"\n## [{run_date} | {context_label}]"]
+    for g in ghosts:
+        lines.append(f"- {g.slug} (location={g.location}, display={g.display!r})")
+        if g.context:
+            lines.append(f"  context: …{g.context.strip()}…")
+    with p.open("a", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+
+
+import json
+from pipeline._llm import chat
+
+
+_REVISE_SYNTHESIS_SYSTEM = """You are correcting wikilinks in a structured synthesis \
+JSON document.
+
+You will receive:
+1. The original synthesis (JSON)
+2. A list of broken references — slugs that don't exist as wiki pages
+3. The inventory of entities that DO exist for this strategy
+
+For each broken reference, choose ONE action:
+- SUBSTITUTE with a slug from the inventory, ONLY if there is a clear match \
+(same entity, different name)
+- DROP the slug entirely from its list
+
+Do not invent new slugs. Do not add new content. Do not modify the year-over-year-arc \
+or open-questions fields. Only touch the slug lists (core-initiatives, core-actors, \
+cross-strategy-links).
+
+Return ONLY the corrected JSON object — no preamble, no code fences.
+"""
+
+
+def _strip_code_fence(text: str) -> str:
+    t = text.strip()
+    if t.startswith("```"):
+        lines = t.split("\n")
+        t = "\n".join(lines[1:-1]) if len(lines) > 2 else t
+    return t.strip()
+
+
+def revise_synthesis(
+    synthesis: dict,
+    report: ValidationReport,
+    inventory: list[dict],
+) -> dict:
+    """LLM call: correct broken slugs in a structured synthesis dict.
+
+    Falls back to the original synthesis if the LLM call fails — a synthesis with
+    ghosts is more useful than no synthesis.
+    """
+    if report.is_clean:
+        return synthesis
+
+    broken_lines = "\n".join(
+        f"- {b.slug} (in {b.location}, displayed as '{b.display}')"
+        for b in report.broken
+    )
+    inventory_lines = "\n".join(
+        f"- {e['slug']} — {e['title']}: {e.get('one-liner','')}"
+        for e in inventory
+    )
+    user_msg = (
+        f"Original synthesis:\n```json\n{json.dumps(synthesis, indent=2)}\n```\n\n"
+        f"Broken references:\n{broken_lines}\n\n"
+        f"Available entity inventory:\n{inventory_lines}\n\n"
+        "Return the corrected JSON."
+    )
+
+    try:
+        raw = chat(
+            system=_REVISE_SYNTHESIS_SYSTEM,
+            messages=[{"role": "user", "content": user_msg}],
+            max_tokens=2048,
+            model_hint="merge",
+            temperature=0.0,
+        )
+        return json.loads(_strip_code_fence(raw))
+    except Exception as e:
+        print(f"[synthesis_validation] revise_synthesis failed; returning original: {e}")
+        return synthesis
+
+
+_REVISE_NARRATIVE_SYSTEM = """You are correcting wikilinks in narrative prose for an \
+Obsidian wiki.
+
+You will receive:
+1. The original narrative (markdown prose with [[slug|Display]] wikilinks)
+2. A list of broken references — wikilinks pointing to pages that don't exist
+3. The available entity inventory
+
+For each broken wikilink, choose ONE action:
+- SUBSTITUTE with a real slug from the inventory, ONLY if there is a clear match
+- DEMOTE to plain text: unwrap [[slug|Display Name]] → Display Name (preserves \
+readability, removes the false link)
+
+Do NOT invent new slugs. Do NOT modify the analytical content of the prose — only \
+fix the broken wikilinks. Keep paragraph structure and word choice intact otherwise.
+
+Return ONLY the corrected markdown — no preamble, no code fences.
+"""
+
+
+def revise_narrative(
+    narrative: str,
+    report: ValidationReport,
+    inventory: list[dict],
+) -> str:
+    """LLM call: correct broken wikilinks in narrative prose.
+
+    Falls back to the original narrative if the LLM call fails.
+    """
+    if report.is_clean:
+        return narrative
+
+    broken_lines = "\n".join(
+        f"- [[{b.slug}|{b.display}]] (no page exists; context: …{b.context.strip()}…)"
+        for b in report.broken
+    )
+    inventory_lines = "\n".join(
+        f"- {e['slug']} — {e['title']}" for e in inventory
+    )
+    user_msg = (
+        f"Original narrative:\n\n{narrative}\n\n---\n\n"
+        f"Broken wikilinks:\n{broken_lines}\n\n"
+        f"Available entity inventory:\n{inventory_lines or '(none)'}\n\n"
+        "Return the corrected narrative."
+    )
+
+    try:
+        return chat(
+            system=_REVISE_NARRATIVE_SYSTEM,
+            messages=[{"role": "user", "content": user_msg}],
+            max_tokens=4096,
+            model_hint="merge",
+            temperature=0.0,
+        ).strip()
+    except Exception as e:
+        print(f"[synthesis_validation] revise_narrative failed; returning original: {e}")
+        return narrative

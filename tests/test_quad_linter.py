@@ -1,7 +1,7 @@
 import json
 import pytest
 from pathlib import Path
-from pipeline.quad_linter import lint_quads, LintReport
+from pipeline._legacy.quad_linter import lint_quads, LintReport
 
 
 VALID_QUAD = {

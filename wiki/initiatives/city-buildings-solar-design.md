@@ -3,9 +3,6 @@ funding-events: []
 last-updated: '2026-06-26'
 launched: null
 locations:
-- '[[locations/ann-arbor-water-treatment-plant]]'
-- '[[locations/ann-arbor-water-recovery-facility]]'
-- '[[locations/ann-arbor-city-parks]]'
 milestones:
 - source: '[[sources/annual-reports/a2zero-year2]]'
   status: unverified

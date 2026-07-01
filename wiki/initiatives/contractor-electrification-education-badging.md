@@ -7,7 +7,7 @@ locations: []
 milestones: []
 parent-strategy: '[[strategies/strategy-2-electrification]]'
 partners:
-- '[[actors/egle]]'
+- '[[actors/michigan-egle]]'
 party-responsible: '[[actors/city-of-ann-arbor]]'
 related-strategies:
 - '[[strategies/strategy-2-electrification]]'
