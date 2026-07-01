@@ -77,6 +77,18 @@ def extract_recent_delta(log_path: str) -> dict:
     return {"date": date, "source_uuid": source_uuid.strip()}
 
 
+def extract_ingest_history(log_path: str) -> list[dict]:
+    """Return [{date, source_uuid}, ...] for every ingest in log.md, chronological."""
+    try:
+        text = Path(log_path).read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return []
+    return [
+        {"date": date, "source_uuid": uuid.strip()}
+        for date, uuid in _LOG_ENTRY_RE.findall(text)
+    ]
+
+
 _STRATEGY_SYNTHESIS_SYSTEM = """You are synthesizing one strategy of Ann Arbor's A2Zero \
 carbon neutrality plan into a compact structured summary that will be injected into \
 future LLM ingest passes as prior context.
@@ -91,6 +103,19 @@ source is ingested, describe the baseline state.
 - open-questions: list of 2–4 short strings flagging what is unresolved or pending
 - cross-strategy-links: list of slugs of entities you would expect to also appear in \
 other strategies' core-initiatives (initiatives spanning multiple strategies)
+- core-target: one sentence citing the Foundation's original numeric target or cost \
+estimate for this strategy, if a [FOUNDATION] context block is provided below. If no \
+FOUNDATION block is provided, return the literal string "—".
+
+You may be given two additional optional context blocks:
+- [FOUNDATION]: the strategy's original design intent from CAP-2020 (frozen, for \
+reference only — never overwritten). Use it only to write `core-target`.
+- [INGEST HISTORY]: the chronological list of sources ingested so far, with dates. \
+When this is provided, use the specific dates and source names to write a REAL \
+`year-over-year-arc` describing an actual trajectory across those sources (e.g. \
+"Baseline established 2026-06-01 (a2zero-year1); residential solar grew 31% by \
+2026-06-30 (a2zero-year3)") instead of generic boilerplate. If no history is \
+provided, describe the baseline state from the entity inventory alone.
 
 Return ONLY the JSON object. Slugs use the form `actors/foo` or `initiatives/bar` — \
 the same format as the inputs.
@@ -113,6 +138,7 @@ def _empty_synthesis() -> dict:
         "year-over-year-arc": "—",
         "open-questions": [],
         "cross-strategy-links": [],
+        "core-target": "—",
     }
 
 
@@ -120,15 +146,24 @@ def build_strategy_synthesis(
     strategy_slug: str,
     strategy_title: str,
     entities: list[dict],
+    foundation_text: str = "",
+    ingest_history: list[dict] | None = None,
 ) -> dict:
     """LLM call: produce the synthesis dict for one strategy."""
     entity_lines = "\n".join(
         f"- [{e['type']}] {e['slug']} — {e['title']}: {e.get('one-liner','')}"
         for e in entities
     )
+    history_lines = "\n".join(
+        f"- {h['date']}: {h['source_uuid']}" for h in (ingest_history or [])
+    )
     user_msg = (
         f"Strategy: {strategy_title} ({strategy_slug})\n\n"
-        f"Entity inventory ({len(entities)} pages):\n{entity_lines}\n\n"
+        + (f"[FOUNDATION — original design intent, frozen, for reference only]\n"
+           f"{foundation_text}\n[END FOUNDATION]\n\n" if foundation_text else "")
+        + (f"[INGEST HISTORY — sources contributing to this synthesis, chronological]\n"
+           f"{history_lines}\n[END INGEST HISTORY]\n\n" if history_lines else "")
+        + f"Entity inventory ({len(entities)} pages):\n{entity_lines}\n\n"
         "Produce the synthesis JSON now."
     )
     try:
@@ -359,10 +394,23 @@ def synthesize_wiki(
             else:
                 synthesis = _empty_synthesis()
         else:
+            page = Path(wiki_root) / (strategy_slug + ".md")
+            foundation_text = ""
+            if page.exists():
+                body = re.sub(
+                    r"^---\n.*?\n---\n", "", page.read_text(encoding="utf-8"), flags=re.DOTALL
+                ).strip()
+                from pipeline.pass1b_synthesize import _split_strategy_sections
+                foundation, _ = _split_strategy_sections(body)
+                foundation_text = foundation or ""
+            ingest_history = extract_ingest_history(str(Path(wiki_root) / "log.md"))
+
             synthesis = build_strategy_synthesis(
                 strategy_slug=strategy_slug,
                 strategy_title=title,
                 entities=entities,
+                foundation_text=foundation_text,
+                ingest_history=ingest_history,
             )
             # Validate → Revise loop
             synthesis, report = validate_synthesis(synthesis, wiki_root, aliases)

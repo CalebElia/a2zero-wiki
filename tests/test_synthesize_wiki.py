@@ -71,6 +71,90 @@ def test_extract_recent_delta_handles_empty_log(tmp_path):
     assert delta == {}
 
 
+def test_extract_ingest_history_returns_all_entries(tmp_path):
+    from pipeline.phase_c_synthesize import extract_ingest_history
+    log_path = tmp_path / "log.md"
+    log_path.write_text(
+        "## [2026-06-01 | a2zero-year1]\nsome entry\n\n"
+        "## [2026-06-15 | a2zero-year2]\nsome entry\n\n"
+        "## [2026-06-30 | a2zero-year3]\nsome entry\n"
+    )
+    history = extract_ingest_history(str(log_path))
+    assert history == [
+        {"date": "2026-06-01", "source_uuid": "a2zero-year1"},
+        {"date": "2026-06-15", "source_uuid": "a2zero-year2"},
+        {"date": "2026-06-30", "source_uuid": "a2zero-year3"},
+    ]
+
+
+def test_extract_ingest_history_handles_empty_log(tmp_path):
+    from pipeline.phase_c_synthesize import extract_ingest_history
+    log_path = tmp_path / "log.md"
+    log_path.write_text("# Ingest Log\n", encoding="utf-8")
+    assert extract_ingest_history(str(log_path)) == []
+
+
+def test_extract_ingest_history_handles_missing_log(tmp_path):
+    from pipeline.phase_c_synthesize import extract_ingest_history
+    assert extract_ingest_history(str(tmp_path / "nope.md")) == []
+
+
+def test_build_strategy_synthesis_prompt_includes_foundation_and_history(monkeypatch):
+    from pipeline import phase_c_synthesize as mod
+    captured = {}
+
+    def fake_chat(**kwargs):
+        captured["user_msg"] = kwargs["messages"][0]["content"]
+        return json.dumps({
+            "core-initiatives": [], "core-actors": [], "year-over-year-arc": "x",
+            "open-questions": [], "cross-strategy-links": [], "core-target": "x",
+        })
+
+    monkeypatch.setattr(mod, "chat", fake_chat)
+
+    mod.build_strategy_synthesis(
+        strategy_slug="strategies/strategy-1-renewable-grid",
+        strategy_title="Strategy 1",
+        entities=[],
+        foundation_text="CAP-2020 target: 41% reduction.",
+        ingest_history=[
+            {"date": "2026-06-01", "source_uuid": "a2zero-year1"},
+            {"date": "2026-06-30", "source_uuid": "a2zero-year3"},
+        ],
+    )
+    assert "CAP-2020 target: 41% reduction." in captured["user_msg"]
+    assert "2026-06-01" in captured["user_msg"]
+    assert "a2zero-year3" in captured["user_msg"]
+
+
+def test_build_strategy_synthesis_omits_blocks_when_not_provided(monkeypatch):
+    from pipeline import phase_c_synthesize as mod
+    captured = {}
+
+    def fake_chat(**kwargs):
+        captured["user_msg"] = kwargs["messages"][0]["content"]
+        return json.dumps({
+            "core-initiatives": [], "core-actors": [], "year-over-year-arc": "x",
+            "open-questions": [], "cross-strategy-links": [], "core-target": "—",
+        })
+
+    monkeypatch.setattr(mod, "chat", fake_chat)
+
+    mod.build_strategy_synthesis(
+        strategy_slug="strategies/strategy-1-renewable-grid",
+        strategy_title="Strategy 1",
+        entities=[],
+    )
+    assert "FOUNDATION" not in captured["user_msg"]
+    assert "INGEST HISTORY" not in captured["user_msg"]
+    assert "None" not in captured["user_msg"]
+
+
+def test_empty_synthesis_includes_core_target_default():
+    from pipeline.phase_c_synthesize import _empty_synthesis
+    assert _empty_synthesis()["core-target"] == "—"
+
+
 import json
 from unittest.mock import patch
 
