@@ -1,12 +1,12 @@
 
 
-## YEAR THREE ANNUAL REPORT JULY 1, 2022-JUNE 3, 2023
+# YEAR THREE ANNUAL REPORT JULY 1, 2022-JUNE 3, 2023
 
 ## INTRODUCTION
 
 As A2ZERO turns three, we find it time to once again reflect on actions and activities taken to-date and those still needed to hit our goal of community-wide carbon neutrality by the year 2030. A lot of great work was embarked on in the last year, as outlined below. Much of this work focused on building a foundation for long-term climate action or built upon foundations laid in previous years. Together, our community has reduced greenhouse gas emissions by over 22% -creating the momentum necessary to hit our audacious climate goals. Yet we know a great deal more is needed. That's why staff in the Ann Arbor Office of Sustainability and Innovations (OSI), the caretakers for A2ZERO, are working hard to create new programs and initiatives that will ensure everyone in our community can participate in the climate movement. If you haven't already joined us, we encourage you to sign up for our monthly newsletter to learn more about activities and ways to get involved. Or consider becoming an A2ZERO Ambassador to help us spread the word about A2ZERO in the community. You can also join our team as a full-time employee, AmeriCorps member, intern, or volunteer -check out opportunities as they emerge here. Regardless of how you're able, please get involved -because achieving our goals is only possible when we all work together.
 
-## The Ann Arbor Office of Sustainability and Innovations Team
+### The Ann Arbor Office of Sustainability and Innovations Team
 Missy, Zach, Julie, Sean, Thea, Simi, Hannah, Joe, Sheronda, Bryce, Jennifer, Corissa, and Ryan
 
 ## GREENHOUSE GAS EMISSIONS SUMMARY
@@ -41,9 +41,7 @@ Fossil fuels combusted in our vehicles for trips around town or commuting are an
 
 To learn more about the City's greenhouse gas emissions inventory methodology, results, and actions, please see our Community Greenhouse Gas Inventory website.
 
-## STRATEGY ONE:
-
-## POWER OUR ELECTRICAL GRID WITH 100% RENEWABLE ENERGY
+## STRATEGY ONE: POWER OUR ELECTRICAL GRID WITH 100% RENEWABLE ENERGY
 
 Strategy 1 of A2ZERO calls for the community's electric needs to be powered with 100% renewable energy. In year three of A2ZERO, significant progress was made to advance renewable energy deployment and adoption, including:
 
@@ -65,9 +63,7 @@ Strategy 1 of A2ZERO calls for the community's electric needs to be powered with
 - Supported (and continue to support) geothermal studies and analysis at two future Ann Arbor Housing Commission (AAHC) sites.
 - Secured support from the National Renewable Energy Laboratory to determine data needs for a district geothermal study around Veterans Park.
 
-## STRATEGY TWO:
-
-## SWITCH OUR APPLIANCES AND VEHICLES FROM GASOLINE, DIESEL, PROPANE, COAL, AND NATURAL GAS TO ELECTRIC
+## STRATEGY TWO: SWITCH OUR APPLIANCES AND VEHICLES FROM GASOLINE, DIESEL, PROPANE, COAL, AND NATURAL GAS TO ELECTRIC
 
 Advancing Strategy 2, also known as beneficial electrification, has been a significant area of focus for OSI during year three of A2ZERO. A lot of work in this area is considered foundational, with the goal of creating new initiatives and programs in year four that will help residents and businesses transition to cleaner and healthier ways to heat and power their lives. Activities undertaken in year three to advance beneficial electrification include:
 
@@ -82,13 +78,9 @@ Advancing Strategy 2, also known as beneficial electrification, has been a signi
 - The City's light fleet reached 20% electric, with the first electric pickups and vans integrated into the fleet.
 - OSI is leading the City's work on a new heating franchise to ensure that all Ann Arborites have access to safe, healthy, clean, and affordable heating and cooling choices. This includes a new website, community listening sessions, a request for ideas, and a new email address to receive public comments: franchisefeedback@a2gov.org.
 - Collaborated with IBEW/NECA-our local Electrical Workers Union-on electrification readiness and supported their campaign called "The Future is Electric." As part of this campaign, IBEW/NECA have released a series of informational videos to help residents know what might be involved in upgrading their homes for electrification of appliances and vehicles.
-- Held a convening with over 30 contractors across multiple disciplines to discuss misconceptions around electrification, promote City electrification programs and resources, collect feedback on soon-to-be created A2ZERO rebate programs, and discern best practices for increasing electrification through
+- Held a convening with over 30 contractors across multiple disciplines to discuss misconceptions around electrification, promote City electrification programs and resources, collect feedback on soon-to-be created A2ZERO rebate programs, and discern best practices for increasing electrification through contractor collaboration.
 
-contractor collaboration.
-
-## STRATEGY THREE:
-
-## SIGNIFICANTLY IMPROVE THE ENERGY EFFICIENCY IN OUR HOMES, BUSINESS, SCHOOLS, PLACES OF WORSHIP, RECREATIONAL SITES, AND GOVERNMENT FACILITIES
+## STRATEGY THREE: SIGNIFICANTLY IMPROVE THE ENERGY EFFICIENCY IN OUR HOMES, BUSINESS, SCHOOLS, PLACES OF WORSHIP, RECREATIONAL SITES, AND GOVERNMENT FACILITIES
 
 Energy efficiency - or energy waste reduction - is a critical element of achieving our A2ZERO goals. This work area continues to be one of the most challenging to get excitement around, but notable activities were undertaken in year three of A2ZERO to help Ann Arborites save money and reduce the amount of energy they use, including:
 
@@ -107,9 +99,7 @@ Energy efficiency - or energy waste reduction - is a critical element of achievi
 - Launched and concluded the City's first Resident Race to Zero Energy, with over 100 participants.
 - Collaborated with the Ann Arbor Housing Commission to secure $3 million in federal aid to advance net zero energy affordable housing in the City.
 
-## STRATEGY FOUR:
-
-## REDUCE THE MILES WE TRAVEL IN OUR VEHICLES BY AT LEAST 50%
+## STRATEGY FOUR: REDUCE THE MILES WE TRAVEL IN OUR VEHICLES BY AT LEAST 50%
 
 How we move about our community has a significant impact on our local carbon footprint. That is why the City, under the leadership of the Transportation and Planning Departments, has been working on numerous activities to help us reduce vehicle miles traveled by 50%, including:
 
@@ -126,9 +116,7 @@ How we move about our community has a significant impact on our local carbon foo
 - The City rezoned approximately 400 acres to TC1 (transit corridor) status.
 - Initiated a new speed management program to help reduce traffic accidents and advance the City's goal of zero traffic fatalities and serious injuries (Vision Zero).
 
-## STRATEGY FIVE:
-
-## CHANGE THE WAY WE USE, REUSE, AND DISPOSE OF MATERIALS
+## STRATEGY FIVE: CHANGE THE WAY WE USE, REUSE, AND DISPOSE OF MATERIALS
 
 If we had to pick a word of the year in the OSI office, it would be circularity! Year three of A2ZERO saw many exciting activities focused on advancing the circular economy, and residents can expect a lot more work in this area in coming years. Some notable activities in year three include:
 
@@ -151,9 +139,7 @@ If we had to pick a word of the year in the OSI office, it would be circularity!
 - The Greenbelt launched an innovative acquisition framework known as buy-Protect-Sell geared toward providing affordable farmland purchasing opportunities for land insecure farmers.
 - Began work with The Ecology Center to improve resource management in five areas: youth (2nd and 7th grade field trips), multi-family units, commercial businesses, and events outreach as well as engagement to design a social media-based marketing campaign to encourage reduction, reuse, recycling, and composting.
 
-## STRATEGY SIX:
-
-## ENHANCE THE RESILIENCE OF OUR PEOPLE AND OUR PLACE
+## STRATEGY SIX: ENHANCE THE RESILIENCE OF OUR PEOPLE AND OUR PLACE
 
 Enhancing the resilience of our people and our exceptional community are pivotal elements of A2ZERO, as well as work to enhance overall quality of life for existing and future Ann Arborites. Year three of A2ZERO saw the following resilience-related activities:
 
@@ -164,18 +150,13 @@ Enhancing the resilience of our people and our exceptional community are pivotal
 - Together with Public Works and Natural Areas Preservation, submitted a USDA Forest Service Urban & Community Forestry Inflation Reduction Act grant proposal to fund an update to Ann Arbor's Urban Tree Canopy assessment, advance private property tree planting efforts, create a NAP management plan, and conduct a feasibility study for a City- and County-owned tree nursery.
 - Presented on the 10,000 Trees program's progress and success at the 2023 Partners in Community Forestry conference and ArborCon 2023.
 - Installed two additional air quality monitors, bringing the total number up to four.
-- The Greenbelt reached 7,600 acres of farmland and
-
-natural areas permanently protected surrounding the City of Ann Arbor. The farmland protected by the Greenbelt has the potential to produce the calories needed to feed over 52,000 people!
-
+- The Greenbelt reached 7,600 acres of farmland and natural areas permanently protected surrounding the City of Ann Arbor. The farmland protected by the Greenbelt has the potential to produce the calories needed to feed over 52,000 people!
 - Launched a data visualization platform for air quality monitoring at www.a2gov.org/airdata.
 - Launched the Pollinator-Aware Yard Care program, a restructuring of last year's No Mow May program, with over 250 residents registered as participants.
 - Hosted over a dozen community-based organizations to explore creation of a resilience network.
 - Applied for a federal EPA grant to formally launch a resilience network and expand resilience hubs throughout the County.
 
-## STRATEGY SEVEN:
-
-## OTHER STRATEGIES (NOTABLE ACCOMPLISHMENTS OR EFFORTS)
+## STRATEGY SEVEN: OTHER STRATEGIES (NOTABLE ACCOMPLISHMENTS OR EFFORTS)
 
 Many of the activities undertaken to advance A2ZERO fall into multiple strategies or are critical to all strategies. For example, community engagement, transparency, and OSI's equity work help advance all A2ZERO strategies. Some activities completed in year three classified as other actions include:
 
