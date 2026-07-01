@@ -62,9 +62,13 @@ python -m pipeline.orchestrator source \
 ```
 
 Optional flags on the `source` subcommand:
-- `--wiki-only` — Pass 1 + Pass 2 wiki extraction only; skip quad extraction and review-queue
+- `--include-quads` — Also run quad extraction (off by default; the quad linter is paused pending schema redesign, so quads are token-expensive and unused)
 - `--quads-only` — Pass 2 quad extraction only; skip Pass 1 and wiki writes
 - `--auto-approve` — Bypass the chunking gate (see below); generate section map mechanically
+
+**Default mode is wiki-only.** Quad extraction adds ~1 LLM call per chunk and produces output that no downstream pipeline currently consumes.
+
+For a complete step-by-step run guide with HITL gates, see [docs/how-to-run-ingest.md](docs/how-to-run-ingest.md).
 
 ### Chunking gate (HITL — required for LDP-routed sources)
 

@@ -62,7 +62,9 @@ Return ONLY a JSON object with EXACTLY these keys:
   a one-sentence hint describing what the source contributes.
 - new-entities: list of {slug, type, title, rationale} objects for entities NOT yet in \
   the wiki that the source introduces and that warrant a dedicated page. Type must be one \
-  of: actor, initiative, location, technology, funding-event, meeting, political-event.
+  of: actor, initiative, location, technology, funding-event, meeting, political-event. \
+  Keep `rationale` to ONE short sentence (under 20 words). Cap the list at 20 entities — \
+  prioritize the most significant new entities; the LDP extraction pass will catch the rest.
 - retrieve-for-context: list of existing entity slugs whose page bodies should be loaded \
   as reference context during chunk-by-chunk extraction. Include entities in `extends` \
   and any other existing entities the source heavily references. Aim for 5-15 entities.
@@ -90,6 +92,28 @@ def _strip_code_fence(text: str) -> str:
         lines = t.split("\n")
         t = "\n".join(lines[1:-1]) if len(lines) > 2 else t
     return t.strip()
+
+
+def _repair_json(text: str) -> str:
+    """Strip trailing commas before } or ] — catches the most common LLM JSON error."""
+    return re.sub(r",\s*([}\]])", r"\1", text)
+
+
+_REPAIR_SYSTEM = (
+    "You are a JSON repair tool. The user will give you malformed JSON. "
+    "Return ONLY the corrected JSON object with no preamble, no code fences, no commentary."
+)
+
+
+def _repair_via_llm(raw: str) -> str:
+    """Ask the LLM to fix malformed JSON. Used as fallback after parse failure."""
+    return chat(
+        system=_REPAIR_SYSTEM,
+        messages=[{"role": "user", "content": f"Fix this JSON:\n\n{raw}"}],
+        max_tokens=4096,
+        model_hint="synthesis",
+        temperature=0.0,
+    )
 
 
 def _extract_digest_rebuilt(digest_content: str) -> str:
@@ -132,11 +156,23 @@ def build_integration_plan(
     raw = chat(
         system=_COMPREHEND_SYSTEM,
         messages=[{"role": "user", "content": user_msg}],
-        max_tokens=4096,
+        max_tokens=8192,
         model_hint="synthesis",
         temperature=0.0,
     )
-    parsed = json.loads(_strip_code_fence(raw))
+    cleaned = _repair_json(_strip_code_fence(raw))
+    try:
+        parsed = json.loads(cleaned)
+    except json.JSONDecodeError as exc:
+        debug_path = Path("blackboard") / f"_comprehend_raw_{source_uuid}.txt"
+        debug_path.parent.mkdir(parents=True, exist_ok=True)
+        debug_path.write_text(raw, encoding="utf-8")
+        print(f"[comprehend] WARNING: JSON parse failed at {exc.lineno}:{exc.colno}.")
+        print(f"[comprehend] Raw output dumped to {debug_path}")
+        print(f"[comprehend] Bad context: ...{cleaned[max(0,exc.pos-80):exc.pos+80]!r}...")
+        print("[comprehend] Attempting LLM repair...")
+        repaired = _strip_code_fence(_repair_via_llm(cleaned))
+        parsed = json.loads(repaired)
 
     # Merge into plan skeleton (preserves source-uuid, generated-at, digest-rebuilt)
     for k in ("strategies-touched", "extends", "new-entities",

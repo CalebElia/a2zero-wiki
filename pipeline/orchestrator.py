@@ -381,8 +381,8 @@ if __name__ == "__main__":
     p_source.add_argument("--section-maps-dir", default="blackboard/section_maps")
     mode_group = p_source.add_mutually_exclusive_group()
     mode_group.add_argument(
-        "--wiki-only", action="store_true", default=False,
-        help="Run Pass 1 + Pass 2 wiki extraction only; skip quad extraction and review-queue",
+        "--include-quads", action="store_true", default=False,
+        help="Also run quad extraction and review-queue. Default is wiki-only (quad pipeline is paused pending schema redesign).",
     )
     mode_group.add_argument(
         "--quads-only", action="store_true", default=False,
@@ -464,7 +464,7 @@ if __name__ == "__main__":
             wiki_root=args.wiki_root,
             review_queue_path=args.review_queue,
             section_maps_dir=args.section_maps_dir,
-            wiki_only=args.wiki_only,
+            wiki_only=not args.include_quads and not args.quads_only,
             quads_only=args.quads_only,
             auto_approve_chunks=args.auto_approve,
         )
