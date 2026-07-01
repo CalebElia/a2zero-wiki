@@ -365,6 +365,11 @@ def synthesize_source(
     # Always inject full existing Progress Synthesis text — regardless of
     # whether a digest exists. The digest is cross-strategy narrative context;
     # this is the actual full-fidelity source of truth for what NOT to lose.
+    # Token-budget note: this grows linearly (not exponentially) with the
+    # number of ingested sources — safe through at least Year 5-10 at current
+    # per-strategy Progress Synthesis lengths. If the wiki scales well beyond
+    # that, revisit (e.g. summarize older years, cap per-strategy injection
+    # size). See docs/architecture/2026-06-30-content-quality-audit.md.
     existing_progress: dict[str, str] = {}
     strategies_dir = Path(wiki_root) / "strategies"
     if strategies_dir.exists():
