@@ -19,6 +19,8 @@ _MODEL_MAP = {
     },
 }
 
+_VALID_PROVIDERS = ("anthropic", "openai", "azure")
+
 
 def _provider() -> str:
     return os.environ.get("LLM_PROVIDER", "anthropic").lower()
@@ -29,15 +31,50 @@ def _model(hint: str) -> str:
     if override:
         return override
     provider = _provider()
+    if provider == "azure":
+        # Azure addresses models by deployment name, not model ID — deployment
+        # names are chosen when the deployment is created in the Azure portal
+        # and don't necessarily match OpenAI's own model IDs.
+        deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT", "").strip()
+        if not deployment:
+            raise ValueError(
+                "LLM_PROVIDER=azure requires AZURE_OPENAI_DEPLOYMENT to be set "
+                "to the deployment name configured in your Azure OpenAI resource."
+            )
+        return deployment
     if provider not in _MODEL_MAP:
         raise ValueError(
-            f"Unknown LLM_PROVIDER: {provider!r}. Expected 'anthropic' or 'openai'."
+            f"Unknown LLM_PROVIDER: {provider!r}. Expected one of {_VALID_PROVIDERS}."
         )
     if hint not in _MODEL_MAP[provider]:
         raise ValueError(
             f"Unknown model_hint: {hint!r}. Valid hints: {list(_MODEL_MAP[provider].keys())}"
         )
     return _MODEL_MAP[provider][hint]
+
+
+def _azure_client() -> "openai.OpenAI":
+    """Client for Azure AI Foundry's unified /openai/v1 endpoint.
+
+    This is the newer OpenAI-compatible surface (base_url + Bearer auth) —
+    not the classic https://<resource>.openai.azure.com surface that the
+    AzureOpenAI SDK class and api-version query param were built for. No
+    api-version is needed here; the endpoint itself already encodes /openai/v1.
+    """
+    endpoint = os.environ.get("AZURE_OPENAI_ENDPOINT", "").strip()
+    api_key = os.environ.get("AZURE_OPENAI_API_KEY", "").strip()
+    missing = [
+        name for name, val in (
+            ("AZURE_OPENAI_ENDPOINT", endpoint),
+            ("AZURE_OPENAI_API_KEY", api_key),
+        ) if not val
+    ]
+    if missing:
+        raise ValueError(
+            f"LLM_PROVIDER=azure requires {', '.join(missing)} to be set. "
+            "See .env.example."
+        )
+    return openai.OpenAI(base_url=endpoint, api_key=api_key)
 
 
 def _strip_cache_control(messages: list[dict]) -> list[dict]:
@@ -78,19 +115,20 @@ def chat(
         )
         return response.content[0].text
 
-    if provider == "openai":
+    if provider in ("openai", "azure"):
         clean_messages = _strip_cache_control(messages)
         oai_messages = [{"role": "system", "content": system}] + clean_messages
-        response = openai.OpenAI().chat.completions.create(
+        client = _azure_client() if provider == "azure" else openai.OpenAI()
+        response = client.chat.completions.create(
             model=model,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
             temperature=temperature,
             messages=oai_messages,
         )
         return response.choices[0].message.content
 
     raise ValueError(
-        f"Unknown LLM_PROVIDER: {provider!r}. Expected 'anthropic' or 'openai'."
+        f"Unknown LLM_PROVIDER: {provider!r}. Expected one of {_VALID_PROVIDERS}."
     )
 
 
@@ -119,13 +157,14 @@ def stream_chat(
             return None
         return response.content[0].text
 
-    if provider == "openai":
+    if provider in ("openai", "azure"):
         clean_messages = _strip_cache_control(messages)
         oai_messages = [{"role": "system", "content": system}] + clean_messages
+        client = _azure_client() if provider == "azure" else openai.OpenAI()
         collected = []
-        with openai.OpenAI().chat.completions.create(
+        with client.chat.completions.create(
             model=model,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
             temperature=temperature,
             messages=oai_messages,
             stream=True,
@@ -137,5 +176,5 @@ def stream_chat(
         return "".join(collected)
 
     raise ValueError(
-        f"Unknown LLM_PROVIDER: {provider!r}. Expected 'anthropic' or 'openai'."
+        f"Unknown LLM_PROVIDER: {provider!r}. Expected one of {_VALID_PROVIDERS}."
     )
