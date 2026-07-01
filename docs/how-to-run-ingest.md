@@ -8,14 +8,19 @@ Step-by-step runbook for ingesting a new source into the wiki. Structured around
 
 ### 1. Which LLM provider?
 
-The pipeline supports Anthropic (default) and OpenAI. You set this per-command with an environment variable prefix.
+The pipeline supports Anthropic (default), OpenAI, and Azure OpenAI. Config lives in the project's `.env` file (copy from `.env.example` if you don't have one) — **not** your shell profile. Load it once per terminal session:
 
-| Provider | Prefix | When to use |
-|----------|--------|-------------|
-| **Anthropic** (default) | `LLM_PROVIDER=anthropic` (or omit — Anthropic is the default) | Default. Requires `ANTHROPIC_API_KEY` in your env. |
-| **OpenAI** | `LLM_PROVIDER=openai` | Requires `OPENAI_API_KEY` in your env. Use when your Anthropic key is unavailable or you're A/B testing. |
+```bash
+set -a && source .env && set +a
+```
 
-If you have a stale `LLM_PROVIDER` exported in your shell, **always prefix commands explicitly** to avoid silently routing to the wrong provider. Check with `echo $LLM_PROVIDER`.
+| Provider | `.env` setting | When to use |
+|----------|-----------------|-------------|
+| **Anthropic** (default) | `LLM_PROVIDER=anthropic` | Default. Requires `ANTHROPIC_API_KEY`. |
+| **OpenAI** | `LLM_PROVIDER=openai` | Requires `OPENAI_API_KEY`. Use when your Anthropic key is unavailable or you're A/B testing. |
+| **Azure OpenAI** | `LLM_PROVIDER=azure` | Requires `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT` (must end in `/openai/v1`), `AZURE_OPENAI_DEPLOYMENT`. Use when your OpenAI key is provisioned through an Azure AI Foundry resource. |
+
+You can still override per-command with a prefix (`LLM_PROVIDER=azure python -m ...`) without touching `.env` — useful for a one-off test. Check what's actually loaded with `echo $LLM_PROVIDER` before a run if anything seems off.
 
 ### 2. Wiki, quads, or both?
 
@@ -254,7 +259,7 @@ git push
 
 **`openai.AuthenticationError: Incorrect API key`** — You have `LLM_PROVIDER=openai` set in your environment but your OpenAI key is bad/missing. Prefix commands with `LLM_PROVIDER=anthropic` to force the working provider.
 
-**`json.decoder.JSONDecodeError` in Comprehend** — The LLM returned malformed or truncated JSON. The pipeline writes the raw response to `blackboard/_comprehend_raw_<uuid>.txt` so you can inspect it. Most common cause is `max_tokens` truncation; if you see the file end mid-object, the prompt may need tightening or `max_tokens` raising in `pipeline/pass1a_comprehend.py`.
+**`json.decoder.JSONDecodeError` in Comprehend** — The pipeline now auto-repairs this in most cases: it strips trailing commas, and if that's not enough, retries via a dedicated LLM repair call before giving up. If you still see this error, both repair attempts failed — the pipeline writes the raw response to `blackboard/_comprehend_raw_<uuid>.txt` (delete this file after inspecting it; it's a debug artifact, not meant to be committed) so you can see what went wrong. Most common root cause is `max_tokens` truncation; if the file ends mid-object, `max_tokens` may need raising in `pipeline/pass1a_comprehend.py`.
 
 **`No approved section map for <uuid>`** — You skipped Steps 1–3. Run preflight + approve first. Or, for a trusted batch ingest, pass `--auto-approve` to the `source` command to bypass the gate.
 
