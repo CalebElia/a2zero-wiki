@@ -12,43 +12,49 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/community-choice-aggregation
-  - initiatives/bulk-purchase-of-renewables
-  - initiatives/sustainable-energy-utility
+  - initiatives/landfill-solar-project
+  - initiatives/onsite-renewables-bulk-buy
+  - initiatives/community-solar-pilot
+  - initiatives/solarize-ann-arbor
   - initiatives/lmi-solar-access-program
   - initiatives/arpa-city-facilities-solar
-  - initiatives/grid-capacity-expansion-electrification
-  - initiatives/dte-utility-case-u-20836-intervention
-  - initiatives/community-solar-pilot
+  - initiatives/municipal-rooftop-solar-rfp
   core-actors:
   - actors/city-of-ann-arbor
   - actors/dte-energy
-  - actors/university-of-michigan
   - actors/office-of-sustainability-and-innovations
+  - actors/university-of-michigan
   - actors/ann-arbor-public-schools
   - actors/washtenaw-county
-  year-over-year-arc: Baseline state reflects a broad portfolio of solar deployment
-    initiatives (rooftop, landfill, greenbelt, community solar) alongside utility
-    intervention efforts and early-stage financing mechanisms, with no multi-year
-    trend data yet ingested to show progression.
+  year-over-year-arc: Baseline established 2026-06-24 (cap-2020) with CCA as dominant
+    mechanism and 113 MW local generation target; Year 1 (a2zero-year1, 2026-06-25)
+    showed early groundwork on Solarize Ann Arbor, landfill solar feasibility, and
+    DTE utility interventions; Year 2 (a2zero-year2, 2026-06-26) advanced ARPA-funded
+    city facility solar installations and LMI solar access programming; Year 3 (a2zero-year3,
+    2026-06-30) reflected continued municipal rooftop solar RFP progress and community
+    solar pilot expansion, with CCA still contingent on state enabling legislation.
   open-questions:
-  - What is the current penetration rate of community solar subscriptions, particularly
-    for LMI households?
-  - Has Community Choice Aggregation advanced past feasibility study toward implementation,
-    given Michigan regulatory constraints?
-  - What is the status and timeline of the Sustainable Energy Utility formation and
-    capitalization?
-  - How will grid capacity expansion be coordinated with DTE given the city's limited
-    direct utility authority?
+  - Whether Michigan will pass enabling legislation for Community Choice Aggregation,
+    which is the strategy's dominant emissions-reduction mechanism
+  - Whether the 78 MW onsite solar and 11 MW community solar targets are on track
+    to be met by 2030 given current installation rates
+  - How low-to-moderate income households will be equitably included given upfront
+    cost barriers to solar adoption
+  - Whether the DTE utility case interventions will yield meaningful grid decarbonization
+    commitments beyond the city's direct control
   cross-strategy-links:
   - initiatives/community-climate-action-millage-rebates
+  - initiatives/grid-capacity-expansion-electrification
   - initiatives/whole-home-decarbonization-assessment
   - initiatives/carbon-neutral-districts
-  - initiatives/high-energy-district-targeting
+  - initiatives/sustainable-energy-utility
   - initiatives/on-bill-financing-renewables-efficiency
   - initiatives/ghg-inventory
-  - initiatives/a2zero-carbon-neutrality-plan
-  - initiatives/energy-concierge-service
-  last-rebuilt: '2026-06-30'
+  core-target: Strategy 1 targets a 41% reduction in community-wide greenhouse gas
+    emissions at a cost of just over $4,100,000, achieved through Community Choice
+    Aggregation, 78 MW of onsite renewables with battery storage, an 11 MW community
+    solar program, and a 24 MW landfill solar project by 2030 (cap-2020, p. 21).
+  last-rebuilt: '2026-07-01'
 ---
 
 ## Foundation

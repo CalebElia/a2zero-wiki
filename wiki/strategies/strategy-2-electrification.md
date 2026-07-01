@@ -10,44 +10,52 @@ tags:
 last-updated: 2026-06-22
 synthesis:
   core-initiatives:
-  - initiatives/appliance-hvac-electrification-requirement
+  - initiatives/home-and-business-electrification
+  - initiatives/electrify-buses
+  - initiatives/electrify-city-fleet
+  - initiatives/expand-ev-charging-infrastructure
+  - initiatives/electrify-private-fleets
+  - initiatives/community-ev-solar-bulk-buy
   - initiatives/community-climate-action-millage-rebates
   - initiatives/sustainable-energy-utility
-  - initiatives/home-energy-advisor-program
-  - initiatives/aahc-energy-improvements
-  - initiatives/grid-capacity-expansion-electrification
-  - initiatives/electrification-contractor-training-and-badging
-  - initiatives/bryant-neighborhood-decarbonization
   core-actors:
   - actors/city-of-ann-arbor
-  - actors/ann-arbor-housing-commission
-  - actors/ann-arbor-area-transit-authority
   - actors/office-of-sustainability-and-innovations
-  - actors/ibew-252
+  - actors/ann-arbor-area-transit-authority
+  - actors/ann-arbor-housing-commission
+  - actors/dte-energy
   - actors/rmi
-  year-over-year-arc: Strategy 2 establishes a broad baseline of building and fleet
-    electrification programs—spanning residential rebates, municipal audits, EV infrastructure,
-    contractor training, and neighborhood-scale pilots—with no multi-year trend data
-    yet ingested, indicating the strategy is in early deployment and program-building
-    phase.
+  year-over-year-arc: Baseline electrification framework established in cap-2020 (2026-06-24)
+    with six named actions targeting 23% GHG reduction; Year 1 (a2zero-year1, 2026-06-25)
+    launched foundational programs including the Future is Electric Campaign, EV charger
+    deployment, and AAHC energy improvements; Year 2 (a2zero-year2, 2026-06-26) expanded
+    contractor training/badging, community millage rebates, and bus electrification
+    procurement; Year 3 (a2zero-year3, 2026-06-30) deepened neighborhood-scale decarbonization
+    (Bryant), geothermal districts, and grid capacity expansion to support accelerating
+    electrification demand.
   open-questions:
-  - What is the timeline and funding mechanism for the Sustainable Energy Utility
-    (SEU) to become fully operational?
-  - How will the appliance/HVAC electrification requirement be enforced for existing
-    buildings, and what are the compliance deadlines?
-  - Is grid capacity sufficient to support simultaneous large-scale building electrification
-    and EV charging expansion without major utility upgrades?
-  - How will equity and affordability be ensured for low-income and renter households
-    who cannot self-finance electrification upgrades?
+  - Whether grid capacity expansion by DTE can keep pace with accelerating residential
+    and fleet electrification demand
+  - Extent to which low-income and renter households are accessing millage rebates
+    and electrification programs equitably
+  - Timeline and funding certainty for full TheRide bus fleet electrification and
+    associated charging infrastructure
+  - Whether the Sustainable Energy Utility will achieve sufficient scale and financing
+    to drive deep building decarbonization citywide
   cross-strategy-links:
   - initiatives/solarize-ann-arbor
-  - initiatives/ev-charger-deployment
-  - initiatives/theride-electrification-expansion
-  - initiatives/community-climate-action-millage-rebates
+  - initiatives/community-ev-solar-bulk-buy
   - initiatives/ghg-inventory
-  - initiatives/carbon-neutral-districts
   - initiatives/mobility-hubs
-  last-rebuilt: '2026-06-30'
+  - initiatives/aahc-energy-improvements
+  - initiatives/carbon-neutral-districts
+  - initiatives/sustainable-energy-utility
+  core-target: 'Strategy 2 targets a 23% reduction in community-wide greenhouse gas
+    emissions at a cost of just over $143,000,000, through six actions: Promote Home
+    & Business Electrification, Electrify Buses, Support Community Electric Vehicle
+    and Solar Bulk Buys, Electrify City Fleet, Electrify Private Fleet, and Expand
+    Electric Vehicle Charging Infrastructure (cap-2020, Page 31).'
+  last-rebuilt: '2026-07-01'
 ---
 
 ## Foundation

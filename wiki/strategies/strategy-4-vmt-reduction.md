@@ -12,42 +12,48 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/expand-improve-local-transit
-  - initiatives/active-transportation-infrastructure
-  - initiatives/protected-bike-lanes-expansion
-  - initiatives/transit-oriented-development-zoning
+  - initiatives/non-motorized-transportation-plan
+  - initiatives/theride-electrification-expansion
   - initiatives/go-pass-expansion
-  - initiatives/parking-reform
-  - initiatives/mobility-hubs
+  - initiatives/transit-oriented-development-zoning
+  - initiatives/park-and-ride-expansion
+  - initiatives/tiered-parking-rates
   - initiatives/develop-mixed-use-neighborhoods
   core-actors:
   - actors/city-of-ann-arbor
   - actors/ann-arbor-area-transit-authority
   - actors/office-of-sustainability-and-innovations
-  - actors/ann-arbor-city-council
-  - actors/forth-mobility
-  year-over-year-arc: Baseline state establishes a multi-pronged VMT reduction framework
-    combining transit expansion, active transportation infrastructure, parking reform,
-    and land-use upzoning, with electrification of buses and e-mobility programs layered
-    in as complementary measures.
+  - actors/michigan-department-of-transportation
+  - actors/washtenaw-county
+  year-over-year-arc: Baseline VMT reduction framework established in cap-2020 (2026-06-24)
+    with 50% VMT reduction target and $901M cost projection; Year 1 (a2zero-year1,
+    2026-06-25) showed early implementation of Go-Pass expansion, non-motorized infrastructure,
+    and transit electrification groundwork; Year 2 (a2zero-year2, 2026-06-26) advanced
+    mobility hubs, protected bike lanes, and zoning/UDC integration; Year 3 (a2zero-year3,
+    2026-06-30) continued TheRide electrification and route expansion alongside parking
+    reform and transit-oriented development upzoning efforts.
   open-questions:
-  - What measurable VMT reduction targets have been set and are they being tracked
-    against baseline GHG inventory data?
-  - How will Act 51 reform lobbying progress affect local and regional transit funding
-    timelines?
-  - Is the Go-Pass area expansion sufficiently funded and politically supported to
-    achieve meaningful mode shift?
-  - How will parking reform and minimum removal be coordinated with zoning density
-    increases to avoid displacement?
+  - Whether regional transit expansion (WALLY, BRT) can secure sufficient state and
+    federal funding given Act 51 constraints
+  - How much of the 50% VMT reduction target has actually been achieved across Years
+    1–3 and whether the trajectory is on pace
+  - Whether parking reform and tiered pricing have generated measurable mode-shift
+    or remain primarily policy-stage
+  - How zoning/UDC changes translate into actual mixed-use and density outcomes that
+    reduce vehicle trip generation
   cross-strategy-links:
   - initiatives/electrify-buses
   - initiatives/ev-charger-deployment
-  - initiatives/ev-charging-infrastructure-expansion
+  - initiatives/expand-ev-charging-infrastructure
   - initiatives/a2zero-unified-development-code-integration
-  - initiatives/zoning-density-increase
   - initiatives/ghg-inventory
   - initiatives/a2zero-carbon-neutrality-plan
-  - initiatives/urban-heat-island-mitigation
-  last-rebuilt: '2026-06-30'
+  core-target: 'Strategy 4 targets at least a 50% reduction in vehicle miles traveled,
+    with seven combined actions projected to reduce just over 8% of community-wide
+    emissions at a total cost of just over $901,000,000 (dominated by physical infrastructure),
+    with Expand and Improve Local Transit alone projected to reduce 4.3% of community-wide
+    emissions (93,200 MTCO₂e) at a cost of $656,780,000 (Source: cap-2020, Page 69).'
+  last-rebuilt: '2026-07-01'
 ---
 
 ## Foundation

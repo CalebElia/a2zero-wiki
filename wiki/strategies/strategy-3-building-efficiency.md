@@ -11,43 +11,48 @@ tags:
 last-updated: 2026-06-22
 synthesis:
   core-initiatives:
-  - initiatives/transition-to-more-energy-efficient-homes-and-businesses
   - initiatives/update-building-codes
-  - initiatives/benchmarking-ordinance
-  - initiatives/community-climate-action-millage-rebates
+  - initiatives/expand-weatherization-program
+  - initiatives/green-rental-housing-program
+  - initiatives/net-zero-energy-affordable-housing
   - initiatives/energy-concierge-and-community-engagement-program
-  - initiatives/weatherization-expansion
-  - initiatives/aahc-energy-improvements
-  - initiatives/home-energy-rating-disclosure-program
+  - initiatives/benchmark-and-disclose-energy-usage
+  - initiatives/led-street-lighting-and-traffic-signals
+  - initiatives/financing-loan-loss-reserve
   core-actors:
   - actors/city-of-ann-arbor
   - actors/ann-arbor-housing-commission
   - actors/dte-energy
-  - actors/office-of-sustainability-and-innovations
   - actors/washtenaw-county
-  year-over-year-arc: Baseline state shows a broad portfolio of building efficiency
-    initiatives spanning code updates, weatherization, benchmarking, and affordable
-    housing decarbonization, with the Community Climate Action Millage providing a
-    new funding mechanism and the AAHC energy improvements and Bryant Neighborhood
-    Decarbonization serving as early equity-focused pilots.
+  - actors/office-of-sustainability-and-innovations
+  year-over-year-arc: Baseline 11-action framework established 2026-06-24 (cap-2020);
+    Year 1 (2026-06-25, a2zero-year1) showed early implementation of LED street lighting,
+    weatherization, and green rental housing outreach; Year 2 (2026-06-26, a2zero-year2)
+    expanded AAHC energy improvements and launched home energy advisor and benchmarking
+    ordinance work; Year 3 (2026-06-30, a2zero-year3) deepened community climate action
+    millage rebates, whole-home decarbonization assessments, and Bryant neighborhood
+    decarbonization as a district-scale pilot.
   open-questions:
-  - What is the timeline and enforcement mechanism for the commercial and multi-family
-    benchmarking ordinance?
-  - How will on-bill financing and loan loss reserve programs be capitalized and administered
-    at scale?
-  - To what extent will updated building codes apply retroactively or only to new
-    construction?
-  - How will equity and affordability be ensured so that low-income renters and homeowners
-    are not left behind in efficiency upgrades?
+  - Whether the commercial and multi-family benchmarking ordinance has been formally
+    adopted and is being enforced
+  - Pace and funding sufficiency of AAHC net-zero energy retrofits relative to the
+    affordable housing portfolio size
+  - Whether the loan loss reserve and on-bill financing mechanisms have achieved meaningful
+    uptake among low-income residents
+  - How updated building codes will be enforced and whether they align with state
+    preemption constraints
   cross-strategy-links:
   - initiatives/solarize-ann-arbor
   - initiatives/geothermal-districts
   - initiatives/carbon-neutral-districts
   - initiatives/arpa-city-facilities-solar
-  - initiatives/zoning-density-increase
-  - initiatives/a2zero-carbon-neutrality-plan
   - initiatives/ghg-inventory
-  last-rebuilt: '2026-06-30'
+  - initiatives/zoning-density-increase
+  core-target: Strategy 3 targets a 13.4% reduction in community-wide greenhouse gas
+    emissions at a cost of just over $14,500,000, implemented through 11 named actions
+    combining building energy efficiency improvements, updated building codes, rental
+    licensing requirements, and group-buy procurement programs (cap-2020, Page 45).
+  last-rebuilt: '2026-07-01'
 ---
 
 ## Foundation

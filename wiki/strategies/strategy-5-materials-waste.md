@@ -10,34 +10,36 @@ tags:
 last-updated: 2026-06-22
 synthesis:
   core-initiatives:
-  - initiatives/circular-economy-strategy
-  - initiatives/zero-waste-plan
   - initiatives/composting-expansion
-  - initiatives/a2r3-reduce-reuse-return
-  - initiatives/solid-waste-resource-management-plan
-  - initiatives/electric-refuse-truck-program
-  - initiatives/sustainable-purchasing-policy
+  - initiatives/year-round-composting
+  - initiatives/commercial-recycling
+  - initiatives/move-toward-circular-economy
   - initiatives/support-plant-rich-diet
+  - initiatives/enhance-refrigerant-recycling-reuse-program
+  - initiatives/require-sustainable-materials-in-developments
+  - initiatives/solid-waste-resource-management-plan
   core-actors:
   - actors/city-of-ann-arbor
   - actors/office-of-sustainability-and-innovations
-  - actors/downtown-development-authority
   - actors/university-of-michigan
   - actors/washtenaw-county
-  year-over-year-arc: Baseline state reflects early-stage circular economy and zero-waste
-    framework development, with composting expansion, commercial recycling pilots,
-    and electric refuse truck procurement underway but most programmatic targets (zero
-    waste plan, sustainable purchasing policy, regional methane digester) still in
-    planning or initial implementation phases.
+  year-over-year-arc: Baseline established 2026-06-24 (cap-2020) with six named actions
+    targeting 0.3% GHG reduction; Year 1 (a2zero-year1, 2026-06-25) showed early programmatic
+    launches including circular economy working group and plant-based challenge; Year
+    2 (a2zero-year2, 2026-06-26) advanced commercial recycling Saturday service and
+    reusable container pilot; Year 3 (a2zero-year3, 2026-06-30) progressed electric
+    refuse truck program and materials recovery facility planning, indicating steady
+    programmatic expansion but continued reliance on voluntary and pilot-scale interventions.
   open-questions:
-  - Whether the regional methane digester will secure sufficient multi-jurisdictional
-    partnership and funding to move from concept to construction
-  - How the Solid Waste Resource Management Plan update will set enforceable diversion
-    targets and timelines
-  - Whether sustainable materials requirements for new developments will be adopted
-    into city code or remain voluntary
-  - How equitable access to reuse, repair, and composting programs will be ensured
-    across all Ann Arbor neighborhoods
+  - Whether the Solid Waste Resource Management Plan will codify enforceable construction
+    and demolition waste ordinances as originally envisioned in CAP-2020
+  - Whether the Materials Recovery Facility renovation will be funded and at what
+    scale, given the $45M+ cost estimate for the full strategy
+  - How upstream (production-phase) emissions will eventually be incorporated into
+    GHG accounting, given they are explicitly excluded from current targets
+  - Whether voluntary programs (plant-based challenge, zero waste challenge, A2R3)
+    will achieve sufficient participation rates to meaningfully contribute to the
+    0.3% GHG reduction target
   cross-strategy-links:
   - initiatives/electric-refuse-truck-program
   - initiatives/waste-truck-fleet-electrification
@@ -46,7 +48,12 @@ synthesis:
   - initiatives/green-business-challenge
   - initiatives/ghg-inventory
   - initiatives/a2zero-carbon-neutrality-plan
-  last-rebuilt: '2026-06-30'
+  core-target: The six combined actions of Strategy 5 are projected to reduce baseline
+    community-wide greenhouse gas emissions by 0.3% at a total cost of just over $45,000,000;
+    notably, these calculations cover only disposal-phase greenhouse gases and explicitly
+    exclude upstream emissions from extracting and producing goods (cap-2020, Page
+    85).
+  last-rebuilt: '2026-07-01'
 ---
 
 ## Foundation

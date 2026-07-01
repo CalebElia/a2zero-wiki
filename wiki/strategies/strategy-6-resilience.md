@@ -11,38 +11,45 @@ synthesis:
   core-initiatives:
   - initiatives/resilience-hubs
   - initiatives/northside-resilience-hub
-  - initiatives/resilience-fund-equity
-  - initiatives/decentralized-energy-microgrids
   - initiatives/preserve-and-enhance-local-tree-canopy
   - initiatives/10000-trees-initiative
-  - initiatives/environmental-sensors-monitoring
-  - initiatives/asset-and-needs-mapping-of-neighborhoods
   - initiatives/a2zero-ambassadors-program
-  - initiatives/resilience-network
+  - initiatives/environmental-sensors-monitoring
+  - initiatives/emergency-preparedness-kits
+  - initiatives/asset-and-needs-mapping-of-neighborhoods
   core-actors:
   - actors/city-of-ann-arbor
   - actors/office-of-sustainability-and-innovations
   - actors/avalon-housing
-  year-over-year-arc: Baseline state establishes foundational resilience infrastructure
-    including the Northside Community Center as a pilot resilience hub, early-stage
-    microgrid planning, a 10,000 Trees Initiative targeting underserved areas, and
-    equity-centered tools such as the Resilience Fund and neighborhood asset mapping,
-    with monitoring networks (AQMesh, environmental sensors) beginning deployment.
+  - actors/washtenaw-county
+  - actors/ann-arbor-public-schools
+  year-over-year-arc: Baseline established 2026-06-24 (cap-2020) with six resilience
+    actions and a $7.5M budget; Year 1 (a2zero-year1, 2026-06-25) showed early ambassador
+    program launch and tree canopy planning; Year 2 (a2zero-year2, 2026-06-26) advanced
+    the Northside Resilience Hub and AQMesh air quality monitoring deployment; Year
+    3 (a2zero-year3, 2026-06-30) expanded the 10,000 Trees Initiative into underserved
+    areas and progressed microgrid and resilience fund equity work.
   open-questions:
-  - How many resilience hubs will be operationalized beyond the Northside pilot, and
-    on what timeline?
-  - What funding mechanisms will sustain the Resilience Fund focused on equity long-term?
-  - How will microgrid development be financed and which sites are prioritized for
-    decentralized energy?
-  - How will tree canopy equity goals be tracked and enforced in underserved neighborhoods?
+  - Has the Northside Community Center Resilience Hub reached full operational status
+    and what is the replication plan for additional hubs?
+  - What is the current tree canopy coverage percentage and is the 10,000 Trees Initiative
+    on track to meet its target timeline?
+  - How is the Resilience Fund Focused on Equity being capitalized and governed, and
+    which communities have received disbursements?
+  - Has the AQMesh sensor network achieved sufficient geographic coverage to inform
+    equitable heat and air quality interventions?
   cross-strategy-links:
-  - initiatives/affordable-housing-net-zero-energy
   - initiatives/decentralized-energy-microgrids
   - initiatives/microgrid-creation
+  - initiatives/affordable-housing-net-zero-energy
   - initiatives/a2zero-carbon-neutrality-plan
   - initiatives/carbon-sequestration-ann-arbor
-  - initiatives/aqmesh-air-quality-monitoring
-  last-rebuilt: '2026-06-30'
+  - initiatives/resilience-fund-equity
+  core-target: Strategy 6 targets a combined 0.1% reduction in community-wide greenhouse
+    gas emissions at a total estimated cost of approximately $7,500,000, with the
+    explicit acknowledgment that community resilience-building rather than direct
+    emissions reduction is the primary objective (cap-2020, p. 99).
+  last-rebuilt: '2026-07-01'
 ---
 
 ## Foundation

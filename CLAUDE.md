@@ -231,6 +231,19 @@ The upgraded ingest cycle: **Phase A** (extraction) → **Phase B** (lint + huma
 
 Implementation order: `synthesize_wiki` command → digest injection into Comprehend pass → Comprehend/Plan split → strategy `synthesis:` sections.
 
+## Strategy Page Foundation / Progression Split
+
+**Read `docs/architecture/strategy-foundation-progression.md` before touching `pipeline/pass1b_synthesize.py`'s strategy-writing logic or `pipeline/phase_c_synthesize.py`'s `build_strategy_synthesis`.**
+
+A 2026-06-30 content-quality audit found that strategy pages were silently losing CAP-2020 foundational content (targets, cost estimates, dominant mechanisms) on every ingest once `wiki/digest.md` existed — the Writer prompt was only shown a compressed digest, not the actual prior page text, and the write path did an unconditional full-body overwrite. Fixed 2026-07-01.
+
+Every strategy page body now has two `##` sections:
+
+- **`## Foundation`** — CAP-2020's original design intent (target %, cost estimate, dominant mechanism), extracted once directly from `wiki/sources/cap/cap-2020.md` via `scripts/migrate_strategy_foundation.py`. **Frozen forever after that one-time migration.** No pipeline pass may ever regenerate it — `pipeline/pass1b_synthesize.py::_write_synthesis` raises `RuntimeError` if it's ever asked to write a strategy page with no Foundation section, rather than silently proceeding.
+- **`## Progress Synthesis`** — LLM-regenerated each ingest. Pass 1B now always injects the FULL existing Progress Synthesis text into the Writer prompt (not gated on digest absence, per the bug above) so facts accumulate instead of compressing.
+
+Helpers: `_split_strategy_sections(body)` / `_assemble_strategy_body(foundation, progress)` in `pipeline/pass1b_synthesize.py`. Phase C's `build_strategy_synthesis` also now receives `foundation_text` and full `ingest_history` (via `extract_ingest_history`), so the `synthesis.core-target` field and `year-over-year-arc` cite real Foundation figures and real ingest dates instead of boilerplate.
+
 ## GitHub
 
 Repo: https://github.com/CalebElia/a2zero-wiki (private)

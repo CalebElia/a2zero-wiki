@@ -5,6 +5,26 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 
 ---
 
+## 2026-07-01 — Content quality audit + Foundation/Progression fix
+
+**What changed:**
+- **Content quality audit** (`docs/architecture/2026-06-30-content-quality-audit.md`) found: (1) strategy pages were losing CAP-2020 foundational content on every ingest once `wiki/digest.md` existed — a compounding-forgetting bug, not a one-off; (2) a duplicate $54K State-of-Michigan EV charger funding event reported across two annual reports; (3) minor entity-page templating, verified as faithful extraction of genuinely shared source sentences, not a defect; (4) confirmed-missing content (ICC Building Code Committees, SolSmart Silver, Year-1 collaborator baseline).
+- **Root cause of the content loss, traced to `pipeline/pass1b_synthesize.py`:** the Writer's fact-preservation instruction only fired via a legacy fallback branch that stopped injecting full prior strategy content once a digest existed — the Writer was shown only a lossy ~83-line summary, and `_write_synthesis` did an unconditional full-body overwrite regardless.
+- **Fix — Strategy Page Foundation/Progression split** (`docs/architecture/strategy-foundation-progression.md`): strategy pages now have a frozen `## Foundation` section (CAP-2020 original design intent — target %, cost, mechanism) and a `## Progress Synthesis` section (LLM-regenerated each ingest from the FULL prior text, not a digest). `_write_synthesis` now refuses to write a page with no Foundation section rather than silently overwriting it.
+- **`pipeline/phase_c_synthesize.py`** — `build_strategy_synthesis` now receives Foundation text and full ingest history (`extract_ingest_history`), fixing a related bug where `year-over-year-arc` always read "no multi-year trend data yet ingested" despite 3 real ingests.
+- **One-time migration** (`scripts/migrate_strategy_foundation.py`) — extracted Foundation content directly from `wiki/sources/cap/cap-2020.md` for all 7 strategies (not from git-recovered wiki state, which was already a lossy blend). Human-verified every extracted target/cost figure against the source before merge. Idempotency-guarded against accidental re-runs.
+- **Fixed a real duplicate**: merged `funding-events/michigan-utility-pole-ev-2022` into `funding-events/michigan-ev-charger-grant-2023` — same $54K grant, reported in both its Year 2 award year and Year 3 installation-progress year.
+- **Azure OpenAI support added** to `pipeline/_llm.py` as a third `LLM_PROVIDER` option (`azure`), using the newer `/openai/v1` unified endpoint. Fixed `max_tokens` → `max_completion_tokens` for newer OpenAI-family models.
+- **11 new tests** across `test_pass1b_synthesize.py` and `test_synthesize_wiki.py`. Total suite: 242 passed, 1 skipped.
+
+**Verified working:** post-fix `wiki/digest.md` rebuild now cites real Foundation figures ("targets 113 MW of local generation by 2030," "$901M cost projection") and real chronological arcs ("Baseline established 2026-06-24 (cap-2020)... Year 3 (a2zero-year3, 2026-06-30)") instead of the prior progress-only, boilerplate-arc output.
+
+**Why:** The pipeline's core value proposition is compounding knowledge across ingests. This audit found it was silently doing the opposite for foundational content. Fixed before Year 4/5 ingest to prevent further loss.
+
+**Spec:** `docs/architecture/strategy-foundation-progression.md`. **Plan:** `docs/superpowers/plans/2026-07-01-strategy-foundation-progression.md`. **Branch:** `feat/chunking-gate` (still stacked; PRs #4/#5/#6 remain unmerged).
+
+---
+
 ## 2026-06-30 — Chunking gate (HITL review before LDP)
 
 **What changed:**

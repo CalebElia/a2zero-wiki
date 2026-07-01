@@ -11,40 +11,46 @@ tags:
 last-updated: 2026-06-22
 synthesis:
   core-initiatives:
+  - initiatives/advance-equity-programs
+  - initiatives/sa2t-grant-program
+  - initiatives/offset-greenhouse-gas-emissions
+  - initiatives/internal-carbon-price
   - initiatives/a2zero-ambassadors-program
   - initiatives/neighborhood-resiliency-plans
-  - initiatives/sa2t-grant-program
-  - initiatives/energy-concierge-and-community-engagement-program
-  - initiatives/advance-equity-programs
   - initiatives/bryant-neighborhood-decarbonization
-  - initiatives/a2zero-public-engagement-process
-  - initiatives/youth-education-carbon-neutrality
+  - initiatives/energy-concierge-and-community-engagement-program
   core-actors:
   - actors/city-of-ann-arbor
   - actors/office-of-sustainability-and-innovations
   - actors/ann-arbor-public-schools
-  - actors/dte-energy
-  year-over-year-arc: Baseline state reflects a broad portfolio of community engagement
-    and equity initiatives being stood up simultaneously, anchored by the Ambassadors
-    Program, neighborhood-level resiliency planning, and grant programs targeting
-    underserved residents, with no multi-year trend data yet ingested.
+  year-over-year-arc: Baseline established 2026-06-24 (cap-2020) with four named actions
+    targeting ~14% of community-wide emissions reductions at ~$6M; Year 1 (a2zero-year1,
+    2026-06-25) stood up the Ambassadors Program, SA2T grants, and equity program
+    infrastructure; Year 2 (a2zero-year2, 2026-06-26) expanded neighborhood-level
+    engagement including Bryant Neighborhood Decarbonization and resiliency planning;
+    Year 3 (a2zero-year3, 2026-06-30) deepened community outreach channels and continued
+    offset and internal carbon price implementation.
   open-questions:
-  - What measurable equity outcomes and demographic reach targets have been set for
-    the Ambassadors and SA2T grant programs?
-  - How will the Bryant Neighborhood Decarbonization pilot scale to other underserved
-    neighborhoods?
-  - What funding mechanisms sustain the Energy Concierge and community engagement
-    programs beyond initial plan cycles?
-  - How are engagement metrics tracked and fed back into the A2Zero Metrics Dashboard
-    to demonstrate strategy effectiveness?
+  - Has the internal carbon price been formally adopted and applied across all City
+    Service Areas, and at what dollar-per-ton level?
+  - What volume of carbon offsets and RECs has been purchased and retired to date,
+    and is the program on track to close the remaining emissions gap?
+  - How is equity program impact being measured, and which underserved communities
+    have been reached through the Ambassadors and SA2T grant programs?
+  - Is the SA2T grant program sufficiently funded and scaled to sustain community-led
+    climate action beyond City-directed initiatives?
   cross-strategy-links:
   - initiatives/net-zero-energy-affordable-housing
   - initiatives/electrification-campaign
-  - initiatives/neighborhood-resiliency-plans
-  - initiatives/energy-concierge-and-community-engagement-program
-  - initiatives/a2zero-metrics-dashboard
-  - initiatives/contractor-electrification-education-badging
-  last-rebuilt: '2026-06-30'
+  - initiatives/bryant-neighborhood-decarbonization
+  - initiatives/comprehensive-plan-update
+  - initiatives/tree-planting-underserved-areas
+  - initiatives/carbon-offsets
+  core-target: The strategy's four actions (Advance Equity Programs, Promote SA2T
+    Grant Program, Establish Internal Carbon Price, Offset Greenhouse Gas Emissions)
+    are estimated to achieve just under 14% of community-wide emissions reductions
+    at a combined cost of just under $6,000,000 (cap-2020, p. 113).
+  last-rebuilt: '2026-07-01'
 ---
 
 ## Foundation
