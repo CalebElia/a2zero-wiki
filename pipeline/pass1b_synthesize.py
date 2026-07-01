@@ -482,6 +482,23 @@ def _replace_wiki_page_body(page_path: str, new_body: str) -> None:
     Path(page_path).write_text(frontmatter + "\n" + new_body.strip() + "\n", encoding="utf-8")
 
 
+def _split_strategy_sections(body: str) -> tuple[str | None, str | None]:
+    """Return (foundation_text, progress_text). Either is None if the page
+    predates the split (legacy single-body page) or the section is absent."""
+    fm = re.search(
+        r"^##\s*Foundation\s*\n(.*?)(?=^##\s*Progress Synthesis\s*\n|\Z)",
+        body, re.DOTALL | re.MULTILINE,
+    )
+    pm = re.search(r"^##\s*Progress Synthesis\s*\n(.*)\Z", body, re.DOTALL | re.MULTILINE)
+    if not fm or not pm:
+        return None, None
+    return fm.group(1).strip(), pm.group(1).strip()
+
+
+def _assemble_strategy_body(foundation: str, progress: str) -> str:
+    return f"## Foundation\n\n{foundation}\n\n## Progress Synthesis\n\n{progress}\n"
+
+
 def _write_synthesis(
     result: dict,
     wiki_root: str,
