@@ -3299,12 +3299,14 @@
     "relationship": "name-variant"
   },
   "michigan-utility-pole-ev-2022": {
-    "canonical": "funding-events/michigan-utility-pole-ev-2022",
+    "canonical": "funding-events/michigan-ev-charger-grant-2023",
     "type": "funding-event",
     "aliases": [
-      "State of Michigan Grant for Utility-Pole EV Charging Pilot 2022"
+      "State of Michigan Grant for Utility-Pole EV Charging Pilot 2022",
+      "State of Michigan EV Curbside Charger Grant (2023)"
     ],
-    "relationship": "name-variant"
+    "relationship": "name-variant",
+    "notes": "Same $54,000 award reported in both Year 2 (award) and Year 3 (installation progress) annual reports; two funding-event pages created independently across ingests, merged 2026-07-01 after source cross-check."
   },
   "2022-commercial-benchmarking-ordinance-ann-arbor": {
     "canonical": "political-events/2022-commercial-benchmarking-ordinance-ann-arbor",
