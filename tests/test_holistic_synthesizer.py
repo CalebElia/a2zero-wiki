@@ -336,6 +336,60 @@ def test_validate_synthesis_output_catches_unknown_strategy_slug(tmp_path):
     assert any("strategy-8-invented" in e for e in errors)
 
 
+def test_validate_synthesis_output_rejects_markdown_heading_in_strategy_body(tmp_path):
+    from pipeline.pass1b_synthesize import _validate_synthesis_output
+    (tmp_path / "strategies").mkdir()
+    (tmp_path / "strategies" / "strategy-1-renewable-grid.md").write_text(
+        "---\ntype: strategy\n---\n", encoding="utf-8"
+    )
+    result = {
+        "overview": {
+            "slug": "overviews/cap-2020",
+            "frontmatter": {
+                "type": "overview",
+                "title": "Test",
+                "source-ref": "[[sources/cap/cap-2020]]",
+            },
+            "body": "Body.",
+        },
+        "strategy_bodies": [
+            {
+                "slug": "strategies/strategy-1-renewable-grid",
+                "body": "## Progress Synthesis\n\nSome narrative text.",
+            }
+        ],
+    }
+    errors = _validate_synthesis_output(result, source_uuid="cap-2020", wiki_root=str(tmp_path))
+    assert any("markdown heading" in e for e in errors)
+
+
+def test_validate_synthesis_output_allows_clean_strategy_body(tmp_path):
+    from pipeline.pass1b_synthesize import _validate_synthesis_output
+    (tmp_path / "strategies").mkdir()
+    (tmp_path / "strategies" / "strategy-1-renewable-grid.md").write_text(
+        "---\ntype: strategy\n---\n", encoding="utf-8"
+    )
+    result = {
+        "overview": {
+            "slug": "overviews/cap-2020",
+            "frontmatter": {
+                "type": "overview",
+                "title": "Test",
+                "source-ref": "[[sources/cap/cap-2020]]",
+            },
+            "body": "Body.",
+        },
+        "strategy_bodies": [
+            {
+                "slug": "strategies/strategy-1-renewable-grid",
+                "body": "Some clean narrative prose with no headings.",
+            }
+        ],
+    }
+    errors = _validate_synthesis_output(result, source_uuid="cap-2020", wiki_root=str(tmp_path))
+    assert not any("markdown heading" in e for e in errors)
+
+
 def test_stub_creation_redirects_known_alias(tmp_path):
     """Pass 1.5: a stub whose slug is a known alias should write to the canonical path."""
     import json

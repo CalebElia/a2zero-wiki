@@ -57,6 +57,9 @@ OVERVIEW PAGE RULES:
 
 STRATEGY BODY RULES:
 - Write 2-4 paragraphs of narrative synthesis per strategy
+- Write 2-4 paragraphs of PROGRESS SYNTHESIS narrative per strategy — NOT the
+  strategy's original design, target, or cost estimate. That content lives in
+  a separate, frozen "Foundation" section you never see and never write.
 - SYNTHESIZE, do not list: what is the dominant approach? what programs are proposed?
   what are projected GHG reductions or costs? what dependencies exist?
 - If the document says little about a strategy, write one honest sentence
@@ -68,17 +71,18 @@ STRATEGY BODY RULES:
   Example: "[[actors/office-of-sustainability-and-innovations|OSI]] led outreach..."
   Do NOT name an entity in strategy bodies without linking it.
 - Include all 7 strategy slugs in strategy_bodies, even if coverage is thin
+- Your response body is PLAIN PROSE ONLY — never emit a markdown heading (a line
+  starting with "##") inside strategy_bodies[].body. The pipeline adds section
+  headers itself; a heading in your output will be rejected by validation.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-READ-UNDERSTAND-INTEGRATE (applies when EXISTING STRATEGY WIKI CONTENT is provided):
-If the section [EXISTING STRATEGY WIKI CONTENT] appears below the document, it contains
-synthesis already written from prior source ingests into this wiki.
-  - Preserve all prior facts — they came from earlier sources and are still true
-  - Add new depth, nuance, and evidence from THIS source document only
-  - Do NOT duplicate paragraphs that already say the same thing
-  - Do NOT discard prior synthesis — the Editor will produce a coherent whole
-  - Your strategy body REPLACES the existing body, so it must be complete: a reader
-    who has not seen the prior version should find it fully coherent
+READ-UNDERSTAND-INTEGRATE (applies when EXISTING PROGRESS SYNTHESIS is provided):
+The section [EXISTING PROGRESS SYNTHESIS] below contains the FULL prior progress
+narrative for each strategy, not a summary — preserve every fact in it verbatim
+or near-verbatim, add new depth from THIS source, and do not duplicate paragraphs
+that already say the same thing. Your output REPLACES the existing Progress
+Synthesis, so it must be complete: a reader who has not seen the prior version
+should find it fully coherent.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PROJECTIONS AND OUTCOMES:
 When this source contains quantitative targets or projections for a strategy or
@@ -302,6 +306,11 @@ def _validate_synthesis_output(
             )
         if not sb.get("body", "").strip():
             errors.append(f"strategy_bodies body is empty for slug: {s!r}")
+        if re.search(r"^##\s", sb.get("body", ""), re.MULTILINE):
+            errors.append(
+                f"strategy_bodies body for {s!r} contains a markdown heading — "
+                f"the LLM must return plain prose only; headers are added by the pipeline"
+            )
 
     returned_slugs = {sb.get("slug") for sb in result.get("strategy_bodies", [])}
     for missing in sorted(_REQUIRED_STRATEGY_SLUGS - returned_slugs):
@@ -352,27 +361,33 @@ def synthesize_source(
                 "[END WIKI DIGEST]",
             ])
         integration_block = "\n".join(lines)
-    else:
-        # Fallback: legacy behavior — inject raw strategy bodies
-        existing_strategy_content: dict[str, str] = {}
-        strategies_dir = Path(wiki_root) / "strategies"
-        if strategies_dir.exists():
-            for strat_file in sorted(strategies_dir.glob("*.md")):
-                content = strat_file.read_text(encoding="utf-8")
-                body = re.sub(r"^---\n.*?\n---\n", "", content, flags=re.DOTALL).strip()
-                if re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL).strip():
-                    existing_strategy_content[f"strategies/{strat_file.stem}"] = body
-        if existing_strategy_content:
-            lines = [
-                "\n\n[EXISTING STRATEGY WIKI CONTENT]",
-                "READ-UNDERSTAND-INTEGRATE: these strategy pages already contain synthesis",
-                "from prior source ingests. Integrate new learnings from this source —",
-                "preserve prior facts, add new depth, do not duplicate.\n",
-            ]
-            for slug, body in sorted(existing_strategy_content.items()):
-                lines.append(f"--- {slug} ---\n{body}\n")
-            lines.append("[END EXISTING STRATEGY WIKI CONTENT]")
-            integration_block = "\n".join(lines)
+
+    # Always inject full existing Progress Synthesis text — regardless of
+    # whether a digest exists. The digest is cross-strategy narrative context;
+    # this is the actual full-fidelity source of truth for what NOT to lose.
+    existing_progress: dict[str, str] = {}
+    strategies_dir = Path(wiki_root) / "strategies"
+    if strategies_dir.exists():
+        for strat_file in sorted(strategies_dir.glob("*.md")):
+            content = strat_file.read_text(encoding="utf-8")
+            body = re.sub(r"^---\n.*?\n---\n", "", content, flags=re.DOTALL).strip()
+            _, progress = _split_strategy_sections(body)
+            if progress and re.sub(r"<!--.*?-->", "", progress, flags=re.DOTALL).strip():
+                existing_progress[f"strategies/{strat_file.stem}"] = progress
+
+    if existing_progress:
+        prog_lines = [
+            "\n\n[EXISTING PROGRESS SYNTHESIS — every strategy]",
+            "READ-UNDERSTAND-INTEGRATE: this is the FULL prior Progress Synthesis text",
+            "for each strategy, not a summary. Preserve every fact in it. Add new depth",
+            "from THIS source. Do not discard anything. The Foundation section (not",
+            "shown here, and NOT yours to write) already holds each strategy's original",
+            "design intent — your job is only to extend the progress narrative.\n",
+        ]
+        for slug, text in sorted(existing_progress.items()):
+            prog_lines.append(f"--- {slug} ---\n{text}\n")
+        prog_lines.append("[END EXISTING PROGRESS SYNTHESIS]")
+        integration_block += "\n".join(prog_lines)
 
     document_block_text = (
         f"Source UUID: {source_uuid}\n"
