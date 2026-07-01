@@ -60,14 +60,28 @@ def main():
     all_lines = CAP_2020_PATH.read_text(encoding="utf-8").splitlines()
 
     for slug, start, end in SECTIONS:
-        section_text = "\n".join(all_lines[start - 1:end])
-        foundation_text = extract_foundation(slug, section_text)
-
         page_path = WIKI_ROOT / f"{slug}.md"
         current = page_path.read_text(encoding="utf-8")
         fm_match = re.match(r"^(---\n.*?\n---\n)", current, re.DOTALL)
         frontmatter = fm_match.group(1) if fm_match else ""
         current_body = re.sub(r"^---\n.*?\n---\n", "", current, flags=re.DOTALL).strip()
+
+        # Idempotency guard: this script must run exactly once per page. A
+        # second accidental run would treat the already-frozen Foundation
+        # text as part of "current_body" and shove it into Progress
+        # Synthesis while overwriting Foundation with a fresh (possibly
+        # different) LLM extraction — silently corrupting both sections.
+        # Checked BEFORE the LLM call so a re-run fails fast without
+        # wasting an API call.
+        if re.search(r"^##\s+Foundation\s*\n", current_body, re.MULTILINE):
+            raise RuntimeError(
+                f"{page_path} already has a Foundation section — this script "
+                f"should only run once. If re-migration is genuinely needed, "
+                f"delete the Foundation section manually first."
+            )
+
+        section_text = "\n".join(all_lines[start - 1:end])
+        foundation_text = extract_foundation(slug, section_text)
 
         # Current body becomes the Progress Synthesis starting point — it's
         # real Year-3 narrative, just incomplete. Pass 1B's next ingest
