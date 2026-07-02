@@ -125,9 +125,6 @@
       "OCED funding",
       "Michigan grants",
       "EGLE funding",
-      "the millage",
-      "Community Climate Action Millage",
-      "Climate Action Millage",
       "local climate funding"
     ],
     "relationship": "name-variant"
@@ -3740,6 +3737,270 @@
     "type": "actor",
     "aliases": [
       "NREL"
+    ],
+    "relationship": "name-variant"
+  },
+  "zerowaste-org": {
+    "canonical": "actors/zerowaste-org",
+    "type": "actor",
+    "aliases": [
+      "ZeroWaste.Org"
+    ],
+    "relationship": "name-variant"
+  },
+  "office-of-emergency-management": {
+    "canonical": "actors/office-of-emergency-management",
+    "type": "actor",
+    "aliases": [
+      "Office of Emergency Management"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-2030-district": {
+    "canonical": "actors/washtenaw-2030-district",
+    "type": "actor",
+    "aliases": [
+      "Ann Arbor / Washtenaw 2030 District"
+    ],
+    "relationship": "name-variant"
+  },
+  "vegmichigan": {
+    "canonical": "actors/vegmichigan",
+    "type": "actor",
+    "aliases": [
+      "VegMichigan"
+    ],
+    "relationship": "name-variant"
+  },
+  "strategic-communication-plan": {
+    "canonical": "initiatives/strategic-communication-plan",
+    "type": "initiative",
+    "aliases": [
+      "Strategic Communication Plan"
+    ],
+    "relationship": "name-variant"
+  },
+  "deepen-community-engagement-underrepresented-communities": {
+    "canonical": "initiatives/deepen-community-engagement-underrepresented-communities",
+    "type": "initiative",
+    "aliases": [
+      "Deepen Community Engagement with Underrepresented Communities"
+    ],
+    "relationship": "name-variant"
+  },
+  "municipalization-study-phase-ii": {
+    "canonical": "initiatives/municipalization-study-phase-ii",
+    "type": "initiative",
+    "aliases": [
+      "Phase II Municipalization Study"
+    ],
+    "relationship": "name-variant"
+  },
+  "bicycle-parking-pilot-program": {
+    "canonical": "initiatives/bicycle-parking-pilot-program",
+    "type": "initiative",
+    "aliases": [
+      "Bicycle Parking Pilot Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-dashboard": {
+    "canonical": "initiatives/a2zero-dashboard",
+    "type": "initiative",
+    "aliases": [
+      "A2ZERO Dashboard"
+    ],
+    "relationship": "name-variant"
+  },
+  "emergency-preparedness-outreach": {
+    "canonical": "initiatives/emergency-preparedness-outreach",
+    "type": "initiative",
+    "aliases": [
+      "Emergency Preparedness Outreach"
+    ],
+    "relationship": "name-variant"
+  },
+  "monthly-a2zero-storytelling-program": {
+    "canonical": "initiatives/monthly-a2zero-storytelling-program",
+    "type": "initiative",
+    "aliases": [
+      "Monthly A2ZERO Storytelling Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "green-energy-neighbors": {
+    "canonical": "initiatives/green-energy-neighbors",
+    "type": "initiative",
+    "aliases": [
+      "Green Energy Neighbors"
+    ],
+    "relationship": "name-variant"
+  },
+  "model-regional-resilience-network": {
+    "canonical": "initiatives/model-regional-resilience-network",
+    "type": "initiative",
+    "aliases": [
+      "Model Regional Resilience Network"
+    ],
+    "relationship": "name-variant"
+  },
+  "fire-station-3-veterans-park-microgrid": {
+    "canonical": "initiatives/fire-station-3-veterans-park-microgrid",
+    "type": "initiative",
+    "aliases": [
+      "Fire Station 3 and Veterans Memorial Park Microgrid"
+    ],
+    "relationship": "name-variant"
+  },
+  "sustainable-food-business-coalition": {
+    "canonical": "initiatives/sustainable-food-business-coalition",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Area Sustainable Food Business Coalition"
+    ],
+    "relationship": "name-variant"
+  },
+  "more-life-less-stuff-campaign": {
+    "canonical": "initiatives/more-life-less-stuff-campaign",
+    "type": "initiative",
+    "aliases": [
+      "More Life, Less Stuff Campaign"
+    ],
+    "relationship": "name-variant"
+  },
+  "nourishing-neighborhood-pilot": {
+    "canonical": "initiatives/nourishing-neighborhood-pilot",
+    "type": "initiative",
+    "aliases": [
+      "Nourishing Neighborhood Pilot"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-climate-corps": {
+    "canonical": "initiatives/ann-arbor-climate-corps",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Climate Corps"
+    ],
+    "relationship": "name-variant"
+  },
+  "home-energy-rebate-program": {
+    "canonical": "initiatives/home-energy-rebate-program",
+    "type": "initiative",
+    "aliases": [
+      "Home Energy Rebate Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "neighborhood-swap-days": {
+    "canonical": "initiatives/neighborhood-swap-days",
+    "type": "initiative",
+    "aliases": [
+      "Neighborhood Swap Days"
+    ],
+    "relationship": "name-variant"
+  },
+  "green-light-media-program": {
+    "canonical": "initiatives/green-light-media-program",
+    "type": "initiative",
+    "aliases": [
+      "Green Light Media Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "welcome-to-ann-arbor-sustainability-initiative": {
+    "canonical": "initiatives/welcome-to-ann-arbor-sustainability-initiative",
+    "type": "initiative",
+    "aliases": [
+      "Welcome to Ann Arbor Sustainability Initiative"
+    ],
+    "relationship": "name-variant"
+  },
+  "peace-neighborhood-center": {
+    "canonical": "locations/peace-neighborhood-center",
+    "type": "location",
+    "aliases": [
+      "Peace Neighborhood Center"
+    ],
+    "relationship": "name-variant"
+  },
+  "fire-station-3": {
+    "canonical": "locations/fire-station-3",
+    "type": "location",
+    "aliases": [
+      "Fire Station 3"
+    ],
+    "relationship": "name-variant"
+  },
+  "121-catherine-street": {
+    "canonical": "locations/121-catherine-street",
+    "type": "location",
+    "aliases": [
+      "121 Catherine Street"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-community-college": {
+    "canonical": "locations/washtenaw-community-college",
+    "type": "location",
+    "aliases": [
+      "Washtenaw Community College"
+    ],
+    "relationship": "name-variant"
+  },
+  "green-baxter-court-community-center": {
+    "canonical": "locations/green-baxter-court-community-center",
+    "type": "location",
+    "aliases": [
+      "Green Baxter Court community center"
+    ],
+    "relationship": "name-variant"
+  },
+  "mobile-nanogrid": {
+    "canonical": "technology/mobile-nanogrid",
+    "type": "technology",
+    "aliases": [
+      "Mobile Nanogrid"
+    ],
+    "relationship": "name-variant"
+  },
+  "microgrid": {
+    "canonical": "technology/microgrid",
+    "type": "technology",
+    "aliases": [
+      "Microgrid"
+    ],
+    "relationship": "name-variant"
+  },
+  "us-epa-environmental-justice-government-to-government-grant-2024": {
+    "canonical": "funding-events/us-epa-environmental-justice-government-to-government-grant-2024",
+    "type": "funding-event",
+    "aliases": [
+      "U.S. EPA Environmental Justice Government-to-Government Grant 2024"
+    ],
+    "relationship": "name-variant"
+  },
+  "usfs-urban-forestry-grant-2024": {
+    "canonical": "funding-events/usfs-urban-forestry-grant-2024",
+    "type": "funding-event",
+    "aliases": [
+      "USFS Urban Forestry Grant 2024"
+    ],
+    "relationship": "name-variant"
+  },
+  "michigan-clean-energy-bill-package-2023": {
+    "canonical": "political-events/michigan-clean-energy-bill-package-2023",
+    "type": "political-event",
+    "aliases": [
+      "Michigan Clean Energy Bill Package of 2023"
+    ],
+    "relationship": "name-variant"
+  },
+  "november-2024-seu-ballot-question": {
+    "canonical": "political-events/november-2024-seu-ballot-question",
+    "type": "political-event",
+    "aliases": [
+      "November 2024 SEU Ballot Question"
     ],
     "relationship": "name-variant"
   }

@@ -579,10 +579,11 @@ def _write_synthesis(
         # Pass 1.5: resolve through alias registry before writing
         bare_key = stub_slug.split("/")[-1]  # "actors/office-of-sustainability" → "office-of-sustainability"
         title_hint = sp.get("title", "")
+        proposed_type = sp.get("type", "")
         canonical_path = (
-            resolve_slug(bare_key, aliases)
-            or resolve_slug_for_title(title_hint, aliases)
-            or fuzzy_resolve_slug_for_title(title_hint, aliases)
+            resolve_slug(bare_key, aliases, proposed_type=proposed_type)
+            or resolve_slug_for_title(title_hint, aliases, proposed_type=proposed_type)
+            or fuzzy_resolve_slug_for_title(title_hint, aliases, proposed_type=proposed_type)
         )
         if canonical_path:
             effective_slug = canonical_path

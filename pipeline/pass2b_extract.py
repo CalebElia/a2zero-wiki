@@ -414,10 +414,11 @@ def extract_wiki_pages_from_chunk(
             # Pass 1.5: resolve through alias registry
             bare_key = proposed_slug.split("/")[-1]
             title = spec.get("frontmatter", {}).get("title", "")
+            proposed_type = spec.get("page_type", "")
             canonical_path = (
-                resolve_slug(bare_key, aliases)
-                or resolve_slug_for_title(title, aliases)
-                or fuzzy_resolve_slug_for_title(title, aliases)
+                resolve_slug(bare_key, aliases, proposed_type=proposed_type)
+                or resolve_slug_for_title(title, aliases, proposed_type=proposed_type)
+                or fuzzy_resolve_slug_for_title(title, aliases, proposed_type=proposed_type)
             )
             if canonical_path:
                 effective_slug = canonical_path

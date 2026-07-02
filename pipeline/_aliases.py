@@ -5,6 +5,16 @@ from pathlib import Path
 
 DEFAULT_ALIASES_PATH = "registry/entity_aliases.json"
 
+# Types that represent curated synthesis of lower-level entities (topic pages,
+# strategy pages, overviews) rather than an entity's own identity. An entity
+# extraction (actor/initiative/location/funding-event/meeting/political-event/
+# technology) must never resolve through the alias registry into one of these —
+# that silently absorbs the entity's identity into a rollup page instead of
+# giving it its own page. Topics synthesize FROM entity pages, the same way
+# strategy pages synthesize from initiatives/actors; they are never a
+# substitute for an entity having its own page.
+NON_ENTITY_TYPES = frozenset({"topic", "synthesis", "strategy", "overview"})
+
 
 def load_aliases(path: str = DEFAULT_ALIASES_PATH) -> dict:
     """Load entity_aliases.json. Returns {} if file missing."""
@@ -22,25 +32,39 @@ def save_aliases(aliases: dict, path: str = DEFAULT_ALIASES_PATH) -> None:
     )
 
 
-def resolve_slug(slug: str, aliases: dict) -> str | None:
+def _blocked_as_non_entity_redirect(entry: dict, proposed_type: str | None) -> bool:
+    """True if resolving to this alias entry would redirect a real entity
+    extraction into a topic/synthesis/strategy/overview page — never allowed.
+    proposed_type=None (caller didn't pass one) skips the check entirely, so
+    existing callers that don't yet pass a type keep their old behavior."""
+    if proposed_type is None or proposed_type in NON_ENTITY_TYPES:
+        return False
+    return entry.get("type") in NON_ENTITY_TYPES
+
+
+def resolve_slug(slug: str, aliases: dict, proposed_type: str | None = None) -> str | None:
     """Return canonical vault path if slug is a known alias key, else None."""
     entry = aliases.get(slug)
-    if entry is not None:
+    if entry is not None and not _blocked_as_non_entity_redirect(entry, proposed_type):
         return entry["canonical"]
     return None
 
 
-def resolve_slug_for_title(title: str, aliases: dict) -> str | None:
+def resolve_slug_for_title(title: str, aliases: dict, proposed_type: str | None = None) -> str | None:
     """Return canonical vault path if title matches any alias label (case-insensitive)."""
     title_lower = title.strip().lower()
     for entry in aliases.values():
+        if _blocked_as_non_entity_redirect(entry, proposed_type):
+            continue
         for label in entry.get("aliases", []):
             if label.lower() == title_lower:
                 return entry["canonical"]
     return None
 
 
-def fuzzy_resolve_slug_for_title(title: str, aliases: dict, threshold: float = 0.82) -> str | None:
+def fuzzy_resolve_slug_for_title(
+    title: str, aliases: dict, threshold: float = 0.82, proposed_type: str | None = None
+) -> str | None:
     """Return canonical vault path if title fuzzy-matches any alias label above threshold.
 
     Uses a higher default threshold (0.82) than semantic dedup (0.65) because false
@@ -51,6 +75,8 @@ def fuzzy_resolve_slug_for_title(title: str, aliases: dict, threshold: float = 0
     best_score = 0.0
     best_canonical: str | None = None
     for entry in aliases.values():
+        if _blocked_as_non_entity_redirect(entry, proposed_type):
+            continue
         for label in entry.get("aliases", []):
             score = difflib.SequenceMatcher(None, title_lower, label.lower()).ratio()
             if score >= threshold and score > best_score:

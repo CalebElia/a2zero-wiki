@@ -7,6 +7,7 @@ from pipeline._aliases import (
     save_aliases,
     resolve_slug,
     resolve_slug_for_title,
+    fuzzy_resolve_slug_for_title,
     fuzzy_candidates,
     add_alias,
 )
@@ -63,6 +64,70 @@ def test_resolve_slug_for_title_case_insensitive():
 
 def test_resolve_slug_for_title_unknown_returns_none():
     assert resolve_slug_for_title("completely unknown entity", SAMPLE_ALIASES) is None
+
+
+# ── Type-aware resolution guard ────────────────────────────────────────────────
+# Regression coverage for a real Year 4 ingest bug: an alias entry meant for a
+# broad "funding topics" rollup also listed the exact name of a dedicated
+# initiative ("Community Climate Action Millage") as a synonym. Pass 1.5
+# followed it and silently wrote the initiative's new content into a topics/
+# page instead of its own page. Entities must never resolve into a
+# topic/synthesis/strategy/overview page — those synthesize FROM entities,
+# they are never a substitute for an entity having its own page.
+
+TOPIC_REDIRECT_ALIASES = {
+    "local-state-funding-a2zero": {
+        "canonical": "topics/local-state-funding-a2zero",
+        "type": "topic",
+        "aliases": ["Community Climate Action Millage", "state funding", "local funding"],
+        "relationship": "name-variant",
+    },
+    "osi": {
+        "canonical": "actors/osi",
+        "type": "actor",
+        "aliases": ["OSI"],
+        "relationship": "name-variant",
+    },
+}
+
+
+def test_resolve_slug_blocks_entity_redirect_into_topic():
+    assert resolve_slug(
+        "local-state-funding-a2zero", TOPIC_REDIRECT_ALIASES, proposed_type="initiative"
+    ) is None
+
+
+def test_resolve_slug_for_title_blocks_entity_redirect_into_topic():
+    assert resolve_slug_for_title(
+        "Community Climate Action Millage", TOPIC_REDIRECT_ALIASES, proposed_type="initiative"
+    ) is None
+
+
+def test_fuzzy_resolve_slug_for_title_blocks_entity_redirect_into_topic():
+    assert fuzzy_resolve_slug_for_title(
+        "Community Climate Action Millage", TOPIC_REDIRECT_ALIASES, proposed_type="initiative"
+    ) is None
+
+
+def test_resolve_slug_allows_non_entity_types_to_redirect_into_topic():
+    """A topic_candidates-driven promotion (proposed_type="topic") legitimately
+    targets a topics/ canonical — only real entity types are blocked."""
+    assert resolve_slug(
+        "local-state-funding-a2zero", TOPIC_REDIRECT_ALIASES, proposed_type="topic"
+    ) == "topics/local-state-funding-a2zero"
+
+
+def test_resolve_slug_without_proposed_type_keeps_old_behavior():
+    """Callers that don't pass proposed_type (not yet updated) see unchanged
+    behavior — the guard only activates when a type is actually supplied."""
+    assert resolve_slug(
+        "local-state-funding-a2zero", TOPIC_REDIRECT_ALIASES
+    ) == "topics/local-state-funding-a2zero"
+
+
+def test_resolve_slug_still_resolves_entity_to_entity():
+    """The guard doesn't block legitimate entity-to-entity redirects."""
+    assert resolve_slug("osi", TOPIC_REDIRECT_ALIASES, proposed_type="actor") == "actors/osi"
 
 
 def test_fuzzy_candidates_finds_near_match():
