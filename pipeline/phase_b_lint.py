@@ -182,6 +182,26 @@ def structural_lint(wiki_root: str) -> list[dict]:
                 "detail": "Body has no real content (stub comment only)",
             })
 
+    # Topic citation isolation — topics are a citation sink, never a source of
+    # evidence. Any non-topics/ page (including digest.md) citing a topic as
+    # content is a violation; topic-to-topic citation is allowed (governed by
+    # the promotion-time cycle guard). index.md/log.md/hot.md are exempt —
+    # they're auto-rebuilt navigation/audit surfaces that must list every page
+    # (including topics) for humans to find them, not analytical citations.
+    for md_file in all_files:
+        rel = str(md_file.relative_to(root))
+        if md_file.parent.name == "topics" or md_file.name in ORPHAN_EXEMPT_NAMES:
+            continue
+        text = md_file.read_text(encoding="utf-8", errors="replace")
+        for link in _parse_wikilinks(text):
+            target = link.strip()
+            if target.startswith("topics/"):
+                findings.append({
+                    "type": "TOPIC_CITATION_VIOLATION",
+                    "page": rel,
+                    "detail": f"[[{link}]] — non-topic pages must never cite a topic page",
+                })
+
     return findings
 
 

@@ -1,6 +1,7 @@
 ---
 type: topic
 title: A²ZERO Public Engagement Log (Nov 2019 – Mar 2020)
+governance: frozen
 status: complete
 declared: 2026-06-25
 declared-by: caleb

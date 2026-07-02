@@ -16,6 +16,7 @@ from pipeline.phase_c_validate import (
     revise_narrative,
     log_dropped_ghosts,
 )
+from pipeline.topic_synthesize import find_topics_touched, regenerate_topic
 
 
 _ENTITY_DIRS = [
@@ -87,6 +88,31 @@ def extract_ingest_history(log_path: str) -> list[dict]:
         {"date": date, "source_uuid": uuid.strip()}
         for date, uuid in _LOG_ENTRY_RE.findall(text)
     ]
+
+
+def _entities_touched_this_ingest(wiki_root: str, source_uuid: str | None) -> list[str]:
+    """Return the union of extends[].slug + new-entities[].slug from the most
+    recent ingest's integration plan (already produced by Pass 1A Comprehend).
+
+    If source_uuid is None, auto-detects the most recent ingest from log.md.
+    """
+    if source_uuid is None:
+        delta = extract_recent_delta(str(Path(wiki_root) / "log.md"))
+        source_uuid = delta.get("source_uuid")
+    if not source_uuid:
+        return []
+
+    plan_path = Path(wiki_root) / "integration-plans" / f"{source_uuid}.json"
+    if not plan_path.exists():
+        return []
+    try:
+        plan = json.loads(plan_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return []
+
+    slugs = [e.get("slug") for e in plan.get("extends", []) if e.get("slug")]
+    slugs += [e.get("slug") for e in plan.get("new-entities", []) if e.get("slug")]
+    return sorted(set(slugs))
 
 
 _STRATEGY_SYNTHESIS_SYSTEM = """You are synthesizing one strategy of Ann Arbor's A2Zero \
@@ -359,6 +385,8 @@ def synthesize_wiki(
     strategies: list[str] | None = None,
     digest_only: bool = False,
     aliases_path: str = "registry/entity_aliases.json",
+    topics: list[str] | None = None,
+    source_uuid: str | None = None,
 ) -> dict:
     """Phase C orchestration: rebuild L1 synthesis sections + write digest.md.
 
@@ -368,9 +396,14 @@ def synthesize_wiki(
             rebuild all 7 strategy pages.
         digest_only: skip L1 rebuild, just regenerate digest.md from existing
             synthesis: blocks.
+        topics: optional list of topic slugs to rebuild. If None, auto-detect
+            via find_topics_touched() against the entities this ingest touched.
+        source_uuid: the ingest whose integration plan drives topic-touch
+            detection. If None, auto-detects the most recent ingest from log.md.
 
     Returns:
-        dict with keys: `strategies_rebuilt` (list of slugs), `digest_path`.
+        dict with keys: `strategies_rebuilt` (list of slugs), `digest_path`,
+        `topics_rebuilt` (list of slugs).
     """
     import copy
     from datetime import date
@@ -439,6 +472,18 @@ def synthesize_wiki(
 
         strategies_data[strategy_slug] = {"title": title, "synthesis": copy.deepcopy(synthesis)}
 
+    # Topics pass — after strategies, before digest assembly (digest must never
+    # see topics; topics are a citation sink, not a source — see phase_b_lint's
+    # TOPIC_CITATION_VIOLATION check).
+    if not digest_only:
+        touched_entities = _entities_touched_this_ingest(wiki_root, source_uuid)
+        topics_to_rebuild = topics if topics is not None else find_topics_touched(wiki_root, touched_entities)
+        topics_rebuilt = [
+            t for t in topics_to_rebuild if regenerate_topic(t, wiki_root, run_date) is not None
+        ]
+    else:
+        topics_rebuilt = []
+
     narrative = build_digest_narrative(strategies_data=strategies_data)
     # Validate → Revise the narrative
     narrative_report = validate_narrative(narrative, wiki_root, aliases)
@@ -471,6 +516,7 @@ def synthesize_wiki(
     return {
         "strategies_rebuilt": rebuilt,
         "digest_path": digest_path,
+        "topics_rebuilt": topics_rebuilt,
     }
 
 
