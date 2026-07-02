@@ -79,7 +79,7 @@ LLM-generated relation phrases across the CAP-2020 and Year-1 ingests.
 If none of the approved Layer 1 fields or Layer 2 verbs fit:
 
 1. Use the closest match in your prose or frontmatter
-2. Append an entry to `wiki/meta/schema-drift.md` with the proposed verb, an example
+2. Append an entry to `meta/schema-drift.md` with the proposed verb, an example
    sentence, the entity type it connects, and the rationale
 3. Human curators promote the verb to this file on approval
 

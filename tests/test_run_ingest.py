@@ -86,7 +86,7 @@ def test_run_source_ingest_calls_comprehend_when_digest_exists(
     wiki = tmp_path / "wiki"
     wiki.mkdir()
     (wiki / "digest.md").write_text("---\nlast-rebuilt: '2026-06-29'\n---\n# Digest\nBody.\n", encoding="utf-8")
-    (wiki / "meta").mkdir()
+    (tmp_path / "meta").mkdir()
     (wiki / "sources" / "annual-reports").mkdir(parents=True)
     src_path = wiki / "sources" / "annual-reports" / "test.md"
     src_path.write_text("---\nuuid: test\nsource_type: annual-report\n---\nSource body.\n", encoding="utf-8")
@@ -120,7 +120,7 @@ def test_run_source_ingest_calls_comprehend_when_digest_exists(
     # Plan was persisted
     assert (wiki / "integration-plans" / "test.json").exists()
     # Stats line was appended
-    assert (wiki / "meta" / "ingest-stats.jsonl").exists()
+    assert (tmp_path / "meta" / "ingest-stats.jsonl").exists()
     # synthesize_source received the plan + digest
     synth_kwargs = mock_synth.call_args.kwargs
     assert synth_kwargs.get("integration_plan") is not None

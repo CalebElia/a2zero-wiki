@@ -30,10 +30,10 @@ wiki/                 ← Obsidian vault (everything here is intentionally inges
   framing/              ← Communications strategies / advocacy framings (planned — none yet on disk)
   contradictions/       ← Cross-source tensions and conflicts (planned — none yet on disk)
   topics/               ← Aggregate/curated synthesis pages (human-promoted from topic-candidates)
-  meta/                 ← Governance files (schema-drift.md, topic-candidates.md, relationship-lexicon.md)
   index.md              ← Auto-rebuilt by Pass 3
   log.md                ← Append-only ingest log
   hot.md                ← Most-recent session summary (overwritten each Pass 3)
+meta/                 ← Pipeline governance files, outside the vault — never queryable content (query-log.md, topic-candidates.md, schema-drift.md, synthesis-ghosts.log, ingest-stats.jsonl, relationship-lexicon.md)
 blackboard/           ← Quads (structured fact triples) + section maps
 registry/             ← entity_registry.json, entity_aliases.json, merge-log.jsonl
 pipeline/             ← All Python ingest code
@@ -86,7 +86,7 @@ If `source` runs without an approved map and `--auto-approve` is not passed, it 
 
 **Pass 0 (copy + YAML inject):** Source file copied from `prepared/<type>/<uuid>.md` → `wiki/sources/<type>/<uuid>.md`. If the prepared file has no YAML frontmatter, one is injected (`uuid`, `source_type` inferred from directory, `title`, `ingest_date`).
 
-**Pass 1A (Comprehend):** Reads `wiki/digest.md` plus the source and produces a structured integration plan saved to `wiki/integration-plans/<source-uuid>.json`. The plan (5 fields: `strategies-touched`, `extends`, `new-entities`, `retrieve-for-context`, `theme-connections`) flows downstream into both the holistic Writer (Pass 1B) and the LDP chunk extraction (Pass 2), informing which entities to extend vs. create and which existing page bodies to pre-load as integration context. Hard-fails when digest exists but the LLM call errors. Graceful fallback (no LLM call, empty plan) when no digest exists yet (first-ingest path). Per-ingest telemetry lands in `wiki/meta/ingest-stats.jsonl`. See `docs/architecture/comprehend-plan-write.md`.
+**Pass 1A (Comprehend):** Reads `wiki/digest.md` plus the source and produces a structured integration plan saved to `wiki/integration-plans/<source-uuid>.json`. The plan (5 fields: `strategies-touched`, `extends`, `new-entities`, `retrieve-for-context`, `theme-connections`) flows downstream into both the holistic Writer (Pass 1B) and the LDP chunk extraction (Pass 2), informing which entities to extend vs. create and which existing page bodies to pre-load as integration context. Hard-fails when digest exists but the LLM call errors. Graceful fallback (no LLM call, empty plan) when no digest exists yet (first-ingest path). Per-ingest telemetry lands in `meta/ingest-stats.jsonl`. See `docs/architecture/comprehend-plan-write.md`.
 
 **Pass 1B (holistic synthesis):** Full-document read. Writer → Evaluator → Editor loop, now informed by the integration plan + digest. Produces: overview page, strategy body text, stub pages for all entities mentioned in the document. Uses streaming API (`max_tokens=64000`).
 
@@ -116,7 +116,7 @@ python -m pipeline.phase_c_synthesize --wiki-root wiki --strategy strategies/str
 python -m pipeline.phase_c_synthesize --wiki-root wiki --digest-only                              # rebuild digest from existing synthesis: blocks
 ```
 
-The synthesizer runs each LLM output through a deterministic validator that checks every entity slug against the filesystem. Broken references trigger a scoped Reviser LLM call that either substitutes a real entity or drops the bad slug; dropped slugs are logged to `wiki/meta/synthesis-ghosts.log` for human review. Recurring entries in that log signal entities worth either creating as pages or adding to `SUPPRESS_SLUGS` in `pipeline/phase_c_validate.py`. See `docs/architecture/synthesis-validation-loop.md`.
+The synthesizer runs each LLM output through a deterministic validator that checks every entity slug against the filesystem. Broken references trigger a scoped Reviser LLM call that either substitutes a real entity or drops the bad slug; dropped slugs are logged to `meta/synthesis-ghosts.log` for human review. Recurring entries in that log signal entities worth either creating as pages or adding to `SUPPRESS_SLUGS` in `pipeline/phase_c_validate.py`. See `docs/architecture/synthesis-validation-loop.md`.
 
 ## Pipeline Modules
 
@@ -165,7 +165,7 @@ The synthesizer runs each LLM output through a deterministic validator that chec
 
 **Review queue:** `review-queue.md` is a live inbox, not an append log. Each lint pass (`--structural`, `--semantic`, `--backlink`) replaces its own section. Annotated proposals (`[x] APPROVE_...` / `[x] KEEP_SEPARATE`) are cleared by `--apply`; unactioned and `DEFER`'d proposals stay.
 
-**Schema drift:** When the LLM encounters an entity that doesn't fit any approved `type:` from `VALID_PAGE_TYPES`, it writes the page using the closest approved type AND adds `proposed-type: <new-type>` to the frontmatter. The pipeline auto-logs an entry to `wiki/meta/schema-drift.md` for HITL review. Approve a proposed type by adding it to `VALID_PAGE_TYPES` in `pipeline/wiki_pages.py`.
+**Schema drift:** When the LLM encounters an entity that doesn't fit any approved `type:` from `VALID_PAGE_TYPES`, it writes the page using the closest approved type AND adds `proposed-type: <new-type>` to the frontmatter. The pipeline auto-logs an entry to `meta/schema-drift.md` for HITL review. Approve a proposed type by adding it to `VALID_PAGE_TYPES` in `pipeline/wiki_pages.py`.
 
 ## Environment Variables
 

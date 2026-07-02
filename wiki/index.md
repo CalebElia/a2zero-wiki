@@ -494,6 +494,3 @@ _463 pages — last updated 2026-07-02_
 - [[sources/cap/cap-2020|Ann Arbor A2Zero Living Carbon Neutrality Plan]]
 - [[integration-plans/README|README]]
 - [[digest|digest]]
-- [[meta/relationship-lexicon|relationship-lexicon]]
-- [[meta/schema-drift|schema-drift]]
-- [[meta/topic-candidates|topic-candidates]]

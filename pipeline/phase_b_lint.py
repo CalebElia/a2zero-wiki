@@ -16,7 +16,7 @@ from pipeline._llm import chat
 
 # Pages exempt from orphan and empty-page checks — hub pages, auto-generated, or top-level containers
 ORPHAN_EXEMPT_NAMES = frozenset({"index.md", "log.md", "hot.md"})
-ORPHAN_EXEMPT_DIRS = frozenset({"strategies", "sources", "overviews", "topics", "meta"})
+ORPHAN_EXEMPT_DIRS = frozenset({"strategies", "sources", "overviews", "topics"})
 
 FRONTMATTER_RE = re.compile(r"^---\n.*?\n---\n?", re.DOTALL)
 

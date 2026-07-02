@@ -280,7 +280,7 @@ These need explicit decisions before implementation.
 
 6. **Should the plan also drive `synthesize_wiki --strategies-touched-from <plan>`?** Currently `synthesize_wiki` regenerates the L1 synthesis blocks for all 7 strategies on every invocation. The plan's `strategies-touched` is a natural signal to narrow that — only re-synthesize the strategies the new source actually affected. **Recommendation:** out of scope for this PR. Add a follow-on issue. Don't bundle.
 
-7. **Telemetry.** Should we log per-ingest stats (Comprehend duration, number of extends/new-entities, plan size in tokens) somewhere durable? **Recommendation:** yes — append a JSON line to `wiki/meta/ingest-stats.jsonl`. Cheap to write, useful for trend analysis as the wiki scales.
+7. **Telemetry.** Should we log per-ingest stats (Comprehend duration, number of extends/new-entities, plan size in tokens) somewhere durable? **Recommendation:** yes — append a JSON line to `meta/ingest-stats.jsonl`. Cheap to write, useful for trend analysis as the wiki scales.
 
 8. **Test strategy.** The new Comprehend module is testable with mocked LLM calls (cheap). The integration changes to `holistic_synthesizer.py` and `ldp.py` are harder — they have many existing tests that mock specific prompt structures. **Recommendation:** add unit tests for `pipeline/comprehend.py` covering plan generation, schema validation, fallback. Update existing `tests/test_holistic_synthesizer.py` and `tests/test_ldp.py` to mock the new plan-aware prompt assembly. One optional integration test gated on `ANTHROPIC_API_KEY`.
 

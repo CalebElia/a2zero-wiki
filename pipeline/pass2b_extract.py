@@ -325,7 +325,7 @@ def validate_page_spec(
     # Schema-drift logging: if the spec proposes a non-standard type, log it for review.
     proposed = (spec.get("frontmatter") or {}).get("proposed_type", "")
     if proposed and wiki_root:
-        drift_path = Path(wiki_root) / "meta" / "schema-drift.md"
+        drift_path = Path(wiki_root).parent / "meta" / "schema-drift.md"
         drift_path.parent.mkdir(parents=True, exist_ok=True)
         with drift_path.open("a", encoding="utf-8") as f:
             slug = spec.get("slug", "?")
