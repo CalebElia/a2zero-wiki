@@ -170,6 +170,11 @@ def stream_chat(
             stream=True,
         ) as stream:
             for chunk in stream:
+                if not chunk.choices:
+                    # Some streaming chunks (heartbeats, final markers,
+                    # content-filter results) carry an empty choices list —
+                    # unconditionally indexing choices[0] raises IndexError.
+                    continue
                 delta = chunk.choices[0].delta.content
                 if delta:
                     collected.append(delta)

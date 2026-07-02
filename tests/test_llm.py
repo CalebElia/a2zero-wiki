@@ -250,6 +250,44 @@ def test_stream_chat_openai_returns_text(monkeypatch):
     assert result == "hello world"
 
 
+def test_stream_chat_openai_skips_empty_choices_chunks(monkeypatch):
+    """OpenAI/Azure streams can emit chunks with an empty choices list
+    (heartbeats, final markers, content-filter results). Indexing
+    choices[0] unconditionally raises IndexError — regression test for
+    a real failure hit against a live Azure deployment."""
+    monkeypatch.setenv("LLM_PROVIDER", "openai")
+    monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
+    from pipeline._llm import stream_chat
+
+    def _chunks_with_empty_choices():
+        chunk1 = MagicMock()
+        chunk1.choices = [MagicMock()]
+        chunk1.choices[0].delta.content = "hello"
+        yield chunk1
+
+        empty_chunk = MagicMock()
+        empty_chunk.choices = []
+        yield empty_chunk
+
+        chunk2 = MagicMock()
+        chunk2.choices = [MagicMock()]
+        chunk2.choices[0].delta.content = " world"
+        yield chunk2
+
+    with patch("pipeline._llm.openai") as mock_openai:
+        stream_ctx = MagicMock()
+        stream_ctx.__enter__ = MagicMock(return_value=_chunks_with_empty_choices())
+        stream_ctx.__exit__ = MagicMock(return_value=False)
+        mock_openai.OpenAI.return_value.chat.completions.create.return_value = stream_ctx
+        result = stream_chat(
+            system="You are a test.",
+            messages=[{"role": "user", "content": "hi"}],
+            max_tokens=1000,
+            model_hint="synthesis",
+        )
+    assert result == "hello world"
+
+
 def test_stream_chat_openai_strips_cache_control(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "openai")
     monkeypatch.delenv("LLM_MODEL_OVERRIDE", raising=False)
