@@ -33,7 +33,7 @@ partners:
 - '[[actors/downtown-development-authority]]'
 - '[[actors/university-of-michigan]]'
 - '[[actors/michigan-department-of-transportation]]'
-- '[[actors/ann-arbor-2030-district]]'
+- '[[actors/ann-arbor-washtenaw-2030-district]]'
 party-responsible: '[[actors/ann-arbor-area-transit-authority]]'
 related-strategies:
 - '[[strategies/strategy-4-vmt-reduction]]'

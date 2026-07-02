@@ -11,7 +11,7 @@ milestones:
   year: 2022
 parent-strategy: '[[strategies/strategy-6-resilience]]'
 partners:
-- '[[actors/ann-arbor-emergency-management]]'
+- '[[actors/office-of-emergency-management]]'
 party-responsible: '[[actors/city-of-ann-arbor]]'
 related-strategies:
 - '[[strategies/strategy-6-resilience]]'

@@ -25,7 +25,7 @@ partners:
 - '[[actors/electrification-coalition]]'
 - '[[actors/ecology-center]]'
 - '[[actors/washtenaw-electric-auto-association]]'
-- '[[actors/ann-arbor-2030-district]]'
+- '[[actors/ann-arbor-washtenaw-2030-district]]'
 - '[[actors/downtown-development-authority]]'
 - '[[actors/michigan-egle]]'
 party-responsible: '[[actors/office-of-sustainability-and-innovations]]'

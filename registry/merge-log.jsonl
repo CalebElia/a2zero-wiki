@@ -50,3 +50,12 @@
 {"date": "2026-06-30", "action": "MERGE", "from": "locations/veterans-park.md", "into": "locations/veterans-memorial-park.md", "approved-by": "manual"}
 {"date": "2026-06-30", "action": "MERGE", "from": "funding-events/state-michigan-ev-charger-2023.md", "into": "funding-events/michigan-ev-charger-grant-2023.md", "approved-by": "manual"}
 {"date": "2026-07-01", "action": "MERGE", "from": "funding-events/michigan-utility-pole-ev-2022.md", "into": "funding-events/michigan-ev-charger-grant-2023.md", "approved-by": "manual", "notes": "Confirmed same $54,000 State of Michigan award via source cross-check (year2.md line 170 award, year3.md lines 83+206 installation progress); second half of a semantic-lint merge approved 2026-06-30 that did not execute due to stale target reference"}
+{"date": "2026-07-02", "action": "MERGE", "from": "actors/washtenaw-2030-district.md", "into": "actors/ann-arbor-2030-district.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "actors/ann-arbor-emergency-management.md", "into": "actors/office-of-emergency-management.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "initiatives/a2zero-metrics-dashboard.md", "into": "initiatives/a2zero-dashboard.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "initiatives/resilience-network.md", "into": "initiatives/model-regional-resilience-network.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "initiatives/benchmarking-ordinance.md", "into": "initiatives/commercial-benchmarking-ordinance.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "initiatives/carbon-tax.md", "into": "initiatives/internal-carbon-price.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "initiatives/internal-carbon-tax.md", "into": "initiatives/internal-carbon-price.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "locations/bryant-community-center.md", "into": "locations/bryant-neighborhood-community-center.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "funding-events/dcfc-city-hall-grant-2021.md", "into": "funding-events/ev-fast-charger-2022.md", "approved-by": "manual"}

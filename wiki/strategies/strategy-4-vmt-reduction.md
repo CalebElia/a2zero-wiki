@@ -13,55 +13,46 @@ synthesis:
   core-initiatives:
   - initiatives/expand-improve-local-transit
   - initiatives/non-motorized-transportation-plan
-  - initiatives/theride-electrification-expansion
-  - initiatives/go-pass-expansion
-  - initiatives/transit-oriented-development-zoning
+  - initiatives/expand-improve-regional-transit
   - initiatives/park-and-ride-expansion
-  - initiatives/tiered-parking-rates
   - initiatives/develop-mixed-use-neighborhoods
-  core-actors:
-  - actors/city-of-ann-arbor
-  - actors/ann-arbor-area-transit-authority
-  - actors/office-of-sustainability-and-innovations
-  - actors/michigan-department-of-transportation
-  - actors/washtenaw-county
-  year-over-year-arc: Baseline VMT reduction framework established in cap-2020 (2026-06-24)
-    with 50% VMT reduction target and $901M cost projection; Year 1 (a2zero-year1,
-    2026-06-25) showed early implementation of Go-Pass expansion, non-motorized infrastructure,
-    and transit electrification groundwork; Year 2 (a2zero-year2, 2026-06-26) advanced
-    mobility hubs, protected bike lanes, and zoning/UDC integration; Year 3 (a2zero-year3,
-    2026-06-30) continued TheRide electrification and route expansion alongside parking
-    reform and transit-oriented development upzoning efforts.
+  - initiatives/increase-diversity-of-housing
+  - initiatives/tiered-parking-rates
+  - initiatives/transit-oriented-development-zoning
+  core-actors: []
+  year-over-year-arc: Baseline established in cap-2020 on 2026-06-24 around a 50%
+    VMT-reduction vision; by a2zero-year1 through a2zero-year4 (2026-06-25 to 2026-07-01),
+    the strategy appears to broaden from foundational transit, biking, land-use, and
+    parking actions into implementation-oriented programs such as mobility hubs, Go-Pass
+    expansion, protected bike lanes, and zoning/parking reforms.
   open-questions:
-  - Whether regional transit expansion (WALLY, BRT) can secure sufficient state and
-    federal funding given Act 51 constraints
-  - How much of the 50% VMT reduction target has actually been achieved across Years
-    1–3 and whether the trajectory is on pace
-  - Whether parking reform and tiered pricing have generated measurable mode-shift
-    or remain primarily policy-stage
-  - How zoning/UDC changes translate into actual mixed-use and density outcomes that
-    reduce vehicle trip generation
+  - Which VMT actions have quantified mode-shift or VMT reductions by year4?
+  - How much of local transit expansion has been delivered versus planned?
+  - Will parking reform and tiered pricing be fully implemented citywide?
+  - How are land-use changes being tied to transit-oriented development outcomes?
   cross-strategy-links:
+  - initiatives/increase-diversity-of-housing
+  - initiatives/develop-mixed-use-neighborhoods
+  - initiatives/transit-oriented-development-zoning
   - initiatives/electrify-buses
-  - initiatives/ev-charger-deployment
-  - initiatives/expand-ev-charging-infrastructure
-  - initiatives/a2zero-unified-development-code-integration
   - initiatives/ghg-inventory
   - initiatives/a2zero-carbon-neutrality-plan
-  core-target: 'Strategy 4 targets at least a 50% reduction in vehicle miles traveled,
-    with seven combined actions projected to reduce just over 8% of community-wide
-    emissions at a total cost of just over $901,000,000 (dominated by physical infrastructure),
-    with Expand and Improve Local Transit alone projected to reduce 4.3% of community-wide
-    emissions (93,200 MTCO₂e) at a cost of $656,780,000 (Source: cap-2020, Page 69).'
-  last-rebuilt: '2026-07-01'
+  core-target: CAP-2020 set a target of reducing vehicle miles traveled by at least
+    50%, with the seven actions projected to cut just over 8% of community-wide emissions
+    at a cost of just over $901,000,000.
+  last-rebuilt: '2026-07-02'
 ---
 
 ## Foundation
 
-Strategy 4 of CAP-2020 targets reducing vehicle miles traveled by at least 50%, with the seven combined actions projected to reduce just over 8% of community-wide emissions at a cost of just over $901,000,000, driven mainly by physical infrastructure costs [Source: Page 69] ([[sources/cap/cap-2020|cap-2020]]). The dominant mechanisms span land-use policy, transit investment, and pricing tools, including non-motorized infrastructure buildout, local and regional bus rapid transit expansion, park-and-ride expansion, mixed-use and housing-diversity zoning updates, and tiered/dynamic parking rates. The seven named actions are: (1) Implement Non-Motorized Transportation Plan, (2) Expand and Improve Local Transit, (3) Expand and Improve Regional Transit, (4) Increase Number of Park and Rides and Ensure Seamless Connection to Transit, (5) Increase Diversity of Housing, (6) Establish Mixed-Use Neighborhoods, and (7) Tiered Parking Rates [Source: Page 69] ([[sources/cap/cap-2020|cap-2020]]). Of the actions with independently quantified costs and reductions, Expand and Improve Local Transit is the largest single contributor, projected at 4.3% of community-wide emissions (93,200 MTCO₂e) at a cost of $656,780,000, while several other actions (Expand and Improve Regional Transit, Develop Mixed-Use Neighborhoods, and Establish Tiered Parking Rates) note that their emissions reduction potential is captured within other actions ([[sources/cap/cap-2020|cap-2020]]).
+Strategy 4 of CAP-2020 targets reducing vehicle miles traveled by at least 50%, with the seven combined actions projected to reduce just over 8% of community-wide emissions at a cost of just over $901,000,000, driven mainly by physical infrastructure costs [Source: Page 69] ([[sources/cap/cap-2020|cap-2020]]). The dominant mechanisms span land-use policy, transit investment, and pricing tools, including non-motorized infrastructure buildout, local and regional bus rapid transit expansion, park-and-ride expansion, mixed-use and housing-diversity zoning updates, and tiered/dynamic parking rates. The seven named actions are: (1) [[initiatives/non-motorized-transportation-plan|Implement Non-Motorized Transportation Plan]], (2) Expand and Improve Local Transit, (3) [[initiatives/expand-improve-regional-transit|Expand and Improve Regional Transit]], (4) [[initiatives/park-and-ride-expansion|Increase Number of Park and Rides and Ensure Seamless Connection to Transit]], (5) [[initiatives/increase-diversity-of-housing|Increase Diversity of Housing]], (6) Establish Mixed-Use Neighborhoods, and (7) Tiered Parking Rates [Source: Page 69] ([[sources/cap/cap-2020|cap-2020]]). Of the actions with independently quantified costs and reductions, Expand and Improve Local Transit is the largest single contributor, projected at 4.3% of community-wide emissions (93,200 MTCO₂e) at a cost of $656,780,000, while several other actions (Expand and Improve Regional Transit, [[initiatives/develop-mixed-use-neighborhoods|Develop Mixed-Use Neighborhoods]], and [[initiatives/tiered-parking-rates|Establish Tiered Parking Rates]]) note that their emissions reduction potential is captured within other actions ([[sources/cap/cap-2020|cap-2020]]).
 
 ## Progress Synthesis
 
-Strategy 4 saw concrete infrastructure delivery, landmark policy actions, and significant recognition of [[locations/ann-arbor|Ann Arbor]]'s active transportation progress during year three. The City installed 3.1 miles of new or improved bike lanes and enhanced multiple bike lane intersections, filled 2.5 miles of sidewalk gaps, installed two new crosswalks, and passed a resolution restricting turns on red lights downtown to reduce vehicle-bicyclist conflicts ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). Ann Arbor received Gold-level Walk Friendly Community designation from the Walk Friendly Communities program — one of only 23 U.S. cities so recognized — and Gold-level Bicycle Friendly Community designation from the League of American Bicyclists. The [[actors/downtown-development-authority|Ann Arbor Downtown Development Authority (DDA)]] won the League of Michigan Bicyclists Outstanding Infrastructure Award for most improved bicycle-friendly infrastructure in the past year, reflecting the pace of recent investment.
+Before year four, Strategy 4 had already combined infrastructure delivery, transit funding, and land-use reform. Year three included 3.1 miles of new or improved bike lanes, 2.5 miles of sidewalk-gap filling, new crosswalks, a downtown no-turn-on-red resolution, passage of a transit-supporting millage for [[actors/ann-arbor-area-transit-authority|TheRide]], approximately 400 acres rezoned to TC1 transit-corridor status, and launch of a Comprehensive Plan update with carbon neutrality and equity as priorities. [[locations/ann-arbor|Ann Arbor]] also received Gold-level walk-friendly and bicycle-friendly recognition during that period (([[sources/annual-reports/a2zero-year3|a2zero-year3]])).
 
-On transit, the community passed a millage to support [[actors/ann-arbor-area-transit-authority|TheRide]] in improving and expanding public transit, effective 2024 — a significant funding milestone that directly enables the [[initiatives/expand-improve-local-transit|transit expansion]] goals of Strategy 4. OSI also supported an AAATA propulsion study to identify solutions for carbon-free busing through the [[initiatives/theride-electrification-expansion|TheRide electrification expansion]] initiative. Land-use reform advanced with approximately 400 acres rezoned to TC1 (transit corridor) status, deepening the [[initiatives/transit-oriented-development-zoning|transit-oriented development zoning]] framework ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). A request for proposals was released for a Comprehensive Plan update with carbon neutrality and equity as priority areas, and a new speed management program was initiated to advance Vision Zero goals. Looking ahead, 20+ additional miles of protected bike lanes are slated for development over the next five years, and the [[initiatives/washington-street-bike-boulevard|Washington Street Bike Boulevard]] was funded through a $200,000 SEMCOG Carbon Reduction Program grant with a fall 2025 start date. As context for the scale of work remaining: vehicle miles traveled in 2022 had returned to only 3% below 2018 levels after a 36% pandemic-era drop in 2020, underscoring the challenge of achieving the 50% VMT reduction goal ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).
+In year four, the city continued pursuing the same theory of change: reduce driving by making walking, biking, transit, and compact land use more practical and attractive. The city funded or supported 12.1 miles of bike facilities and 21 bike intersection improvements, filled 1.39 miles of sidewalk gaps, installed 13 new crosswalks, and added two new audible pedestrian signals. It also launched dashboards to monitor sidewalk-gap replacement, traffic calming, and Vision Zero progress. Usage indicators appeared in the report as well: downtown bikeways attracted more than 100,000 users between September and January (([[sources/annual-reports/a2zero-year4|a2zero-year4]])).
+
+Shared mobility and transit-supportive systems also expanded. The reintroduced shared micromobility system, now including e-bikes, operated with 450 scooters and 100 e-bikes and logged more than 214,000 trips in 2023, a 21% increase from the previous year. OSI continued supporting [[actors/ann-arbor-area-transit-authority|TheRide]]'s zero-emissions propulsion study and grant application for its first zero-emission buses. Recognition also continued: Ann Arbor was recognized as a Gold-level walk-friendly community and received Gold-level Bicycle Friendly Community designation, while [[locations/ann-arbor-city-hall|Ann Arbor City Hall]] was recognized as a Silver Level Bicycle Business. A bicycle parking pilot produced four installations, and a code change allowed impounded bicycles to be donated to tax-exempt organizations such as [[actors/common-cycle|Common Cycle]] (([[sources/annual-reports/a2zero-year4|a2zero-year4]])).
+
+Land-use reform remained a major enabling condition. In year four, the city undertook a detailed update to its comprehensive land use plan, with affordability, equity, and sustainability identified as the three core tenets. The Planning Department also received approval to eliminate car parking minimums in most developments, created new proposed zoning districts for transit corridors, and built a visualization tool showing where those corridors are throughout the city. The report does not provide a new citywide VMT outcome figure, so progress is still best understood as enabling-condition progress rather than direct evidence that driving has fallen at the pace needed to meet the long-term target (([[sources/annual-reports/a2zero-year4|a2zero-year4]])).

@@ -30,7 +30,7 @@ partners:
 - '[[actors/michigan-department-of-transportation]]'
 - '[[actors/office-of-sustainability-and-innovations]]'
 - '[[actors/ann-arbor-transportation-commission]]'
-- '[[actors/ann-arbor-2030-district]]'
+- '[[actors/ann-arbor-washtenaw-2030-district]]'
 - '[[actors/ann-arbor-area-transit-authority]]'
 - '[[actors/university-of-michigan]]'
 - '[[actors/city-of-ann-arbor-planning-department]]'

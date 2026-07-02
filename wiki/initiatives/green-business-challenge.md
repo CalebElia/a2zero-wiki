@@ -32,7 +32,7 @@ partners:
 - '[[actors/huron-river-watershed-council]]'
 - '[[actors/michigan-saves]]'
 - '[[actors/downtown-development-authority]]'
-- '[[actors/ann-arbor-2030-district]]'
+- '[[actors/ann-arbor-washtenaw-2030-district]]'
 party-responsible: '[[actors/office-of-sustainability-and-innovations]]'
 related-strategies:
 - '[[strategies/strategy-3-building-efficiency]]'
@@ -51,4 +51,4 @@ type: initiative
 
 The A2Zero plan identifies the Green Business Challenge as an existing program to be accelerated and scaled as part of community engagement with the commercial and institutional sector on resource reduction ([[sources/cap/cap-2020|cap-2020]]). The challenge is listed alongside a commercial reuse packaging program, engagement with the private sector, and requirements or encouragement for disclosure from businesses and community groups ([[sources/cap/cap-2020|cap-2020]]).
 
-The program is being designed in collaboration with [[actors/spark-ann-arbor|SPARK]] and local businesses to encourage sustainable business practices in Ann Arbor, with design work beginning in Year 3 of A2Zero ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).
+The Ann Arbor Green Business Challenge is a business-facing sustainability initiative under A2Zero ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). The program was designed in collaboration with [[actors/spark-ann-arbor|SPARK]] and local businesses to encourage sustainable business practices in Ann Arbor, with design work beginning in Year 3 of A2Zero ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). It launched in Year Four in partnership with [[actors/ann-arbor-spark|SPARK]] and promotes, recognizes, and supports local businesses in improving the sustainability of their operations; it is open to anyone in the City ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). The Year 5 priorities set a scaling goal of reaching 50 local businesses ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).

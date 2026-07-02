@@ -11,59 +11,48 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/composting-expansion
-  - initiatives/year-round-composting
   - initiatives/commercial-recycling
+  - initiatives/require-sustainable-materials-in-developments
   - initiatives/move-toward-circular-economy
   - initiatives/support-plant-rich-diet
   - initiatives/enhance-refrigerant-recycling-reuse-program
-  - initiatives/require-sustainable-materials-in-developments
-  - initiatives/solid-waste-resource-management-plan
-  core-actors:
-  - actors/city-of-ann-arbor
-  - actors/office-of-sustainability-and-innovations
-  - actors/university-of-michigan
-  - actors/washtenaw-county
-  year-over-year-arc: Baseline established 2026-06-24 (cap-2020) with six named actions
-    targeting 0.3% GHG reduction; Year 1 (a2zero-year1, 2026-06-25) showed early programmatic
-    launches including circular economy working group and plant-based challenge; Year
-    2 (a2zero-year2, 2026-06-26) advanced commercial recycling Saturday service and
-    reusable container pilot; Year 3 (a2zero-year3, 2026-06-30) progressed electric
-    refuse truck program and materials recovery facility planning, indicating steady
-    programmatic expansion but continued reliance on voluntary and pilot-scale interventions.
+  - initiatives/zero-waste-plan
+  - initiatives/circular-economy-strategy
+  core-actors: []
+  year-over-year-arc: Baseline set in cap-2020 on 2026-06-24 around six waste-and-materials
+    actions; by a2zero-year1 through a2zero-year4 (2026-06-25 to 2026-07-01), the
+    portfolio appears to broaden into implementation-oriented composting, commercial
+    recycling, circular economy, zero-waste, and plant-based food programs, but the
+    ingested inventory does not provide clear year-by-year quantitative progress markers.
   open-questions:
-  - Whether the Solid Waste Resource Management Plan will codify enforceable construction
-    and demolition waste ordinances as originally envisioned in CAP-2020
-  - Whether the Materials Recovery Facility renovation will be funded and at what
-    scale, given the $45M+ cost estimate for the full strategy
-  - How upstream (production-phase) emissions will eventually be incorporated into
-    GHG accounting, given they are explicitly excluded from current targets
-  - Whether voluntary programs (plant-based challenge, zero waste challenge, A2R3)
-    will achieve sufficient participation rates to meaningfully contribute to the
-    0.3% GHG reduction target
+  - Which initiatives moved from planning to funded implementation by year4?
+  - What measurable diversion or emissions reductions were achieved from composting
+    and commercial recycling?
+  - How will sustainable materials requirements be enforced in developments?
+  - Are upstream consumption emissions now being tracked beyond disposal-phase waste
+    emissions?
   cross-strategy-links:
-  - initiatives/electric-refuse-truck-program
-  - initiatives/waste-truck-fleet-electrification
-  - initiatives/natural-area-preservation-carbon-sequestration
-  - initiatives/carbon-sequestration-ann-arbor
+  - initiatives/sustainable-purchasing-policy
+  - initiatives/sustainable-food-purchasing-policy
+  - initiatives/local-food-production-expansion
   - initiatives/green-business-challenge
-  - initiatives/ghg-inventory
-  - initiatives/a2zero-carbon-neutrality-plan
-  core-target: The six combined actions of Strategy 5 are projected to reduce baseline
-    community-wide greenhouse gas emissions by 0.3% at a total cost of just over $45,000,000;
-    notably, these calculations cover only disposal-phase greenhouse gases and explicitly
-    exclude upstream emissions from extracting and producing goods (cap-2020, Page
-    85).
-  last-rebuilt: '2026-07-01'
+  - initiatives/waste-truck-fleet-electrification
+  - initiatives/electric-refuse-truck-program
+  core-target: CAP-2020 set Strategy 5's original target as a 0.3% reduction in baseline
+    community-wide greenhouse gas emissions at a cost of just over $45,000,000.
+  last-rebuilt: '2026-07-02'
 ---
 
 ## Foundation
 
-Strategy 5 of CAP-2020 targets changing how Ann Arbor uses, reuses, and disposes of materials, with the six combined actions reducing baseline community-wide greenhouse gas emissions by 0.3% at a cost of just over $45,000,000 [Source: Page 85] ([[sources/cap/cap-2020|cap-2020]]). The dominant mechanisms are regulatory and programmatic tools including composting expansion, commercial recycling enforcement, construction and demolition waste ordinances, circular economy initiatives, dietary education, and refrigerant recycling. The six named actions comprising this strategy are: (1) Expand Composting Program, (2) Expand Commercial Recycling, (3) Require Sustainable Materials in New and Existing Developments, (4) Move Toward a Circular Economy, (5) Support a Plant Rich Diet, and (6) Enhance Refrigerant Recycling and Reuse Program ([[sources/cap/cap-2020|cap-2020]]). Notably, the emissions calculations cover only disposal-phase greenhouse gases; upstream emissions from extracting and producing goods are explicitly excluded from the quantified targets as of the plan's writing [Source: Page 85] ([[sources/cap/cap-2020|cap-2020]]).
+Strategy 5 of CAP-2020 targets changing how [[locations/ann-arbor|Ann Arbor]] uses, reuses, and disposes of materials, with the six combined actions reducing baseline community-wide greenhouse gas emissions by 0.3% at a cost of just over $45,000,000 [Source: Page 85] ([[sources/cap/cap-2020|cap-2020]]). The dominant mechanisms are regulatory and programmatic tools including composting expansion, commercial recycling enforcement, construction and demolition waste ordinances, circular economy initiatives, dietary education, and refrigerant recycling. The six named actions comprising this strategy are: (1) Expand Composting Program, (2) Expand Commercial Recycling, (3) [[initiatives/require-sustainable-materials-in-developments|Require Sustainable Materials in New and Existing Developments]], (4) [[initiatives/move-toward-circular-economy|Move Toward a Circular Economy]], (5) [[initiatives/support-plant-rich-diet|Support a Plant Rich Diet]], and (6) [[initiatives/enhance-refrigerant-recycling-reuse-program|Enhance Refrigerant Recycling and Reuse Program]] ([[sources/cap/cap-2020|cap-2020]]). Notably, the emissions calculations cover only disposal-phase greenhouse gases; upstream emissions from extracting and producing goods are explicitly excluded from the quantified targets as of the plan's writing [Source: Page 85] ([[sources/cap/cap-2020|cap-2020]]).
 
 ## Progress Synthesis
 
-Year three was described by OSI as the year of 'circularity,' with the dominant approach being community education, behavior change programming, and framework development rather than large-scale infrastructure deployment. The [[initiatives/circular-economy-strategy|Circular Economy Strategy]] advanced through three working sessions with a broad cross-section of Ann Arbor residents, an updated circular economy GIS map highlighting local businesses and organizations, and a new video series ('Making the Old New: Stories of Circularity') explaining the circular economy concept and profiling local practitioners including the Sister Lakes Association and El Harissa ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). A co-design process for a formal [[initiatives/circular-economy-strategy|circular economy strategy]] is planned for year four. OSI also worked with [[actors/university-of-michigan|University of Michigan]] policy students to develop an initial framework for reducing embodied carbon in buildings, extending the materials lens to the construction sector.
+Before year four, Strategy 5 had been described as the year of "circularity," centered on education, behavior change, and framework development. Year three included working sessions toward a [[initiatives/circular-economy-strategy|Circular Economy Strategy]], an updated circular-economy GIS map, a video series on local circularity stories, collaboration with [[actors/university-of-michigan|University of Michigan]] students on embodied carbon in buildings, the [[initiatives/plant-based-challenge|A2Zero Plant-Based Challenge]], a Local Food Festival, a drafted sustainable food framework, continued operation of the [[initiatives/a2r3-reduce-reuse-return|A2R3]] returnable-container pilot, student waste-reduction efforts, neighborhood swap days, compost outreach, and work with [[actors/ecology-center|The Ecology Center]] on broader resource-management education (([[sources/annual-reports/a2zero-year3|a2zero-year3]])).
 
-Food systems received notable attention: a week-long [[initiatives/plant-based-challenge|A2Zero Plant-Based Challenge]] engaged approximately 200 participants and drew over 300 attendees across in-person and virtual events, supported by eight local restaurants, six A2Zero Ambassadors, and seven nonprofits and government departments. A Local Food Festival at the [[locations/ann-arbor-farmers-market|Ann Arbor Farmers Market]] attracted seventeen businesses and organizations and over 300 residents. A sustainable food framework was drafted in collaboration with local business owners and City staff and is now being implemented. The [[locations/ann-arbor-greenbelt|Greenbelt]] launched an innovative buy-Protect-Sell acquisition framework to provide affordable farmland purchasing opportunities for land-insecure farmers, connecting food system resilience to land conservation.
+In year four, the strategy remained centered on voluntary participation and culture change, but with more formal delivery partners. OSI initiated three-year contracts with [[actors/zerowaste-org|ZeroWaste.Org]] to promote circular-economy activities and with [[actors/vegmichigan|VegMichigan]] to promote plant-forward diets and business engagement. In the first three quarters of the VegMichigan contract, more than 50 public events were held with upwards of 2,600 attendees; 529 residents participated in the 30-Day Plant-Based Pledge; and 93% of follow-up survey respondents said they would continue eating a more plant-based diet afterward. VegMichigan also engaged 15 local businesses offering plant-based options and worked with one local organization to implement a plant-based purchasing policy (([[sources/annual-reports/a2zero-year4|a2zero-year4]])).
 
-The [[initiatives/a2r3-reduce-reuse-return|A2R3 returnable containers program]] was maintained at four local restaurants in partnership with [[actors/live-zero-waste|Live Zero Waste]], and a partnership with Perpetual began to design a broader reusable landscape for Ann Arbor. An EPA grant was applied for to support drop-off station upgrades and scale the A2R3 program. An A2Zero waste challenge was launched for University of Michigan students, and two events were hosted to address waste during student move-in and move-out periods, covering reuse and recycling for scrap metal, foam, and general recycling as well as donations to Kiwanis. Three neighborhood swap days were hosted and a replication guide was created for community self-replication. A2Zero Ambassadors undertook deep engagement to increase composting rates and distributed compost carts to residents without them, while individualized outreach began to more than 300 multifamily complexes on reduce-reuse-recycle guidelines. Work with [[actors/ecology-center|The Ecology Center]] began to improve resource management across five areas: youth field trips (2nd and 7th grade), multi-family units, commercial businesses, events outreach, and a social media marketing campaign for waste reduction ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).
+The city also broadened its circular-economy ecosystem approach. It launched the [[initiatives/sustainable-food-business-coalition|Ann Arbor Area Sustainable Food Business Coalition]] to coordinate private-sector food-system sustainability work, continued developing a strategy to scale the [[initiatives/a2r3-reduce-reuse-return|A2R3]] returnable-container program with local businesses, and launched a circular-economy planning initiative in coordination with a local resident advisory commission aimed at producing a development strategy within 12 to 18 months. The circular-economy GIS map was updated again, and OSI launched the [[initiatives/more-life-less-stuff-campaign|More Life, Less Stuff Campaign]] as a social-marketing effort built around stories of waste reduction and lower-consumption lifestyles (([[sources/annual-reports/a2zero-year4|a2zero-year4]])).
+
+Operational waste systems advanced incrementally at the municipal level. OSI supported Public Works' purchase of a new electric refuse truck and hiring of a new worker to expand commercial recycling, while Public Works also began developing a strategy to expand compost services throughout the city. The city held its second annual Local Food Festival, supported move-in and move-out reuse efforts at the [[actors/university-of-michigan|University of Michigan]], and continued Neighborhood Swap Days with [[actors/community-action-network|Community Action Network]], [[actors/church-of-the-good-shepherd|Church of the Good Shepherd]], [[actors/ann-arbor-public-schools|Ann Arbor Public Schools]], and [[actors/zerowaste-org|ZeroWaste.Org]], reusing more than 6,800 items through that program. A grant application for a refrigerant recycling and replacement program targeting small local businesses and a code change allowing curbside placement of reusable household items both point to efforts to reduce waste upstream and extend product life. Year five priorities include creating a co-designed circular-economy strategy and launching a sustainable food strategy (([[sources/annual-reports/a2zero-year4|a2zero-year4]])).

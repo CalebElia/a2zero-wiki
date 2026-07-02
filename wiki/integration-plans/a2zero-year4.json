@@ -1,0 +1,242 @@
+{
+  "source-uuid": "a2zero-year4",
+  "generated-at": "2026-07-02T00:10:44.612769+00:00",
+  "digest-rebuilt": "2026-07-01",
+  "strategies-touched": [
+    "strategies/strategy-1-renewable-grid",
+    "strategies/strategy-2-electrification",
+    "strategies/strategy-3-building-efficiency",
+    "strategies/strategy-4-vmt-reduction",
+    "strategies/strategy-5-materials-waste",
+    "strategies/strategy-6-resilience",
+    "strategies/strategy-7-engagement"
+  ],
+  "extends": [
+    {
+      "slug": "initiatives/solarize-ann-arbor",
+      "new-data": "Year 4 reports 231 systems and over 1.8 MW installed in 2023, bringing Solarize totals to 4.8 MW and 630+ households served."
+    },
+    {
+      "slug": "initiatives/arpa-city-facilities-solar",
+      "new-data": "The source adds specific Year 4 municipal solar deployments, nearly 4 MW of additional sites in design, and $2.5 million in federal support plus election center solar funding."
+    },
+    {
+      "slug": "initiatives/landfill-solar-project",
+      "new-data": "Year 4 says the Wheeler Center/former landfill solar effort was re-scoped and received a $5 million award to advance solar at and around the site."
+    },
+    {
+      "slug": "initiatives/community-choice-aggregation",
+      "new-data": "The report says the city drafted CCA legislation and continued state-level advocacy alongside Michigan's new clean energy law package."
+    },
+    {
+      "slug": "initiatives/sustainable-energy-utility",
+      "new-data": "Year 4 adds a technical study, rate analysis, public engagement launch, and a planned November 2024 ballot question on formally creating the SEU."
+    },
+    {
+      "slug": "actors/dte-energy",
+      "new-data": "The source provides 2023 fuel-mix context, notes over 50% coal and 13% renewables, and ties this to municipalization study and MPSC case interventions."
+    },
+    {
+      "slug": "initiatives/resilience-hubs",
+      "new-data": "Year 4 expands resilience hub work with EPA funding for a regional network, new planned sites, and added backup power investments."
+    },
+    {
+      "slug": "initiatives/northside-resilience-hub",
+      "new-data": "The report indicates Bryant Community Center became the city's second resilience hub, shifting the hub network from a single-site model to expansion."
+    },
+    {
+      "slug": "initiatives/10000-trees-initiative",
+      "new-data": "Year 4 reports 8,903 trees planted or distributed, a USFS grant for canopy analysis and underserved-neighborhood planting, and a planned survival study."
+    },
+    {
+      "slug": "initiatives/environmental-sensors-monitoring",
+      "new-data": "The source adds an air-quality visualization map, reliability fixes, and six additional monitors ordered for deployment."
+    },
+    {
+      "slug": "initiatives/a2zero-ambassadors-program",
+      "new-data": "Year 4 reports the 5th and 6th cohorts, reaching 100 ambassadors trained, plus science communication training and neighborhood pilot work."
+    },
+    {
+      "slug": "initiatives/electrify-city-fleet",
+      "new-data": "The report says the city reached 25% electrification of light-duty fleet vehicles, added e-bikes, and set a 70% fleet electrification Year 5 priority."
+    },
+    {
+      "slug": "initiatives/expand-ev-charging-infrastructure",
+      "new-data": "Year 4 adds the state's first curbside public L2 chargers, park-site charger expansion, a multifamily/commercial discount program, and a grant for two dozen more locations."
+    },
+    {
+      "slug": "initiatives/electrify-buses",
+      "new-data": "The source updates TheRide work with a zero-emissions propulsion study and grant application for its first zero-emission buses."
+    },
+    {
+      "slug": "initiatives/geothermal-districts",
+      "new-data": "Year 4 adds Bryant district geothermal design details, a citywide networked geothermal study, and geothermal support at 121 Catherine Street."
+    },
+    {
+      "slug": "initiatives/community-climate-action-millage-rebates",
+      "new-data": "The report says over $4 million was authorized for residential rebates over 2.5 years through a new Home Energy Rebate program design contract."
+    },
+    {
+      "slug": "initiatives/green-rental-housing-program",
+      "new-data": "Year 4 says the Green Rental Housing program made significant progress and was expected to go to City Council in summer or fall 2024."
+    },
+    {
+      "slug": "initiatives/energy-concierge-and-community-engagement-program",
+      "new-data": "The source says the A2ZERO Home Energy Advisor service launched as a free resident-facing decarbonization guidance program."
+    },
+    {
+      "slug": "initiatives/benchmark-and-disclose-energy-usage",
+      "new-data": "Year 4 reports active implementation of the commercial and multifamily benchmarking ordinance for buildings over 20,000 square feet and launch of Home Energy Rating Disclosure."
+    },
+    {
+      "slug": "initiatives/move-toward-circular-economy",
+      "new-data": "The report expands circular economy work with ZeroWaste.Org contracting, planning toward a development strategy, GIS map updates, and the More Life Less Stuff campaign."
+    }
+  ],
+  "new-entities": [
+    {
+      "slug": "initiatives/municipalization-study-phase-ii",
+      "type": "initiative",
+      "title": "Phase II Municipalization Study",
+      "rationale": "Council-authorized valuation study of DTE electric assets in Ann Arbor."
+    },
+    {
+      "slug": "political-events/november-2024-seu-ballot-question",
+      "type": "political-event",
+      "title": "November 2024 SEU Ballot Question",
+      "rationale": "Voters will decide whether to formally create the SEU."
+    },
+    {
+      "slug": "political-events/michigan-clean-energy-bill-package-2023",
+      "type": "political-event",
+      "title": "Michigan Clean Energy Bill Package of 2023",
+      "rationale": "State laws set 50% clean power by 2030 and 100% by 2040."
+    },
+    {
+      "slug": "initiatives/home-electrification-expo",
+      "type": "initiative",
+      "title": "Home Electrification Expo",
+      "rationale": "Annual public event advancing resident electrification education and engagement."
+    },
+    {
+      "slug": "actors/elevate",
+      "type": "actor",
+      "title": "Elevate",
+      "rationale": "Contracted partner designing Ann Arbor's Home Energy Rebate program."
+    },
+    {
+      "slug": "initiatives/home-energy-rebate-program",
+      "type": "initiative",
+      "title": "Home Energy Rebate Program",
+      "rationale": "Major local rebate program for electrification, efficiency, and e-bikes."
+    },
+    {
+      "slug": "initiatives/home-energy-rating-disclosure",
+      "type": "initiative",
+      "title": "Home Energy Rating Disclosure",
+      "rationale": "New ordinance implementation effort with assessors and DOE partnership."
+    },
+    {
+      "slug": "actors/washtenaw-2030-district",
+      "type": "actor",
+      "title": "Ann Arbor / Washtenaw 2030 District",
+      "rationale": "Key commercial-building decarbonization partner under new city contract."
+    },
+    {
+      "slug": "initiatives/ann-arbor-green-business-challenge",
+      "type": "initiative",
+      "title": "Ann Arbor Green Business Challenge",
+      "rationale": "New business-facing sustainability support and recognition program."
+    },
+    {
+      "slug": "actors/zerowaste-org",
+      "type": "actor",
+      "title": "ZeroWaste.Org",
+      "rationale": "Three-year contractor leading circular economy engagement activities."
+    },
+    {
+      "slug": "actors/vegmichigan",
+      "type": "actor",
+      "title": "VegMichigan",
+      "rationale": "Three-year partner promoting plant-forward diets and business engagement."
+    },
+    {
+      "slug": "initiatives/sustainable-food-business-coalition",
+      "type": "initiative",
+      "title": "Ann Arbor Area Sustainable Food Business Coalition",
+      "rationale": "New coalition coordinating private-sector food-system sustainability work."
+    },
+    {
+      "slug": "initiatives/more-life-less-stuff-campaign",
+      "type": "initiative",
+      "title": "More Life, Less Stuff Campaign",
+      "rationale": "Social marketing campaign promoting waste reduction and reuse."
+    },
+    {
+      "slug": "initiatives/model-regional-resilience-network",
+      "type": "initiative",
+      "title": "Model Regional Resilience Network",
+      "rationale": "EPA-funded effort to expand resilience hubs citywide and countywide."
+    },
+    {
+      "slug": "locations/peace-neighborhood-center",
+      "type": "location",
+      "title": "Peace Neighborhood Center",
+      "rationale": "Selected as one of the next resilience hub sites."
+    },
+    {
+      "slug": "locations/green-baxter-court-community-center",
+      "type": "location",
+      "title": "Green Baxter Court Community Center",
+      "rationale": "Chosen as a future resilience hub site with planning underway."
+    },
+    {
+      "slug": "technology/mobile-nanogrid",
+      "type": "technology",
+      "title": "Mobile Nanogrid",
+      "rationale": "Portable backup-power and education asset purchased by the city."
+    },
+    {
+      "slug": "initiatives/green-energy-neighbors",
+      "type": "initiative",
+      "title": "Green Energy Neighbors",
+      "rationale": "Ambassador-linked initiative hosting solar stories and climate meetings."
+    },
+    {
+      "slug": "initiatives/nourishing-neighborhood-pilot",
+      "type": "initiative",
+      "title": "Nourishing Neighborhood Pilot",
+      "rationale": "Neighborhood resilience pilot focused on preparedness and mutual support."
+    },
+    {
+      "slug": "initiatives/ann-arbor-climate-corps",
+      "type": "initiative",
+      "title": "Ann Arbor Climate Corps",
+      "rationale": "AmeriCorps program supporting sustainability education and behavior change."
+    }
+  ],
+  "retrieve-for-context": [
+    "strategies/strategy-1-renewable-grid",
+    "strategies/strategy-2-electrification",
+    "strategies/strategy-3-building-efficiency",
+    "strategies/strategy-4-vmt-reduction",
+    "strategies/strategy-5-materials-waste",
+    "strategies/strategy-6-resilience",
+    "strategies/strategy-7-engagement",
+    "initiatives/solarize-ann-arbor",
+    "initiatives/sustainable-energy-utility",
+    "initiatives/community-choice-aggregation",
+    "initiatives/geothermal-districts",
+    "initiatives/resilience-hubs",
+    "initiatives/a2zero-ambassadors-program",
+    "initiatives/benchmark-and-disclose-energy-usage",
+    "actors/dte-energy"
+  ],
+  "theme-connections": [
+    "State clean-energy legislation reshapes local renewable, utility, and electrification pathways.",
+    "Bryant emerges as a flagship district linking geothermal, resilience, efficiency, and engagement.",
+    "City is shifting from pilots to delivery infrastructure through multi-year contracts, grants, and ballot measures.",
+    "Resilience investments increasingly pair backup power, microgrids, and community-serving facilities.",
+    "Building decarbonization now spans homeowner guidance, rebates, disclosure, benchmarking, and workforce development."
+  ]
+}

@@ -22,7 +22,7 @@ partners:
 - '[[actors/dte-energy]]'
 - '[[actors/michigan-egle]]'
 - '[[actors/university-of-michigan]]'
-- '[[actors/ann-arbor-2030-district]]'
+- '[[actors/ann-arbor-washtenaw-2030-district]]'
 party-responsible: '[[actors/office-of-sustainability-and-innovations]]'
 related-strategies:
 - '[[strategies/strategy-2-electrification]]'
@@ -40,3 +40,5 @@ type: initiative
 ---
 
 The Expand EV Charging Infrastructure initiative aims to significantly increase public and workplace EV charging at parking lots and garages, park-and-ride lots, ridesharing spots, and City facilities to support the transition from internal combustion engine vehicles to EVs ([[sources/cap/cap-2020|cap-2020]]). The plan assumes 1,250 level 2 chargers installed annually starting in 2021 (200 per year paid through utility rebates) and 2 Direct Current Fast Chargers (DCFCs) installed per year (both paid through utility rebates), with new chargers prioritized for low-income areas and multifamily housing ([[sources/cap/cap-2020|cap-2020]]). The 10-year estimated cost is $42,000,000; the initiative has no direct GHG reduction potential but enables residents and businesses to adopt EVs, with indirect emissions benefits captured in other actions ([[sources/cap/cap-2020|cap-2020]]). Success is defined as 10% of all public and private parking spaces equipped with level 2 chargers and 2% with DCFCs ([[sources/cap/cap-2020|cap-2020]]).
+
+In Year Four, [[initiatives/expand-ev-charging-infrastructure|Expand EV Charging Infrastructure]] advanced through both public-site deployment and new private-property support tools, continuing to expand public charging access in Ann Arbor to support transportation electrification ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). The city reported that Michigan's first curbside public Level 2 chargers were installed and operating in Ann Arbor, that chargers were installed at four city park sites with one more upcoming for more than 10 additional public ports, and that staff were developing a strategy for further curbside charger deployment ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). The city also continued implementing its EV readiness ordinance, designed an EV charger discount program for multifamily and commercial property owners for summer 2024 launch, and submitted a grant application to deploy chargers at two dozen more locations across the city ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). Year 5 priorities call for creating and beginning execution of an EV charger deployment strategy and for deploying 60 additional chargers, including another tranche of curbside chargers ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).

@@ -77,7 +77,7 @@ Strategy 1 of A2ZERO calls for the community's electrical energy to be powered w
 - Published Advancing Sustainability with Your MUD or HOA that includes tips for expanding access to solar and electric vehicle charging in multi-unit developments (MUD) and buildings within a home owners association (HOA).
 - Created a sample HOA sustainability policy, which is freely available to anyone in the City or State.
 
-## STRATEGY 1: 100% RENEWABLES
+### STRATEGY 1: 100% RENEWABLES
 
 - Awarded $70,000 grant to design a microgrid at Veterans Memorial Park and Fire Station 3.
 - Submitted federal grant to finalize microgrid design and install a microgrid at Veterans Memorial Park and Fire Station 3.
@@ -94,7 +94,7 @@ Solar array installed at Gallup Park.
 
 Solar array installed at Huron Hills Golf Course.
 
-## STRATEGY 1: 100% RENEWABLES
+### STRATEGY 1: 100% RENEWABLES
 
 - Office of Sustainability and Innovations (OSI) staff served on the national U.S. Department of Energy SolSmart Advisory Committee.
 - OSI staff participated in multiple Michigan Public Service Commission working groups, technical conferences, and stakeholder meetings related to reliability and distributed energy resources.
@@ -120,7 +120,7 @@ Strategy 2 of A2ZERO focuses on beneficial electrification, or the switching of 
 - Began designing a district geothermal system in the Bryant neighborhood through a grant from the U.S. Department of Energy. This system is being designed to cover at least 75% of the heating and cooling load for 262 households, the County Mental Health facility, Bryant Elementary School, the Bryant Community Center, and the City's public works facility.
 - Initiated work on a city-wide networked geothermal study to understand the potential for geothermal systems to support the decarbonization of heating and cooling systems in the City.
 
-## STRATEGY 2: BENEFICIAL ELECTRIFICATION
+### STRATEGY 2: BENEFICIAL ELECTRIFICATION
 
 - Supported the gas leaf blower phase-out ordinance by launching a new website, a series of educational materials, and personalized outreach. Preparing to launch a bulk buy program for electric yard equipment in late 2024.
 - Initiated a 3-year contract with Elevate to design and launch a Home Energy Rebate program to increase the affordability of building electrification, building efficiency, and e-bikes. Local rebate program to launch in summer of 2024.
@@ -133,7 +133,7 @@ Strategy 2 of A2ZERO focuses on beneficial electrification, or the switching of 
 
 Attendees at the Electrification Expo, August 2023.
 
-## STRATEGY 2: BENEFICIAL ELECTRIFICATION
+### STRATEGY 2: BENEFICIAL ELECTRIFICATION
 
 - Submitted a grant to deploy EV chargers at two dozen more locations throughout the City.
 - Awarded grant from State of Michigan to secure an electric forklift for the City fleet.
@@ -160,7 +160,7 @@ Energy efficiency - or energy waste reduction - is a critical part of achieving 
 - Became a Department of Energy Home Energy Score Partner. This enables OSI to train and certify Home Energy Score Assessors who can support implementation of the Home Energy Rating Disclosure Ordinance.
 - Initiated a 3-year contract with Elevate to design and launch a Home Energy Rebate program to increase the affordability of energy efficiency improvements.
 
-## STRATEGY 3: ENERGY EFFICIENCY
+### STRATEGY 3: ENERGY EFFICIENCY
 
 - Authorized over $4,000,000 in funds to be used for residential rebates in the coming 2.5 years.
 - Continued implementing the Commercial and Multi-Family Energy and Water Benchmarking Ordinance with all buildings greater than 20,000 square feet now required to track and report their energy and water usage annually.
@@ -192,7 +192,7 @@ How we move about the community has a significant impact on our local carbon foo
 - Ann Arbor City Hall was recognized as a Silver Level Bicycle Business in 2023.
 - Created Bicycle Parking Pilot program and there have been four bike parking installations as part of this program.
 
-## STRATEGY 4: VMT REDUCTION
+### STRATEGY 4: VMT REDUCTION
 
 - The Planning Department sought and received approval to eliminate car parking minimums in most developments.
 - Created new proposed zoning districts for transit corridors, and created visualization tool to see where these corridors are throughout the city.
@@ -212,7 +212,7 @@ Moving towards a circular economy means reducing waste and improving the life cy
 - Applied for a grant for a refrigerant recycling and replacement program, focusing on supporting small, local businesses with reducing refrigerant emissions.
 - Continued hosting Neighborhood Swap Days, collaborating with Community Action Network, Church of the Good Shepherd, Ann Arbor Public Schools, and ZeroWaste.org to reuse more than 6,800 items through this program.
 
-## STRATEGY 5: CIRCULAR ECONOMY
+### STRATEGY 5: CIRCULAR ECONOMY
 
 - Supported Public Works' purchase of a new electric refuse truck and hiring of a new worker to support the expansion of commercial recycling. Public Works is also working on a strategy to expand compost services throughout the City.
 - Held the second annual Local Food Festival to celebrate the thriving local food ecosystem.
@@ -239,7 +239,7 @@ Enhancing the resilience of our people and our community are pivotal elements of
 - Ordered six more air quality monitors for deployment throughout the City (likely in fall 2024).
 - Continued promotion of the Pollinator-Aware Yard Care program; registered 396 addresses as participants and distributed yard signs to 332 participants.
 
-## STRATEGY 6: RESILIENCE
+### STRATEGY 6: RESILIENCE
 
 - Continued adoption of Bandemer Park, holding monthly workdays to clean up litter, plant native species, remove invasives, and perform general maintenance on facilities.
 - Conducted two pilot battery back-up Solarize bulk buys, leading to 37 battery back-up systems installed while saving residents $101,650 on upfront installation costs.
@@ -285,13 +285,13 @@ Many of the activities undertaken to advance A2ZERO fall into multiple strategie
 - Began airing Green Light, a recurring show on CTN, which features residents who are envisioning, creating, and establishing a sustainable and equitable future for the community.
 - Began airing a recurring sustainability segment on local radio station, 107.1 to consistently promote timely events and announcement from OSI.
 
-## STRATEGY 7: OTHER
+### STRATEGY 7: OTHER
 
 Green Light episode on the Home Energy Rating Disclosure Ordinance, hosted by Grace Franke, Communications Coordinator, with special guests Jerrell Wylie (left) and Steve Christensen (right), Energy Assessors.
 
 Earth Day 2024 celebrations hosted by the Leslie Science and Nature Center.
 
-## STRATEGY 7: OTHER
+### STRATEGY 7: OTHER
 
 Ann Arbor Mayor Christopher Taylor and the Winter 2024 cohort of A2ZERO Ambassadors at their February graduation.
 
@@ -323,7 +323,7 @@ As illustrated above, year four was a busy year. But year five is slated to keep
 
 Ann Arbor Climate Corps members visiting a Greenbelt farm, December 2023.
 
-## YEAR 5 PRIORITIES
+### YEAR 5 PRIORITIES
 
 - Begin working with a second neighborhood interested in becoming carbon neutral.
 - Create our third and fourth resilience hubs.
@@ -347,5 +347,3 @@ Ann Arbor Climate Corps members visiting a Greenbelt farm, December 2023.
 A2ZERO is our community's plan to become carbon neutral in a just and equitable way by the year 2030. Achieving this audacious, aggressive, and scientifically necessary goal requires all of us. Learn more about how to join this movement at www.A2ZERO.org.
 
 Unveiling of the Bryant Community Center as Ann Arbor's first Resilience Hub, June 2023.
-
-## CLOSING

@@ -1,0 +1,206 @@
+{
+  "document_uuid": "a2zero-year4",
+  "total_lines": 349,
+  "ldp_version": "1.1",
+  "sections": [
+    {
+      "id": "contents",
+      "title": "CONTENTS",
+      "depth": 2,
+      "line_start": 5,
+      "line_end": 39,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "introduction",
+      "title": "INTRODUCTION",
+      "depth": 2,
+      "line_start": 40,
+      "line_end": 51,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "greenhouse-gas-emissions-summary",
+      "title": "GREENHOUSE GAS EMISSIONS SUMMARY",
+      "depth": 2,
+      "line_start": 52,
+      "line_end": 65,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-1-powering-our-electrical-grid-with-100-renewable-energy",
+      "title": "STRATEGY 1: Powering Our Electrical Grid with 100% Renewable Energy",
+      "depth": 2,
+      "line_start": 66,
+      "line_end": 109,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-1-100-renewables",
+      "title": "STRATEGY 1: 100% RENEWABLES",
+      "depth": 3,
+      "line_start": 80,
+      "line_end": 96,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-1-100-renewables",
+      "title": "STRATEGY 1: 100% RENEWABLES",
+      "depth": 3,
+      "line_start": 97,
+      "line_end": 109,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-2-switch-our-appliances-and-vehicles-from-gasoline-diesel-propane-coal-and-natural-gas-to-electric",
+      "title": "STRATEGY 2: Switch our Appliances and Vehicles from Gasoline, Diesel, Propane, Coal, and Natural Gas to Electric",
+      "depth": 2,
+      "line_start": 110,
+      "line_end": 149,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-2-beneficial-electrification",
+      "title": "STRATEGY 2: BENEFICIAL ELECTRIFICATION",
+      "depth": 3,
+      "line_start": 123,
+      "line_end": 135,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-2-beneficial-electrification",
+      "title": "STRATEGY 2: BENEFICIAL ELECTRIFICATION",
+      "depth": 3,
+      "line_start": 136,
+      "line_end": 149,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-3-significantly-improve-the-energy-efficiency-in-our-homes-businesses-schools-places-of-worship-recreational-sites-and-government-facilities",
+      "title": "STRATEGY 3: Significantly Improve the Energy Efficiency in our Homes, Businesses, Schools, Places of Worship, Recreational Sites, and Government Facilities",
+      "depth": 2,
+      "line_start": 150,
+      "line_end": 178,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-3-energy-efficiency",
+      "title": "STRATEGY 3: ENERGY EFFICIENCY",
+      "depth": 3,
+      "line_start": 163,
+      "line_end": 178,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-4-reduce-the-miles-we-travel-in-our-vehicles-by-at-least-50",
+      "title": "STRATEGY 4: Reduce the Miles We Travel in our Vehicles by at least 50%",
+      "depth": 2,
+      "line_start": 179,
+      "line_end": 202,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-4-vmt-reduction",
+      "title": "STRATEGY 4: VMT REDUCTION",
+      "depth": 3,
+      "line_start": 195,
+      "line_end": 202,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-5-change-the-way-we-use-reuse-and-dispose-of-materials",
+      "title": "STRATEGY 5: Change the Way We Use, Reuse, and Dispose of Materials",
+      "depth": 2,
+      "line_start": 203,
+      "line_end": 227,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-5-circular-economy",
+      "title": "STRATEGY 5: CIRCULAR ECONOMY",
+      "depth": 3,
+      "line_start": 215,
+      "line_end": 227,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-6-enhance-the-resilience-of-our-people-and-our-place",
+      "title": "STRATEGY 6: Enhance the Resilience of Our People and Our Place",
+      "depth": 2,
+      "line_start": 228,
+      "line_end": 261,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-6-resilience",
+      "title": "STRATEGY 6: RESILIENCE",
+      "depth": 3,
+      "line_start": 242,
+      "line_end": 261,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-7-other-strategies-notable-accomplishments-or-efforts",
+      "title": "STRATEGY 7: Other Strategies (notable accomplishments or efforts)",
+      "depth": 2,
+      "line_start": 262,
+      "line_end": 308,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-7-other",
+      "title": "STRATEGY 7: OTHER",
+      "depth": 3,
+      "line_start": 288,
+      "line_end": 293,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-7-other",
+      "title": "STRATEGY 7: OTHER",
+      "depth": 3,
+      "line_start": 294,
+      "line_end": 308,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "year-5-priorities",
+      "title": "YEAR 5 PRIORITIES",
+      "depth": 2,
+      "line_start": 309,
+      "line_end": 349,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "year-5-priorities",
+      "title": "YEAR 5 PRIORITIES",
+      "depth": 3,
+      "line_start": 326,
+      "line_end": 349,
+      "is_chunk": false,
+      "notes": ""
+    }
+  ],
+  "approved": true
+}

@@ -37,3 +37,12 @@ Pass 1: Writer→Evaluator→Editor complete. 0 stubs, 0 topic candidates.
 ## [2026-06-30 | a2zero-year3]
 
 Pass 3 complete — index rebuilt.
+
+## [2026-07-01 | a2zero-year4]
+
+Revised the A2ZERO Year Four synthesis to correct source-grounding, remove unsupported draft additions, and fully integrate year-four emissions context, strategy accomplishments, and year-five priorities from [[sources/annual-reports/a2zero-year4]].
+Pass 1: Writer→Evaluator→Editor complete. 0 stubs, 0 topic candidates.
+
+## [2026-07-01 | a2zero-year4]
+
+Pass 3 complete — index rebuilt.

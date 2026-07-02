@@ -18,4 +18,4 @@ title: Avalon Housing
 type: actor
 ---
 
-[[actors/avalon-housing|Avalon Housing]] is an Ann Arbor-based nonprofit affordable housing provider that partnered with the City of Ann Arbor on a resilience assessment to support the climate resilience of affordable housing providers ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).
+[[actors/avalon-housing|Avalon Housing]] is an Ann Arbor-based nonprofit affordable housing provider that partnered with the City of Ann Arbor on a resilience assessment to support the climate resilience of affordable housing providers ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). In year four, it was also referenced through its Emergency Preparedness working group, which OSI staff joined to help ensure residents are prepared for emergency events, reflecting the organization's role as a nonprofit partner in Ann Arbor's community resilience and preparedness work ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).

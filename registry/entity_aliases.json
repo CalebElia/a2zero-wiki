@@ -143,7 +143,7 @@
       "A2Zero Program",
       "a2zero-program",
       "A2ZERO program",
-      "A\u00b2ZERO program",
+      "A²ZERO program",
       "the sustainability office"
     ],
     "relationship": "name-variant"
@@ -438,7 +438,7 @@
     "relationship": "name-variant"
   },
   "2030-district": {
-    "canonical": "actors/ann-arbor-2030-district",
+    "canonical": "actors/ann-arbor-washtenaw-2030-district",
     "type": "actor",
     "aliases": [
       "2030 District"
@@ -680,7 +680,7 @@
     "relationship": "name-variant"
   },
   "ann-arbor-2030-district": {
-    "canonical": "actors/ann-arbor-2030-district",
+    "canonical": "actors/ann-arbor-washtenaw-2030-district",
     "type": "actor",
     "aliases": [
       "Ann Arbor 2030 District"
@@ -939,7 +939,7 @@
     "canonical": "actors/citizens-climate-lobby-ann-arbor",
     "type": "actor",
     "aliases": [
-      "Citizens Climate Lobby \u2014 Ann Arbor Chapter"
+      "Citizens Climate Lobby — Ann Arbor Chapter"
     ],
     "relationship": "name-variant"
   },
@@ -1107,7 +1107,7 @@
     "canonical": "actors/a2zero-partner-organizations",
     "type": "actor",
     "aliases": [
-      "A\u00b2ZERO Partner Organizations"
+      "A²ZERO Partner Organizations"
     ],
     "relationship": "name-variant"
   },
@@ -1936,10 +1936,10 @@
     "relationship": "name-variant"
   },
   "carbon-tax": {
-    "canonical": "initiatives/carbon-tax",
+    "canonical": "initiatives/internal-carbon-price",
     "type": "initiative",
     "aliases": [
-      "Create Carbon Tax"
+      "Carbon Tax"
     ],
     "relationship": "name-variant"
   },
@@ -1952,7 +1952,7 @@
     "relationship": "name-variant"
   },
   "internal-carbon-tax": {
-    "canonical": "initiatives/internal-carbon-tax",
+    "canonical": "initiatives/internal-carbon-price",
     "type": "initiative",
     "aliases": [
       "Internal Carbon Tax"
@@ -2184,7 +2184,7 @@
     "relationship": "name-variant"
   },
   "bryant-community-center": {
-    "canonical": "locations/bryant-community-center",
+    "canonical": "locations/bryant-neighborhood-community-center",
     "type": "location",
     "aliases": [
       "Bryant Community Center"
@@ -2275,7 +2275,7 @@
     "canonical": "meetings/2019-12-19-a2zero-partners-equity-training",
     "type": "meeting",
     "aliases": [
-      "A\u00b2ZERO Partners \u2014 2019-12-19 (Equity and Climate Training)"
+      "A²ZERO Partners — 2019-12-19 (Equity and Climate Training)"
     ],
     "relationship": "name-variant"
   },
@@ -2283,7 +2283,7 @@
     "canonical": "meetings/2020-03-20-a2zero-partners-strategy-unveiling",
     "type": "meeting",
     "aliases": [
-      "A\u00b2ZERO Partners \u2014 2020-03-20 (Final Strategy Unveiling)"
+      "A²ZERO Partners — 2020-03-20 (Final Strategy Unveiling)"
     ],
     "relationship": "name-variant"
   },
@@ -2291,7 +2291,7 @@
     "canonical": "meetings/2020-01-14-energy-commission",
     "type": "meeting",
     "aliases": [
-      "Energy Commission \u2014 2020-01-14 (A2Zero presentation and discussion)"
+      "Energy Commission — 2020-01-14 (A2Zero presentation and discussion)"
     ],
     "relationship": "name-variant"
   },
@@ -2299,7 +2299,7 @@
     "canonical": "meetings/2020-02-22-carbon-neutrality-town-hall",
     "type": "meeting",
     "aliases": [
-      "2nd Carbon Neutrality Town Hall \u2014 2020-02-22"
+      "2nd Carbon Neutrality Town Hall — 2020-02-22"
     ],
     "relationship": "name-variant"
   },
@@ -2307,7 +2307,7 @@
     "canonical": "meetings/2020-01-17-transportation-energy-environmental-planning-commissions",
     "type": "meeting",
     "aliases": [
-      "Transportation, Energy, Environmental, and Planning Commissions \u2014 2020-01-17"
+      "Transportation, Energy, Environmental, and Planning Commissions — 2020-01-17"
     ],
     "relationship": "name-variant"
   },
@@ -2315,7 +2315,7 @@
     "canonical": "meetings/2019-12-13-a2zero-partners",
     "type": "meeting",
     "aliases": [
-      "A\u00b2ZERO Partners \u2014 2019-12-13 (First Partner Meeting)"
+      "A²ZERO Partners — 2019-12-13 (First Partner Meeting)"
     ],
     "relationship": "name-variant"
   },
@@ -2323,7 +2323,7 @@
     "canonical": "political-events/2017-06-01-green-fleets-policy-resolution",
     "type": "political-event",
     "aliases": [
-      "Ann Arbor City Council \u2014 Resolution R-17-237 (Green Fleets Policy Update)"
+      "Ann Arbor City Council — Resolution R-17-237 (Green Fleets Policy Update)"
     ],
     "relationship": "name-variant"
   },
@@ -2331,7 +2331,7 @@
     "canonical": "political-events/2019-11-04-climate-emergency-declaration-and-carbon-neutrality-plan-resolution",
     "type": "political-event",
     "aliases": [
-      "Ann Arbor City Council \u2014 Climate Emergency Declaration and Resolution to Create"
+      "Ann Arbor City Council — Climate Emergency Declaration and Resolution to Create"
     ],
     "relationship": "name-variant"
   },
@@ -2448,10 +2448,10 @@
     "relationship": "name-variant"
   },
   "benchmarking-ordinance": {
-    "canonical": "initiatives/benchmarking-ordinance",
+    "canonical": "initiatives/commercial-benchmarking-ordinance",
     "type": "initiative",
     "aliases": [
-      "Commercial and Multi-Family Benchmarking Ordinance"
+      "Benchmarking Ordinance"
     ],
     "relationship": "name-variant"
   },
@@ -2560,10 +2560,10 @@
     "relationship": "name-variant"
   },
   "dcfc-city-hall-grant-2021": {
-    "canonical": "funding-events/dcfc-city-hall-grant-2021",
+    "canonical": "funding-events/ev-fast-charger-2022",
     "type": "funding-event",
     "aliases": [
-      "Direct Current Fast Charger Installation Grant \u2014 City Hall 2021"
+      "Dcfc City Hall Grant 2021"
     ],
     "relationship": "name-variant"
   },
@@ -2683,7 +2683,7 @@
     "canonical": "actors/el-harissa-market-cafe",
     "type": "actor",
     "aliases": [
-      "El Harissa Market Caf\u00e9"
+      "El Harissa Market Café"
     ],
     "relationship": "name-variant"
   },
@@ -2699,7 +2699,7 @@
     "canonical": "actors/zingermans-next-door-cafe",
     "type": "actor",
     "aliases": [
-      "Zingerman's Next Door Caf\u00e9"
+      "Zingerman's Next Door Café"
     ],
     "relationship": "name-variant"
   },
@@ -2752,7 +2752,7 @@
     "relationship": "name-variant"
   },
   "ann-arbor-emergency-management": {
-    "canonical": "actors/ann-arbor-emergency-management",
+    "canonical": "actors/office-of-emergency-management",
     "type": "actor",
     "aliases": [
       "Ann Arbor Emergency Management"
@@ -3152,7 +3152,7 @@
     "relationship": "name-variant"
   },
   "a2zero-metrics-dashboard": {
-    "canonical": "initiatives/a2zero-metrics-dashboard",
+    "canonical": "initiatives/a2zero-dashboard",
     "type": "initiative",
     "aliases": [
       "A2Zero Metrics Dashboard"
@@ -3309,7 +3309,7 @@
     "canonical": "political-events/2022-commercial-benchmarking-ordinance-ann-arbor",
     "type": "political-event",
     "aliases": [
-      "Ann Arbor City Council \u2014 Commercial Benchmarking Ordinance Passed (Michigan's"
+      "Ann Arbor City Council — Commercial Benchmarking Ordinance Passed (Michigan's"
     ],
     "relationship": "name-variant"
   },
@@ -3317,7 +3317,7 @@
     "canonical": "political-events/2022-03-21-sustainable-food-purchasing-resolution",
     "type": "political-event",
     "aliases": [
-      "Ann Arbor City Council \u2014 2022-03-21 (Sustainable Food Purchasing Policy Resolution)"
+      "Ann Arbor City Council — 2022-03-21 (Sustainable Food Purchasing Policy Resolution)"
     ],
     "relationship": "name-variant"
   },
@@ -3327,7 +3327,7 @@
     "aliases": [
       "A2Zero",
       "A2ZERO",
-      "A\u00b2ZERO"
+      "A²ZERO"
     ],
     "relationship": "name-variant",
     "notes": "A2Zero is the plan/brand name; the implementing body is OSI"
@@ -3372,7 +3372,7 @@
       "local property owners"
     ],
     "relationship": "name-variant",
-    "notes": "Generic grouping \u2014 redirected to WAAA as closest organized body representing rental property owners in Washtenaw County"
+    "notes": "Generic grouping — redirected to WAAA as closest organized body representing rental property owners in Washtenaw County"
   },
   "a2zero-program-office": {
     "canonical": "actors/office-of-sustainability-and-innovations",
@@ -3502,10 +3502,10 @@
     "relationship": "name-variant"
   },
   "resilience-network": {
-    "canonical": "initiatives/resilience-network",
+    "canonical": "initiatives/model-regional-resilience-network",
     "type": "initiative",
     "aliases": [
-      "Ann Arbor Resilience Network"
+      "Resilience Network"
     ],
     "relationship": "name-variant"
   },
@@ -3577,7 +3577,7 @@
     "canonical": "funding-events/semcog-led-streetlight-2023",
     "type": "funding-event",
     "aliases": [
-      "SEMCOG Carbon Reduction Program \u2014 LED Streetlights (2023)"
+      "SEMCOG Carbon Reduction Program — LED Streetlights (2023)"
     ],
     "relationship": "name-variant"
   },
@@ -3585,7 +3585,7 @@
     "canonical": "funding-events/usdn-mini-grant-aip-2023",
     "type": "funding-event",
     "aliases": [
-      "Urban Sustainability Directors Network Mini-Grant \u2014 Aging in Place (2023)"
+      "Urban Sustainability Directors Network Mini-Grant — Aging in Place (2023)"
     ],
     "relationship": "name-variant"
   },
@@ -3617,7 +3617,7 @@
     "canonical": "funding-events/usdn-circular-economy-2023",
     "type": "funding-event",
     "aliases": [
-      "Urban Sustainability Directors Network Emergent Learning Fund \u2014 Circular Economy"
+      "Urban Sustainability Directors Network Emergent Learning Fund — Circular Economy"
     ],
     "relationship": "name-variant"
   },
@@ -3665,7 +3665,7 @@
     "canonical": "funding-events/semcog-bike-boulevard-2023",
     "type": "funding-event",
     "aliases": [
-      "SEMCOG Carbon Reduction Program \u2014 Washington Street Bike Boulevard (2023)"
+      "SEMCOG Carbon Reduction Program — Washington Street Bike Boulevard (2023)"
     ],
     "relationship": "name-variant"
   },
@@ -3689,7 +3689,7 @@
     "canonical": "political-events/2022-11-community-climate-action-millage",
     "type": "political-event",
     "aliases": [
-      "Community Climate Action Millage \u2014 November 2022 (Passed)"
+      "Community Climate Action Millage — November 2022 (Passed)"
     ],
     "relationship": "name-variant"
   },
@@ -3757,10 +3757,10 @@
     "relationship": "name-variant"
   },
   "washtenaw-2030-district": {
-    "canonical": "actors/washtenaw-2030-district",
+    "canonical": "actors/ann-arbor-washtenaw-2030-district",
     "type": "actor",
     "aliases": [
-      "Ann Arbor / Washtenaw 2030 District"
+      "Washtenaw 2030 District"
     ],
     "relationship": "name-variant"
   },
@@ -4003,5 +4003,15 @@
       "November 2024 SEU Ballot Question"
     ],
     "relationship": "name-variant"
+  },
+  "a2zero-ambassadors": {
+    "canonical": "initiatives/a2zero-ambassadors-program",
+    "type": "initiative",
+    "aliases": [
+      "A2Zero Ambassadors",
+      "A2ZERO Ambassadors"
+    ],
+    "relationship": "name-variant",
+    "notes": "Program-produced collective — the ambassador corps is the initiative's own output, not a distinct actor. See CLAUDE.md convention."
   }
 }

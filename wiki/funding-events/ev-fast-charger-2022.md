@@ -21,4 +21,4 @@ transferable: false
 type: funding-event
 ---
 
-A total of $170,000 in funding was secured to support the installation of four electric vehicle fast chargers in Ann Arbor ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). The funder is not explicitly named beyond a general grant reference in the source document ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).
+Ann Arbor won a grant during Year One of A2ZERO to install four Direct Current Fast Chargers (DCFCs) at City Hall, and a total of $170,000 in funding was later reported as secured to support the installation of four electric vehicle fast chargers in Ann Arbor ([[sources/annual-reports/a2zero-year1|a2zero-year1]]) ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). The source documents do not explicitly identify the funder beyond a general grant reference, and the Year One report does not specify the grant dollar amount ([[sources/annual-reports/a2zero-year1|a2zero-year1]]) ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).

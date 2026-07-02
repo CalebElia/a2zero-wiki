@@ -1,1 +1,3 @@
 {"source-uuid": "a2zero-year3", "run-date": "2026-06-30", "comprehend-skipped": false, "plan-size-bytes": 13682, "extends-count": 33, "new-entities-count": 20, "retrieve-count": 14, "retrieved-chars": 13036}
+{"source-uuid": "a2zero-year4", "run-date": "2026-07-01", "comprehend-skipped": false, "plan-size-bytes": 13184, "extends-count": 37, "new-entities-count": 20, "retrieve-count": 15, "retrieved-chars": 43819}
+{"source-uuid": "a2zero-year4", "run-date": "2026-07-01", "comprehend-skipped": false, "plan-size-bytes": 9815, "extends-count": 20, "new-entities-count": 20, "retrieve-count": 15, "retrieved-chars": 43507}

@@ -27,7 +27,7 @@ parent-strategy: '[[strategies/strategy-3-building-efficiency]]'
 partners:
 - '[[actors/office-of-sustainability-and-innovations]]'
 - '[[actors/state-of-michigan]]'
-- '[[actors/ann-arbor-2030-district]]'
+- '[[actors/ann-arbor-washtenaw-2030-district]]'
 party-responsible: '[[actors/ann-arbor-building-rental-and-inspection-services]]'
 related-strategies:
 - '[[strategies/strategy-3-building-efficiency]]'
