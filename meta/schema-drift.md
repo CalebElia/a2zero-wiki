@@ -5,9 +5,14 @@ approved match. The pipeline writes the page using the closest approved fallback
 type and adds `proposed-type: <new-type>` to the page's frontmatter, then logs the
 proposal here for human review.
 
-To approve a proposed type: add it to `VALID_PAGE_TYPES` in `pipeline/wiki_pages.py`
-and remove the `proposed-type:` line from affected pages.
-To reject: leave the fallback in place; optionally add a tag to the affected pages.
+To approve a proposed type: check `[x] Approve new type` below and run
+`python -m pipeline.phase_b_lint --wiki-root wiki --apply` — this adds the type to
+`registry/valid_page_types.json` (loaded into `VALID_PAGE_TYPES` in `pipeline/_pages.py`)
+and strips `proposed-type:` from affected pages.
+To keep the fallback: check `[x] Keep as fallback + tag [<tag>]` and run the same
+`--apply` command — this tags the affected page instead.
+Either way, the entry stays here with a `**Resolved ...**` marker appended (this file
+is append-only, entries are never deleted).
 
 ## Format
 
