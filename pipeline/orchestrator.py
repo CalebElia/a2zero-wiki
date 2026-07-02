@@ -182,7 +182,7 @@ def run_source_ingest(
         _aliases = load_aliases("registry/entity_aliases.json")
         integration_plan = validate_plan_slugs(integration_plan, wiki_root, _aliases)
         # Persist plan for audit trail and for LDP to consume
-        plans_dir = Path(wiki_root) / "integration-plans"
+        plans_dir = Path(wiki_root).parent / "integration-plans"
         plan_path = write_integration_plan(integration_plan, str(plans_dir))
         print(f"[ingest] {uuid}: integration plan written → {plan_path}")
         # Pre-load entity bodies for retrieve-for-context (token-budget capped)

@@ -102,7 +102,7 @@ def _entities_touched_this_ingest(wiki_root: str, source_uuid: str | None) -> li
     if not source_uuid:
         return []
 
-    plan_path = Path(wiki_root) / "integration-plans" / f"{source_uuid}.json"
+    plan_path = Path(wiki_root).parent / "integration-plans" / f"{source_uuid}.json"
     if not plan_path.exists():
         return []
     try:

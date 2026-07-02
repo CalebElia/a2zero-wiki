@@ -34,6 +34,7 @@ wiki/                 ← Obsidian vault (everything here is intentionally inges
   log.md                ← Append-only ingest log
   hot.md                ← Most-recent session summary (overwritten each Pass 3)
 meta/                 ← Pipeline governance files, outside the vault — never queryable content (query-log.md, topic-candidates.md, schema-drift.md, synthesis-ghosts.log, ingest-stats.jsonl, relationship-lexicon.md)
+integration-plans/    ← Comprehend audit trail (<source-uuid>.json), outside the vault — never queryable content
 blackboard/           ← Quads (structured fact triples) + section maps
 registry/             ← entity_registry.json, entity_aliases.json, merge-log.jsonl
 pipeline/             ← All Python ingest code
@@ -86,7 +87,7 @@ If `source` runs without an approved map and `--auto-approve` is not passed, it 
 
 **Pass 0 (copy + YAML inject):** Source file copied from `prepared/<type>/<uuid>.md` → `wiki/sources/<type>/<uuid>.md`. If the prepared file has no YAML frontmatter, one is injected (`uuid`, `source_type` inferred from directory, `title`, `ingest_date`).
 
-**Pass 1A (Comprehend):** Reads `wiki/digest.md` plus the source and produces a structured integration plan saved to `wiki/integration-plans/<source-uuid>.json`. The plan (5 fields: `strategies-touched`, `extends`, `new-entities`, `retrieve-for-context`, `theme-connections`) flows downstream into both the holistic Writer (Pass 1B) and the LDP chunk extraction (Pass 2), informing which entities to extend vs. create and which existing page bodies to pre-load as integration context. Hard-fails when digest exists but the LLM call errors. Graceful fallback (no LLM call, empty plan) when no digest exists yet (first-ingest path). Per-ingest telemetry lands in `meta/ingest-stats.jsonl`. See `docs/architecture/comprehend-plan-write.md`.
+**Pass 1A (Comprehend):** Reads `wiki/digest.md` plus the source and produces a structured integration plan saved to `integration-plans/<source-uuid>.json`. The plan (5 fields: `strategies-touched`, `extends`, `new-entities`, `retrieve-for-context`, `theme-connections`) flows downstream into both the holistic Writer (Pass 1B) and the LDP chunk extraction (Pass 2), informing which entities to extend vs. create and which existing page bodies to pre-load as integration context. Hard-fails when digest exists but the LLM call errors. Graceful fallback (no LLM call, empty plan) when no digest exists yet (first-ingest path). Per-ingest telemetry lands in `meta/ingest-stats.jsonl`. See `docs/architecture/comprehend-plan-write.md`.
 
 **Pass 1B (holistic synthesis):** Full-document read. Writer → Evaluator → Editor loop, now informed by the integration plan + digest. Produces: overview page, strategy body text, stub pages for all entities mentioned in the document. Uses streaming API (`max_tokens=64000`).
 
