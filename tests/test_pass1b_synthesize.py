@@ -59,6 +59,120 @@ def test_context_injection_includes_progress_synthesis_regardless_of_digest(mock
     assert marker in text, "full prior Progress Synthesis text must be injected even when digest_content is set"
 
 
+@patch("pipeline.pass1b_synthesize.stream_chat")
+def test_relationship_lexicon_injected_into_writer_prompt(mock_stream_chat, tmp_path):
+    """meta/relationship-lexicon.md content must reach the Writer prompt —
+    previously the file was written but never read by any code."""
+    wiki_root = tmp_path / "wiki"
+    (wiki_root / "strategies").mkdir(parents=True)
+    (wiki_root / "overviews").mkdir()
+    (wiki_root / "sources" / "test").mkdir(parents=True)
+    (tmp_path / "meta").mkdir()
+    lexicon_marker = "DISTINCTIVE-LEXICON-VERB-implements"
+    (tmp_path / "meta" / "relationship-lexicon.md").write_text(
+        f"# Relationship Lexicon\n\nUse `{lexicon_marker}` not \"related to\".\n",
+        encoding="utf-8",
+    )
+
+    writer_draft = {
+        "overview": {
+            "slug": "overviews/test",
+            "frontmatter": {"type": "overview", "title": "T", "source-ref": "[[sources/test/test]]"},
+            "body": "Overview body",
+        },
+        "strategy_bodies": [],
+        "stub_pages": [],
+        "log_summary": "ok",
+    }
+    mock_stream_chat.side_effect = [
+        json.dumps(writer_draft),
+        json.dumps({"proceed_to_edit": True, "overall_score": 9}),
+        json.dumps(writer_draft),
+    ]
+
+    from pipeline.pass1b_synthesize import synthesize_source
+    synthesize_source(
+        source_content="---\nuuid: test\n---\nSource body",
+        source_uuid="test",
+        source_rel_path="sources/test/test",
+        source_type="test",
+        wiki_root=str(wiki_root),
+        run_date="2026-07-03",
+    )
+
+    first_call_user_content = mock_stream_chat.call_args_list[0].kwargs["messages"][0]["content"]
+    text = first_call_user_content[0]["text"] if isinstance(first_call_user_content, list) else first_call_user_content
+    assert lexicon_marker in text
+    assert "[RELATIONSHIP LEXICON]" in text
+
+
+@patch("pipeline.pass1b_synthesize.append_query_log_entry")
+@patch("pipeline.pass1b_synthesize.stream_chat")
+def test_topic_candidates_route_to_query_log_not_topic_candidates_file(mock_stream_chat, mock_append_query_log, tmp_path):
+    """topic_candidates from the Writer must go through append_query_log_entry
+    (meta/query-log.md), not the retired meta/topic-candidates.md."""
+    wiki_root = tmp_path / "wiki"
+    (wiki_root / "strategies").mkdir(parents=True)
+    (wiki_root / "overviews").mkdir()
+    (wiki_root / "sources" / "test").mkdir(parents=True)
+
+    required_slugs = [
+        "strategies/strategy-1-renewable-grid",
+        "strategies/strategy-2-electrification",
+        "strategies/strategy-3-building-efficiency",
+        "strategies/strategy-4-vmt-reduction",
+        "strategies/strategy-5-materials-waste",
+        "strategies/strategy-6-resilience",
+        "strategies/strategy-7-engagement",
+    ]
+    for slug in required_slugs:
+        (wiki_root / f"{slug}.md").write_text(
+            "---\ntype: strategy\n---\n\n## Foundation\n\nFoundation text.\n\n## Progress Synthesis\n\nExisting.\n",
+            encoding="utf-8",
+        )
+    writer_draft = {
+        "overview": {
+            "slug": "overviews/test",
+            "frontmatter": {"type": "overview", "title": "T", "source-ref": "[[sources/test/test]]"},
+            "body": "Overview body",
+        },
+        "strategy_bodies": [{"slug": s, "body": "body"} for s in required_slugs],
+        "stub_pages": [
+            {"type": "initiative", "title": "Solarize", "slug": "initiatives/solarize",
+             "parent-strategy": "strategies/strategy-1-renewable-grid", "one-liner": "Solar program."},
+        ],
+        "topic_candidates": [
+            {
+                "title": "How was solar funded?",
+                "rationale": "Spans multiple strategies.",
+                "draft_narrative": "Funded via [[initiatives/solarize|Solarize]].",
+            },
+        ],
+        "log_summary": "ok",
+    }
+    mock_stream_chat.side_effect = [
+        json.dumps(writer_draft),
+        json.dumps({"proceed_to_edit": True, "overall_score": 9}),
+        json.dumps(writer_draft),
+    ]
+
+    from pipeline.pass1b_synthesize import synthesize_source
+    synthesize_source(
+        source_content="---\nuuid: test\n---\nSource body",
+        source_uuid="test",
+        source_rel_path="sources/test/test",
+        source_type="test",
+        wiki_root=str(wiki_root),
+        run_date="2026-07-03",
+    )
+
+    mock_append_query_log.assert_called_once()
+    call_kwargs = mock_append_query_log.call_args.kwargs
+    assert call_kwargs["question"] == "How was solar funded?"
+    assert "Solarize" in call_kwargs["answer_text"]
+    assert not (tmp_path / "meta" / "topic-candidates.md").exists()
+
+
 def test_split_strategy_sections_both_present():
     from pipeline.pass1b_synthesize import _split_strategy_sections
     body = "## Foundation\n\nFoundation text here.\n\n## Progress Synthesis\n\nProgress text here.\n"

@@ -1,0 +1,18 @@
+{
+  "page_types": [
+    "initiative",
+    "actor",
+    "funding-event",
+    "technology",
+    "location",
+    "meeting",
+    "framing",
+    "political-event",
+    "contradiction",
+    "overview",
+    "strategy",
+    "topic",
+    "synthesis",
+    "mechanism"
+  ]
+}

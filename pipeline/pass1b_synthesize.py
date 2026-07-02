@@ -7,6 +7,8 @@ from pipeline._pages import build_wiki_page, write_wiki_page, append_to_wiki_pag
 from pipeline.pass3_finalize import append_index_entry, append_log
 from pipeline._aliases import load_aliases, resolve_slug, resolve_slug_for_title, fuzzy_resolve_slug_for_title
 from pipeline.pass2c_merge import merge_pages as _merge_pages
+from pipeline.schema_governance import build_lexicon_block
+from pipeline.topic_synthesize import append_query_log_entry
 
 # Module-level path — overridable in tests via patch("pipeline.pass1b_synthesize.alias_registry_path", ...)
 alias_registry_path = "registry/entity_aliases.json"
@@ -139,8 +141,9 @@ OUTPUT: A single JSON object — no markdown fence, no prose outside the JSON:
   ],
   "topic_candidates": [
     {{
-      "title": "<cross-cutting topic name>",
-      "rationale": "<why this topic spans multiple strategies or sources>"
+      "title": "<cross-cutting topic name, phrased as a question a human would ask>",
+      "rationale": "<why this topic spans multiple strategies or sources>",
+      "draft_narrative": "<2-4 sentences answering the title question, citing ONLY slugs from THIS response's stub_pages or entities already known from the integration plan/digest context — using [[type/slug|Title]] wikilinks>"
     }}
   ],
   "log_summary": "<one sentence: what was ingested and what it covers>"
@@ -156,7 +159,14 @@ STUB PAGES RULES:
 TOPIC CANDIDATES RULES:
 - Include 2-8 cross-cutting themes that appear across multiple strategies or sections
 - Only surface themes a human analyst would find genuinely useful to track
-- Do NOT include topics that are simply strategy titles"""
+- Do NOT include topics that are simply strategy titles
+- title: phrase as a question ("How did X braid its funding sources?"), not a bare noun phrase
+- draft_narrative: write a real, citable answer — not a placeholder. Cite ONLY
+  slugs you are also returning in stub_pages this response, or entities named
+  in the [INTEGRATION PLAN]/[WIKI DIGEST] context you were given. NEVER invent
+  a slug that doesn't appear in one of those two places — a hallucinated
+  citation here will be rejected at promotion time, but don't rely on that;
+  get it right the first time"""
 
 
 HOLISTIC_EVALUATOR_SYSTEM = """You are a rigorous editorial reviewer for the A2Zero knowledge wiki.
@@ -393,6 +403,12 @@ def synthesize_source(
             prog_lines.append(f"--- {slug} ---\n{text}\n")
         prog_lines.append("[END EXISTING PROGRESS SYNTHESIS]")
         integration_block += "\n".join(prog_lines)
+
+    # Relationship lexicon — constrains frontmatter fields and body-prose verbs
+    # to the approved vocabulary in meta/relationship-lexicon.md, matching the
+    # bracketed-context convention used above. Empty string (no-op) if the
+    # lexicon file doesn't exist.
+    integration_block += build_lexicon_block(wiki_root)
 
     document_block_text = (
         f"Source UUID: {source_uuid}\n"
@@ -634,17 +650,20 @@ def _write_synthesis(
 
     candidates = result.get("topic_candidates", [])
     if candidates:
-        meta_dir = Path(wiki_root).parent / "meta"
-        meta_dir.mkdir(exist_ok=True)
-        candidates_path = meta_dir / "topic-candidates.md"
-        with candidates_path.open("a", encoding="utf-8") as f:
-            for tc in candidates:
-                f.write(
-                    f"\n## {tc.get('title', 'Unknown')} | Source: {source_uuid} | {run_date}\n"
-                    f"Rationale: {tc.get('rationale', '')}\n"
-                    f"Resolution: [ ] Promote to wiki/topics/  [ ] Dismiss\n"
-                )
-        print(f"[holistic] {len(candidates)} topic candidates written to meta/topic-candidates.md")
+        # Routed into the same query-log.md / topic_synthesize.py machinery a
+        # human-asked question uses — meta/topic-candidates.md is retired.
+        # Hallucinated citations aren't validated here; promote_query_log_entries()
+        # already hard-fails on them at promotion time.
+        query_log_path = str(Path(wiki_root).parent / "meta" / "query-log.md")
+        for tc in candidates:
+            append_query_log_entry(
+                question=tc.get("title", "Unknown"),
+                answer_text=tc.get("draft_narrative") or tc.get("rationale", ""),
+                wiki_root=wiki_root,
+                query_log_path=query_log_path,
+                run_date=run_date,
+            )
+        print(f"[holistic] {len(candidates)} topic candidates logged to meta/query-log.md")
 
     log_parts = [result.get("log_summary", f"Ingested {source_uuid}.")]
     log_parts.append(
