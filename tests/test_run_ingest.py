@@ -198,6 +198,41 @@ def test_run_source_ingest_skips_comprehend_when_no_digest(
     assert synth_kwargs.get("digest_content") is None
 
 
+@patch("pipeline.orchestrator.synthesize_source")
+@patch("pipeline.orchestrator.run_ldp_ingest")
+@patch("pipeline.orchestrator.rebuild_index")
+@patch("pipeline.orchestrator.wiki_append_log")
+def test_run_source_ingest_hard_fails_when_pass1b_writer_fails(
+    mock_log, mock_rebuild, mock_ldp, mock_synth, tmp_path
+):
+    """Pass 1B returns None (Writer failed after retries) → ingest halts before
+    Pass 2 LDP extraction rather than continuing with empty entity context.
+    Regression test for a real failure: an unguarded Azure streaming bug
+    crashed the Writer, but LDP ran anyway on empty context and would have
+    produced ungrounded/duplicate entity pages costing real tokens to fix."""
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    # No digest.md — first-ingest path, Comprehend is skipped, keeps this
+    # test focused on the Pass 1B failure only.
+    (wiki / "sources" / "annual-reports").mkdir(parents=True)
+    src_path = wiki / "sources" / "annual-reports" / "test.md"
+    src_path.write_text("---\nuuid: test\n---\nBody\n", encoding="utf-8")
+
+    mock_synth.return_value = None  # Writer failed after retries
+
+    from pipeline.orchestrator import run_source_ingest
+    with pytest.raises(RuntimeError, match="Pass 1B holistic synthesis failed"):
+        run_source_ingest(
+            source_path=str(src_path),
+            uuid="test", title="T", quads_path=str(tmp_path / "q.jsonl"),
+            wiki_root=str(wiki), review_queue_path=str(tmp_path / "queue.md"),
+            run_date="2026-07-02",
+        )
+    # Pass 2 (LDP) never fired
+    assert mock_ldp.call_count == 0
+    assert mock_rebuild.call_count == 0
+
+
 def test_source_ingest_refuses_without_approved_map(tmp_path):
     import pytest
     from unittest.mock import patch
@@ -211,7 +246,8 @@ def test_source_ingest_refuses_without_approved_map(tmp_path):
     src_path.write_text(f"---\nuuid: t\n---\n{headings_and_body}", encoding="utf-8")
 
     from pipeline.orchestrator import run_source_ingest
-    with pytest.raises(RuntimeError, match="approved section map"):
+    with patch("pipeline.orchestrator.synthesize_source", return_value={"stub_pages": []}), \
+         pytest.raises(RuntimeError, match="approved section map"):
         run_source_ingest(
             source_path=str(src_path),
             uuid="t", title="T",
@@ -234,7 +270,7 @@ def test_source_ingest_small_doc_bypasses_gate(tmp_path):
     src_path = wiki / "sources" / "annual-reports" / "tiny.md"
     src_path.write_text("---\nuuid: tiny\n---\n# Just one heading\nBrief.\n", encoding="utf-8")
 
-    with patch("pipeline.pass1b_synthesize.synthesize_source", return_value={"stub_pages": []}), \
+    with patch("pipeline.orchestrator.synthesize_source", return_value={"stub_pages": []}), \
          patch("pipeline.pass2b_extract.extract_wiki_pages_from_chunk", return_value=[]), \
          patch("pipeline.pass2b_extract.chat", return_value="[]"), \
          patch("pipeline.pass1a_comprehend.chat") as mock_comprehend:

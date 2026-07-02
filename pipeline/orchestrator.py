@@ -219,12 +219,23 @@ def run_source_ingest(
             integration_plan=integration_plan,
             digest_content=digest_content,
         )
-        known_entities: list[dict] = []
-        if synthesis_result:
-            known_entities = [
-                sp for sp in synthesis_result.get("stub_pages", [])
-                if sp.get("slug") and sp.get("title")
-            ]
+        if synthesis_result is None:
+            # Pass 1B failed after retries (see [holistic:*] warnings above for
+            # root cause). Do NOT proceed to Pass 2 with empty entity context —
+            # that produces ungrounded, likely-duplicate entity pages that cost
+            # real LDP tokens and require a manual wiki fix + rerun to correct.
+            # Fail loud here instead, matching Comprehend's hard-fail policy.
+            raise RuntimeError(
+                f"Pass 1B holistic synthesis failed for {uuid!r} — no overview, "
+                f"strategy updates, or entity stubs were produced. Aborting before "
+                f"Pass 2 LDP extraction to avoid burning tokens on an ungrounded "
+                f"chunk pass. See the [holistic:*] warning(s) above for root cause, "
+                f"fix it, then rerun."
+            )
+        known_entities = [
+            sp for sp in synthesis_result.get("stub_pages", [])
+            if sp.get("slug") and sp.get("title")
+        ]
         entity_context = _build_entity_context(known_entities)
 
     # ── Pass 2: Extraction (conditional on document complexity) ───────────────
