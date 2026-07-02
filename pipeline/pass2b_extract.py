@@ -1,5 +1,6 @@
 import json
 import re
+from datetime import date
 from pathlib import Path
 from pipeline._llm import chat
 from pipeline._aliases import load_aliases, resolve_slug, resolve_slug_for_title, fuzzy_resolve_slug_for_title
@@ -12,6 +13,7 @@ from pipeline._pages import (
     append_to_wiki_page,
     verify_existing_body_unchanged,
 )
+from pipeline.schema_governance import build_lexicon_block, append_schema_drift_entry
 
 # Types that Pass 2 chunk extraction must NEVER create.
 # "overview" and "strategy" bodies are created by holistic_synthesizer.py (Pass 1).
@@ -303,6 +305,7 @@ def parse_llm_pages_response(raw: str) -> list[dict]:
 def validate_page_spec(
     spec: dict,
     wiki_root: str = "",
+    run_date: str | None = None,
 ) -> list[str]:
     errors = []
     for field in ("page_type", "slug", "frontmatter", "body"):
@@ -322,18 +325,19 @@ def validate_page_spec(
                 f"these pages are created by a separate process"
             )
 
-    # Schema-drift logging: if the spec proposes a non-standard type, log it for review.
+    # Schema-drift logging: if the spec proposes a non-standard type, log it for
+    # human review in the documented, apply-loop-parseable format (see
+    # pipeline/schema_governance.py).
     proposed = (spec.get("frontmatter") or {}).get("proposed_type", "")
     if proposed and wiki_root:
-        drift_path = Path(wiki_root).parent / "meta" / "schema-drift.md"
-        drift_path.parent.mkdir(parents=True, exist_ok=True)
-        with drift_path.open("a", encoding="utf-8") as f:
-            slug = spec.get("slug", "?")
-            f.write(
-                f"- proposed_type={proposed!r} on slug={slug!r} "
-                f"(page_type={spec.get('page_type')!r}) — "
-                f"review and promote or dismiss\n"
-            )
+        append_schema_drift_entry(
+            proposed_type=proposed,
+            fallback_type=spec.get("page_type", "?"),
+            slug=spec.get("slug", "?"),
+            title=(spec.get("frontmatter") or {}).get("title", "Unknown"),
+            wiki_root=wiki_root,
+            run_date=run_date or date.today().isoformat(),
+        )
 
     return errors
 
@@ -379,6 +383,7 @@ def extract_wiki_pages_from_chunk(
         prompt = (
             f"{context_header}\n\n"
             f"[SECTION CONTENT]\n{chunk_text}\n[END SECTION]\n\n"
+            f"{build_lexicon_block(wiki_root)}\n"
             f"Source UUID: {source_uuid}\n"
             f"Source path: {source_rel_path}\n"
             f"Source type: {source_type}\n"
@@ -401,7 +406,7 @@ def extract_wiki_pages_from_chunk(
 
     written = []
     for spec in specs:
-        errors = validate_page_spec(spec, wiki_root=wiki_root)
+        errors = validate_page_spec(spec, wiki_root=wiki_root, run_date=run_date)
         if errors:
             print(
                 f"[wiki_writer] WARNING: invalid page spec skipped: {errors} "

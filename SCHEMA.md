@@ -55,10 +55,9 @@ wiki/
   contradictions/      Flagged tensions or inconsistencies (Pass 2, planned, low threshold)
   topics/              Cross-cutting synthesis pages (candidate via Pass 1, promoted by human)
 meta/                  Pipeline governance files — outside the vault, never queryable content
-  schema-drift.md      Proposed new types/verbs awaiting human review
-  topic-candidates.md  LLM-surfaced cross-cutting topics awaiting human promotion
-  relationship-lexicon.md  Approved relationship verbs with examples
-  query-log.md         Topic-synthesis Q&A capture queue awaiting human promotion
+  schema-drift.md      Proposed new types/verbs awaiting human review (parse/apply loop live)
+  relationship-lexicon.md  Approved relationship verbs — injected into extraction prompts
+  query-log.md         Q&A / LLM-surfaced topic-candidate capture queue awaiting human promotion
   synthesis-ghosts.log Dropped ghost-reference audit log
   ingest-stats.jsonl   Per-ingest telemetry
 ```
@@ -120,7 +119,11 @@ Evaluator 4096, Editor 16384. The `[FULL DOCUMENT]` block is marked with
     }
   ],
   "topic_candidates": [
-    { "title": "Environmental Justice", "rationale": "Appears across Strategies 1, 3, and 7 with equity framing" }
+    {
+      "title": "How did Strategy 1 address equity across the community?",
+      "rationale": "Appears across Strategies 1, 3, and 7 with equity framing",
+      "draft_narrative": "2-4 citable sentences answering the title, using [[type/slug|Title]] wikilinks to entities in THIS response's stub_pages or the integration plan/digest context — never an invented slug."
+    }
   ],
   "log_summary": "One sentence."
 }
@@ -131,9 +134,12 @@ read — typically 20-50 items. The orchestrator creates minimal stub files for
 these BEFORE Pass 2 begins, so major entities exist on disk even if their
 primary section gets truncated in chunked extraction.
 
-`topic_candidates`: cross-cutting themes the Writer noticed but which require
-human judgment to promote to full `wiki/topics/` pages. Written to
-`meta/topic-candidates.md`, not to `wiki/topics/` directly.
+`topic_candidates`: cross-cutting themes the Writer noticed, each with a real,
+citable draft narrative — not just a title and rationale. Routed directly into
+`meta/query-log.md` via `pipeline.topic_synthesize.append_query_log_entry`, the
+same file and `topic-promote` promotion path a human-asked question uses (see
+`pipeline/schema_governance.py` and `pipeline/topic_synthesize.py`). There is
+no separate topic-candidates file — this is one unified HITL queue.
 
 #### What Pass 1 writes
 
@@ -142,7 +148,7 @@ human judgment to promote to full `wiki/topics/` pages. Written to
 - Stub files at slugs listed in `stub_pages`
 - Entry in `wiki/index.md`
 - Entry appended to `wiki/log.md`
-- Candidates appended to `meta/topic-candidates.md`
+- Topic candidates appended to `meta/query-log.md`
 
 Only runs if `wiki/overviews/<source-uuid>.md` does not already exist (idempotent).
 
@@ -256,36 +262,38 @@ of Pass 3. Read before index.md in a new session for immediate orientation.
 
 ### meta/schema-drift.md
 
-Append-only record of LLM-proposed types or relationship verbs that had no
-approved match. Human reviews periodically to approve (add to VALID_PAGE_TYPES)
-or reject (reclassify). Format:
+Append-only record of LLM-proposed types that had no approved match. Format
+(written by `pipeline/schema_governance.py::append_schema_drift_entry`, called
+from `pass2b_extract.py::validate_page_spec`):
 
 ```markdown
 ## 2026-06-23 | Proposed type: "council-debate" | Written as: "meeting" | Page: "meetings/grid-modernization-hearing"
 Title: 2023 Grid Modernization Hearing
-Resolution: [ ] Approve new type  [ ] Keep as "meeting" + tag [council-debate]
+Resolution: [ ] Approve new type  [ ] Keep as fallback + tag [<tag>]
 ```
 
 The pipeline writes the page using the approved fallback type and captures
 `proposed-type:` in the page's own frontmatter, so the page is immediately
-navigable in Obsidian while awaiting human review.
+navigable in Obsidian while awaiting human review. Every unresolved entry also
+surfaces as a `SCHEMA_DRIFT_PENDING` finding in `review-queue.md` on the next
+`--structural` lint run — nothing sits silently.
 
-### meta/topic-candidates.md
-
-LLM-surfaced cross-cutting topics from Pass 1. Human promotes to `wiki/topics/`
-or dismisses. Format:
-
-```markdown
-## Environmental Justice | Source: cap-2020 | 2026-06-23
-Rationale: Equity framing appears across Strategies 1, 3, and 7 with specific
-references to Bryant neighborhood and income-qualified programs.
-Resolution: [ ] Promote to wiki/topics/environmental-justice.md  [ ] Dismiss
-```
+To resolve: check the box, then run `python -m pipeline.phase_b_lint --wiki-root wiki --apply`
+(the same command that processes `review-queue.md`). Approving adds the type to
+`registry/valid_page_types.json` (loaded into `VALID_PAGE_TYPES` at import time)
+and strips `proposed-type:` from the affected page; keeping-as-fallback adds the
+given tag to the page instead. Either way, `apply_schema_drift()` appends an
+in-place `**Resolved <date>: ...**` marker under the entry rather than deleting
+it — this file is append-only, unlike `review-queue.md`'s clear-on-apply model.
 
 ### meta/relationship-lexicon.md
 
-Pre-seeded file (not generated by ingest) listing all approved relationship verbs.
-Visible in Obsidian graph and searchable via full-text search.
+Lists all approved relationship verbs (frontmatter fields and body-prose verbs).
+Its content is injected into both the Pass 1B Writer prompt and the Pass 2
+chunk-extraction prompt (`pipeline/schema_governance.py::build_lexicon_block`),
+wrapped in a `[RELATIONSHIP LEXICON]...[END RELATIONSHIP LEXICON]` block — the
+LLM actually sees this vocabulary on every extraction call, not just humans
+browsing the vault in Obsidian.
 
 ---
 
@@ -568,10 +576,13 @@ whether the framing succeeded, failed, or evolved. Cross-reference associated
 Path: `wiki/topics/<slug>.md`
 
 Cross-cutting synthesis pages spanning multiple strategies or sources. Topics
-are surfaced by Pass 1 via `topic_candidates` in the Writer output and routed
-to `meta/topic-candidates.md` for human review. A human either promotes
-a candidate to a full topic page or dismisses it. Topics can also be
-pre-created manually before ingest begins.
+are surfaced two ways, both landing in the same `meta/query-log.md` queue: a
+human running an agentic session against the vault (`log-query` CLI), or the
+Pass 1 Writer noticing a cross-cutting theme (`topic_candidates` in its
+output, each with a drafted `draft_narrative` and citations). Either way, a
+human runs `topic-promote` to turn an approved entry into a full topic page —
+see `pipeline/topic_synthesize.py`. Topics can also be pre-created manually
+before ingest begins.
 
 ### Other Pass 2 types
 

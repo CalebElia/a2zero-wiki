@@ -1,4 +1,5 @@
 # tests/test_lint_wiki.py
+import json
 import pytest
 from pathlib import Path
 
@@ -239,6 +240,45 @@ def test_apply_proposals_link_skips_matches_inside_existing_wikilinks(tmp_path):
     assert content.count("[[actors/vegmichigan") == 2
 
 
+def test_apply_proposals_also_resolves_checked_schema_drift_entries(tmp_path, monkeypatch):
+    """--apply is one command for 'process what I just checked boxes on' —
+    schema-drift.md approvals ride the same invocation as review-queue.md ones."""
+    from pipeline.phase_b_lint import apply_proposals
+    import pipeline._pages as _pages
+
+    root = tmp_path / "project"
+    wiki = root / "wiki"
+    (wiki / "political-events").mkdir(parents=True)
+    (wiki / "political-events" / "zoning-1.md").write_text(
+        "---\ntype: political-event\nproposed-type: zoning-application\ntitle: Zoning 1\n---\n\nBody.\n",
+        encoding="utf-8",
+    )
+    (root / "meta").mkdir()
+    (root / "meta" / "schema-drift.md").write_text(
+        '## 2026-07-03 | Proposed type: "zoning-application" | Written as: "political-event" | Page: "political-events/zoning-1"\n'
+        "Title: Zoning 1\n"
+        "Resolution: [x] Approve new type  [ ] Keep as fallback + tag [<tag>]\n",
+        encoding="utf-8",
+    )
+    types_path = tmp_path / "valid_page_types.json"
+    types_path.write_text(json.dumps({"page_types": ["political-event"]}), encoding="utf-8")
+    monkeypatch.setattr(_pages, "_VALID_PAGE_TYPES_PATH", types_path)
+    monkeypatch.setattr(_pages, "VALID_PAGE_TYPES", frozenset({"political-event"}))
+
+    apply_proposals(
+        wiki_root=str(wiki),
+        aliases_path=str(tmp_path / "aliases.json"),
+        merge_log_path=str(tmp_path / "merge-log.jsonl"),
+    )
+
+    saved = json.loads(types_path.read_text(encoding="utf-8"))
+    assert "zoning-application" in saved["page_types"]
+    page_content = (wiki / "political-events" / "zoning-1.md").read_text(encoding="utf-8")
+    assert "proposed-type:" not in page_content
+    drift_content = (root / "meta" / "schema-drift.md").read_text(encoding="utf-8")
+    assert "**Resolved" in drift_content
+
+
 def test_structural_flags_non_topic_page_citing_a_topic(tmp_path):
     from pipeline.phase_b_lint import structural_lint
     wiki = _make_wiki(tmp_path)
@@ -284,6 +324,71 @@ def test_structural_flags_digest_citing_a_topic(tmp_path):
     findings = structural_lint(str(wiki))
     violations = [f for f in findings if f["type"] == "TOPIC_CITATION_VIOLATION"]
     assert any(f["page"] == "digest.md" for f in violations)
+
+
+def test_structural_surfaces_pending_schema_drift(tmp_path):
+    """A schema-drift suggestion must never populate silently — it should show
+    up in the same --structural pass the human already checks."""
+    from pipeline.phase_b_lint import structural_lint
+    wiki = _make_wiki(tmp_path)
+    (tmp_path / "meta").mkdir()
+    (tmp_path / "meta" / "schema-drift.md").write_text(
+        '## 2026-07-03 | Proposed type: "zoning-application" | Written as: "political-event" | Page: "political-events/zoning-1"\n'
+        "Title: Zoning App\n"
+        "Resolution: [ ] Approve new type  [ ] Keep as fallback + tag [<tag>]\n",
+        encoding="utf-8",
+    )
+    findings = structural_lint(str(wiki))
+    drift = [f for f in findings if f["type"] == "SCHEMA_DRIFT_PENDING"]
+    assert len(drift) == 1
+    assert "zoning-application" in drift[0]["detail"]
+
+
+def test_structural_excludes_resolved_schema_drift(tmp_path):
+    from pipeline.phase_b_lint import structural_lint
+    wiki = _make_wiki(tmp_path)
+    (tmp_path / "meta").mkdir()
+    (tmp_path / "meta" / "schema-drift.md").write_text(
+        '## 2026-07-03 | Proposed type: "zoning-application" | Written as: "political-event" | Page: "political-events/zoning-1"\n'
+        "Title: Zoning App\n"
+        "Resolution: [x] Approve new type  [ ] Keep as fallback + tag [<tag>]\n"
+        '\n**Resolved 2026-07-04: approved — "zoning-application" added to VALID_PAGE_TYPES**\n',
+        encoding="utf-8",
+    )
+    findings = structural_lint(str(wiki))
+    assert not [f for f in findings if f["type"] == "SCHEMA_DRIFT_PENDING"]
+
+
+def test_structural_surfaces_pending_query_log_entries(tmp_path):
+    """A topic-candidate/human question in query-log.md must never sit silently
+    either — same alerting requirement as schema drift."""
+    from pipeline.phase_b_lint import structural_lint
+    wiki = _make_wiki(tmp_path)
+    (tmp_path / "meta").mkdir()
+    (tmp_path / "meta" / "query-log.md").write_text(
+        "## How was solar funded? | 2026-07-03\n"
+        "Funded via [[actors/osi|OSI]].\n"
+        "Resolution: [ ] Promote to wiki/topics/<slug>.md  [ ] Dismiss\n",
+        encoding="utf-8",
+    )
+    findings = structural_lint(str(wiki))
+    pending = [f for f in findings if f["type"] == "QUERY_LOG_PENDING"]
+    assert len(pending) == 1
+    assert "How was solar funded?" in pending[0]["detail"]
+
+
+def test_structural_excludes_resolved_query_log_entries(tmp_path):
+    from pipeline.phase_b_lint import structural_lint
+    wiki = _make_wiki(tmp_path)
+    (tmp_path / "meta").mkdir()
+    (tmp_path / "meta" / "query-log.md").write_text(
+        "## How was solar funded? | 2026-07-03\n"
+        "Funded via [[actors/osi|OSI]].\n"
+        "Resolution: [x] Promote to wiki/topics/<slug>.md  [ ] Dismiss\n",
+        encoding="utf-8",
+    )
+    findings = structural_lint(str(wiki))
+    assert not [f for f in findings if f["type"] == "QUERY_LOG_PENDING"]
 
 
 def test_write_structural_findings_replaces_existing_section(tmp_path):

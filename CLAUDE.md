@@ -29,11 +29,11 @@ wiki/                 ← Obsidian vault (everything here is intentionally inges
   meetings/             ← Deliberative body meetings where A2Zero items were discussed
   framing/              ← Communications strategies / advocacy framings (planned — none yet on disk)
   contradictions/       ← Cross-source tensions and conflicts (planned — none yet on disk)
-  topics/               ← Aggregate/curated synthesis pages (human-promoted from topic-candidates)
+  topics/               ← Aggregate/curated synthesis pages (human-promoted from meta/query-log.md via topic-promote)
   index.md              ← Auto-rebuilt by Pass 3
   log.md                ← Append-only ingest log
   hot.md                ← Most-recent session summary (overwritten each Pass 3)
-meta/                 ← Pipeline governance files, outside the vault — never queryable content (query-log.md, topic-candidates.md, schema-drift.md, synthesis-ghosts.log, ingest-stats.jsonl, relationship-lexicon.md)
+meta/                 ← Pipeline governance files, outside the vault — never queryable content (query-log.md, schema-drift.md, synthesis-ghosts.log, ingest-stats.jsonl, relationship-lexicon.md)
 integration-plans/    ← Comprehend audit trail (<source-uuid>.json), outside the vault — never queryable content
 blackboard/           ← Quads (structured fact triples) + section maps
 registry/             ← entity_registry.json, entity_aliases.json, merge-log.jsonl
@@ -134,6 +134,8 @@ The synthesizer runs each LLM output through a deterministic validator that chec
 | `phase_b_lint.py` | Post-ingest linting (structural, semantic, backlink, apply) |
 | `phase_c_synthesize.py` | Phase C synthesis: L1 strategy blocks + L2 digest |
 | `phase_c_validate.py` | Validate → Revise loop for phase_c_synthesize outputs |
+| `schema_governance.py` | Relationship-lexicon prompt injection + schema-drift parse/apply loop |
+| `topic_synthesize.py` | Query-log capture/promotion + topic page regeneration |
 | `_aliases.py` | Pass 1.5 alias resolution |
 | `_pages.py` | Page primitives (build/write/append) + `VALID_PAGE_TYPES` + quad extraction |
 | `_models.py` | `WikiPage` dataclass + quad schema validation |
@@ -166,7 +168,11 @@ The synthesizer runs each LLM output through a deterministic validator that chec
 
 **Review queue:** `review-queue.md` is a live inbox, not an append log. Each lint pass (`--structural`, `--semantic`, `--backlink`) replaces its own section. Annotated proposals (`[x] APPROVE_...` / `[x] KEEP_SEPARATE`) are cleared by `--apply`; unactioned and `DEFER`'d proposals stay.
 
-**Schema drift:** When the LLM encounters an entity that doesn't fit any approved `type:` from `VALID_PAGE_TYPES`, it writes the page using the closest approved type AND adds `proposed-type: <new-type>` to the frontmatter. The pipeline auto-logs an entry to `meta/schema-drift.md` for HITL review. Approve a proposed type by adding it to `VALID_PAGE_TYPES` in `pipeline/wiki_pages.py`.
+**Schema drift:** When the LLM encounters an entity that doesn't fit any approved `type:` from `VALID_PAGE_TYPES`, it writes the page using the closest approved type AND adds `proposed-type: <new-type>` to the frontmatter. The pipeline auto-logs an entry to `meta/schema-drift.md` for HITL review, in the same `## <date> | Proposed type: "..." | Written as: "..." | Page: "..."` + `Resolution: [ ]` checkbox format `phase_b_lint.py --apply` already knows how to parse. Check the box and run `python -m pipeline.phase_b_lint --wiki-root wiki --apply` (same command used for `review-queue.md`) — approval adds the type to `registry/valid_page_types.json` (loaded into `VALID_PAGE_TYPES` in `pipeline/_pages.py` at import time) and strips `proposed-type:` from affected pages. `schema-drift.md` is append-only: resolved entries get an in-place `**Resolved ...**` marker rather than being deleted, unlike `review-queue.md`. Every unresolved entry also surfaces as a `SCHEMA_DRIFT_PENDING` finding on the next `--structural` run — nothing sits silently.
+
+**Relationship lexicon:** `meta/relationship-lexicon.md` documents the approved frontmatter fields (Layer 1) and body-prose verbs (Layer 2) the LLM should prefer. Its content is injected into both the Pass 1B Writer prompt and the Pass 2 chunk-extraction prompt (`pipeline/schema_governance.py::build_lexicon_block`), wrapped in the standard `[RELATIONSHIP LEXICON]...[END RELATIONSHIP LEXICON]` bracket convention.
+
+**Topic candidates → query-log.md:** The Writer's `topic_candidates` output (cross-cutting themes it noticed, phrased as a question with a citable `draft_narrative`) is logged directly into `meta/query-log.md` via `topic_synthesize.append_query_log_entry` — the same file and promotion path (`topic-promote`) a human-asked question uses. There is no separate `topic-candidates.md` system anymore; it's retired in favor of this single unified flow. Every unresolved `query-log.md` entry surfaces as a `QUERY_LOG_PENDING` finding on the next `--structural` run.
 
 ## Environment Variables
 

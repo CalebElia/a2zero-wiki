@@ -166,6 +166,25 @@ def test_validate_page_spec_rejects_strategy_and_commitment_types():
         )
 
 
+def test_validate_page_spec_writes_documented_schema_drift_format(tmp_path):
+    """A proposed_type must produce the checkbox format meta/schema-drift.md's
+    own header documents — the write site previously used a different,
+    unparseable dash-bullet format instead."""
+    from pipeline.pass2b_extract import validate_page_spec
+    root = tmp_path / "wiki"
+    root.mkdir()
+    spec = {
+        **MOCK_PAGES[0],
+        "frontmatter": {**MOCK_PAGES[0]["frontmatter"], "proposed_type": "zoning-application", "title": "Zoning App"},
+    }
+    validate_page_spec(spec, wiki_root=str(root), run_date="2026-07-03")
+
+    content = (tmp_path / "meta" / "schema-drift.md").read_text(encoding="utf-8")
+    assert '## 2026-07-03 | Proposed type: "zoning-application" | Written as: "initiative" | Page: "initiatives/community-choice-aggregation"' in content
+    assert "Title: Zoning App" in content
+    assert "Resolution: [ ] Approve new type  [ ] Keep as fallback + tag [<tag>]" in content
+
+
 def test_write_or_append_page_creates_new_file(tmp_path):
     from pipeline.pass2b_extract import write_or_append_page
     write_or_append_page(MOCK_PAGES[0], wiki_root=str(tmp_path), source_uuid="cap-2020")
@@ -201,6 +220,35 @@ def test_write_or_append_page_frontmatter_is_valid_yaml(tmp_path):
     parsed = yaml.safe_load(parts[1])
     assert parsed["type"] == "actor"
     assert parsed["actor-type"] == "government-office"
+
+
+@patch("pipeline.pass2b_extract.chat")
+def test_extract_wiki_pages_from_chunk_includes_lexicon_in_prompt(mock_chat, tmp_path):
+    """meta/relationship-lexicon.md content must reach the chunk-extraction
+    prompt — previously the file was written but never read by any code."""
+    mock_chat.return_value = json.dumps([])
+    root = tmp_path / "wiki"
+    root.mkdir()
+    (tmp_path / "meta").mkdir()
+    lexicon_marker = "DISTINCTIVE-LEXICON-VERB-supersedes"
+    (tmp_path / "meta" / "relationship-lexicon.md").write_text(
+        f"Use `{lexicon_marker}` for succession.\n", encoding="utf-8"
+    )
+
+    from pipeline.pass2b_extract import extract_wiki_pages_from_chunk
+    extract_wiki_pages_from_chunk(
+        chunk_text=SAMPLE_CHUNK,
+        source_uuid="cap-2020",
+        source_rel_path="sources/cap/cap-2020",
+        context_header="[DOCUMENT CONTEXT]\nDocument: Test CAP\n[END CONTEXT]",
+        source_type="cap",
+        wiki_root=str(root),
+        run_date="2026-06-22",
+    )
+
+    prompt = mock_chat.call_args.kwargs["messages"][0]["content"]
+    assert lexicon_marker in prompt
+    assert "[RELATIONSHIP LEXICON]" in prompt
 
 
 @patch("pipeline.pass2b_extract.chat")

@@ -149,16 +149,47 @@ def extract_quads_from_source(
     return quads
 
 
-VALID_PAGE_TYPES = frozenset({
-    # LLM-writable via wiki_writer.py (Pass 2) — chunked leaf-node extraction:
-    "initiative", "actor", "funding-event", "technology",
-    "location", "meeting", "framing", "political-event", "contradiction",
-    # Written by holistic_synthesizer.py (Pass 1) — never by chunked extraction:
-    "overview",
-    "strategy",
-    # Human-curated / post-ingest synthesis only:
-    "topic", "synthesis", "mechanism",
-})
+_VALID_PAGE_TYPES_PATH = Path(__file__).resolve().parent.parent / "registry" / "valid_page_types.json"
+
+
+def _load_valid_page_types(path: Path = _VALID_PAGE_TYPES_PATH) -> frozenset[str]:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return frozenset(data["page_types"])
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        return frozenset()
+
+
+# LLM-writable via pass2b_extract.py (Pass 2) — chunked leaf-node extraction:
+#   initiative, actor, funding-event, technology, location, meeting,
+#   framing, political-event, contradiction
+# Written by pass1b_synthesize.py (Pass 1) — never by chunked extraction:
+#   overview, strategy
+# Human-curated / post-ingest synthesis only: topic, synthesis, mechanism
+# Backed by registry/valid_page_types.json so schema-drift approvals
+# (pipeline/schema_governance.py) can safely add a new type at runtime
+# without editing this source file.
+VALID_PAGE_TYPES = _load_valid_page_types()
+
+
+def add_valid_page_type(new_type: str, path: Path | None = None) -> None:
+    """Approve a schema-drift-proposed type: persist it and update the in-memory set.
+
+    `path` resolves against the current value of `_VALID_PAGE_TYPES_PATH` at
+    call time (not a bound default) so tests can monkeypatch the module-level
+    path and have this function pick it up.
+
+    Existing importers that already bound `VALID_PAGE_TYPES` to a name (e.g.
+    `from pipeline._pages import VALID_PAGE_TYPES`) won't see this update within
+    the same process — this is a rare, human-triggered action run via
+    `phase_b_lint --apply`, a fresh CLI invocation each time, so that's fine.
+    """
+    global VALID_PAGE_TYPES
+    if path is None:
+        path = _VALID_PAGE_TYPES_PATH
+    data = {"page_types": sorted(set(VALID_PAGE_TYPES) | {new_type})}
+    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    VALID_PAGE_TYPES = frozenset(data["page_types"])
 
 
 def build_wiki_page(
