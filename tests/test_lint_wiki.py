@@ -95,6 +95,64 @@ def test_semantic_lint_calls_llm_for_candidates(tmp_path):
     assert proposals[0]["confidence"] == 0.92
 
 
+def test_semantic_lint_skips_meetings_with_different_dates_without_calling_llm(tmp_path):
+    """Regression: two meetings with similar titles but different dates must
+    never be proposed as a merge — a meeting is a point-in-time event, and a
+    date mismatch conclusively proves the pages are distinct. A prior lint run
+    proposed merging two real meetings four months apart with the LLM's own
+    reasoning self-contradicting ('different dated events... same entity')."""
+    from unittest.mock import patch
+
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    meetings = wiki / "meetings"
+    meetings.mkdir()
+
+    (meetings / "2019-12-13-a2zero-partners.md").write_text(
+        "---\ntype: meeting\ntitle: A2ZERO Partners — 2019-12-13 (First Partner Meeting)\n"
+        "date: '2019-12-13'\n---\nFirst convening.\n"
+    )
+    (meetings / "2020-03-20-a2zero-partners-strategy-unveiling.md").write_text(
+        "---\ntype: meeting\ntitle: A2ZERO Partners — 2020-03-20 (Final Strategy Unveiling)\n"
+        "date: '2020-03-20'\n---\nStrategy unveiling.\n"
+    )
+
+    with patch("pipeline.phase_b_lint.chat") as mock_chat:
+        from pipeline.phase_b_lint import semantic_lint
+        proposals = semantic_lint(str(wiki))
+
+    assert proposals == []
+    mock_chat.assert_not_called()
+
+
+def test_semantic_lint_still_compares_meetings_with_same_date(tmp_path):
+    """Same-date meeting pages (e.g. duplicate extraction) should still reach
+    the LLM verdict — the date-awareness guard only blocks differing dates."""
+    import json
+    from unittest.mock import patch
+
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    meetings = wiki / "meetings"
+    meetings.mkdir()
+
+    (meetings / "2020-03-20-a2zero-unveiling.md").write_text(
+        "---\ntype: meeting\ntitle: A2ZERO Strategy Unveiling\ndate: '2020-03-20'\n---\nEvent A.\n"
+    )
+    (meetings / "2020-03-20-a2zero-strategy-unveiling.md").write_text(
+        "---\ntype: meeting\ntitle: A2ZERO Strategy Unveiling Event\ndate: '2020-03-20'\n---\nEvent B.\n"
+    )
+
+    verdict = {"relationship": "same", "confidence": 0.9, "reasoning": "Duplicate extraction."}
+    with patch("pipeline.phase_b_lint.chat") as mock_chat:
+        mock_chat.return_value = json.dumps(verdict)
+        from pipeline.phase_b_lint import semantic_lint
+        proposals = semantic_lint(str(wiki))
+
+    assert len(proposals) == 1
+    mock_chat.assert_called_once()
+
+
 def test_parse_approved_proposals_finds_checked_merge(tmp_path):
     from pipeline.phase_b_lint import _parse_approved_proposals
     rq = tmp_path / "review-queue.md"
@@ -140,6 +198,45 @@ def test_structural_exempt_pages_skip_empty_check(tmp_path):
     findings = structural_lint(str(wiki))
     empty = [f for f in findings if f["type"] in ("EMPTY_PAGE", "STUB_PAGE")]
     assert not any(f["page"].endswith("index.md") for f in empty)
+
+
+def test_apply_proposals_link_skips_matches_inside_existing_wikilinks(tmp_path):
+    """Regression: a LINK proposal whose display_text is a case-insensitive
+    substring of an EXISTING wikilink's slug (e.g. 'vegmichigan' inside
+    [[actors/vegmichigan|VegMichigan]]) must not get wrapped in a second,
+    nested wikilink — that produced real corruption
+    ([[actors/[[actors/vegmichigan|vegmichigan]]|VegMichigan]]) in production."""
+    from pipeline.phase_b_lint import apply_proposals
+
+    root = tmp_path / "project"
+    wiki = root / "wiki"
+    (wiki / "strategies").mkdir(parents=True)
+    (wiki / "strategies" / "strategy-5.md").write_text(
+        "---\ntype: strategy\n---\n\n"
+        "OSI partnered with [[actors/vegmichigan|VegMichigan]] on plant-forward diets. "
+        "VegMichigan also engaged local businesses.\n",
+        encoding="utf-8",
+    )
+    (root / "review-queue.md").write_text(
+        "## Backlink Lint — 2026-07-02\n\n"
+        "### [LINK_PROPOSED] strategies/strategy-5.md ← actors/vegmichigan\n"
+        "- Display text: \"vegmichigan\"\n"
+        "- Action: [x] APPROVE_LINK  [ ] KEEP_UNLINKED  [ ] DEFER\n",
+        encoding="utf-8",
+    )
+
+    apply_proposals(
+        wiki_root=str(wiki),
+        aliases_path=str(tmp_path / "aliases.json"),
+        merge_log_path=str(tmp_path / "merge-log.jsonl"),
+    )
+
+    content = (wiki / "strategies" / "strategy-5.md").read_text(encoding="utf-8")
+    assert "[[actors/[[" not in content
+    # The pre-existing wikilink must be untouched, and the second bare
+    # mention ("VegMichigan also engaged...") should get linked instead.
+    assert "[[actors/vegmichigan|VegMichigan]] on plant-forward diets" in content
+    assert content.count("[[actors/vegmichigan") == 2
 
 
 def test_write_structural_findings_replaces_existing_section(tmp_path):

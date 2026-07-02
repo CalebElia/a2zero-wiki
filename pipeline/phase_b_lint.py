@@ -438,6 +438,18 @@ def _get_page_title_and_excerpt(md_path: Path) -> tuple[str, str]:
     return title, excerpt
 
 
+def _read_frontmatter_date(md_path: Path) -> str | None:
+    """Return the `date:` frontmatter value, or None if absent/unparseable."""
+    text = md_path.read_text(encoding="utf-8", errors="replace")
+    m = re.match(r"^---\n(.*?)\n---\n", text, re.DOTALL)
+    if not m:
+        return None
+    for line in m.group(1).splitlines():
+        if line.startswith("date:"):
+            return line.split(":", 1)[1].strip().strip("'\"")
+    return None
+
+
 def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[dict]:
     """Stage 1 fuzzy + Stage 2 LLM near-duplicate detection.
 
@@ -496,6 +508,21 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
 
                 path_a = title_map[title_a]
                 path_b = title_map[title_b]
+
+                # Meetings are point-in-time events, not renamable entities — a
+                # differing date: frontmatter value conclusively proves two
+                # meeting pages are distinct, regardless of how similar their
+                # titles or bodies look. Skip before the LLM call entirely so
+                # this class of false-positive can never recur (an LLM verdict
+                # call previously proposed merging two meetings four months
+                # apart, reasoning "different dated events... same entity" —
+                # a self-contradiction the model shouldn't be trusted to catch).
+                if type_dir == "meetings":
+                    date_a = _read_frontmatter_date(path_a)
+                    date_b = _read_frontmatter_date(path_b)
+                    if date_a and date_b and date_a != date_b:
+                        continue
+
                 _, excerpt_a = _get_page_title_and_excerpt(path_a)
                 _, excerpt_b = _get_page_title_and_excerpt(path_b)
 
@@ -752,15 +779,24 @@ def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> N
                 continue
 
             content = page_path.read_text(encoding="utf-8")
-            plain_pattern = re.compile(
-                r"(?<!\[\[)(?<!\|)" + re.escape(display_text) + r"(?!\]\])",
-                re.IGNORECASE,
-            )
-            match = plain_pattern.search(content)
+            # Existing wikilink spans — a candidate match anywhere inside one of
+            # these (not just immediately after "[[") must be skipped. A naive
+            # boundary-only lookbehind/lookahead can match display_text as a
+            # substring of an existing link's slug (e.g. display_text
+            # "vegmichigan" matching inside "[[actors/vegmichigan|VegMichigan]]"),
+            # producing nested/corrupted brackets like "[[actors/[[actors/...".
+            existing_link_spans = [m.span() for m in WIKILINK_RE.finditer(content)]
+            plain_pattern = re.compile(re.escape(display_text), re.IGNORECASE)
+            match = None
+            for candidate in plain_pattern.finditer(content):
+                if any(start <= candidate.start() < end for start, end in existing_link_spans):
+                    continue
+                match = candidate
+                break
             if match:
                 actual_text = match.group(0)
                 wikilink = f"[[{entity_slug}|{actual_text}]]"
-                new_content, n = plain_pattern.subn(wikilink, content, count=1)
+                new_content = content[:match.start()] + wikilink + content[match.end():]
                 page_path.write_text(new_content, encoding="utf-8")
                 print(f"[lint_wiki:apply] LINK: '{actual_text}' → [[{entity_slug}]] in {page_rel}")
             else:

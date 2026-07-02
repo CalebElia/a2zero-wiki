@@ -96,11 +96,11 @@ If `source` runs without an approved map and `--auto-approve` is not passed, it 
 
 **Pass 3 (finalize):** Rebuilds `index.md`, seals `log.md`, overwrites `hot.md`.
 
-Post-ingest linting (on-demand):
+Post-ingest linting (on-demand). **Recommended order: semantic → backlink → structural**, not independent/arbitrary order. Structural's `BROKEN_LINK` repair (redirect a stale slug vs. create a new stub) requires the entity graph to already be stable — semantic merges can rename or delete a page after the fact, invalidating a broken-link fix made against it. Backlink only adds links to entities that already have pages, so it benefits from semantic running first for the same reason but doesn't block structural. Re-run `--structural` after each of the other two passes' `--apply` to get a clean picture, since merges/links can shift which links are actually broken:
 ```
-python -m pipeline.phase_b_lint --wiki-root wiki --structural    # broken links, orphans
-python -m pipeline.phase_b_lint --wiki-root wiki --semantic      # near-duplicate detection (LLM)
-python -m pipeline.phase_b_lint --wiki-root wiki --backlink      # find missed entity mentions in strategy/overview bodies
+python -m pipeline.phase_b_lint --wiki-root wiki --semantic      # near-duplicate detection (LLM); apply first
+python -m pipeline.phase_b_lint --wiki-root wiki --backlink      # find missed entity mentions in strategy/overview bodies; apply next
+python -m pipeline.phase_b_lint --wiki-root wiki --structural    # broken links, orphans; run last, after the entity graph is stable
 python -m pipeline.phase_b_lint --wiki-root wiki --apply         # execute approved proposals from review-queue.md
 ```
 
@@ -158,6 +158,8 @@ The synthesizer runs each LLM output through a deterministic validator that chec
 **Stub detection:** `not bool(re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL).strip())` — strips HTML comments before checking if body has real content.
 
 **Alias registry:** `registry/entity_aliases.json` — canonical source of truth for entity name variants and temporal relationships. Every write in Pass 1 and Pass 2 resolves through this registry (Pass 1.5). Entries have: `canonical`, `type`, `aliases`, `relationship` (`name-variant`|`predecessor`|`absorbed-by`), optional `as-of`/`notes`. Approved lint proposals are automatically written back here by `lint_wiki --apply`.
+
+**Program-produced collectives (working groups, ambassador corps, volunteer cohorts) stay typed `initiative`, not `actor`, even when cited as a partner/collaborator elsewhere.** `partners:` is a general related-entity field (initiative slugs already appear inside it dozens of times), not actor-only. Don't spawn a subsidiary `actor/` page for an initiative's own output — that recreates the exact "two pages, one concept" duplication semantic lint exists to catch. Redirect any actor-shaped mention to the initiative's canonical page and seed an alias-registry entry (e.g. `a2zero-ambassadors` → `initiatives/a2zero-ambassadors-program`) so future ingests resolve it the same way automatically.
 
 **Merge log:** `registry/merge-log.jsonl` — append-only audit trail for every approved entity merge or temporal succession. Each entry: `date`, `action`, `from`/`into` (or `predecessor`/`successor`), `approved-by`. Use `git show <hash>:wiki/<path>.md` to recover any deleted page from git history.
 
