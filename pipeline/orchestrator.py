@@ -430,6 +430,27 @@ if __name__ == "__main__":
         "--section-maps-dir", default="blackboard/section_maps"
     )
 
+    # log-query subcommand
+    p_log_query = sub.add_parser(
+        "log-query",
+        help="Log a cross-entity Q&A from an agentic session to wiki/meta/query-log.md",
+    )
+    p_log_query.add_argument("--question", required=True)
+    p_log_query.add_argument(
+        "--answer-file", required=True,
+        help="Path to a file containing the full answer text (avoids shell-escaping issues)",
+    )
+    p_log_query.add_argument("--wiki-root", default="wiki")
+    p_log_query.add_argument("--query-log", default="wiki/meta/query-log.md")
+
+    # topic-promote subcommand
+    p_topic_promote = sub.add_parser(
+        "topic-promote",
+        help="Promote every Promote-marked query-log.md entry to a wiki/topics/ page",
+    )
+    p_topic_promote.add_argument("--wiki-root", default="wiki")
+    p_topic_promote.add_argument("--query-log", default="wiki/meta/query-log.md")
+
     # PDF-first ingest (future use when raw PDF → prepared markdown pipeline is wired up)
     p_pdf = sub.add_parser("pdf", help="Ingest from PDF (raw → prepared → wiki)")
     p_pdf.add_argument("--pdf", required=True)
@@ -479,6 +500,27 @@ if __name__ == "__main__":
             quads_only=args.quads_only,
             auto_approve_chunks=args.auto_approve,
         )
+    elif args.command == "log-query":
+        from pipeline.topic_synthesize import append_query_log_entry
+        answer_text = Path(args.answer_file).read_text(encoding="utf-8")
+        append_query_log_entry(
+            question=args.question,
+            answer_text=answer_text,
+            wiki_root=args.wiki_root,
+            query_log_path=args.query_log,
+            run_date=date.today().isoformat(),
+        )
+        print(f"[log-query] appended entry to {args.query_log}")
+    elif args.command == "topic-promote":
+        from pipeline.topic_synthesize import promote_query_log_entries
+        result = promote_query_log_entries(
+            wiki_root=args.wiki_root,
+            query_log_path=args.query_log,
+            run_date=date.today().isoformat(),
+        )
+        print(f"[topic-promote] promoted {len(result['promoted'])} topic(s): {result['promoted']}")
+        if result["dismissed"]:
+            print(f"[topic-promote] dismissed {len(result['dismissed'])} entrie(s)")
     elif args.command == "pdf":
         run_annual_report_ingest(
             pdf_path=args.pdf,

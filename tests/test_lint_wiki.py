@@ -239,6 +239,53 @@ def test_apply_proposals_link_skips_matches_inside_existing_wikilinks(tmp_path):
     assert content.count("[[actors/vegmichigan") == 2
 
 
+def test_structural_flags_non_topic_page_citing_a_topic(tmp_path):
+    from pipeline.phase_b_lint import structural_lint
+    wiki = _make_wiki(tmp_path)
+    (wiki / "topics").mkdir()
+    (wiki / "topics" / "some-topic.md").write_text(
+        "---\ntype: topic\ntitle: Some Topic\n---\nNarrative.\n", encoding="utf-8"
+    )
+    (wiki / "actors" / "osi.md").write_text(
+        "---\ntype: actor\ntitle: OSI\n---\n"
+        "The OSI leads A2Zero. ([[sources/cap/cap-2020|cap-2020]]) "
+        "See also [[topics/some-topic|Some Topic]].\n"
+    )
+    findings = structural_lint(str(wiki))
+    violations = [f for f in findings if f["type"] == "TOPIC_CITATION_VIOLATION"]
+    assert any("actors/osi" in f["page"] for f in violations)
+
+
+def test_structural_allows_topic_citing_topic(tmp_path):
+    from pipeline.phase_b_lint import structural_lint
+    wiki = _make_wiki(tmp_path)
+    (wiki / "topics").mkdir()
+    (wiki / "topics" / "topic-a.md").write_text(
+        "---\ntype: topic\ntitle: Topic A\n---\nSee [[topics/topic-b|Topic B]].\n", encoding="utf-8"
+    )
+    (wiki / "topics" / "topic-b.md").write_text(
+        "---\ntype: topic\ntitle: Topic B\n---\nNarrative.\n", encoding="utf-8"
+    )
+    findings = structural_lint(str(wiki))
+    violations = [f for f in findings if f["type"] == "TOPIC_CITATION_VIOLATION"]
+    assert violations == []
+
+
+def test_structural_flags_digest_citing_a_topic(tmp_path):
+    from pipeline.phase_b_lint import structural_lint
+    wiki = _make_wiki(tmp_path)
+    (wiki / "topics").mkdir()
+    (wiki / "topics" / "some-topic.md").write_text(
+        "---\ntype: topic\ntitle: Some Topic\n---\nNarrative.\n", encoding="utf-8"
+    )
+    (wiki / "digest.md").write_text(
+        "# Wiki Digest\nSee [[topics/some-topic|Some Topic]].\n", encoding="utf-8"
+    )
+    findings = structural_lint(str(wiki))
+    violations = [f for f in findings if f["type"] == "TOPIC_CITATION_VIOLATION"]
+    assert any(f["page"] == "digest.md" for f in violations)
+
+
 def test_write_structural_findings_replaces_existing_section(tmp_path):
     from pipeline.phase_b_lint import write_structural_findings
     wiki = tmp_path / "wiki"

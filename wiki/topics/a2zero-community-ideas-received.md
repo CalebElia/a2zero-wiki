@@ -1,6 +1,7 @@
 ---
 type: topic
 title: A²ZERO Community Ideas Received (All Ideas Considered)
+governance: frozen
 status: complete
 declared: 2026-06-25
 declared-by: caleb

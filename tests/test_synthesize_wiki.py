@@ -396,3 +396,76 @@ def test_synthesize_wiki_orchestrates_end_to_end(tmp_path):
     strategy_text = (root / "strategies" / "strategy-1-renewable-grid.md").read_text(encoding="utf-8")
     assert "synthesis:" in strategy_text
     assert "Solarize program is the flagship initiative" in strategy_text  # prose preserved
+
+
+def test_synthesize_wiki_rebuilds_topics_after_strategies(tmp_path):
+    from pipeline.phase_c_synthesize import synthesize_wiki
+
+    root = _setup_full_fixture(tmp_path)
+    (root / "topics").mkdir(parents=True, exist_ok=True)
+    (root / "topics" / "how-was-it-funded.md").write_text(
+        "---\ntype: topic\ntitle: How was it funded?\n"
+        "cited-entities: [actors/glrea]\ncited-topics: []\n---\n\n"
+        "Prior narrative.\n",
+        encoding="utf-8",
+    )
+
+    strategy_llm_output = json.dumps({
+        "core-initiatives": ["initiatives/solarize-ann-arbor"],
+        "core-actors": ["actors/glrea"],
+        "year-over-year-arc": "Residential solar grew 31% Y1→Y2.",
+        "open-questions": [],
+        "cross-strategy-links": [],
+    })
+    narrative_output = "## Cross-strategy synthesis\n\nStrategy 1 has solarized 430+ homes.\n"
+
+    with patch("pipeline.phase_c_synthesize.chat") as mock_chat, \
+         patch("pipeline.topic_synthesize.chat") as mock_topic_chat:
+        mock_chat.side_effect = [strategy_llm_output, narrative_output]
+        mock_topic_chat.return_value = "Regenerated narrative."
+
+        result = synthesize_wiki(
+            wiki_root=str(root),
+            strategies=["strategies/strategy-1-renewable-grid"],
+            topics=["topics/how-was-it-funded"],
+        )
+
+    assert result["topics_rebuilt"] == ["topics/how-was-it-funded"]
+    topic_text = (root / "topics" / "how-was-it-funded.md").read_text(encoding="utf-8")
+    assert "Regenerated narrative." in topic_text
+
+
+def test_synthesize_wiki_digest_never_references_topics(tmp_path):
+    from pipeline.phase_c_synthesize import synthesize_wiki
+
+    root = _setup_full_fixture(tmp_path)
+    (root / "topics").mkdir(parents=True, exist_ok=True)
+    (root / "topics" / "how-was-it-funded.md").write_text(
+        "---\ntype: topic\ntitle: How was it funded?\n"
+        "cited-entities: [actors/glrea]\ncited-topics: []\n---\n\n"
+        "Prior narrative.\n",
+        encoding="utf-8",
+    )
+
+    strategy_llm_output = json.dumps({
+        "core-initiatives": ["initiatives/solarize-ann-arbor"],
+        "core-actors": ["actors/glrea"],
+        "year-over-year-arc": "Residential solar grew 31% Y1→Y2.",
+        "open-questions": [],
+        "cross-strategy-links": [],
+    })
+    narrative_output = "## Cross-strategy synthesis\n\nStrategy 1 has solarized 430+ homes.\n"
+
+    with patch("pipeline.phase_c_synthesize.chat") as mock_chat, \
+         patch("pipeline.topic_synthesize.chat") as mock_topic_chat:
+        mock_chat.side_effect = [strategy_llm_output, narrative_output]
+        mock_topic_chat.return_value = "Regenerated narrative citing [[actors/glrea|GLREA]]."
+
+        synthesize_wiki(
+            wiki_root=str(root),
+            strategies=["strategies/strategy-1-renewable-grid"],
+            topics=["topics/how-was-it-funded"],
+        )
+
+    digest_text = (root / "digest.md").read_text(encoding="utf-8")
+    assert "topics/" not in digest_text
