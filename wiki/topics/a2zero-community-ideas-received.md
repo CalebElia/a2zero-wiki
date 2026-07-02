@@ -13,7 +13,7 @@ strategies:
   - strategy-6
   - strategy-7
 sub-timeline: false
-scope: Complete log of all ideas submitted during the A²ZERO planning process through public events, surveys, and Technical Advisory Committees. Includes ideas that became formal plan actions AND ideas that were not adopted. Sourced from Appendix 5 of the A²ZERO Living Carbon Neutrality Plan. High research value for replication: shows the full community ideation pool from which 44 formal actions were selected.
+scope: "Complete log of all ideas submitted during the A²ZERO planning process through public events, surveys, and Technical Advisory Committees. Includes ideas that became formal plan actions AND ideas that were not adopted. Sourced from Appendix 5 of the A²ZERO Living Carbon Neutrality Plan. High research value for replication: shows the full community ideation pool from which 44 formal actions were selected."
 tags:
   - community-engagement
   - planning-process
