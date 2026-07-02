@@ -191,7 +191,7 @@ Variants:
 - `--strategy strategies/strategy-1-renewable-grid` — rebuild just one strategy
 - `--digest-only` — rebuild only the digest (skip strategy synthesis)
 
-The synthesizer validates every entity slug it writes against the filesystem. Broken references trigger a scoped Reviser LLM call. Dropped slugs are logged to `wiki/meta/synthesis-ghosts.log` for future review.
+The synthesizer validates every entity slug it writes against the filesystem. Broken references trigger a scoped Reviser LLM call. Dropped slugs are logged to `meta/synthesis-ghosts.log` for future review.
 
 ---
 

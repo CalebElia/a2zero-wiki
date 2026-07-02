@@ -182,13 +182,13 @@ def run_source_ingest(
         _aliases = load_aliases("registry/entity_aliases.json")
         integration_plan = validate_plan_slugs(integration_plan, wiki_root, _aliases)
         # Persist plan for audit trail and for LDP to consume
-        plans_dir = Path(wiki_root) / "integration-plans"
+        plans_dir = Path(wiki_root).parent / "integration-plans"
         plan_path = write_integration_plan(integration_plan, str(plans_dir))
         print(f"[ingest] {uuid}: integration plan written → {plan_path}")
         # Pre-load entity bodies for retrieve-for-context (token-budget capped)
         retrieved_bodies = load_retrieved_bodies(integration_plan, wiki_root)
         # Telemetry: per-ingest stats
-        stats_path = Path(wiki_root) / "meta" / "ingest-stats.jsonl"
+        stats_path = Path(wiki_root).parent / "meta" / "ingest-stats.jsonl"
         log_ingest_stats(
             log_path=str(stats_path),
             source_uuid=uuid,
@@ -433,7 +433,7 @@ if __name__ == "__main__":
     # log-query subcommand
     p_log_query = sub.add_parser(
         "log-query",
-        help="Log a cross-entity Q&A from an agentic session to wiki/meta/query-log.md",
+        help="Log a cross-entity Q&A from an agentic session to meta/query-log.md",
     )
     p_log_query.add_argument("--question", required=True)
     p_log_query.add_argument(
@@ -441,7 +441,7 @@ if __name__ == "__main__":
         help="Path to a file containing the full answer text (avoids shell-escaping issues)",
     )
     p_log_query.add_argument("--wiki-root", default="wiki")
-    p_log_query.add_argument("--query-log", default="wiki/meta/query-log.md")
+    p_log_query.add_argument("--query-log", default="meta/query-log.md")
 
     # topic-promote subcommand
     p_topic_promote = sub.add_parser(
@@ -449,7 +449,7 @@ if __name__ == "__main__":
         help="Promote every Promote-marked query-log.md entry to a wiki/topics/ page",
     )
     p_topic_promote.add_argument("--wiki-root", default="wiki")
-    p_topic_promote.add_argument("--query-log", default="wiki/meta/query-log.md")
+    p_topic_promote.add_argument("--query-log", default="meta/query-log.md")
 
     # PDF-first ingest (future use when raw PDF → prepared markdown pipeline is wired up)
     p_pdf = sub.add_parser("pdf", help="Ingest from PDF (raw → prepared → wiki)")

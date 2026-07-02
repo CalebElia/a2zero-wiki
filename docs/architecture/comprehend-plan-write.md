@@ -43,7 +43,7 @@ The architecture doc (`knowledge-synthesis-architecture.md`) prescribed a fix: s
            │                              ▲
            │  plan (JSON)                 │
            │  persisted to                │  plan read from disk
-           │  wiki/integration-plans/     │
+           │  integration-plans/     │
            ▼                              │
 ┌────────────────────────────────┐        │
 │  Pass 1B: Write                │        │
@@ -54,7 +54,7 @@ The architecture doc (`knowledge-synthesis-architecture.md`) prescribed a fix: s
 └────────────────────────────────┘
 ```
 
-**Call A — Comprehend.** A new LLM call inserted at the start of Pass 1. Reads `wiki/digest.md` plus the new source. Output: a structured JSON integration plan (schema below). Written to `wiki/integration-plans/<source-uuid>.json` for audit trail and for Pass 2 to consume.
+**Call A — Comprehend.** A new LLM call inserted at the start of Pass 1. Reads `wiki/digest.md` plus the new source. Output: a structured JSON integration plan (schema below). Written to `integration-plans/<source-uuid>.json` for audit trail and for Pass 2 to consume.
 
 **Call B — Write.** The existing Writer→Evaluator→Editor loop in `holistic_synthesizer.py`. Now its user-message context includes the integration plan in addition to the source. The Writer is no longer naive — it has both the digest's compressed prior over the wiki and the Comprehend pass's verdict on how this source maps to that prior. The prompt structure of the Writer/Evaluator/Editor does not change; only the input context expands.
 
@@ -69,7 +69,7 @@ The LDP still performs bottom-up extraction. The plan is a prior, not a constrai
 
 ## The Integration Plan Schema
 
-Persisted to `wiki/integration-plans/<source-uuid>.json`. Five fields, each carrying its weight:
+Persisted to `integration-plans/<source-uuid>.json`. Five fields, each carrying its weight:
 
 ```json
 {
@@ -138,7 +138,7 @@ Persisted to `wiki/integration-plans/<source-uuid>.json`. Five fields, each carr
 - The full source document (~10-50k tokens) — as a `cache_control` block
 - A user message: "Produce the integration plan as JSON conforming to the schema."
 
-**Output:** Integration plan JSON. Passed through the validator (reusing `pipeline/synthesis_validation.py` machinery) to strip ghost slugs from `extends` and `retrieve-for-context`, then written to `wiki/integration-plans/<source-uuid>.json` before Pass 1B begins.
+**Output:** Integration plan JSON. Passed through the validator (reusing `pipeline/synthesis_validation.py` machinery) to strip ghost slugs from `extends` and `retrieve-for-context`, then written to `integration-plans/<source-uuid>.json` before Pass 1B begins.
 
 **Failure modes — two distinct cases:**
 
@@ -167,7 +167,7 @@ The Writer's system prompt gets a small addition explaining that the plan repres
 
 ### Pass 2 — Plan-Guided LDP
 
-`pipeline/ldp.py` reads `wiki/integration-plans/<source-uuid>.json` at the start of `process_long_document()`. For each chunk:
+`pipeline/ldp.py` reads `integration-plans/<source-uuid>.json` at the start of `process_long_document()`. For each chunk:
 
 **Input context for the chunk extraction LLM:**
 - The integration plan (cache_control'd, sent once per ingest run not per chunk)
@@ -217,7 +217,7 @@ def build_integration_plan(
     Returns an empty plan dict if digest_content is None (first ingest)."""
 
 def write_integration_plan(plan: dict, plans_dir: str) -> str:
-    """Write plan JSON to wiki/integration-plans/<source-uuid>.json. Returns path."""
+    """Write plan JSON to integration-plans/<source-uuid>.json. Returns path."""
 
 def load_integration_plan(plans_dir: str, source_uuid: str) -> dict:
     """Load plan from disk. Returns empty plan if file missing (graceful fallback)."""
@@ -234,8 +234,8 @@ Changes to existing modules:
 | `pipeline/run_ingest.py` | Pass `wiki_root` deeply enough that Comprehend can load `digest.md`; expose `--skip-comprehend` flag for testing/debugging |
 | `pipeline/ldp.py` | Load integration plan at start of `process_long_document()`; thread plan + retrieved entity bodies into each chunk's prompt |
 | `pipeline/wiki_writer.py` | Same chunk-extraction context expansion as `ldp.py` (these two share the chunk loop) |
-| `wiki/integration-plans/.gitkeep` | New directory for plan artifacts |
-| `wiki/integration-plans/README.md` | One-paragraph explainer for humans browsing the vault |
+| `integration-plans/.gitkeep` | New directory for plan artifacts |
+| `integration-plans/README.md` | One-paragraph explainer for humans browsing the vault |
 
 The `integration-plans/` directory is committed (the plans are part of the audit trail), but git-gitkeep handles the bootstrap.
 
@@ -280,7 +280,7 @@ These need explicit decisions before implementation.
 
 6. **Should the plan also drive `synthesize_wiki --strategies-touched-from <plan>`?** Currently `synthesize_wiki` regenerates the L1 synthesis blocks for all 7 strategies on every invocation. The plan's `strategies-touched` is a natural signal to narrow that — only re-synthesize the strategies the new source actually affected. **Recommendation:** out of scope for this PR. Add a follow-on issue. Don't bundle.
 
-7. **Telemetry.** Should we log per-ingest stats (Comprehend duration, number of extends/new-entities, plan size in tokens) somewhere durable? **Recommendation:** yes — append a JSON line to `wiki/meta/ingest-stats.jsonl`. Cheap to write, useful for trend analysis as the wiki scales.
+7. **Telemetry.** Should we log per-ingest stats (Comprehend duration, number of extends/new-entities, plan size in tokens) somewhere durable? **Recommendation:** yes — append a JSON line to `meta/ingest-stats.jsonl`. Cheap to write, useful for trend analysis as the wiki scales.
 
 8. **Test strategy.** The new Comprehend module is testable with mocked LLM calls (cheap). The integration changes to `holistic_synthesizer.py` and `ldp.py` are harder — they have many existing tests that mock specific prompt structures. **Recommendation:** add unit tests for `pipeline/comprehend.py` covering plan generation, schema validation, fallback. Update existing `tests/test_holistic_synthesizer.py` and `tests/test_ldp.py` to mock the new plan-aware prompt assembly. One optional integration test gated on `ANTHROPIC_API_KEY`.
 

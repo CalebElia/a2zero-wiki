@@ -102,7 +102,7 @@ def _entities_touched_this_ingest(wiki_root: str, source_uuid: str | None) -> li
     if not source_uuid:
         return []
 
-    plan_path = Path(wiki_root) / "integration-plans" / f"{source_uuid}.json"
+    plan_path = Path(wiki_root).parent / "integration-plans" / f"{source_uuid}.json"
     if not plan_path.exists():
         return []
     try:
@@ -453,7 +453,7 @@ def synthesize_wiki(
                 # Re-validate to compute final dropped set for the log
                 synthesis, post_report = validate_synthesis(synthesis, wiki_root, aliases)
                 log_dropped_ghosts(
-                    log_path=str(Path(wiki_root) / "meta" / "synthesis-ghosts.log"),
+                    log_path=str(Path(wiki_root).parent / "meta" / "synthesis-ghosts.log"),
                     run_date=run_date,
                     context_label=strategy_slug,
                     ghosts=post_report.broken,
@@ -496,7 +496,7 @@ def synthesize_wiki(
         narrative = revise_narrative(narrative, narrative_report, combined_inventory)
         post_narrative_report = validate_narrative(narrative, wiki_root, aliases)
         log_dropped_ghosts(
-            log_path=str(Path(wiki_root) / "meta" / "synthesis-ghosts.log"),
+            log_path=str(Path(wiki_root).parent / "meta" / "synthesis-ghosts.log"),
             run_date=run_date,
             context_label="digest-narrative",
             ghosts=post_narrative_report.broken,

@@ -86,7 +86,7 @@ def test_run_source_ingest_calls_comprehend_when_digest_exists(
     wiki = tmp_path / "wiki"
     wiki.mkdir()
     (wiki / "digest.md").write_text("---\nlast-rebuilt: '2026-06-29'\n---\n# Digest\nBody.\n", encoding="utf-8")
-    (wiki / "meta").mkdir()
+    (tmp_path / "meta").mkdir()
     (wiki / "sources" / "annual-reports").mkdir(parents=True)
     src_path = wiki / "sources" / "annual-reports" / "test.md"
     src_path.write_text("---\nuuid: test\nsource_type: annual-report\n---\nSource body.\n", encoding="utf-8")
@@ -118,9 +118,9 @@ def test_run_source_ingest_calls_comprehend_when_digest_exists(
     # Comprehend was called
     assert mock_comprehend_chat.call_count == 1
     # Plan was persisted
-    assert (wiki / "integration-plans" / "test.json").exists()
+    assert (wiki.parent / "integration-plans" / "test.json").exists()
     # Stats line was appended
-    assert (wiki / "meta" / "ingest-stats.jsonl").exists()
+    assert (tmp_path / "meta" / "ingest-stats.jsonl").exists()
     # synthesize_source received the plan + digest
     synth_kwargs = mock_synth.call_args.kwargs
     assert synth_kwargs.get("integration_plan") is not None
@@ -192,7 +192,7 @@ def test_run_source_ingest_skips_comprehend_when_no_digest(
     # No LLM call (graceful fallback)
     assert mock_comprehend_chat.call_count == 0
     # An empty plan was still written for the audit trail
-    assert (wiki / "integration-plans" / "test.json").exists()
+    assert (wiki.parent / "integration-plans" / "test.json").exists()
     # synthesize_source received digest_content=None
     synth_kwargs = mock_synth.call_args.kwargs
     assert synth_kwargs.get("digest_content") is None

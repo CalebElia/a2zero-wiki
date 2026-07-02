@@ -11,7 +11,7 @@ compounding pages. See `pipeline/topic_synthesize.py`.
 ```
 Human agentic session (reads wiki/index.md, explores, answers a cross-entity question)
         ↓ python -m pipeline.orchestrator log-query --question "..." --answer-file <path>
-append_query_log_entry()  →  wiki/meta/query-log.md   (auto-appended, never hand-transcribed)
+append_query_log_entry()  →  meta/query-log.md   (auto-appended, never hand-transcribed)
         ↓ human marks [x] Promote
         ↓ python -m pipeline.orchestrator topic-promote
 promote_query_log_entries()  →  wiki/topics/<slug>.md

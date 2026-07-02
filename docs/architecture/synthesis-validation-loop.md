@@ -214,7 +214,7 @@ These are decisions worth making explicitly before implementation.
 
 1. **Reviser model selection.** Should the Reviser use the same model as the Writer, or a cheaper one? Argument for same: matching capability avoids losing nuance. Argument for cheaper: this is mechanical work; a smaller model is sufficient and reduces cost. **Recommendation:** start with same model (simplest), add `model_hint="revision"` for future tuning.
 
-2. **Logging unresolved ghosts.** When the Reviser drops a slug entirely (no plausible substitute in inventory), should we log it somewhere for human review? **Recommendation:** append to a `wiki/meta/synthesis-ghosts.log` file. Over time, recurring ghosts in this log signal entities worth either creating or adding to the suppress list permanently.
+2. **Logging unresolved ghosts.** When the Reviser drops a slug entirely (no plausible substitute in inventory), should we log it somewhere for human review? **Recommendation:** append to a `meta/synthesis-ghosts.log` file. Over time, recurring ghosts in this log signal entities worth either creating or adding to the suppress list permanently.
 
 3. **Validator iteration ceiling.** Should we Validate → Revise → Validate again, and loop until clean (with a max)? **Recommendation:** no. Single Reviser pass. If the Reviser introduces new broken slugs, that's a Reviser bug worth surfacing, not papering over with another round.
 

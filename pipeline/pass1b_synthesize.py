@@ -634,7 +634,7 @@ def _write_synthesis(
 
     candidates = result.get("topic_candidates", [])
     if candidates:
-        meta_dir = Path(wiki_root) / "meta"
+        meta_dir = Path(wiki_root).parent / "meta"
         meta_dir.mkdir(exist_ok=True)
         candidates_path = meta_dir / "topic-candidates.md"
         with candidates_path.open("a", encoding="utf-8") as f:
@@ -644,7 +644,7 @@ def _write_synthesis(
                     f"Rationale: {tc.get('rationale', '')}\n"
                     f"Resolution: [ ] Promote to wiki/topics/  [ ] Dismiss\n"
                 )
-        print(f"[holistic] {len(candidates)} topic candidates written to wiki/meta/topic-candidates.md")
+        print(f"[holistic] {len(candidates)} topic candidates written to meta/topic-candidates.md")
 
     log_parts = [result.get("log_summary", f"Ingested {source_uuid}.")]
     log_parts.append(
