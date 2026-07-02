@@ -7,6 +7,7 @@ from pipeline._pages import (
     append_quads,
     parse_llm_quads_response,
     build_quads_prompt,
+    add_valid_page_type,
 )
 from pipeline._models import validate_quad
 
@@ -140,3 +141,16 @@ def test_integration_extract_quads_from_fixture(tmp_path):
     for q in quads:
         errors = validate_quad(q)
         assert errors == [], f"invalid quad: {q}\nerrors: {errors}"
+
+
+def test_add_valid_page_type_round_trips(tmp_path, monkeypatch):
+    import pipeline._pages as _pages
+    path = tmp_path / "valid_page_types.json"
+    path.write_text(json.dumps({"page_types": ["actor", "initiative"]}), encoding="utf-8")
+    monkeypatch.setattr(_pages, "VALID_PAGE_TYPES", frozenset({"actor", "initiative"}))
+
+    add_valid_page_type("zoning-application", path=path)
+
+    saved = json.loads(path.read_text(encoding="utf-8"))
+    assert set(saved["page_types"]) == {"actor", "initiative", "zoning-application"}
+    assert "zoning-application" in _pages.VALID_PAGE_TYPES

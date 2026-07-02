@@ -202,6 +202,24 @@ def structural_lint(wiki_root: str) -> list[dict]:
                     "detail": f"[[{link}]] — non-topic pages must never cite a topic page",
                 })
 
+    # Governance alerts — nothing in meta/ should populate silently. Both are
+    # purely informational (no checkbox here); resolution happens at the
+    # source (meta/schema-drift.md for drift, meta/query-log.md + topic-promote
+    # for candidates) and this just surfaces that something is waiting, in the
+    # same review-queue.md the human already checks after every --structural run.
+    from pipeline.schema_governance import schema_drift_findings
+    findings.extend(schema_drift_findings(wiki_root))
+
+    from pipeline.topic_synthesize import parse_query_log
+    query_log_path = root.parent / "meta" / "query-log.md"
+    for entry in parse_query_log(str(query_log_path)):
+        if not entry["promote"] and not entry["dismiss"]:
+            findings.append({
+                "type": "QUERY_LOG_PENDING",
+                "page": "meta/query-log.md",
+                "detail": f"{entry['question']!r} ({entry['date']}) — awaiting Promote/Dismiss",
+            })
+
     return findings
 
 
@@ -767,9 +785,20 @@ def _append_merge_log(merge_log_path: str, entry: dict) -> None:
 
 
 def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> None:
-    """Execute approved proposals from review-queue.md, then clean resolved items from the queue."""
+    """Execute approved proposals from review-queue.md and meta/schema-drift.md."""
     from pipeline.pass2c_merge import merge_pages as _merge_pages
     from pipeline._aliases import add_alias
+
+    # Runs unconditionally, independent of review-queue.md's presence — a human
+    # may have only schema-drift entries checked, no lint findings at all. Same
+    # command resolves both: "process what I just checked boxes on."
+    from pipeline.schema_governance import apply_schema_drift
+    drift_result = apply_schema_drift(wiki_root)
+    if drift_result["approved"] or drift_result["kept"]:
+        print(
+            f"[lint_wiki:apply] schema-drift: {len(drift_result['approved'])} type(s) approved, "
+            f"{len(drift_result['kept'])} kept as fallback"
+        )
 
     rq_path = str(Path(wiki_root).parent / "review-queue.md")
     if not Path(rq_path).exists():
