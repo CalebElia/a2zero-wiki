@@ -3,7 +3,7 @@ amount: 1000000
 currency: USD
 date: '2024'
 fund-type: federal-grant
-funder: '[[actors/us-environmental-protection-agency]]'
+funder: '[[actors/us-epa]]'
 funds-initiatives:
 - '[[initiatives/model-regional-resilience-network]]'
 - '[[initiatives/resilience-hubs]]'
@@ -22,4 +22,4 @@ transferable: false
 type: funding-event
 ---
 
-The City of Ann Arbor reported winning a $1,000,000 [[actors/us-environmental-protection-agency|U.S. EPA]] Environmental Justice Government-to-Government grant in Year Four ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). The grant is designated to start the [[initiatives/model-regional-resilience-network|Model Regional Resilience Network]] and expand [[initiatives/resilience-hubs|Resilience Hubs]] within Ann Arbor and throughout [[locations/washtenaw-county|Washtenaw County]] ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).
+The City of Ann Arbor reported winning a $1,000,000 [[actors/us-epa|U.S. EPA]] Environmental Justice Government-to-Government grant in Year Four ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). The grant is designated to start the [[initiatives/model-regional-resilience-network|Model Regional Resilience Network]] and expand [[initiatives/resilience-hubs|Resilience Hubs]] within Ann Arbor and throughout [[locations/washtenaw-county|Washtenaw County]] ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).

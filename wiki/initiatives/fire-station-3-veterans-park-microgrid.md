@@ -14,6 +14,7 @@ milestones:
 parent-strategy: '[[strategies/strategy-6-resilience]]'
 partners:
 - '[[actors/office-of-emergency-management]]'
+- '[[actors/fema]]'
 party-responsible: '[[actors/office-of-sustainability-and-innovations]]'
 related-strategies:
 - '[[strategies/strategy-6-resilience]]'
@@ -29,4 +30,4 @@ title: Fire Station 3 and Veterans Memorial Park Microgrid
 type: initiative
 ---
 
-OSI and Emergency Management submitted a FEMA Building Resilient Infrastructure and Communities grant application to install a microgrid at [[locations/fire-station-3|Fire Station 3]] and [[locations/veterans-memorial-park|Veterans Memorial Park]]. ([[sources/annual-reports/a2zero-year4|a2zero-year4]]) The project is presented as a resilience investment intended to strengthen backup power capacity at these sites. ([[sources/annual-reports/a2zero-year4|a2zero-year4]])
+OSI and Emergency Management submitted a [[actors/fema|FEMA]] Building Resilient Infrastructure and Communities grant application to install a microgrid at [[locations/fire-station-3|Fire Station 3]] and [[locations/veterans-memorial-park|Veterans Memorial Park]]. ([[sources/annual-reports/a2zero-year4|a2zero-year4]]) The project is presented as a resilience investment intended to strengthen backup power capacity at these sites. ([[sources/annual-reports/a2zero-year4|a2zero-year4]])

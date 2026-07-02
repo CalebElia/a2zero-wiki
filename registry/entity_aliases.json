@@ -4013,5 +4013,25 @@
     ],
     "relationship": "name-variant",
     "notes": "Program-produced collective — the ambassador corps is the initiative's own output, not a distinct actor. See CLAUDE.md convention."
+  },
+  "us-environmental-protection-agency": {
+    "canonical": "actors/us-epa",
+    "type": "actor",
+    "aliases": [
+      "U.S. Environmental Protection Agency",
+      "US EPA",
+      "United States Environmental Protection Agency"
+    ],
+    "relationship": "name-variant"
+  },
+  "us-forest-service": {
+    "canonical": "actors/usda-forest-service",
+    "type": "actor",
+    "aliases": [
+      "U.S. Forest Service",
+      "USFS",
+      "United States Forest Service"
+    ],
+    "relationship": "name-variant"
   }
 }

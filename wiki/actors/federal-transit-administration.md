@@ -2,7 +2,7 @@
 active-years:
 - 2020
 actor-type: government-office
-affiliation: null
+affiliation: '[[actors/us-federal-government]]'
 elected: false
 last-updated: '2026-06-24'
 programs-involved:
@@ -19,4 +19,4 @@ title: Federal Transit Administration
 type: actor
 ---
 
-The [[actors/federal-transit-administration|Federal Transit Administration]] (FTA) is identified as a collaborator and project co-designer for both the [[initiatives/expand-improve-local-transit|Expand and Improve Local Transit]] and [[initiatives/expand-improve-regional-transit|Expand and Improve Regional Transit]] initiatives under A2Zero Strategy 4 ([[sources/cap/cap-2020|cap-2020]]). The FTA's involvement reflects the need for federal support and potential funding for the significant infrastructure investments required, including bus rapid transit lines estimated to cost $656,780,000 over 10 years ([[sources/cap/cap-2020|cap-2020]]).
+The [[actors/federal-transit-administration|Federal Transit Administration]] (FTA) is a federal agency within the [[actors/us-federal-government|United States Federal Government]], identified as a collaborator and project co-designer for both the [[initiatives/expand-improve-local-transit|Expand and Improve Local Transit]] and [[initiatives/expand-improve-regional-transit|Expand and Improve Regional Transit]] initiatives under A2Zero Strategy 4 ([[sources/cap/cap-2020|cap-2020]]). The FTA's involvement reflects the need for federal support and potential funding for the significant infrastructure investments required, including bus rapid transit lines estimated to cost $656,780,000 over 10 years ([[sources/cap/cap-2020|cap-2020]]).

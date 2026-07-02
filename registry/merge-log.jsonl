@@ -59,3 +59,5 @@
 {"date": "2026-07-02", "action": "MERGE", "from": "initiatives/internal-carbon-tax.md", "into": "initiatives/internal-carbon-price.md", "approved-by": "manual"}
 {"date": "2026-07-02", "action": "MERGE", "from": "locations/bryant-community-center.md", "into": "locations/bryant-neighborhood-community-center.md", "approved-by": "manual"}
 {"date": "2026-07-02", "action": "MERGE", "from": "funding-events/dcfc-city-hall-grant-2021.md", "into": "funding-events/ev-fast-charger-2022.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "actors/us-environmental-protection-agency.md", "into": "actors/us-epa.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "actors/us-forest-service.md", "into": "actors/usda-forest-service.md", "approved-by": "manual"}

@@ -14,7 +14,7 @@ milestones:
   year: 2024
 parent-strategy: '[[strategies/strategy-6-resilience]]'
 partners:
-- '[[actors/us-environmental-protection-agency]]'
+- '[[actors/us-epa]]'
 - '[[actors/washtenaw-county]]'
 party-responsible: '[[actors/office-of-sustainability-and-innovations]]'
 related-strategies:

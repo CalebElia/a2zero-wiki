@@ -10,4 +10,4 @@ tags:
 - grants
 ---
 
-A federal agency within the [[actors/us-federal-government|United States Federal Government]]. Awarded funding for the Bryant Neighborhood Decarbonization initiative and other Ann Arbor climate work.
+A federal agency within the [[actors/us-federal-government|United States Federal Government]]. The U.S. Environmental Protection Agency (EPA) awarded funding for the Bryant Neighborhood Decarbonization initiative and other Ann Arbor climate work. It also awarded Ann Arbor a $1,000,000 Environmental Justice Government-to-Government grant in Year Four, designated to start the [[initiatives/model-regional-resilience-network|Model Regional Resilience Network]] and expand [[initiatives/resilience-hubs|Resilience Hubs]] within Ann Arbor and throughout [[locations/washtenaw-county|Washtenaw County]] ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). The grant built on the city's earlier effort to formalize a resilience network beyond individual hub sites, connecting resilience hub expansion to environmental justice funding and countywide coordination ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).
