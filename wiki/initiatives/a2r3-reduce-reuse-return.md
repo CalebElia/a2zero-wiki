@@ -1,5 +1,6 @@
 ---
-funding-events: []
+funding-events:
+- '[[funding-events/washtenaw-county-a2r3-sponsorship-2023]]'
 last-updated: '2026-06-26'
 launched: 2022
 locations:

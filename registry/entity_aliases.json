@@ -3032,10 +3032,10 @@
     "relationship": "name-variant"
   },
   "sustainable-food-framework": {
-    "canonical": "initiatives/sustainable-food-framework",
+    "canonical": "initiatives/ann-arbor-sustainable-food-framework",
     "type": "initiative",
     "aliases": [
-      "Sustainable Food Framework for Ann Arbor"
+      "Sustainable Food Framework"
     ],
     "relationship": "name-variant"
   },
@@ -4031,6 +4031,318 @@
       "U.S. Forest Service",
       "USFS",
       "United States Forest Service"
+    ],
+    "relationship": "name-variant"
+  },
+  "constellation-energy": {
+    "canonical": "actors/constellation-energy",
+    "type": "actor",
+    "aliases": [
+      "Constellation Energy"
+    ],
+    "relationship": "name-variant"
+  },
+  "comprenew": {
+    "canonical": "actors/comprenew",
+    "type": "actor",
+    "aliases": [
+      "Comprenew"
+    ],
+    "relationship": "name-variant"
+  },
+  "human-electric-hybrids": {
+    "canonical": "actors/human-electric-hybrids",
+    "type": "actor",
+    "aliases": [
+      "Human Electric Hybrids"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-county-resilience-office": {
+    "canonical": "actors/washtenaw-county-resilience-office",
+    "type": "actor",
+    "aliases": [
+      "Washtenaw County Resilience Office"
+    ],
+    "relationship": "name-variant"
+  },
+  "pittsfield-village-community": {
+    "canonical": "actors/pittsfield-village-community",
+    "type": "actor",
+    "aliases": [
+      "Pittsfield Village community"
+    ],
+    "relationship": "name-variant"
+  },
+  "argus-farm-stop": {
+    "canonical": "actors/argus-farm-stop",
+    "type": "actor",
+    "aliases": [
+      "Argus Farm Stop"
+    ],
+    "relationship": "name-variant"
+  },
+  "city-transportation-team": {
+    "canonical": "actors/city-transportation-team",
+    "type": "actor",
+    "aliases": [
+      "City Transportation Team"
+    ],
+    "relationship": "name-variant"
+  },
+  "stantec": {
+    "canonical": "actors/stantec",
+    "type": "actor",
+    "aliases": [
+      "Stantec"
+    ],
+    "relationship": "name-variant"
+  },
+  "bicycle-alliance-of-washtenaw": {
+    "canonical": "actors/bicycle-alliance-of-washtenaw",
+    "type": "actor",
+    "aliases": [
+      "Bicycle Alliance of Washtenaw"
+    ],
+    "relationship": "name-variant"
+  },
+  "planning-department": {
+    "canonical": "actors/city-of-ann-arbor-planning-department",
+    "type": "actor",
+    "aliases": [
+      "Planning Department"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-sustainable-food-framework": {
+    "canonical": "initiatives/ann-arbor-sustainable-food-framework",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Sustainable Food Framework"
+    ],
+    "relationship": "name-variant"
+  },
+  "commercial-ev-charger-program": {
+    "canonical": "initiatives/commercial-ev-charger-program",
+    "type": "initiative",
+    "aliases": [
+      "Commercial EV Charger Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "borrow-a-cargo-bike-a2": {
+    "canonical": "initiatives/borrow-a-cargo-bike-a2",
+    "type": "initiative",
+    "aliases": [
+      "Borrow a Cargo Bike A2"
+    ],
+    "relationship": "name-variant"
+  },
+  "pittsfield-village-decarbonization-collaboration": {
+    "canonical": "initiatives/pittsfield-village-decarbonization-collaboration",
+    "type": "initiative",
+    "aliases": [
+      "Pittsfield Village Decarbonization Collaboration"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-local-food-fest": {
+    "canonical": "initiatives/ann-arbor-local-food-fest",
+    "type": "initiative",
+    "aliases": [
+      "Ann Arbor Local Food Fest"
+    ],
+    "relationship": "name-variant"
+  },
+  "electronics-collection-events": {
+    "canonical": "initiatives/electronics-collection-events",
+    "type": "initiative",
+    "aliases": [
+      "Electronics Collection Events"
+    ],
+    "relationship": "name-variant"
+  },
+  "electric-leaf-blower-rebate-program": {
+    "canonical": "initiatives/electric-leaf-blower-rebate-program",
+    "type": "initiative",
+    "aliases": [
+      "Electric Leaf Blower Rebate Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "storytelling-program": {
+    "canonical": "initiatives/monthly-a2zero-storytelling-program",
+    "type": "initiative",
+    "aliases": [
+      "Storytelling Program"
+    ],
+    "relationship": "name-variant"
+  },
+  "move-out-ann-arbor-coalition": {
+    "canonical": "initiatives/move-out-ann-arbor-coalition",
+    "type": "initiative",
+    "aliases": [
+      "Move Out Ann Arbor Coalition"
+    ],
+    "relationship": "name-variant"
+  },
+  "seu-open-houses": {
+    "canonical": "initiatives/seu-open-houses",
+    "type": "initiative",
+    "aliases": [
+      "SEU Open Houses"
+    ],
+    "relationship": "name-variant"
+  },
+  "washtenaw-county-resilience-network": {
+    "canonical": "initiatives/washtenaw-county-resilience-network",
+    "type": "initiative",
+    "aliases": [
+      "Washtenaw County Resilience Network"
+    ],
+    "relationship": "name-variant"
+  },
+  "a2zero-heat-pump-concierge": {
+    "canonical": "initiatives/a2zero-heat-pump-concierge",
+    "type": "initiative",
+    "aliases": [
+      "A2ZERO Heat Pump Concierge"
+    ],
+    "relationship": "name-variant"
+  },
+  "youth-now-climate-action": {
+    "canonical": "initiatives/youth-now-climate-action",
+    "type": "initiative",
+    "aliases": [
+      "Youth Now Climate Action"
+    ],
+    "relationship": "name-variant"
+  },
+  "cinema-and-sustainability-film-series": {
+    "canonical": "initiatives/cinema-and-sustainability-film-series",
+    "type": "initiative",
+    "aliases": [
+      "Cinema and Sustainability Film Series"
+    ],
+    "relationship": "name-variant"
+  },
+  "michigan-theater": {
+    "canonical": "locations/michigan-theater",
+    "type": "location",
+    "aliases": [
+      "Michigan Theater"
+    ],
+    "relationship": "name-variant"
+  },
+  "pittsfield-village": {
+    "canonical": "locations/pittsfield-village",
+    "type": "location",
+    "aliases": [
+      "Pittsfield Village"
+    ],
+    "relationship": "name-variant"
+  },
+  "sesame-solar-unit": {
+    "canonical": "technology/sesame-solar-unit",
+    "type": "technology",
+    "aliases": [
+      "Sesame Solar Unit"
+    ],
+    "relationship": "name-variant"
+  },
+  "bryant-neighborhood-networked-geothermal-award-2025": {
+    "canonical": "funding-events/bryant-neighborhood-networked-geothermal-award-2025",
+    "type": "funding-event",
+    "aliases": [
+      "Bryant Neighborhood Networked Geothermal Award 2025"
+    ],
+    "relationship": "name-variant"
+  },
+  "epa-small-food-retailer-refrigerant-grant-2025": {
+    "canonical": "funding-events/epa-small-food-retailer-refrigerant-grant-2025",
+    "type": "funding-event",
+    "aliases": [
+      "EPA Small Food Retailer Refrigerant Grant 2025"
+    ],
+    "relationship": "name-variant"
+  },
+  "bryant-neighborhood-doe-grant-2025": {
+    "canonical": "funding-events/bryant-neighborhood-networked-geothermal-award-2025",
+    "type": "funding-event",
+    "aliases": [
+      "Bryant Neighborhood Doe Grant 2025"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-seu-startup-funding-2025": {
+    "canonical": "funding-events/ann-arbor-seu-startup-funding-2025",
+    "type": "funding-event",
+    "aliases": [
+      "Ann Arbor SEU Startup Funding 2025"
+    ],
+    "relationship": "name-variant"
+  },
+  "bryant-neighborhood-mpsc-grant-2025": {
+    "canonical": "funding-events/bryant-neighborhood-mpsc-grant-2025",
+    "type": "funding-event",
+    "aliases": [
+      "Bryant Neighborhood MPSC Grant 2025"
+    ],
+    "relationship": "name-variant"
+  },
+  "ann-arbor-cfi-grant-2025": {
+    "canonical": "funding-events/ann-arbor-cfi-grant-2025",
+    "type": "funding-event",
+    "aliases": [
+      "Ann Arbor CFI Grant 2025"
+    ],
+    "relationship": "name-variant"
+  },
+  "theride-zero-emission-bus-grant-2025": {
+    "canonical": "funding-events/theride-zero-emission-bus-grant-2025",
+    "type": "funding-event",
+    "aliases": [
+      "TheRide Zero-Emission Bus Grant 2025"
+    ],
+    "relationship": "name-variant"
+  },
+  "american-lung-association-refuse-truck-support-2025": {
+    "canonical": "funding-events/american-lung-association-refuse-truck-support-2025",
+    "type": "funding-event",
+    "aliases": [
+      "American Lung Association Refuse Truck Support 2025"
+    ],
+    "relationship": "name-variant"
+  },
+  "2024-11-01-ann-arbor-seu-authorization-vote": {
+    "canonical": "political-events/2024-11-01-ann-arbor-seu-authorization-vote",
+    "type": "political-event",
+    "aliases": [
+      "Ann Arbor voter authorization of the Sustainable Energy Utility"
+    ],
+    "relationship": "name-variant"
+  },
+  "2025-01-01-epa-resilience-grant-termination": {
+    "canonical": "political-events/2025-01-01-epa-resilience-grant-termination",
+    "type": "political-event",
+    "aliases": [
+      "EPA termination of Ann Arbor Environmental Justice resilience grant"
+    ],
+    "relationship": "name-variant"
+  },
+  "2024-11-05-ann-arbor-seu-authorization-vote": {
+    "canonical": "political-events/2024-11-05-ann-arbor-seu-authorization-vote",
+    "type": "political-event",
+    "aliases": [
+      "Ann Arbor voter authorization of the Sustainable Energy Utility"
+    ],
+    "relationship": "name-variant"
+  },
+  "2025-04-22-ann-arbor-dte-heating-franchise-arca": {
+    "canonical": "political-events/2025-04-22-ann-arbor-dte-heating-franchise-arca",
+    "type": "political-event",
+    "aliases": [
+      "Ann Arbor and DTE Heating Franchise and ARCA Approval"
     ],
     "relationship": "name-variant"
   }

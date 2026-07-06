@@ -3,6 +3,9 @@ funding-events:
 - '[[funding-events/epa-bryant-2022]]'
 - '[[funding-events/mcknight-foundation-bryant-2022]]'
 - '[[funding-events/solar-moonshot-bryant-2022]]'
+- '[[funding-events/doe-geothermal-planning-grant-2023]]'
+- '[[funding-events/eecbg-bryant-community-center-2023]]'
+- '[[funding-events/mi-hope-bryant-2023]]'
 last-updated: '2026-06-26'
 launched: 2021
 locations:

@@ -1,8 +1,9 @@
 ---
 funding-events:
+- '[[funding-events/semcog-bike-boulevard-2023]]'
 last-updated: '2026-06-30'
 launched: null
-locations:
+locations: null
 milestones:
 - source: '[[sources/annual-reports/a2zero-year3]]'
   status: unverified

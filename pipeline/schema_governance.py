@@ -98,7 +98,11 @@ def parse_schema_drift_entries(drift_path: str) -> list[dict]:
             "block": block,
             "approve_checked": bool(res_m) and res_m.group(1).lower() == "x",
             "keep_checked": bool(res_m) and res_m.group(2).lower() == "x",
-            "keep_tag": res_m.group(3).strip() if res_m and res_m.group(3).strip() else None,
+            "keep_tag": (
+                res_m.group(3).strip()
+                if res_m and res_m.group(3).strip() and res_m.group(3).strip() != "<tag>"
+                else None
+            ),
             "resolved": bool(_RESOLVED_MARKER_RE.search(block)),
         })
     return entries
@@ -143,6 +147,7 @@ def apply_schema_drift(wiki_root: str) -> dict:
         elif entry["keep_checked"]:
             tag = entry["keep_tag"] or entry["proposed_type"]
             _add_page_tag(root, entry["slug"], tag)
+            _strip_proposed_type(root, entry["slug"])
             marker = f'\n**Resolved {today}: kept as fallback, tagged "{tag}"**\n'
             text = text.replace(entry["block"], entry["block"] + marker)
             kept.append(entry["slug"])

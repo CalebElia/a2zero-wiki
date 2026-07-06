@@ -1,5 +1,7 @@
 ---
-funding-events: []
+funding-events:
+- '[[funding-events/usda-urban-forestry-ira-2023]]'
+- '[[funding-events/usfs-urban-forestry-grant-2024]]'
 last-updated: '2026-06-25'
 launched: 2021
 locations: []

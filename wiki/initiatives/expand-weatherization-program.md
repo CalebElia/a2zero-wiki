@@ -1,5 +1,6 @@
 ---
-funding-events: []
+funding-events:
+- '[[funding-events/bryant-neighborhood-mpsc-grant-2025]]'
 last-updated: '2026-06-24'
 launched: 2021
 locations: []

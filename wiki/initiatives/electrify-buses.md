@@ -1,5 +1,6 @@
 ---
-funding-events: []
+funding-events:
+- '[[funding-events/theride-zero-emission-bus-grant-2025]]'
 last-updated: '2026-06-24'
 launched: 2020
 locations:

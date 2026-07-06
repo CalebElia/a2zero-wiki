@@ -27,4 +27,4 @@ title: Monthly A2ZERO Storytelling Program
 type: initiative
 ---
 
-The Monthly A2ZERO Storytelling Program is a planned communications initiative intended to document local and personal impacts of A2ZERO. ([[sources/annual-reports/a2zero-year4|a2zero-year4]]) The Year 5 priorities identify monthly storytelling as a specific new program to launch. ([[sources/annual-reports/a2zero-year4|a2zero-year4]])
+The Monthly A2ZERO Storytelling Program is a planned communications and engagement initiative intended to document and chronicle the local and personal impacts of A2ZERO. ([[sources/annual-reports/a2zero-year4|a2zero-year4]]) ([[sources/annual-reports/a2zero-year5|a2zero-year5]]) The Year 5 priorities identify monthly storytelling as a specific new program to launch, and it is also listed as a Year 6 priority for the next year rather than as a completed program. ([[sources/annual-reports/a2zero-year4|a2zero-year4]]) ([[sources/annual-reports/a2zero-year5|a2zero-year5]])

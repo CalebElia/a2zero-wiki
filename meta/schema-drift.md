@@ -23,3 +23,17 @@ Resolution: [ ] Approve new type  [ ] Keep as fallback + tag [<tag>]
 ```
 
 ---
+
+## 2026-07-02 | Proposed type: "startup-funding-award" | Written as: "funding-event" | Page: "funding-events/ann-arbor-seu-startup-funding-2025"
+Title: Ann Arbor SEU Startup Funding 2025
+Resolution: [ ] Approve new type  [x] Keep as fallback + tag [<tag>]
+**Resolved 2026-07-02: kept as fallback, tagged "<tag>"**
+**Correction 2026-07-02: the "<tag>" placeholder was left unfilled and used literally — a human data-entry mistake, not a pipeline bug at write time (the parser now guards against this going forward). Manually corrected the page's tag to "startup-funding-award" instead.**
+
+
+## 2026-07-02 | Proposed type: "project-award" | Written as: "funding-event" | Page: "funding-events/bryant-neighborhood-networked-geothermal-award-2025"
+Title: Bryant Neighborhood Networked Geothermal Award 2025
+Resolution: [ ] Approve new type  [x] Keep as fallback + tag [<tag>]
+**Resolved 2026-07-02: kept as fallback, tagged "<tag>"**
+**Correction 2026-07-02: the "<tag>" placeholder was left unfilled and used literally — a human data-entry mistake, not a pipeline bug at write time (the parser now guards against this going forward). Manually corrected the page's tag to "project-award" instead.**
+

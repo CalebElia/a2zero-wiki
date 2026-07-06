@@ -175,7 +175,7 @@ def test_validate_page_spec_writes_documented_schema_drift_format(tmp_path):
     root.mkdir()
     spec = {
         **MOCK_PAGES[0],
-        "frontmatter": {**MOCK_PAGES[0]["frontmatter"], "proposed_type": "zoning-application", "title": "Zoning App"},
+        "frontmatter": {**MOCK_PAGES[0]["frontmatter"], "proposed-type": "zoning-application", "title": "Zoning App"},
     }
     validate_page_spec(spec, wiki_root=str(root), run_date="2026-07-03")
 

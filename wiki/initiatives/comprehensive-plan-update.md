@@ -27,3 +27,5 @@ type: initiative
 ---
 
 During Year 3 of A2ZERO, the City released a request for proposals for a Comprehensive Plan update, with carbon neutrality and equity identified as two priority areas of focus ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The updated Comprehensive Plan is intended to embed climate and equity goals into long-term land use and transportation planning for Ann Arbor ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).
+
+By Year 5, the Comprehensive Plan Update was a priority under Strategy 4, with [[actors/office-of-sustainability-and-innovations|OSI]] focused primarily on supporting development of the City's draft Comprehensive Land Use Plan ([[sources/annual-reports/a2zero-year5|a2zero-year5]]). The report states that sustainability is one of the draft plan's three core tenets, and that OSI has been highly involved in supporting the Planning Department as the draft plan advances ([[sources/annual-reports/a2zero-year5|a2zero-year5]]). Public comment on the draft plan was open at the time of reporting ([[sources/annual-reports/a2zero-year5|a2zero-year5]]).

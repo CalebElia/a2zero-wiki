@@ -42,7 +42,7 @@ The A2ZERO goal of community-wide carbon neutrality requires reducing Ann Arbor'
 
 As we look to reduce existing emissions, it's important to understand where they are coming from. In Ann Arbor, the largest source of GHG emissions come from the electricity used in homes and businesses (39% of emissions). These emissions are driven by both how much electricity is consumed and how carbon intensive the fuel mix is that generates that electricity. In 2024, over 40% of DTE's Electric Fuel Mix used to supply electricity in Ann Arbor (and other communities) was generated using coal, compared to 13% from renewables. The second largest source of local emissions is from "fossil" gas usage in buildings. Locally, 28% of GHG emissions come from fossil gas used for heating and cooling the built environment. When combined with electricity usage, this means that buildings are the largest single contributor to local GHG emissions, with 69% of total emissions coming from buildings, 30% coming from fossil fuel usage in vehicles, and about 2% coming from waste disposal and processing.
 
-## GREENHOUSE GAS EMISSIONS SUMMARY
+### GREENHOUSE GAS EMISSIONS SUMMARY
 
 There are points of good news, however. First, many local stakeholders, including the University of Michigan, Ann Arbor Public Schools, the City of Ann Arbor, and local businesses and residents are purchasing clean, renewable energy on the open market or actively installing it on their homes and businesses (read below for more). Secondly, in late 2023, Governor Gretchen Whitmer signed into law a series of bills that advance clean energy in Michigan, including SB 271 which requires the State of Michigan to generate 50% of the State's total electricity from clean energy sources by 2030 and 100% of the State's electricity from clean energy sources by 2040. Third, in November of 2024, Ann Arbor voters overwhelmingly voted to authorize creation of the Ann Arbor Sustainable Energy Utility (SEU) (more below). Additionally, in 2024, OSI won an award from the U.S. Department of Energy to support building the state's first networked geothermal system. Designed to help 262 homes, a community center, and a local school transition completely away from fossil gas to geothermal, this project is a foundational component of the City's efforts to decarbonize heating and cooling systems. These activities are and will continue to make a notable difference in the clean energy landscape in Michigan.
 
@@ -80,7 +80,7 @@ Strategy 1 of A2ZERO focuses on powering our electrical grid with 100% renewable
 - On November 5, 2024, Ann Arbor voters authorized the creation of the Ann Arbor Sustainable Energy Utility (SEU) with a historic 79% of the vote. The SEU will provide clean, 100% renewable, opt-in, supplemental power to residents of the City of Ann Arbor. Work immediately began to launch the SEU, expected 24 months after the November vote. Learn more and join the waitlist at www.a2gov.org/a2seu.
 - Launched an SEU waitlist form and started sending nearly biweekly updates to those on the waitlist about SEU development progress.
 
-## 1: 100% RENEWABLES
+### 1: 100% RENEWABLES
 
 - The City successfully secured $5,000,000 to help launch the SEU, largely by investing in the foundational tools, structures, and preliminary staffing needed to bring the SEU to fruition.
 - On May 20 th , we supported the groundbreaking for Ann Arbor's first net zero energy fire station.
@@ -106,7 +106,7 @@ Strategy 2 of A2ZERO centers around programs and initiatives to help transition 
 - OSI launched an EV charger discount program to encourage electric vehicle adoption throughout the City. The Commercial EV Charger Program provides commercial and multifamily property owners an opportunity to receive up to four free level-2 EV chargers along with a fiveyear software package, a five-year warranty, and, as needed, charger accessories essential to ensuring the functionality of the EV chargers.
 - In collaboration with multiple local organizations, OSI hosted our 3 rd Annual Home Electrification Expo, bringing contractors, experts and equipment to the Farmer's Market event, with robust community engagement. Join us for the 4 th annual expo at this year 2025 Green Fair on September 19 th .
 
-## 2: BENEFICIAL ELECTRIFICATION
+### 2: BENEFICIAL ELECTRIFICATION
 
 - OSI launched an electric lawn care rebate program designed to help lower the cost of transitioning from gas to electric lawn care equipment in accordance with Ann Arbor's new leaf blower ordinance. Special thanks to Grainger Industrial Supply and WEINGARTZ for their support in creating a version of the program. The Electric Leaf Blower Rebate Program includes rebates for both residents and for landscaping companies, helping ease the transition to healthy, safe, and environmentally friendly ways of maintaining our natural systems.
 - The City purchased two more electric refuse trucks, bringing the total on order to four. And, the first electric refuse truck started providing service this spring! Visit A2ZERO Parties during A2ZERO Week 2025 to see them in-person.
@@ -132,7 +132,7 @@ Strategy 3 of A2ZERO emphasizes efforts to improve the energy efficiency of our 
 - OSI staff and organizations across the State have been working for years to advance more holistic building codes in Michigan. And in early 2025, those efforts paid off as the State of Michigan adopted the updated Michigan building codes. These updates do not apply to the Residential Code, but work is underway to get a more holistic residential code adopted as well.
 - Efforts continue to refine and grow the successfully piloted A2ZERO Green Business Challenge. Launched in 2024, the A2GBC presents a framework to recognize, support, and celebrate local businesses working to advance sustainability in the community.
 
-## 3 ENERGY EFFICIENCY
+### 3 ENERGY EFFICIENCY
 
 - The A2ZERO Green Business Challenge welcomed Fresh Coast Climate Solutions to provide individualized work plans for businesses participating in the program. In addition, the program hired four interns to assist with programming and outreach to bring more businesses into the program.
 - Implementation of Energy and Water Benchmarking Ordinance continued in earnest in year 5, with major efforts centered on bringing all building into compliance. Through the tireless efforts of staff and collaborators at the 2030 District, buildings over 20,000 square feet are benchmarking and learning about practices that could save them money, improve health and safety, and help address the climate crisis.
@@ -143,7 +143,7 @@ Strategy 3 of A2ZERO emphasizes efforts to improve the energy efficiency of our 
 
 Michael Hagan from the Green Energy Neighbors leading the Net-Zero Home Energy Tour, 2024.
 
-## 3: ENERGY EFFICIENCY
+### 3: ENERGY EFFICIENCY
 
 - This last year OSI successfully secured a $3.1 million grant from Michigan Public Service Commission to improve energy efficiency and electrify homes in the Bryant neighborhood. Foundational work is currently underway so that the program can start making improvements in year six.
 - OSI released a request for proposals for contractors to help make sustainability and energyrelated improvements in the Bryant neighborhood (for more details, see RFP 25-21).
@@ -182,7 +182,7 @@ Strategy 5 of A2ZERO is about changing our relationship with things. It's about 
 - The Ann Arbor Sustainable Food Business Coalition, now with over 40 businesses participating, celebrated its first full year! Together, we explored actionable strategies to improve energy and water efficiency, prevent food waste, and transition towards more sustainable food packaging, while building connections between businesses and sharing knowledge and experiences.
 - This year we completed the first draft of the Ann Arbor Sustainable Food Framework to advance more sustainable food options at City-operated facilities and events.
 
-## 5: CIRCULAR ECONOMY
+### 5: CIRCULAR ECONOMY
 
 - Over 70 residents and 20 "community food leaders" shared their stories, favorite sustainable recipes, and food tips as part of the A2ZERO Community Cookbook, which will be published late summer 2025.
 - OSI received grant funding from the EPA for a small food retailer refrigerant management program, with the goal of reducing refrigeration emissions from at least 75 businesses by a total of 13,074.9 metric tons of carbon dioxide equivalent. More program details coming shortly.
@@ -198,7 +198,7 @@ Chef Allison Anastasio doing a sustainable food cooking demonstration at the 202
 
 Aerial view of an electronics recycling event.
 
-## 5: CIRCULAR ECONOMY
+### 5: CIRCULAR ECONOMY
 
 - Funded Public Works' to hire a new worker to support the expansion of commercial recycling. Public Works is also working on a strategy to expand compost services throughout the City.
 - Supported the "More Life, Less Stuff" social based marketing campaign that compiles stories from community partners and residents about reducing waste and engaging more with the world around them.
@@ -223,7 +223,7 @@ Strategy 6 of A2ZERO is all about enhancing the resilience of our people, natura
 - As part of the Cinema and Sustainability series, OSI hosted a showing of COOKED: Survival by Zip Code, followed by a panel discussion on community resilience and climate adaptation.
 - During A2ZERO week, OSI tabled at each of the ward parties, distributing information on household preparedness plan creation and raffling five complete family emergency kits.
 
-## 6: RESILIENCE
+### 6: RESILIENCE
 
 - This last year, OSI co-hosted multiple Washtenaw County Resilience Network meetings with the Washtenaw County Resilience Office. At these meetings, critical service providers across Washtenaw County gathered to discuss resilience initiatives and how to best work together to create partnerships and a collaborative ecosystem to tackle climate resilience efforts.
 - OSI hosted a breakout session at the 2025 Ann Arbor Climate Teach-In to help community members understand the role Resilience Hubs play in the climate transition and how Resilience Hubs in Ann Arbor are caring for our community.
@@ -251,7 +251,7 @@ Strategy 7 of A2ZERO focuses on activities that cross multiple other strategies,
 - OSI launched Fall Door knocking Campaign during the month of October. AmeriCorps members went door knocking in Ann Arbor neighborhoods to promote A2ZERO programs and complement the efforts of the Michigan League of Conversation Voters to ensure residents knew about available rebates and incentives from the City and the Inflation Reduction Act. Information was distributed to more than 1,000 households.
 - Last year, and continuing through this summer, AmeriCorps members assisted Parks staff with stewardship activities on 53.7 acres of Natural Areas through the City's parks.
 
-## 7: OTHER
+### 7: OTHER
 
 - AmeriCorps members and OSI staff assisted the Bryant Community Center with their annual neighborhood clean up day, helping 60 households with recycling and neighborhood beautification efforts.
 - AmeriCorps members helped OSI engage with Bryant residents, distributing information to raise awareness of home energy assessment sign ups, funding opportunities, and community charette sessions for neighborhood geothermal planning.
@@ -281,7 +281,7 @@ Dr. Missy Stults (OSI) and Mayor Boris Palmer (Tuebingen, Germany) shake hands.
 
 Ambassadors volunteer for Earth Day 2025.
 
-## 7: OTHER
+### 7: OTHER
 
 - Participated in multiple national conversations and reports about climate-based migration.
 - Working to update the City's Capital Improvements Planning Process to more holistically integrate sustainability criterion.
@@ -315,6 +315,6 @@ As the pages above show, year five was a busy year. But year six is shaping up t
 - Implement a multi-family rebate program in coordination with renters, landlords, and property managers.
 - Significantly scale our work to advance emergency preparedness at the household level.
 
-## CLOSING
+### CLOSING
 
 A2ZERO is our community's plan to become carbon neutral in a just and equitable way by the year 2030. Achieving this audacious, aggressive, and scientifically necessary goal requires all of us. Learn more about how to join this movement at www.A2ZERO.org.

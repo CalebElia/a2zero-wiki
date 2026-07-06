@@ -1,0 +1,215 @@
+{
+  "document_uuid": "a2zero-year5",
+  "total_lines": 320,
+  "ldp_version": "1.1",
+  "sections": [
+    {
+      "id": "a2zero-annual-report-year-five",
+      "title": "A2ZERO Annual Report Year Five",
+      "depth": 2,
+      "line_start": 3,
+      "line_end": 5,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "contents",
+      "title": "CONTENTS",
+      "depth": 2,
+      "line_start": 6,
+      "line_end": 20,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "introduction",
+      "title": "INTRODUCTION",
+      "depth": 2,
+      "line_start": 21,
+      "line_end": 36,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "greenhouse-gas-emissions-summary",
+      "title": "GREENHOUSE GAS EMISSIONS SUMMARY",
+      "depth": 2,
+      "line_start": 37,
+      "line_end": 68,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "greenhouse-gas-emissions-summary",
+      "title": "GREENHOUSE GAS EMISSIONS SUMMARY",
+      "depth": 3,
+      "line_start": 45,
+      "line_end": 68,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-1-100-renewables",
+      "title": "STRATEGY 1: 100% RENEWABLES",
+      "depth": 2,
+      "line_start": 69,
+      "line_end": 97,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "1-100-renewables",
+      "title": "1: 100% RENEWABLES",
+      "depth": 3,
+      "line_start": 83,
+      "line_end": 97,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-2-beneficial-electrification",
+      "title": "STRATEGY 2: BENEFICIAL ELECTRIFICATION",
+      "depth": 2,
+      "line_start": 98,
+      "line_end": 123,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "2-beneficial-electrification",
+      "title": "2: BENEFICIAL ELECTRIFICATION",
+      "depth": 3,
+      "line_start": 109,
+      "line_end": 123,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-3-energy-efficiency",
+      "title": "STRATEGY 3: ENERGY EFFICIENCY",
+      "depth": 2,
+      "line_start": 124,
+      "line_end": 158,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "3-energy-efficiency",
+      "title": "3 ENERGY EFFICIENCY",
+      "depth": 3,
+      "line_start": 135,
+      "line_end": 145,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "3-energy-efficiency",
+      "title": "3: ENERGY EFFICIENCY",
+      "depth": 3,
+      "line_start": 146,
+      "line_end": 158,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-4-vehicle-miles-traveled-reduction",
+      "title": "STRATEGY 4: VEHICLE MILES TRAVELED REDUCTION",
+      "depth": 2,
+      "line_start": 159,
+      "line_end": 173,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "strategy-5-circular-economy",
+      "title": "STRATEGY 5: CIRCULAR ECONOMY",
+      "depth": 2,
+      "line_start": 174,
+      "line_end": 211,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "5-circular-economy",
+      "title": "5: CIRCULAR ECONOMY",
+      "depth": 3,
+      "line_start": 185,
+      "line_end": 200,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "5-circular-economy",
+      "title": "5: CIRCULAR ECONOMY",
+      "depth": 3,
+      "line_start": 201,
+      "line_end": 211,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-6-resilience",
+      "title": "STRATEGY 6: RESILIENCE",
+      "depth": 2,
+      "line_start": 212,
+      "line_end": 242,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "6-resilience",
+      "title": "6: RESILIENCE",
+      "depth": 3,
+      "line_start": 226,
+      "line_end": 242,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "strategy-7-other",
+      "title": "STRATEGY 7: OTHER",
+      "depth": 2,
+      "line_start": 243,
+      "line_end": 296,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "7-other",
+      "title": "7: OTHER",
+      "depth": 3,
+      "line_start": 254,
+      "line_end": 283,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "7-other",
+      "title": "7: OTHER",
+      "depth": 3,
+      "line_start": 284,
+      "line_end": 296,
+      "is_chunk": false,
+      "notes": ""
+    },
+    {
+      "id": "year-6-priorities",
+      "title": "YEAR 6 PRIORITIES",
+      "depth": 2,
+      "line_start": 297,
+      "line_end": 320,
+      "is_chunk": true,
+      "notes": ""
+    },
+    {
+      "id": "closing",
+      "title": "CLOSING",
+      "depth": 3,
+      "line_start": 318,
+      "line_end": 320,
+      "is_chunk": false,
+      "notes": ""
+    }
+  ],
+  "approved": true
+}

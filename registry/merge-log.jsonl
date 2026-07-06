@@ -61,3 +61,8 @@
 {"date": "2026-07-02", "action": "MERGE", "from": "funding-events/dcfc-city-hall-grant-2021.md", "into": "funding-events/ev-fast-charger-2022.md", "approved-by": "manual"}
 {"date": "2026-07-02", "action": "MERGE", "from": "actors/us-environmental-protection-agency.md", "into": "actors/us-epa.md", "approved-by": "manual"}
 {"date": "2026-07-02", "action": "MERGE", "from": "actors/us-forest-service.md", "into": "actors/usda-forest-service.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "actors/planning-department.md", "into": "actors/city-of-ann-arbor-planning-department.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "initiatives/sustainable-food-framework.md", "into": "initiatives/ann-arbor-sustainable-food-framework.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "initiatives/storytelling-program.md", "into": "initiatives/monthly-a2zero-storytelling-program.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "locations/wheeler-service-center.md", "into": "locations/wheeler-center.md", "approved-by": "manual"}
+{"date": "2026-07-02", "action": "MERGE", "from": "funding-events/bryant-neighborhood-doe-grant-2025.md", "into": "funding-events/bryant-neighborhood-networked-geothermal-award-2025.md", "approved-by": "manual"}

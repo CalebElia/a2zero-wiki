@@ -274,11 +274,11 @@ ONTOLOGY RULES:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 - Always use an approved page_type from the list above.
 - If your entity does not fit any approved type, use the closest approved type as
-  page_type AND add proposed_type: "<your-intended-type>" to the frontmatter JSON.
+  page_type AND add "proposed-type": "<your-intended-type>" to the frontmatter JSON.
   Example: a "zoning-application" would use page_type: "political-event" and
-  frontmatter proposed_type: "zoning-application".
+  frontmatter "proposed-type": "zoning-application".
 - NEVER use an unapproved string as the primary page_type — it will fail validation.
-- Tags handle specificity; proposed_type handles structural novelty for human review.
+- Tags handle specificity; proposed-type handles structural novelty for human review.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OUTPUT SCHEMA
@@ -328,7 +328,7 @@ def validate_page_spec(
     # Schema-drift logging: if the spec proposes a non-standard type, log it for
     # human review in the documented, apply-loop-parseable format (see
     # pipeline/schema_governance.py).
-    proposed = (spec.get("frontmatter") or {}).get("proposed_type", "")
+    proposed = (spec.get("frontmatter") or {}).get("proposed-type", "")
     if proposed and wiki_root:
         append_schema_drift_entry(
             proposed_type=proposed,

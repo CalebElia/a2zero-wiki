@@ -1,5 +1,6 @@
 ---
-funding-events: []
+funding-events:
+- '[[funding-events/michigan-ev-charger-grant-2023]]'
 last-updated: '2026-06-26'
 launched: null
 locations:

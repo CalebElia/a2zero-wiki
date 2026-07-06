@@ -1,5 +1,7 @@
 ---
 funding-events:
+- '[[funding-events/semcog-led-streetlight-2023]]'
+- '[[funding-events/state-michigan-led-wheeler-2023]]'
 last-updated: '2026-06-30'
 launched: null
 locations: []

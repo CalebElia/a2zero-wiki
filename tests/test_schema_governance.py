@@ -175,9 +175,39 @@ def test_apply_schema_drift_keep_as_fallback_tags_page(tmp_path):
     assert result["kept"] == ["political-events/zoning-1"]
     page_content = (root / "political-events" / "zoning-1.md").read_text(encoding="utf-8")
     assert "zoning" in page_content
+    # The pending marker's job is done once resolved either way — it shouldn't
+    # linger on the page forever just because the type wasn't approved.
+    assert "proposed-type:" not in page_content
 
     drift_content = path.read_text(encoding="utf-8")
     assert "kept as fallback" in drift_content
+
+
+def test_apply_schema_drift_ignores_unfilled_tag_placeholder(tmp_path):
+    """Leaving the literal '<tag>' placeholder unfilled must fall back to the
+    proposed type, not use '<tag>' itself as a real tag — a human mistake this
+    guards against."""
+    root = tmp_path / "wiki"
+    (root / "political-events").mkdir(parents=True)
+    (root / "political-events" / "zoning-1.md").write_text(
+        "---\ntype: political-event\nproposed-type: zoning-application\ntitle: Zoning 1\ntags: []\n---\n\nBody.\n",
+        encoding="utf-8",
+    )
+    path = tmp_path / "meta" / "schema-drift.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        '## 2026-07-01 | Proposed type: "zoning-application" | Written as: "political-event" | Page: "political-events/zoning-1"\n'
+        "Title: Zoning Application 1\n"
+        "Resolution: [ ] Approve new type  [x] Keep as fallback + tag [<tag>]\n",
+        encoding="utf-8",
+    )
+
+    result = apply_schema_drift(str(root))
+
+    assert result["kept"] == ["political-events/zoning-1"]
+    page_content = (root / "political-events" / "zoning-1.md").read_text(encoding="utf-8")
+    assert "zoning-application" in page_content
+    assert "<tag>" not in page_content
 
 
 def test_apply_schema_drift_skips_already_resolved_entries(tmp_path):

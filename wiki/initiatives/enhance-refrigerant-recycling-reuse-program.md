@@ -1,5 +1,6 @@
 ---
-funding-events: []
+funding-events:
+- '[[funding-events/epa-small-food-retailer-refrigerant-grant-2025]]'
 last-updated: '2026-06-24'
 launched: 2021
 locations: []
@@ -27,4 +28,6 @@ title: Enhance Refrigerant Recycling and Reuse Program
 type: initiative
 ---
 
-The Enhance Refrigerant Recycling and Reuse Program targets the potent greenhouse gas emissions associated with refrigerant disposal, with a vision of banning refrigerants from disposal at City of Ann Arbor landfills to drastically reduce associated GHG emissions ([[sources/cap/cap-2020|cap-2020]]). The program focuses on education and explores penalties for violations, targeting all Ann Arborites — especially renters, homeowners, and businesses ([[sources/cap/cap-2020|cap-2020]]). The indicator of success is a 95% reduction in the amount of refrigerants disposed of at City facilities ([[sources/cap/cap-2020|cap-2020]]). The estimated 10-year cost is $179,400; greenhouse gas reduction potential was not calculated ([[sources/cap/cap-2020|cap-2020]]).
+The Enhance Refrigerant Recycling and Reuse Program targets the potent greenhouse gas emissions associated with refrigerant disposal, with a vision of banning refrigerants from disposal at City of Ann Arbor landfills to drastically reduce associated GHG emissions ([[sources/cap/cap-2020|cap-2020]]). The program focuses on education and explores penalties for violations, targeting all Ann Arborites — especially renters, homeowners, and businesses ([[sources/cap/cap-2020|cap-2020]]). The indicator of success is a 95% reduction in the amount of refrigerants disposed of at City facilities ([[sources/cap/cap-2020|cap-2020]]). The estimated 10-year cost is $179,400; greenhouse gas reduction potential was not calculated in the 2020 plan ([[sources/cap/cap-2020|cap-2020]]).
+
+In Year Five, the program advanced through new federal support for small food retailers ([[sources/annual-reports/a2zero-year5|a2zero-year5]]). OSI received EPA grant funding for a refrigerant management program intended to reduce refrigeration emissions from at least 75 businesses by 13,074.9 metric tons of carbon dioxide equivalent ([[sources/annual-reports/a2zero-year5|a2zero-year5]]). Additional program details were still forthcoming at the time of the report ([[sources/annual-reports/a2zero-year5|a2zero-year5]]).

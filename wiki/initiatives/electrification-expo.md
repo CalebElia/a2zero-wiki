@@ -1,5 +1,6 @@
 ---
-funding-events: []
+funding-events:
+- '[[funding-events/michigan-electrification-expo-2022]]'
 last-updated: '2026-06-26'
 launched: null
 locations:
