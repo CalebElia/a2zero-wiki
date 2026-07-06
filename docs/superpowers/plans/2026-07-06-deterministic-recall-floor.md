@@ -14,7 +14,9 @@
 
 ## Design decisions (locked before implementation)
 
-1. **Scan hits go to `plan["scan-flagged"]` + `plan["retrieve-for-context"]`, NOT `plan["extends"]`.** Keeps LLM-judgment vs. mechanical provenance distinct in the audit trail (`integration-plans/<uuid>.json`), and preserves `load_retrieved_bodies()`'s existing priority order (extends-first, then mention frequency) so LLM-flagged entities never lose context budget to scan-added ones. Scan-added bodies that exceed `RETRIEVE_TOKEN_BUDGET` (30k tokens, `pass1a_comprehend.py:227`) are silently dropped by the existing cap — acceptable because the staleness lint catches anything dropped.
+1. **Scan hits go to `plan["scan-flagged"]` + `plan["retrieve-for-context"]`, NOT `plan["extends"]`.** Keeps LLM-judgment vs. mechanical provenance distinct in the audit trail (`integration-plans/<uuid>.json`), and preserves `load_retrieved_bodies()`'s existing priority order (extends-first, then mention frequency) so LLM-flagged entities never lose context budget to scan-added ones.
+
+1a. **Awareness is never capped; only bodies are — and body drops are loud, recorded, and budgeted for.** Two tiers ride the plan: (i) *awareness* — the `scan-flagged` entries themselves (~80 chars each), injected uncapped into every chunk prompt via the plan JSON, which alone prevents the Bryant failure class (invisibility → misattribution): even body-less, Pass 2 targets the correct existing slug and `write_or_append_page` appends the new facts with a source marker; (ii) *bodies* — governed by `RETRIEVE_TOKEN_BUDGET`, **raised 30k → 60k tokens** (Year 5 measured 14k used for 15 LLM-flagged entities; a ~50-entity scan at ~2k chars avg adds ~25k tokens → ~39k combined, comfortably inside 60k). Uncapping entirely is rejected — it recreates the naive full-wiki-injection fix the architecture doc rejected for cost and context-degradation reasons, multiplied across every chunk prompt. Any residual drop (pathological sources matching 100+ entities) is (a) printed at ingest time, (b) recorded in the plan as `context-dropped: [slugs]` for the audit trail, and (c) cross-checked first by the staleness lint. Getting it right up front; the lint verifies only the knowingly-deprioritized tail.
 2. **Name index is computed, not stored.** Verb-prefix variants ("Support Aging in Place Efficiently" → "Aging in Place Efficiently") are generated at index-build time. `registry/entity_aliases.json` stays a curated canonical-resolution registry; we do not pollute it with mechanical variants.
 3. **Word-boundary, case-insensitive matching; minimum name length 4.** Names shorter than 4 chars are skipped even with boundaries (avoids acronym noise); registry aliases like "SEU" still reach the scanner via longer variants ("the SEU", "Ann Arbor SEU"). Matching runs against whitespace-normalized source text.
 4. **Staleness lint is a separate `--staleness` CLI mode, not part of `--structural`.** It is ingest-cycle-scoped (needs a source UUID); structural is state-scoped. Default source = last line of `meta/ingest-stats.jsonl`.
@@ -300,10 +302,14 @@ def augment_integration_plan(plan: dict, scan_hits: dict[str, dict]) -> dict:
     Adds a `scan-flagged` list (provenance: mechanical, not LLM judgment) and
     appends missing slugs to `retrieve-for-context` ordered by mention count.
     Slugs the LLM already covered (extends / new-entities / retrieve list) are
-    left alone — the scan is a recall floor, not an override. The existing
-    RETRIEVE_TOKEN_BUDGET cap in load_retrieved_bodies() keeps LLM-flagged
-    entities first in line for context budget; scan-added bodies drop first,
-    and the staleness lint catches anything dropped.
+    left alone — the scan is a recall floor, not an override.
+
+    Awareness vs. bodies: scan-flagged entries ride the plan JSON into every
+    chunk prompt UNCAPPED, so no matched entity is ever invisible to Pass 2.
+    Only full page bodies are subject to RETRIEVE_TOKEN_BUDGET (raised to 60k
+    tokens in Task 3); LLM-flagged entities keep first claim on that budget,
+    scan-added bodies drop first, and drops are recorded loudly in
+    `context-dropped` (Task 3) rather than silently.
     """
     known = {e.get("slug", "") for e in plan.get("extends") or []}
     known |= {e.get("slug", "") for e in plan.get("new-entities") or []}
@@ -397,6 +403,36 @@ In `run_source_ingest()`, immediately after `integration_plan = validate_plan_sl
 ```
 
 Then extend the `log_ingest_stats(...)` call with `scan_flagged_count=n_flagged`, and in `pass1a_comprehend.py` add the parameter (`scan_flagged_count: int = 0`) and include it in the JSONL record.
+
+- [ ] **Step 3b: Raise the body budget and make drops loud + recorded**
+
+In `pipeline/pass1a_comprehend.py`, raise the cap (sized from Year 5 telemetry: 14k tokens used by 15 LLM-flagged entities; ~50 scan-added entities at ~2k chars avg ≈ +25k tokens → ~39k combined fits with headroom):
+
+```python
+RETRIEVE_TOKEN_BUDGET = 60000  # raised from 30000 for the deterministic recall floor —
+# scan-flagged bodies share this budget below LLM-flagged entities; drops are
+# recorded in the plan's context-dropped field, never silent.
+```
+
+In `run_source_ingest()`, **reorder so `load_retrieved_bodies()` runs before `write_integration_plan()`**, then annotate drops into the plan so the audit-trail file records them:
+
+```python
+        retrieved_bodies = load_retrieved_bodies(integration_plan, wiki_root)
+        # Loud accounting: any retrieve-for-context slug whose page exists but
+        # whose body didn't fit the budget. Never silent — recorded in the plan
+        # and checked first by the staleness lint.
+        dropped = [
+            s for s in integration_plan.get("retrieve-for-context", [])
+            if s not in retrieved_bodies and (Path(wiki_root) / f"{s}.md").exists()
+        ]
+        integration_plan["context-dropped"] = dropped
+        if dropped:
+            print(f"[ingest] {uuid}: WARNING — {len(dropped)} entity bodies exceeded "
+                  f"RETRIEVE_TOKEN_BUDGET and were not injected: {dropped}")
+        plan_path = write_integration_plan(integration_plan, str(plans_dir))
+```
+
+Add to the Step 1 test: after the mocked ingest, `assert plan["context-dropped"] == []` (nothing drops in a small fixture), and add one test where a tiny monkeypatched `RETRIEVE_TOKEN_BUDGET` (e.g. `monkeypatch.setattr(pass1a_comprehend, "RETRIEVE_TOKEN_BUDGET", 1)`) forces a drop and asserts the slug lands in `context-dropped`. (Note: check whether `load_retrieved_bodies` reads the module constant at call time — if it binds at import, patch via the module attribute exactly as `tests/test_wiki_pages.py` does for `_VALID_PAGE_TYPES_PATH`.)
 
 - [ ] **Step 4: Run full suite**
 
@@ -671,6 +707,8 @@ for s in missed: print(f\"  {hits[s]['mentions']:>3}x {s}\")
 ```
 
 Expected: `initiatives/bryant-neighborhood-decarbonization` in the output (the regression proof), plus a plausible list (~10-40 entities). If the list exceeds ~80 entries, inspect for index noise (over-generic names) before proceeding.
+
+Also report the budget behavior for this retroactive case: total chars of the would-be-added bodies plus Year 5's recorded 55,530 retrieved chars, vs. the 60k-token (~240k-char) budget. Expected: everything fits with headroom, `context-dropped` would be empty. If it wouldn't fit, that's a signal to revisit the budget number before merging — not after.
 
 - [ ] **Step 2: Staleness lint against Year 5** — `python -m pipeline.phase_b_lint --wiki-root wiki --staleness --source-uuid a2zero-year5`; confirm `STALE_ENTITY` findings land in review-queue.md and include the Bryant page. **These findings are the remediation queue for the follow-up content-repair session — do not auto-fix; human triages per the standard review flow.**
 - [ ] **Step 3: Full suite** — `python -m pytest tests/ -q`, all green
