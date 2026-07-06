@@ -17,6 +17,8 @@
 1. **Scan hits go to `plan["scan-flagged"]` + `plan["retrieve-for-context"]`, NOT `plan["extends"]`.** Keeps LLM-judgment vs. mechanical provenance distinct in the audit trail (`integration-plans/<uuid>.json`), and preserves `load_retrieved_bodies()`'s existing priority order (extends-first, then mention frequency) so LLM-flagged entities never lose context budget to scan-added ones.
 
 1a. **Awareness is never capped; only bodies are — and body drops are loud, recorded, and budgeted for.** Two tiers ride the plan: (i) *awareness* — the `scan-flagged` entries themselves (~80 chars each), injected uncapped into every chunk prompt via the plan JSON, which alone prevents the Bryant failure class (invisibility → misattribution): even body-less, Pass 2 targets the correct existing slug and `write_or_append_page` appends the new facts with a source marker; (ii) *bodies* — governed by `RETRIEVE_TOKEN_BUDGET`, **raised 30k → 60k tokens** (Year 5 measured 14k used for 15 LLM-flagged entities; a ~50-entity scan at ~2k chars avg adds ~25k tokens → ~39k combined, comfortably inside 60k). Uncapping entirely is rejected — it recreates the naive full-wiki-injection fix the architecture doc rejected for cost and context-degradation reasons, multiplied across every chunk prompt. Any residual drop (pathological sources matching 100+ entities) is (a) printed at ingest time, (b) recorded in the plan as `context-dropped: [slugs]` for the audit trail, and (c) cross-checked first by the staleness lint. Getting it right up front; the lint verifies only the knowingly-deprioritized tail.
+1b. **Retrieved bodies are injected per-chunk scoped, not doc-wide.** The LDP chunk loop re-runs the scanner against each chunk's text and injects only the bodies of entities that chunk mentions (intersected with the loaded `retrieved_bodies`). Rationale: doc-wide injection multiplies every body across all ~12 chunk prompts (up to ~720k input tokens/ingest at the 60k budget, mostly irrelevant per chunk — the context-rot risk); per-entity sequential calls invert the cost (each call re-pays system prompt + chunk text, ~660k tokens for 120 calls, with divergent phrasings of co-occurring facts and no cross-reference consistency); agentic mid-extraction fetching returns retrieval initiative to LLM judgment — the exact failure class this plan eliminates. Per-chunk deterministic scoping keeps single-shot calls, batched co-occurring-fact integration, and the reproducible audit trail, at ~60–150k total body tokens with maximal relevance density. The `[INTEGRATION PLAN]` block (small, including `scan-flagged` awareness entries) stays doc-wide in every chunk prompt. The small-doc path is unaffected (one chunk = whole doc).
+
 2. **Name index is computed, not stored.** Verb-prefix variants ("Support Aging in Place Efficiently" → "Aging in Place Efficiently") are generated at index-build time. `registry/entity_aliases.json` stays a curated canonical-resolution registry; we do not pollute it with mechanical variants.
 3. **Word-boundary, case-insensitive matching; minimum name length 4.** Names shorter than 4 chars are skipped even with boundaries (avoids acronym noise); registry aliases like "SEU" still reach the scanner via longer variants ("the SEU", "Ann Arbor SEU"). Matching runs against whitespace-normalized source text.
 4. **Staleness lint is a separate `--staleness` CLI mode, not part of `--structural`.** It is ingest-cycle-scoped (needs a source UUID); structural is state-scoped. Default source = last line of `meta/ingest-stats.jsonl`.
@@ -433,6 +435,29 @@ In `run_source_ingest()`, **reorder so `load_retrieved_bodies()` runs before `wr
 ```
 
 Add to the Step 1 test: after the mocked ingest, `assert plan["context-dropped"] == []` (nothing drops in a small fixture), and add one test where a tiny monkeypatched `RETRIEVE_TOKEN_BUDGET` (e.g. `monkeypatch.setattr(pass1a_comprehend, "RETRIEVE_TOKEN_BUDGET", 1)`) forces a drop and asserts the slug lands in `context-dropped`. (Note: check whether `load_retrieved_bodies` reads the module constant at call time — if it binds at import, patch via the module attribute exactly as `tests/test_wiki_pages.py` does for `_VALID_PAGE_TYPES_PATH`.)
+
+- [ ] **Step 3c: Per-chunk scoped body injection in the LDP chunk loop**
+
+In `pipeline/pass2a_chunk_loop.py`, move the `[RETRIEVED ENTITY PAGES]` block assembly from the once-per-ingest context header (currently ~lines 260-271) into the per-chunk iteration, filtered to entities the chunk actually mentions. The `[INTEGRATION PLAN]` block stays doc-wide (it is small and carries the uncapped `scan-flagged` awareness entries). Thread the name index down from the orchestrator (built once) or rebuild it in the loop entry point — it is a cheap filesystem read.
+
+```python
+# inside the per-chunk loop, before building the chunk prompt:
+from pipeline.recall_scan import scan_source_for_known_entities
+chunk_hits = scan_source_for_known_entities(chunk_text, name_index)
+chunk_bodies = {s: b for s, b in (retrieved_bodies or {}).items() if s in chunk_hits}
+if chunk_bodies:
+    body_lines = ["\n[RETRIEVED ENTITY PAGES — integrate new findings into these]"]
+    for _s, _b in chunk_bodies.items():
+        body_lines.append(f"--- {_s} ---\n{_b}")
+    body_lines.append("[END RETRIEVED ENTITY PAGES]\n")
+    chunk_context = doc_level_context + "\n".join(body_lines)
+else:
+    chunk_context = doc_level_context
+```
+
+Add a test (follow `tests/test_ldp.py`'s existing mocked-chunk-loop fixture style): two chunks, chunk A's text mentions entity X by title and chunk B's does not; capture the prompts passed to the mocked extraction call and assert X's body text appears in chunk A's prompt and NOT in chunk B's, while `[INTEGRATION PLAN]` appears in both.
+
+The orchestrator's small-doc path (single whole-document "chunk") keeps its existing doc-level injection — scoping is a no-op there.
 
 - [ ] **Step 4: Run full suite**
 
