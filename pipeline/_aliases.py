@@ -1,5 +1,6 @@
 # pipeline/alias_registry.py
 import json
+import re
 import difflib
 from pathlib import Path
 
@@ -14,6 +15,60 @@ DEFAULT_ALIASES_PATH = "registry/entity_aliases.json"
 # strategy pages synthesize from initiatives/actors; they are never a
 # substitute for an entity having its own page.
 NON_ENTITY_TYPES = frozenset({"topic", "synthesis", "strategy", "overview"})
+
+# Reserved top-level key for names that are genuinely ambiguous between two
+# legitimate, different-typed entities depending on sentence intent (e.g.
+# "Ann Arbor" the place vs. the municipal government acting as an actor).
+# Its value is a LIST, not another slug-keyed entry — every consumer that
+# iterates aliases.values()/.items() must skip it explicitly (list.get()
+# raises AttributeError otherwise).
+AMBIGUOUS_TERMS_KEY = "_ambiguous_terms"
+
+
+def _normalize_term(text: str) -> str:
+    """Collapse whitespace/hyphen variance so a bare slug ('ann-arbor') and a
+    natural-language title ('Ann Arbor') compare equal."""
+    return re.sub(r"[\s-]+", "-", text.strip().lower())
+
+
+def _resolve_ambiguous_term(
+    term: str,
+    aliases: dict,
+    proposed_type: str | None,
+    fuzzy_threshold: float | None = None,
+) -> str | None:
+    """Check the reserved _ambiguous_terms list before the normal flat scan.
+
+    Returns the candidate whose type matches proposed_type; if proposed_type
+    is falsy, returns the entry's documented default; if proposed_type is
+    given but matches no candidate, returns None rather than forcing a
+    redirect the LLM's own type judgment contradicts — the caller's normal
+    fallback chain (ultimately new-stub creation) decides instead.
+
+    fuzzy_threshold=None (the default, used by resolve_slug/resolve_slug_for_title)
+    requires an exact normalized match. fuzzy_resolve_slug_for_title passes a
+    real threshold so a typo'd ambiguous term ("Ann Arbour") still resolves,
+    matching that function's own typo-tolerance contract for every other entry.
+    """
+    entries = aliases.get(AMBIGUOUS_TERMS_KEY) or []
+    norm_term = _normalize_term(term)
+    for entry in entries:
+        if fuzzy_threshold is None:
+            matched = any(_normalize_term(a) == norm_term for a in entry.get("aliases", []))
+        else:
+            matched = any(
+                difflib.SequenceMatcher(None, norm_term, _normalize_term(a)).ratio() >= fuzzy_threshold
+                for a in entry.get("aliases", [])
+            )
+        if not matched:
+            continue
+        if proposed_type:
+            for cand in entry.get("candidates", []):
+                if cand.get("type") == proposed_type:
+                    return cand.get("canonical")
+            return None
+        return entry.get("default")
+    return None
 
 
 def load_aliases(path: str = DEFAULT_ALIASES_PATH) -> dict:
@@ -44,6 +99,9 @@ def _blocked_as_non_entity_redirect(entry: dict, proposed_type: str | None) -> b
 
 def resolve_slug(slug: str, aliases: dict, proposed_type: str | None = None) -> str | None:
     """Return canonical vault path if slug is a known alias key, else None."""
+    hit = _resolve_ambiguous_term(slug, aliases, proposed_type)
+    if hit is not None:
+        return hit
     entry = aliases.get(slug)
     if entry is not None and not _blocked_as_non_entity_redirect(entry, proposed_type):
         return entry["canonical"]
@@ -52,8 +110,13 @@ def resolve_slug(slug: str, aliases: dict, proposed_type: str | None = None) -> 
 
 def resolve_slug_for_title(title: str, aliases: dict, proposed_type: str | None = None) -> str | None:
     """Return canonical vault path if title matches any alias label (case-insensitive)."""
+    hit = _resolve_ambiguous_term(title, aliases, proposed_type)
+    if hit is not None:
+        return hit
     title_lower = title.strip().lower()
-    for entry in aliases.values():
+    for key, entry in aliases.items():
+        if key == AMBIGUOUS_TERMS_KEY:
+            continue
         if _blocked_as_non_entity_redirect(entry, proposed_type):
             continue
         for label in entry.get("aliases", []):
@@ -71,10 +134,15 @@ def fuzzy_resolve_slug_for_title(
     redirects during ingest are more harmful than missed matches — they silently
     collapse distinct entities.  Only fires when exact resolve_slug_for_title fails.
     """
+    hit = _resolve_ambiguous_term(title, aliases, proposed_type, fuzzy_threshold=threshold)
+    if hit is not None:
+        return hit
     title_lower = title.strip().lower()
     best_score = 0.0
     best_canonical: str | None = None
-    for entry in aliases.values():
+    for key, entry in aliases.items():
+        if key == AMBIGUOUS_TERMS_KEY:
+            continue
         if _blocked_as_non_entity_redirect(entry, proposed_type):
             continue
         for label in entry.get("aliases", []):
@@ -110,6 +178,11 @@ def add_alias(
     notes: str | None = None,
 ) -> None:
     """Add or update an alias entry and persist to disk."""
+    if slug == AMBIGUOUS_TERMS_KEY:
+        raise ValueError(
+            f"{AMBIGUOUS_TERMS_KEY!r} is reserved for ambiguous-term entries; "
+            "edit registry/entity_aliases.json directly, not via add_alias()."
+        )
     aliases = load_aliases(aliases_path)
     entry: dict = {
         "canonical": canonical,
@@ -189,3 +262,24 @@ def seed_aliases_from_ingest(
     if added:
         save_aliases(aliases, aliases_path)
     return added
+
+
+def build_ambiguous_terms_block(aliases_path: str = DEFAULT_ALIASES_PATH) -> str:
+    """Render _ambiguous_terms as a bracketed prompt block so extraction/
+    synthesis prompts see the SAME registry-driven ambiguity list the
+    resolution layer uses — one source of truth, not a hardcoded prompt list.
+    Returns "" if there are no ambiguous-term entries (no-op, matches
+    build_lexicon_block's missing-file behavior)."""
+    aliases = load_aliases(aliases_path)
+    entries = aliases.get(AMBIGUOUS_TERMS_KEY) or []
+    if not entries:
+        return ""
+    lines = ["\n\n[AMBIGUOUS NAMES — choose type by the sentence's real subject]"]
+    for entry in entries:
+        names = "/".join(entry.get("aliases", [])[:3])
+        options = "; ".join(
+            f'{c["type"]} -> {c["canonical"]}' for c in entry.get("candidates", [])
+        )
+        lines.append(f"- {names}: {options} (default if genuinely unclear: {entry.get('default')})")
+    lines.append("[END AMBIGUOUS NAMES]")
+    return "\n".join(lines)
