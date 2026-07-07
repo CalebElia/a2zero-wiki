@@ -27,7 +27,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from pipeline.recall_scan import build_entity_name_index
+from pipeline.recall_scan import build_entity_name_index, build_ambiguous_scan_index
 
 CONTEXT_CHARS = 220
 
@@ -95,6 +95,15 @@ def build_entity_dossier(slug: str, source_uuid: str, wiki_root: str = "wiki") -
 
     index = build_entity_name_index(wiki_root)
     names = [name for name, s in index.items() if s == slug]
+    # Ambiguous-term slugs (e.g. locations/ann-arbor, initiatives/a2zero-carbon-
+    # neutrality-plan) are deliberately excluded from the plain index above —
+    # scan_source_for_known_entities routes them exclusively through the
+    # multi-candidate path to avoid double-counting. Without this, the dossier
+    # tool would find zero names to search for these entities and wrongly
+    # report "no boundary-checked match found" even when the entity is
+    # genuinely, heavily mentioned in the source.
+    ambiguous_index = build_ambiguous_scan_index(wiki_root)
+    names += [name for name, slugs in ambiguous_index.items() if slug in slugs]
     mentions = _extract_context_windows(source_text, names)
 
     return {"slug": slug, "title": title, "page_body": body, "source_mentions": mentions}
