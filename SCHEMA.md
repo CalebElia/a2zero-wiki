@@ -505,7 +505,9 @@ last-updated: 2026-06-23
 ```
 
 `actor-type` values: `city-department`, `utility`, `nonprofit`, `university`,
-`state-agency`, `federal-agency`, `private-company`, `individual`, `community-group`.
+`state-agency`, `federal-agency`, `private-company`, `person`, `community-group`.
+(`person` is the value actually in use across ~16 named-individual actor pages —
+this doc previously said `individual`, which was never the real convention.)
 
 ### contradiction (Pass 2, low threshold)
 

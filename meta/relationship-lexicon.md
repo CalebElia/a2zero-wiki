@@ -25,6 +25,7 @@ prose parsing.
 | `funds-initiatives` | actor | `initiatives/<slug>` list | list |
 | `affiliation` | actor | `actors/<slug>` (parent org) | single |
 | `sub-bodies` | actor | `actors/<slug>` list (subordinate orgs) | list |
+| `key-personnel` | actor | `actors/<slug>` list (`actor-type: person`) | list |
 | `parent-location` | location | `locations/<slug>` | single |
 | `actor` | framing | `actors/<slug>` (who carried the framing) | single |
 | `related-initiative` | framing | `initiatives/<slug>` | single |
@@ -45,6 +46,13 @@ departments, and commissions, each with its own page. Only list a *direct* subor
 a sub-body's own sub-bodies belong on that sub-body's page (via its own `affiliation`
 pointing up), not duplicated in the parent's list, to keep the hierarchy a tree, not
 a flattened index. Added 2026-07-07 to support governance sub-index pages.
+
+`key-personnel` is also an inverse-of-`affiliation` list, but for named individuals
+(`actor-type: person`) rather than institutions — an org's recurring leaders/staff,
+not a subordinate body. Bar for inclusion is deliberately high: a person who recurs
+across multiple sources in a substantive role (e.g. an office director), not every
+staff name a source happens to mention once. A thin, single-citation person page is
+not, by itself, grounds for listing someone here. Added 2026-07-07.
 
 ---
 
