@@ -473,7 +473,9 @@ def staleness_lint(wiki_root: str, source_uuid: str | None = None) -> list[dict]
     Informational findings for human triage: a mention can legitimately go
     uncited when the source merely repeats an already-recorded fact.
     """
-    from pipeline.recall_scan import build_entity_name_index, scan_source_for_known_entities
+    from pipeline.recall_scan import (
+        build_entity_name_index, build_ambiguous_scan_index, scan_source_for_known_entities,
+    )
 
     root = Path(wiki_root)
     if source_uuid is None:
@@ -489,7 +491,8 @@ def staleness_lint(wiki_root: str, source_uuid: str | None = None) -> list[dict]
     source_text = matches[0].read_text(encoding="utf-8")
 
     index = build_entity_name_index(wiki_root)
-    hits = scan_source_for_known_entities(source_text, index)
+    ambiguous_index = build_ambiguous_scan_index(wiki_root)
+    hits = scan_source_for_known_entities(source_text, index, ambiguous_index)
 
     # Context-dropped slugs from this ingest's integration plan — the
     # knowingly-deprioritized tail (RETRIEVE_TOKEN_BUDGET overflow). Humans
@@ -518,6 +521,9 @@ def staleness_lint(wiki_root: str, source_uuid: str | None = None) -> list[dict]
             f"({hits[slug]['mentions']}× as: {names}) but the page has no "
             f"{source_uuid} citation — possible missed update"
         )
+        if hits[slug].get("ambiguous"):
+            siblings = ", ".join(hits[slug].get("ambiguous-with", []))
+            detail += f" [ambiguous — verify against source: also matches {siblings}]"
         if slug in context_dropped:
             detail += " [context-dropped at ingest]"
         findings.append({

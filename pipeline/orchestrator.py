@@ -188,11 +188,13 @@ def run_source_ingest(
         # and Comprehend judgment. See docs/architecture/deterministic-recall-floor.md.
         from pipeline.recall_scan import (
             build_entity_name_index,
+            build_ambiguous_scan_index,
             scan_source_for_known_entities,
             augment_integration_plan,
         )
         name_index = build_entity_name_index(wiki_root)
-        scan_hits = scan_source_for_known_entities(source_content, name_index)
+        ambiguous_index = build_ambiguous_scan_index(wiki_root)
+        scan_hits = scan_source_for_known_entities(source_content, name_index, ambiguous_index)
         integration_plan = augment_integration_plan(integration_plan, scan_hits)
         n_flagged = len(integration_plan.get("scan-flagged", []))
         if n_flagged:

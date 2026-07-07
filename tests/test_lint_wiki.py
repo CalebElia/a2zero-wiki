@@ -691,3 +691,47 @@ def test_staleness_lint_annotates_context_dropped_entities(tmp_path):
     findings = staleness_lint(str(wiki), source_uuid="a2zero-year9")
     assert len(findings) == 1
     assert "context-dropped at ingest" in findings[0]["detail"]
+
+
+def test_staleness_lint_annotates_ambiguous_entities(tmp_path):
+    """A STALE_ENTITY finding for a slug the recall scanner could only
+    resolve via the _ambiguous_terms multi-candidate path (not a confident
+    single-slug match) must say so — human triage needs to know this isn't
+    a confident miss, it's an unresolved "could be either" hit."""
+    from pipeline.phase_b_lint import staleness_lint
+    wiki = tmp_path / "wiki"
+    (wiki / "locations").mkdir(parents=True)
+    (wiki / "actors").mkdir()
+    (wiki / "sources" / "annual-reports").mkdir(parents=True)
+    (tmp_path / "registry").mkdir()
+    (tmp_path / "registry" / "entity_aliases.json").write_text(
+        json.dumps({
+            "_ambiguous_terms": [
+                {
+                    "aliases": ["Ann Arbor"],
+                    "candidates": [
+                        {"type": "location", "canonical": "locations/ann-arbor"},
+                        {"type": "actor", "canonical": "actors/city-of-ann-arbor"},
+                    ],
+                    "default": "locations/ann-arbor",
+                },
+            ],
+        }),
+        encoding="utf-8",
+    )
+    (tmp_path / "meta").mkdir()
+    (wiki / "locations" / "ann-arbor.md").write_text(
+        "---\ntype: location\ntitle: Ann Arbor\n---\n\nBody.\n", encoding="utf-8",
+    )
+    (wiki / "actors" / "city-of-ann-arbor.md").write_text(
+        "---\ntype: actor\ntitle: City of Ann Arbor\n---\n\nBody.\n", encoding="utf-8",
+    )
+    (wiki / "sources" / "annual-reports" / "a2zero-year9.md").write_text(
+        "---\nuuid: a2zero-year9\n---\n\nElectricity use in Ann Arbor rose this year.\n",
+        encoding="utf-8",
+    )
+    findings = staleness_lint(str(wiki), source_uuid="a2zero-year9")
+    by_page = {f["page"]: f for f in findings}
+    assert "ambiguous — verify against source" in by_page["locations/ann-arbor.md"]["detail"]
+    assert "actors/city-of-ann-arbor" in by_page["locations/ann-arbor.md"]["detail"]
+    assert "ambiguous — verify against source" in by_page["actors/city-of-ann-arbor.md"]["detail"]
