@@ -1,5 +1,5 @@
 
-## Staleness Lint — 2026-07-06 (source: a2zero-year5)
+## Staleness Lint — 2026-07-07 (source: a2zero-year5)
 
 - [STALE_ENTITY] `actors/american-lung-association.md` — source a2zero-year5 mentions this entity (1× as: american lung association) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `actors/americorps.md` — source a2zero-year5 mentions this entity (8× as: americorps) but the page has no a2zero-year5 citation — possible missed update
@@ -10,7 +10,7 @@
 - [STALE_ENTITY] `actors/ann-arbor-washtenaw-2030-district.md` — source a2zero-year5 mentions this entity (3× as: 2030 district, ann arbor / washtenaw 2030 district, washtenaw 2030 district) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `actors/avalon-housing.md` — source a2zero-year5 mentions this entity (2× as: avalon housing) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `actors/christopher-taylor.md` — source a2zero-year5 mentions this entity (1× as: christopher taylor) but the page has no a2zero-year5 citation — possible missed update
-- [STALE_ENTITY] `actors/city-of-ann-arbor.md` — source a2zero-year5 mentions this entity (107× as: ann arbor, the city, the city of ann arbor) but the page has no a2zero-year5 citation — possible missed update
+- [STALE_ENTITY] `actors/city-of-ann-arbor.md` — source a2zero-year5 mentions this entity (82× as: the city of ann arbor, city of ann arbor, ann arbor) but the page has no a2zero-year5 citation — possible missed update [ambiguous — verify against source: also matches locations/ann-arbor]
 - [STALE_ENTITY] `actors/community-action-network.md` — source a2zero-year5 mentions this entity (1× as: community action network) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `actors/federal-transit-administration.md` — source a2zero-year5 mentions this entity (1× as: federal transit administration) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `actors/julie-roth.md` — source a2zero-year5 mentions this entity (1× as: julie roth) but the page has no a2zero-year5 citation — possible missed update
@@ -21,13 +21,14 @@
 - [STALE_ENTITY] `actors/missy-stults.md` — source a2zero-year5 mentions this entity (2× as: missy stults) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `actors/neutral-zone.md` — source a2zero-year5 mentions this entity (1× as: neutral zone) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `actors/office-of-emergency-management.md` — source a2zero-year5 mentions this entity (2× as: office of emergency management) but the page has no a2zero-year5 citation — possible missed update
-- [STALE_ENTITY] `actors/office-of-sustainability-and-innovations.md` — source a2zero-year5 mentions this entity (56× as: a2zero, office of sustainability and innovations) but the page has no a2zero-year5 citation — possible missed update
-- [STALE_ENTITY] `actors/state-of-michigan.md` — source a2zero-year5 mentions this entity (2× as: state of michigan) but the page has no a2zero-year5 citation — possible missed update
+- [STALE_ENTITY] `actors/office-of-sustainability-and-innovations.md` — source a2zero-year5 mentions this entity (63× as: office of sustainability and innovations, a2zero) but the page has no a2zero-year5 citation — possible missed update [ambiguous — verify against source: also matches initiatives/a2zero-carbon-neutrality-plan]
+- [STALE_ENTITY] `actors/state-of-michigan.md` — source a2zero-year5 mentions this entity (22× as: michigan, state of michigan) but the page has no a2zero-year5 citation — possible missed update [ambiguous — verify against source: also matches locations/michigan]
 - [STALE_ENTITY] `actors/university-of-michigan.md` — source a2zero-year5 mentions this entity (4× as: the university, university of michigan) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `actors/us-epa.md` — source a2zero-year5 mentions this entity (1× as: u.s. epa) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `actors/vegmichigan.md` — source a2zero-year5 mentions this entity (1× as: vegmichigan) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `actors/washtenaw-area-apartment-association.md` — source a2zero-year5 mentions this entity (2× as: property owners, local property owners) but the page has no a2zero-year5 citation — possible missed update
-- [STALE_ENTITY] `actors/washtenaw-county.md` — source a2zero-year5 mentions this entity (4× as: washtenaw county) but the page has no a2zero-year5 citation — possible missed update
+- [STALE_ENTITY] `actors/washtenaw-county.md` — source a2zero-year5 mentions this entity (6× as: washtenaw county) but the page has no a2zero-year5 citation — possible missed update [ambiguous — verify against source: also matches locations/washtenaw-county]
+- [STALE_ENTITY] `initiatives/a2zero-carbon-neutrality-plan.md` — source a2zero-year5 mentions this entity (58× as: a2zero) but the page has no a2zero-year5 citation — possible missed update [ambiguous — verify against source: also matches actors/office-of-sustainability-and-innovations]
 - [STALE_ENTITY] `initiatives/a2zero-dashboard.md` — source a2zero-year5 mentions this entity (2× as: a2zero dashboard) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `initiatives/bryant-neighborhood-decarbonization.md` — source a2zero-year5 mentions this entity (1× as: bryant neighborhood decarbonization) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `initiatives/commercial-benchmarking-ordinance.md` — source a2zero-year5 mentions this entity (1× as: benchmarking ordinance) but the page has no a2zero-year5 citation — possible missed update
@@ -40,14 +41,17 @@
 - [STALE_ENTITY] `initiatives/sustaining-ann-arbor-together-grants.md` — source a2zero-year5 mentions this entity (1× as: sustaining ann arbor together grant program) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `initiatives/tree-canopy.md` — source a2zero-year5 mentions this entity (1× as: tree canopy) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `locations/121-catherine-street.md` — source a2zero-year5 mentions this entity (1× as: 121 catherine street) but the page has no a2zero-year5 citation — possible missed update
+- [STALE_ENTITY] `locations/ann-arbor.md` — source a2zero-year5 mentions this entity (75× as: ann arbor) but the page has no a2zero-year5 citation — possible missed update [ambiguous — verify against source: also matches actors/city-of-ann-arbor]
 - [STALE_ENTITY] `locations/bicentennial-park.md` — source a2zero-year5 mentions this entity (1× as: bicentennial park) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `locations/bryant-neighborhood.md` — source a2zero-year5 mentions this entity (5× as: bryant neighborhood) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `locations/bryant-neighborhood-community-center.md` — source a2zero-year5 mentions this entity (3× as: bryant community center) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `locations/fire-station-6.md` — source a2zero-year5 mentions this entity (1× as: fire station 6) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `locations/fuller-park.md` — source a2zero-year5 mentions this entity (1× as: fuller park) but the page has no a2zero-year5 citation — possible missed update
+- [STALE_ENTITY] `locations/michigan.md` — source a2zero-year5 mentions this entity (22× as: michigan, state of michigan) but the page has no a2zero-year5 citation — possible missed update [ambiguous — verify against source: also matches actors/state-of-michigan]
 - [STALE_ENTITY] `locations/peace-neighborhood-center.md` — source a2zero-year5 mentions this entity (3× as: peace neighborhood center) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `locations/veterans-memorial-park.md` — source a2zero-year5 mentions this entity (1× as: veterans memorial park) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `locations/washtenaw-community-college.md` — source a2zero-year5 mentions this entity (1× as: washtenaw community college) but the page has no a2zero-year5 citation — possible missed update
+- [STALE_ENTITY] `locations/washtenaw-county.md` — source a2zero-year5 mentions this entity (6× as: washtenaw county) but the page has no a2zero-year5 citation — possible missed update [ambiguous — verify against source: also matches actors/washtenaw-county]
 - [STALE_ENTITY] `locations/water-resource-recovery-facility.md` — source a2zero-year5 mentions this entity (1× as: water resource recovery facility) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `locations/wheeler-center.md` — source a2zero-year5 mentions this entity (1× as: wheeler service center) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `technology/led-lighting.md` — source a2zero-year5 mentions this entity (1× as: led lighting) but the page has no a2zero-year5 citation — possible missed update
