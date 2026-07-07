@@ -4,7 +4,7 @@ active-years:
 actor-type: nonprofit
 affiliation: null
 elected: false
-last-updated: '2026-06-24'
+last-updated: '2026-07-07'
 programs-involved:
 - '[[initiatives/a2zero-ambassadors-program]]'
 role: Collaborator on Neighborhood and Youth Ambassador Programs
@@ -19,3 +19,5 @@ type: actor
 ---
 
 Neutral Zone is listed as a collaborator and project co-designer for Ann Arbor's [[initiatives/a2zero-ambassadors-program|Neighborhood and Youth Ambassador Programs]] under A2Zero Strategy 6 ([[sources/cap/cap-2020|cap-2020]]).
+
+In Year Five, Neutral Zone collaborated with OSI and the [[actors/leslie-science-and-nature-center|Leslie Science and Nature Center]] to create Youth Now Climate Action, a group of Ann Arbor Public Schools high school students focused on identifying environmental problems and developing solutions ([[sources/annual-reports/a2zero-year5|a2zero-year5]]).
