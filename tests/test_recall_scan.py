@@ -57,3 +57,45 @@ def test_scan_counts_multiple_mentions(tmp_path):
     source = "DTE Energy did X. Later, DTE Energy did Y. Detroit Edison history."
     hits = scan_source_for_known_entities(source, index)
     assert hits["actors/dte-energy"]["mentions"] == 3
+
+
+def test_augment_adds_only_missing_slugs(tmp_path):
+    from pipeline.recall_scan import augment_integration_plan
+    plan = {
+        "extends": [{"slug": "actors/dte-energy", "new-data": "rate case"}],
+        "new-entities": [{"slug": "initiatives/brand-new-thing"}],
+        "retrieve-for-context": ["actors/dte-energy"],
+    }
+    scan_hits = {
+        "actors/dte-energy": {"matched-names": ["dte energy"], "mentions": 3},
+        "initiatives/aging-in-place-efficiently": {"matched-names": ["aging in place efficiently"], "mentions": 2},
+        "initiatives/brand-new-thing": {"matched-names": ["brand new thing"], "mentions": 1},
+    }
+    out = augment_integration_plan(plan, scan_hits)
+    flagged_slugs = [e["slug"] for e in out["scan-flagged"]]
+    # already in extends → not re-flagged; already in new-entities → not re-flagged
+    assert flagged_slugs == ["initiatives/aging-in-place-efficiently"]
+    assert out["scan-flagged"][0]["mentions"] == 2
+    # appended to retrieve-for-context, existing entries preserved and first
+    assert out["retrieve-for-context"] == [
+        "actors/dte-energy", "initiatives/aging-in-place-efficiently",
+    ]
+
+
+def test_augment_orders_scan_slugs_by_mention_count(tmp_path):
+    from pipeline.recall_scan import augment_integration_plan
+    plan = {"extends": [], "new-entities": [], "retrieve-for-context": []}
+    scan_hits = {
+        "initiatives/rare": {"matched-names": ["rare"], "mentions": 1},
+        "initiatives/common": {"matched-names": ["common"], "mentions": 9},
+    }
+    out = augment_integration_plan(plan, scan_hits)
+    assert out["retrieve-for-context"] == ["initiatives/common", "initiatives/rare"]
+
+
+def test_augment_handles_empty_hits():
+    from pipeline.recall_scan import augment_integration_plan
+    plan = {"extends": [], "new-entities": [], "retrieve-for-context": ["a/b"]}
+    out = augment_integration_plan(plan, {})
+    assert out["scan-flagged"] == []
+    assert out["retrieve-for-context"] == ["a/b"]
