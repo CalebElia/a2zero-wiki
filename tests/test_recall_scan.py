@@ -59,6 +59,40 @@ def test_scan_counts_multiple_mentions(tmp_path):
     assert hits["actors/dte-energy"]["mentions"] == 3
 
 
+def test_scan_matches_punctuation_ending_names(tmp_path):
+    """~6% of real indexed names end in a parenthetical acronym ("... (MDOT)").
+    A trailing \\b after ")" requires the NEXT char to be a word char, so those
+    names silently never matched in prose — the inverse of a recall floor."""
+    from pipeline.recall_scan import build_entity_name_index, scan_source_for_known_entities
+    wiki = _make_wiki(tmp_path)
+    (wiki / "actors" / "michigan-department-of-transportation.md").write_text(
+        "---\ntype: actor\ntitle: Michigan Department of Transportation (MDOT)\n---\n\nBody.\n",
+        encoding="utf-8",
+    )
+    index = build_entity_name_index(str(wiki))
+    source = "Partners include the Michigan Department of Transportation (MDOT) for road work."
+    hits = scan_source_for_known_entities(source, index)
+    assert hits["actors/michigan-department-of-transportation"]["mentions"] == 1
+
+
+def test_index_skips_aliases_whose_canonical_page_is_missing(tmp_path):
+    """A stale registry entry pointing at a deleted/renamed page must not
+    resurrect that slug in the index."""
+    import json as _json
+    from pipeline.recall_scan import build_entity_name_index
+    wiki = _make_wiki(tmp_path)
+    aliases_path = wiki.parent / "registry" / "entity_aliases.json"
+    aliases = _json.loads(aliases_path.read_text(encoding="utf-8"))
+    aliases["ghost-entry"] = {
+        "canonical": "actors/deleted-long-ago", "type": "actor",
+        "aliases": ["Ghost Organization Name"], "relationship": "name-variant",
+    }
+    aliases_path.write_text(_json.dumps(aliases), encoding="utf-8")
+    index = build_entity_name_index(str(wiki))
+    assert "ghost organization name" not in index
+    assert "actors/deleted-long-ago" not in index.values()
+
+
 def test_augment_adds_only_missing_slugs(tmp_path):
     from pipeline.recall_scan import augment_integration_plan
     plan = {

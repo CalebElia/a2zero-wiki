@@ -88,16 +88,38 @@ def build_entity_name_index(wiki_root: str, aliases_path: str | None = None) -> 
 
 def scan_source_for_known_entities(source_text: str, index: dict[str, str]) -> dict[str, dict]:
     """Return {slug: {"matched-names": [...], "mentions": int}} for every
-    indexed name that appears (word-boundary, case-insensitive) in the source."""
+    indexed name that appears (boundary-checked, case-insensitive) in the source.
+
+    Boundaries use lookarounds, not \\b: ~6% of real indexed names end in a
+    non-word char (parenthetical acronyms like "... (MDOT)"), and a trailing
+    \\b after ")" requires the NEXT char to be a word char — inverting the
+    intent and silently never matching those names in normal prose. (?<!\\w)
+    and (?!\\w) express the actual requirement: the name is not embedded
+    inside a longer word.
+
+    Single-pass alternation (longest name first) instead of one findall per
+    name: a per-name loop measured ~2s against the largest real source and
+    scales O(names x text). Overlapping names count each text occurrence once
+    for the longest matching name; mentions only drive priority ordering.
+    """
+    if not index:
+        return {}
     text = re.sub(r"\s+", " ", source_text)
+    names_longest_first = sorted(index, key=len, reverse=True)
+    pattern = re.compile(
+        r"(?<!\w)(?:" + "|".join(re.escape(n) for n in names_longest_first) + r")(?!\w)",
+        re.IGNORECASE,
+    )
     hits: dict[str, dict] = {}
-    for name, slug in index.items():
-        pattern = r"\b" + re.escape(name) + r"\b"
-        count = len(re.findall(pattern, text, re.IGNORECASE))
-        if count:
-            entry = hits.setdefault(slug, {"matched-names": [], "mentions": 0})
+    for m in pattern.finditer(text):
+        name = m.group(0).lower()
+        slug = index.get(name)
+        if slug is None:
+            continue
+        entry = hits.setdefault(slug, {"matched-names": [], "mentions": 0})
+        if name not in entry["matched-names"]:
             entry["matched-names"].append(name)
-            entry["mentions"] += count
+        entry["mentions"] += 1
     return hits
 
 
