@@ -4109,12 +4109,13 @@
     "relationship": "name-variant"
   },
   "city-transportation-team": {
-    "canonical": "actors/city-transportation-team",
+    "canonical": "actors/ann-arbor-engineering-department-transportation-team",
     "type": "actor",
     "aliases": [
       "City Transportation Team"
     ],
-    "relationship": "name-variant"
+    "relationship": "name-variant",
+    "notes": "Merged 2026-07-07 — duplicate of the Engineering Department Transportation Team, same real-world team described from a later source."
   },
   "stantec": {
     "canonical": "actors/stantec",

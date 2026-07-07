@@ -4,10 +4,24 @@ active-years:
 actor-type: government-office
 affiliation: null
 elected: false
-last-updated: '2026-06-24'
+last-updated: '2026-07-07'
 programs-involved: []
 role: Lead governmental body responsible for implementing A2Zero Carbon Neutrality
   Plan
+sub-bodies:
+- '[[actors/ann-arbor-city-council]]'
+- '[[actors/ann-arbor-city-administrator]]'
+- '[[actors/office-of-sustainability-and-innovations]]'
+- '[[actors/energy-commission]]'
+- '[[actors/environmental-commission]]'
+- '[[actors/ann-arbor-planning-commission]]'
+- '[[actors/ann-arbor-transportation-commission]]'
+- '[[actors/ann-arbor-historic-district-commission]]'
+- '[[actors/ann-arbor-housing-commission]]'
+- '[[actors/city-of-ann-arbor-planning-department]]'
+- '[[actors/city-engineering-department]]'
+- '[[actors/city-of-ann-arbor-signs-and-signals]]'
+- '[[actors/city-of-ann-arbor-diversity-equity-inclusion-manager]]'
 source-first-seen: '[[sources/cap/cap-2020]]'
 tags:
 - municipality
@@ -19,4 +33,28 @@ title: City of Ann Arbor
 type: actor
 ---
 
-The City of Ann Arbor is the lead governmental body responsible for implementing the A2Zero Living Carbon Neutrality Plan, which targets community-wide carbon neutrality by 2030 ([[sources/cap/cap-2020|cap-2020]]). The City coordinates with 60+ partner organizations to work with community members and stakeholders toward this goal ([[sources/cap/cap-2020|cap-2020]]). The Ann Arbor City Council unanimously declared a climate emergency, directing the City to immediately begin crafting an aggressive and living strategy to achieve carbon neutrality ([[sources/cap/cap-2020|cap-2020]]).
+The City of Ann Arbor is the municipal government body for Ann Arbor, Michigan, and is responsible for creating and implementing the A2Zero Living Carbon Neutrality Plan through its various elected and appointed bodies, which target community-wide carbon neutrality by 2030 ([[sources/cap/cap-2020|cap-2020]]). What "the City" does in practice is the compiled action of its legislative body, executive administration, and the departments and commissions listed below, each of which holds its own wiki page and reports its own actions where sources distinguish them. The Ann Arbor City Council unanimously declared a climate emergency on November 4, 2019, directing the City Administration to develop a community-wide carbon neutrality plan, which became A2Zero ([[sources/cap/cap-2020|cap-2020]]). The City coordinates with 60+ partner organizations external to city government to work with community members and stakeholders toward this goal ([[sources/cap/cap-2020|cap-2020]]).
+
+## Governing structure
+
+- [[actors/ann-arbor-city-council|City Council]] — legislative body; adopted the Climate Emergency Declaration and subsequent A2Zero-related resolutions and ballot authorizations.
+- [[actors/ann-arbor-city-administrator|City Administrator]] — senior appointed executive overseeing day-to-day municipal operations.
+- [[actors/office-of-sustainability-and-innovations|Office of Sustainability and Innovations (OSI)]] — lead office responsible for developing and implementing A2Zero.
+- [[actors/energy-commission|Energy Commission]] and [[actors/environmental-commission|Environmental Commission]] — advisory bodies on emissions offsets and environmental policy.
+- [[actors/ann-arbor-planning-commission|Planning Commission]] and [[actors/city-of-ann-arbor-planning-department|Planning Department]] — land use, zoning, and comprehensive planning.
+- [[actors/ann-arbor-transportation-commission|Transportation Commission]] and [[actors/city-engineering-department|Engineering Department]] — transportation policy, transit expansion, and infrastructure delivery.
+- [[actors/ann-arbor-historic-district-commission|Historic District Commission]] — historic preservation intersecting with housing density and mixed-use zoning.
+- [[actors/ann-arbor-housing-commission|Housing Commission]] — public and affordable housing.
+- [[actors/city-of-ann-arbor-signs-and-signals|Signs and Signals]] — street lighting and traffic signal conversion.
+- [[actors/city-of-ann-arbor-diversity-equity-inclusion-manager|Diversity, Equity and Inclusion Manager]] — equity program coordination.
+
+## City government as an actor (not delegated to a subsidiary)
+
+- Conducts an annual community-wide greenhouse gas emissions inventory as institutional practice, tracking progress toward the 2030 carbon-neutrality goal ([[sources/annual-reports/a2zero-year3|a2zero-year3]], [[sources/annual-reports/a2zero-year4|a2zero-year4]], [[sources/annual-reports/a2zero-year5|a2zero-year5]]).
+- Passed Michigan's first commercial building energy benchmarking ordinance, requiring large commercial and multifamily buildings to track and report energy and water performance ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).
+- Reached 25% electrification of the City's light-duty fleet ([[sources/annual-reports/a2zero-year4|a2zero-year4]]), targeting 70% fleet electrification as a Year 5 priority ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).
+- City Council authorized a Phase II Municipalization Study of DTE's electric assets serving Ann Arbor, launched May 2024 ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).
+- Voters authorized creation of the Ann Arbor Sustainable Energy Utility (SEU) by ballot measure on November 5, 2024, with 79% approval ([[sources/annual-reports/a2zero-year5|a2zero-year5]]).
+- Over 70% of electricity powering City facilities and operations is now generated by renewable sources under a Constellation Energy agreement enrolling 67 additional city sites in Michigan's Electric Customer Choice Program ([[sources/annual-reports/a2zero-year5|a2zero-year5]]).
+- Passed an ordinance prohibiting gas-powered leaf blowers, phasing in seasonally through January 2028 ([[sources/annual-reports/a2zero-year5|a2zero-year5]]).
+- Recognized on CDP's "A List" for environmental leadership in multiple consecutive years, and achieved Platinum status in the Michigan Green Communities program in Year 5, up from Gold in Year 3 ([[sources/annual-reports/a2zero-year3|a2zero-year3]], [[sources/annual-reports/a2zero-year5|a2zero-year5]]).

@@ -2,7 +2,8 @@
 title: City of Ann Arbor Engineering Department
 type: actor
 actor-type: government-department
-last-updated: '2026-06-30'
+affiliation: '[[actors/city-of-ann-arbor]]'
+last-updated: '2026-07-07'
 source-first-seen: '[[sources/annual-reports/a2zero-year3]]'
 tags:
 - city-government

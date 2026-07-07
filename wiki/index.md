@@ -1,6 +1,6 @@
 # Wiki Index
 
-_519 pages — last updated 2026-07-02_
+_518 pages — last updated 2026-07-07_
 
 ## actor
 
@@ -39,7 +39,6 @@ _519 pages — last updated 2026-07-02_
 - [[actors/christopher-taylor|Christopher Taylor]]
 - [[actors/church-of-the-good-shepherd|Church of the Good Shepherd]]
 - [[actors/citizens-climate-lobby-ann-arbor|Citizens Climate Lobby — Ann Arbor Chapter]]
-- [[actors/city-transportation-team|City Transportation Team]]
 - [[actors/city-of-ann-arbor|City of Ann Arbor]]
 - [[actors/city-of-ann-arbor-diversity-equity-inclusion-manager|City of Ann Arbor Diversity, Equity and Inclusion Manager]]
 - [[actors/city-engineering-department|City of Ann Arbor Engineering Department]]
@@ -63,12 +62,15 @@ _519 pages — last updated 2026-07-02_
 - [[actors/environmental-commission|Environmental Commission]]
 - [[actors/extinction-rebellion|Extinction Rebellion]]
 - [[actors/fema|Federal Emergency Management Agency]]
+- [[actors/federal-highway-administration|Federal Highway Administration]]
 - [[actors/federal-transit-administration|Federal Transit Administration]]
 - [[actors/forestry-and-natural-areas-preservation|Forestry and Natural Areas Preservation]]
 - [[actors/forth-mobility|Forth Mobility]]
+- [[actors/fresh-coast-climate-solutions|Fresh Coast Climate Solutions]]
 - [[actors/galen-hardy|Galen Hardy]]
 - [[actors/ginger-deli|Ginger Deli]]
 - [[actors/global-covenant-of-mayors-for-climate-and-energy|Global Covenant of Mayors for Climate and Energy]]
+- [[actors/grainger-industrial-supply|Grainger Industrial Supply]]
 - [[actors/great-lakes-renewable-energy-association|Great Lakes Renewable Energy Association]]
 - [[actors/green-fleets-team|Green Fleets Team]]
 - [[actors/growing-hope|Growing Hope]]
@@ -94,6 +96,7 @@ _519 pages — last updated 2026-07-02_
 - [[actors/michigan-green-communities|Michigan Green Communities]]
 - [[actors/michigan-municipal-association-on-utility-issues|Michigan Municipal Association on Utility Issues]]
 - [[actors/michigan-municipal-league|Michigan Municipal League]]
+- [[actors/michigan-public-service-commission|Michigan Public Service Commission]]
 - [[actors/michigan-saves|Michigan Saves]]
 - [[actors/missy-stults|Missy Stults]]
 - [[actors/naacp-ann-arbor|NAACP Ann Arbor Chapter]]
@@ -106,7 +109,6 @@ _519 pages — last updated 2026-07-02_
 - [[actors/office-of-sustainability-and-innovations|Office of Sustainability and Innovations]]
 - [[actors/pittsfield-township|Pittsfield Township]]
 - [[actors/pittsfield-village-community|Pittsfield Village community]]
-- [[actors/city-of-ann-arbor-planning-department|Planning Department]]
 - [[actors/presidents-commission-on-carbon-neutrality|President's Commission on Carbon Neutrality (PCCN)]]
 - [[actors/relate-um|R.E.L.A.T.E. (UM)]]
 - [[actors/rmi|RMI (Rocky Mountain Institute)]]
@@ -136,6 +138,7 @@ _519 pages — last updated 2026-07-02_
 - [[actors/um-energy-institute|University of Michigan Energy Institute]]
 - [[actors/urban-sustainability-directors-network|Urban Sustainability Directors Network]]
 - [[actors/vegmichigan|VegMichigan]]
+- [[actors/weingartz|WEINGARTZ]]
 - [[actors/walker-miller-energy-services|Walker Miller Energy Services]]
 - [[actors/washtenaw-350|Washtenaw 350]]
 - [[actors/washtenaw-area-apartment-association|Washtenaw Area Apartment Association]]
@@ -165,7 +168,6 @@ _519 pages — last updated 2026-07-02_
 - [[funding-events/ann-arbor-cfi-grant-2025|Ann Arbor CFI Grant 2025]]
 - [[funding-events/ann-arbor-seu-startup-funding-2025|Ann Arbor SEU Startup Funding 2025]]
 - [[funding-events/bright-cities-tree-planting-2022|Bright Cities Grant for Tree Planting 2022]]
-- [[funding-events/bryant-neighborhood-networked-geothermal-award-2025|Bryant Neighborhood DOE Grant 2025]]
 - [[funding-events/bryant-neighborhood-mpsc-grant-2025|Bryant Neighborhood MPSC Grant 2025]]
 - [[funding-events/bryant-neighborhood-networked-geothermal-award-2025|Bryant Neighborhood Networked Geothermal Award 2025]]
 - [[funding-events/doe-geothermal-planning-grant-2023|DOE Community Geothermal Planning Grant for Bryant (2023)]]
@@ -395,7 +397,6 @@ _519 pages — last updated 2026-07-02_
 - [[initiatives/solarize-ann-arbor|Solarize Ann Arbor]]
 - [[initiatives/solid-waste-resource-management-plan|Solid Waste Resource Management Plan]]
 - [[initiatives/dte-existing-programs-awareness|Spread Information About DTE Energy's Existing Energy Efficiency Programs]]
-- [[initiatives/monthly-a2zero-storytelling-program|Storytelling Program]]
 - [[initiatives/strategic-communication-plan|Strategic Communication Plan]]
 - [[initiatives/aging-in-place-efficiently|Support Aging in Place Efficiently]]
 - [[initiatives/community-ev-solar-bulk-buy|Support Community Electric Vehicle and Solar Bulk Buys]]
@@ -403,7 +404,6 @@ _519 pages — last updated 2026-07-02_
 - [[initiatives/support-plant-rich-diet|Support a Plant Rich Diet]]
 - [[initiatives/sustainability-review-plan-process|Sustainability Review in City Plan Review Process]]
 - [[initiatives/sustainable-energy-utility|Sustainable Energy Utility (SEU)]]
-- [[initiatives/ann-arbor-sustainable-food-framework|Sustainable Food Framework for Ann Arbor]]
 - [[initiatives/sustainable-food-purchasing-policy|Sustainable Food Purchasing Policy]]
 - [[initiatives/sustainable-food-working-group|Sustainable Food Working Group]]
 - [[initiatives/sustainable-purchasing-policy|Sustainable Purchasing Policy and Carbon Pricing on Products]]
@@ -477,7 +477,6 @@ _519 pages — last updated 2026-07-02_
 - [[locations/water-resource-recovery-facility|Water Resource Recovery Facility]]
 - [[locations/westgate-library|Westgate Library]]
 - [[locations/wheeler-center|Wheeler Center]]
-- [[locations/wheeler-center|Wheeler Service Center]]
 - [[locations/ypsilanti|Ypsilanti]]
 
 ## meeting

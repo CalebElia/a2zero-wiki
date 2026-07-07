@@ -24,6 +24,7 @@ prose parsing.
 | `recipient` | funding-event | `actors/<slug>` or `initiatives/<slug>` | single |
 | `funds-initiatives` | actor | `initiatives/<slug>` list | list |
 | `affiliation` | actor | `actors/<slug>` (parent org) | single |
+| `sub-bodies` | actor | `actors/<slug>` list (subordinate orgs) | list |
 | `parent-location` | location | `locations/<slug>` | single |
 | `actor` | framing | `actors/<slug>` (who carried the framing) | single |
 | `related-initiative` | framing | `initiatives/<slug>` | single |
@@ -37,6 +38,13 @@ prose parsing.
 
 All wikilinks use vault-relative paths with no leading `wiki/`.
 Example: `party-responsible: "[[actors/office-of-sustainability-and-innovations]]"`
+
+`sub-bodies` is the inverse of `affiliation` — used on a governmental umbrella actor
+(e.g. `actors/city-of-ann-arbor`) to list its subordinate elected/appointed bodies,
+departments, and commissions, each with its own page. Only list a *direct* subordinate:
+a sub-body's own sub-bodies belong on that sub-body's page (via its own `affiliation`
+pointing up), not duplicated in the parent's list, to keep the hierarchy a tree, not
+a flattened index. Added 2026-07-07 to support governance sub-index pages.
 
 ---
 
