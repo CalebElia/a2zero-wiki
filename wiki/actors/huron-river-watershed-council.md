@@ -6,7 +6,7 @@ active-years:
 actor-type: nonprofit
 affiliation: null
 elected: false
-last-updated: '2026-06-24'
+last-updated: '2026-07-07'
 programs-involved:
 - '[[initiatives/green-business-challenge]]'
 role: Collaborator on Green Business Challenge for water conservation guidance
@@ -21,3 +21,5 @@ type: actor
 ---
 
 The Huron River Watershed Council is listed as a collaborator on Ann Arbor's [[initiatives/environmental-sensors-monitoring|environmental sensor monitoring initiative]] under A2Zero Strategy 6, contributing to efforts to monitor waterways and flooding ([[sources/cap/cap-2020|cap-2020]]).
+
+In Year Three, the Council partnered with the [[actors/leslie-science-and-nature-center|Leslie Science and Nature Center]] and OSI to organize the annual Earth Day Festival ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).

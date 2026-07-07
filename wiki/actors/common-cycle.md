@@ -4,7 +4,7 @@ active-years:
 actor-type: nonprofit
 affiliation: null
 elected: false
-last-updated: '2026-06-24'
+last-updated: '2026-07-07'
 programs-involved:
 - '[[initiatives/common-cycle-bike-program]]'
 role: Community bike program partner supporting cycling infrastructure and bike access
@@ -18,4 +18,4 @@ title: Common Cycle
 type: actor
 ---
 
-Common Cycle is a nonprofit organization identified in the A2Zero plan as a partner to be leveraged for keeping bikes on the road as part of the city's transportation resilience and VMT reduction strategy ([[sources/cap/cap-2020|cap-2020]]). During Year One of A2ZERO, Common Cycle received donated bikes coordinated by the City of Ann Arbor as part of the city's bike access and alternative transportation efforts ([[sources/annual-reports/a2zero-year1|a2zero-year1]]).
+Common Cycle is a nonprofit organization identified in the A2Zero plan as a partner to be leveraged for keeping bikes on the road as part of the city's transportation resilience and VMT reduction strategy ([[sources/cap/cap-2020|cap-2020]]). During Year One of A2ZERO, Common Cycle received donated bikes coordinated by the City of Ann Arbor as part of the city's bike access and alternative transportation efforts ([[sources/annual-reports/a2zero-year1|a2zero-year1]]). In Year Four, the City amended Chapter 127 of the City Code to allow donation of impounded bicycles to tax-exempt organizations such as Common Cycle ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).
