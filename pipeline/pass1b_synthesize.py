@@ -5,7 +5,10 @@ from pathlib import Path
 
 from pipeline._pages import build_wiki_page, write_wiki_page, append_to_wiki_page
 from pipeline.pass3_finalize import append_index_entry, append_log
-from pipeline._aliases import load_aliases, resolve_slug, resolve_slug_for_title, fuzzy_resolve_slug_for_title
+from pipeline._aliases import (
+    load_aliases, resolve_slug, resolve_slug_for_title, fuzzy_resolve_slug_for_title,
+    build_ambiguous_terms_block,
+)
 from pipeline.pass2c_merge import merge_pages as _merge_pages
 from pipeline.schema_governance import build_lexicon_block
 from pipeline.topic_synthesize import append_query_log_entry
@@ -102,6 +105,16 @@ When this source contains measured results or reported progress
   "Outcome as of [date]: [figure] ([[{source_path}|{source_uuid}]])"
 The pipeline will extract these into structured frontmatter. Clear labeling in
 prose is required for the Editor to extract them correctly.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AMBIGUOUS NAMES — actor vs. location vs. plan:
+Some names are legitimately ambiguous depending on sentence intent. Decide
+type from what the sentence is actually describing, not the name alone:
+  - The government BODY doing/deciding/announcing something -> type: actor
+  - A geographic place being referenced (located in, part of, near) -> type: location
+  - The PLAN/DOCUMENT itself (its goals, sections, timeline) -> type: initiative
+If a term is listed in [AMBIGUOUS NAMES] below, use its candidates. If
+genuinely unclear even then, use the candidate marked "default."
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 WIKILINK FORMAT:
@@ -415,6 +428,11 @@ def synthesize_source(
     # bracketed-context convention used above. Empty string (no-op) if the
     # lexicon file doesn't exist.
     integration_block += build_lexicon_block(wiki_root)
+
+    # Ambiguous-name disambiguation guidance — same registry-driven list the
+    # resolution layer (pipeline/_aliases.py) uses, so the Writer's own type
+    # judgment and Pass 1.5's resolution never contradict each other.
+    integration_block += build_ambiguous_terms_block(alias_registry_path)
 
     document_block_text = (
         f"Source UUID: {source_uuid}\n"
