@@ -136,25 +136,26 @@ def test_augment_handles_empty_hits():
 
 
 def test_stoplisted_generic_aliases_excluded_from_index(tmp_path):
-    """'the City' and bare 'A2Zero' are curated Pass-1.5 aliases for
-    high-frequency actors, but scanning for them produces saturating false
-    positives (confirmed on real data: 107 mentions/source). They must never
-    reach the scan index, even though they stay in the registry file
-    untouched for ingest-time resolution."""
+    """'the City' is a curated Pass-1.5 alias for a high-frequency actor, but
+    scanning for it produces saturating false positives (confirmed on real
+    data: 107 mentions/source). It must never reach the scan index, even
+    though it stays in the registry file untouched for ingest-time
+    resolution. ("A2Zero"/"A2Zero Program" were removed from this stoplist —
+    they're now handled by the _ambiguous_terms multi-candidate flagging
+    path instead of being silently dropped; see test_recall_scan.py's
+    ambiguous-scanning tests.)"""
     from pipeline.recall_scan import build_entity_name_index
     wiki = _make_wiki(tmp_path)
     registry_path = wiki.parent / "registry" / "entity_aliases.json"
     aliases = json.loads(registry_path.read_text(encoding="utf-8"))
     aliases["city-of-ann-arbor"] = {
         "canonical": "actors/dte-energy", "type": "actor",
-        "aliases": ["the City", "A2Zero", "A2Zero Program"], "relationship": "name-variant",
+        "aliases": ["the City"], "relationship": "name-variant",
     }
     registry_path.write_text(json.dumps(aliases), encoding="utf-8")
 
     index = build_entity_name_index(str(wiki))
     assert "the city" not in index
-    assert "a2zero" not in index
-    assert "a2zero program" not in index
     # a legitimate, non-generic alias on the same entry still gets indexed
     assert index["detroit edison"] == "actors/dte-energy"
 
@@ -170,11 +171,114 @@ def test_stoplist_does_not_shadow_a_distinct_entitys_own_title(tmp_path):
     wiki = _make_wiki(tmp_path)
     (wiki / "locations").mkdir()
     (wiki / "locations" / "ann-arbor.md").write_text(
-        "---\ntype: location\ntitle: A2Zero\n---\n\nBody.\n",
+        "---\ntype: location\ntitle: the City\n---\n\nBody.\n",
         encoding="utf-8",
     )
     index = build_entity_name_index(str(wiki))
     # neither the stoplisted alias NOR the colliding title resolves to the
     # actor — the stoplist keeps the generic name out of the index entirely
     # rather than letting either entity win a collision it shouldn't have.
-    assert "a2zero" not in index
+    assert "the city" not in index
+
+
+def _make_ambiguous_registry(tmp_path):
+    """Wiki + registry fixture with a real _ambiguous_terms entry ("Ann Arbor")
+    whose two candidate pages both exist on disk."""
+    wiki = _make_wiki(tmp_path)
+    (wiki / "locations").mkdir()
+    (wiki / "locations" / "ann-arbor.md").write_text(
+        "---\ntype: location\ntitle: Ann Arbor\n---\n\nBody.\n", encoding="utf-8",
+    )
+    (wiki / "actors" / "city-of-ann-arbor.md").write_text(
+        "---\ntype: actor\ntitle: City of Ann Arbor\n---\n\nBody.\n", encoding="utf-8",
+    )
+    registry_path = wiki.parent / "registry" / "entity_aliases.json"
+    aliases = json.loads(registry_path.read_text(encoding="utf-8"))
+    aliases["_ambiguous_terms"] = [
+        {
+            "aliases": ["Ann Arbor"],
+            "candidates": [
+                {"type": "location", "canonical": "locations/ann-arbor"},
+                {"type": "actor", "canonical": "actors/city-of-ann-arbor"},
+            ],
+            "default": "locations/ann-arbor",
+        },
+    ]
+    registry_path.write_text(json.dumps(aliases), encoding="utf-8")
+    return wiki
+
+
+def test_build_ambiguous_scan_index_reads_real_entries(tmp_path):
+    from pipeline.recall_scan import build_ambiguous_scan_index
+    wiki = _make_ambiguous_registry(tmp_path)
+    index = build_ambiguous_scan_index(str(wiki))
+    assert set(index["ann arbor"]) == {"locations/ann-arbor", "actors/city-of-ann-arbor"}
+
+
+def test_build_ambiguous_scan_index_skips_entries_with_missing_candidate_pages(tmp_path):
+    """If only one candidate's page actually exists on disk, there's nothing
+    ambiguous to flag — same on-disk-existence filtering convention as
+    build_entity_name_index's alias step."""
+    from pipeline.recall_scan import build_ambiguous_scan_index
+    wiki = _make_wiki(tmp_path)
+    registry_path = wiki.parent / "registry" / "entity_aliases.json"
+    aliases = json.loads(registry_path.read_text(encoding="utf-8"))
+    aliases["_ambiguous_terms"] = [
+        {
+            "aliases": ["Ann Arbor"],
+            "candidates": [
+                {"type": "location", "canonical": "locations/ann-arbor"},
+                {"type": "actor", "canonical": "actors/city-of-ann-arbor"},
+            ],
+            "default": "locations/ann-arbor",
+        },
+    ]
+    registry_path.write_text(json.dumps(aliases), encoding="utf-8")
+    index = build_ambiguous_scan_index(str(wiki))
+    assert "ann arbor" not in index
+
+
+def test_scan_flags_both_candidates_for_ambiguous_term(tmp_path):
+    from pipeline.recall_scan import (
+        build_entity_name_index, build_ambiguous_scan_index, scan_source_for_known_entities,
+    )
+    wiki = _make_ambiguous_registry(tmp_path)
+    index = build_entity_name_index(str(wiki))
+    ambiguous_index = build_ambiguous_scan_index(str(wiki))
+    source = "Electricity use in Ann Arbor rose 3% this year."
+    hits = scan_source_for_known_entities(source, index, ambiguous_index)
+    assert hits["locations/ann-arbor"]["ambiguous"] is True
+    assert hits["locations/ann-arbor"]["ambiguous-with"] == ["actors/city-of-ann-arbor"]
+    assert hits["actors/city-of-ann-arbor"]["ambiguous"] is True
+    assert hits["actors/city-of-ann-arbor"]["ambiguous-with"] == ["locations/ann-arbor"]
+    assert hits["locations/ann-arbor"]["mentions"] == 1
+
+
+def test_scan_without_ambiguous_index_is_unchanged(tmp_path):
+    """Existing callers that don't pass ambiguous_index see zero behavior change."""
+    from pipeline.recall_scan import build_entity_name_index, scan_source_for_known_entities
+    wiki = _make_wiki(tmp_path)
+    index = build_entity_name_index(str(wiki))
+    source = "Detroit Edison filed a rate case."
+    hits = scan_source_for_known_entities(source, index)
+    assert hits["actors/dte-energy"]["mentions"] == 1
+    assert "ambiguous" not in hits["actors/dte-energy"]
+
+
+def test_augment_propagates_ambiguous_flags_only_when_present(tmp_path):
+    from pipeline.recall_scan import augment_integration_plan
+    plan = {"extends": [], "new-entities": [], "retrieve-for-context": []}
+    scan_hits = {
+        "locations/ann-arbor": {
+            "matched-names": ["ann arbor"], "mentions": 2,
+            "ambiguous": True, "ambiguous-with": ["actors/city-of-ann-arbor"],
+        },
+        "initiatives/aging-in-place-efficiently": {
+            "matched-names": ["aging in place efficiently"], "mentions": 1,
+        },
+    }
+    out = augment_integration_plan(plan, scan_hits)
+    flagged = {e["slug"]: e for e in out["scan-flagged"]}
+    assert flagged["locations/ann-arbor"]["ambiguous"] is True
+    assert flagged["locations/ann-arbor"]["ambiguous-with"] == ["actors/city-of-ann-arbor"]
+    assert "ambiguous" not in flagged["initiatives/aging-in-place-efficiently"]

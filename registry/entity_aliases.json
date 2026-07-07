@@ -1,4 +1,77 @@
 {
+  "_ambiguous_terms": [
+    {
+      "aliases": [
+        "Ann Arbor"
+      ],
+      "candidates": [
+        {
+          "type": "location",
+          "canonical": "locations/ann-arbor"
+        },
+        {
+          "type": "actor",
+          "canonical": "actors/city-of-ann-arbor"
+        }
+      ],
+      "default": "locations/ann-arbor",
+      "notes": "Bare 'Ann Arbor' is ambiguous between the place and the municipal government acting as an actor. Full phrases like 'the City of Ann Arbor' stay as normal unambiguous aliases on actors/city-of-ann-arbor."
+    },
+    {
+      "aliases": [
+        "A2Zero",
+        "A2ZERO",
+        "A²ZERO",
+        "a2zero"
+      ],
+      "candidates": [
+        {
+          "type": "initiative",
+          "canonical": "initiatives/a2zero-carbon-neutrality-plan"
+        },
+        {
+          "type": "actor",
+          "canonical": "actors/office-of-sustainability-and-innovations"
+        }
+      ],
+      "default": "initiatives/a2zero-carbon-neutrality-plan",
+      "notes": "A2Zero is both the plan's own brand name and loose shorthand for its administering office (OSI). Longer unambiguous phrases ('A2Zero Office', 'A2Zero Program') already route to OSI via their own untouched entries."
+    },
+    {
+      "aliases": [
+        "Washtenaw County"
+      ],
+      "candidates": [
+        {
+          "type": "location",
+          "canonical": "locations/washtenaw-county"
+        },
+        {
+          "type": "actor",
+          "canonical": "actors/washtenaw-county"
+        }
+      ],
+      "default": "locations/washtenaw-county"
+    },
+    {
+      "aliases": [
+        "Michigan",
+        "State of Michigan"
+      ],
+      "candidates": [
+        {
+          "type": "location",
+          "canonical": "locations/michigan"
+        },
+        {
+          "type": "actor",
+          "canonical": "actors/state-of-michigan"
+        }
+      ],
+      "default": "locations/michigan",
+      "notes": "locations/michigan.md and actors/state-of-michigan.md currently share the literal title 'State of Michigan'."
+    }
+  ],
   "bryant-neighborhood-decarbonization": {
     "canonical": "initiatives/bryant-neighborhood-decarbonization",
     "type": "initiative",
@@ -154,7 +227,8 @@
     "aliases": [
       "City of Ann Arbor",
       "the City",
-      "city government"
+      "city government",
+      "the City of Ann Arbor"
     ],
     "relationship": "name-variant"
   },
@@ -325,14 +399,6 @@
     ],
     "relationship": "name-variant",
     "notes": "Nov 1 date was a hallucination; correct date is Nov 4, 2019"
-  },
-  "ann-arbor": {
-    "canonical": "actors/city-of-ann-arbor",
-    "type": "actor",
-    "aliases": [
-      "the City of Ann Arbor"
-    ],
-    "relationship": "name-variant"
   },
   "citizens-climate-lobby": {
     "canonical": "actors/citizens-climate-lobby-ann-arbor",
@@ -701,14 +767,6 @@
     ],
     "relationship": "name-variant"
   },
-  "washtenaw-county": {
-    "canonical": "actors/washtenaw-county",
-    "type": "actor",
-    "aliases": [
-      "Washtenaw County"
-    ],
-    "relationship": "name-variant"
-  },
   "presidents-commission-on-carbon-neutrality": {
     "canonical": "actors/presidents-commission-on-carbon-neutrality",
     "type": "actor",
@@ -978,14 +1036,6 @@
     "type": "actor",
     "aliases": [
       "Huron River Watershed Council"
-    ],
-    "relationship": "name-variant"
-  },
-  "state-of-michigan": {
-    "canonical": "actors/state-of-michigan",
-    "type": "actor",
-    "aliases": [
-      "State of Michigan"
     ],
     "relationship": "name-variant"
   },
@@ -3319,17 +3369,6 @@
     ],
     "relationship": "name-variant"
   },
-  "a2zero": {
-    "canonical": "actors/office-of-sustainability-and-innovations",
-    "type": "actor",
-    "aliases": [
-      "A2Zero",
-      "A2ZERO",
-      "A²ZERO"
-    ],
-    "relationship": "name-variant",
-    "notes": "A2Zero is the plan/brand name; the implementing body is OSI"
-  },
   "a2zero-office": {
     "canonical": "actors/office-of-sustainability-and-innovations",
     "type": "actor",
@@ -3700,17 +3739,6 @@
       "Southeast Michigan Council of Governments"
     ],
     "relationship": "name-variant"
-  },
-  "a2zero-as-actor": {
-    "canonical": "actors/office-of-sustainability-and-innovations",
-    "type": "actor",
-    "aliases": [
-      "a2zero",
-      "A2Zero",
-      "A2ZERO"
-    ],
-    "relationship": "name-variant",
-    "notes": "A2Zero is the plan/program itself, not an organization; references to it as an actor route to OSI (its administering office)."
   },
   "city-administrator": {
     "canonical": "actors/ann-arbor-city-administrator",

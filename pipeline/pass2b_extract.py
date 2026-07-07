@@ -3,7 +3,10 @@ import re
 from datetime import date
 from pathlib import Path
 from pipeline._llm import chat
-from pipeline._aliases import load_aliases, resolve_slug, resolve_slug_for_title, fuzzy_resolve_slug_for_title
+from pipeline._aliases import (
+    load_aliases, resolve_slug, resolve_slug_for_title, fuzzy_resolve_slug_for_title,
+    build_ambiguous_terms_block,
+)
 from pipeline.pass2c_merge import merge_pages as _merge_pages
 from pipeline._pages import (
     VALID_PAGE_TYPES,
@@ -103,6 +106,17 @@ UNIVERSAL RULES:
   Use acronym when it IS the canonical name: "OSI" → "osi", "DTE Energy" → "dte-energy"
 - One page spec per entity — do not create the same entity twice in one response
 - Return [] if no qualifying entities are found in this section
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AMBIGUOUS NAMES — actor vs. location vs. plan:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Some names are legitimately ambiguous depending on sentence intent. Decide
+type from what the sentence is actually describing, not the name alone:
+  - The government BODY doing/deciding/announcing something -> type: actor
+  - A geographic place being referenced (located in, part of, near) -> type: location
+  - The PLAN/DOCUMENT itself (its goals, sections, timeline) -> type: initiative
+If a term is listed in [AMBIGUOUS NAMES] below, use its candidates. If
+genuinely unclear even then, use the candidate marked "default."
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PAGE TYPES TO CREATE:
@@ -384,6 +398,7 @@ def extract_wiki_pages_from_chunk(
             f"{context_header}\n\n"
             f"[SECTION CONTENT]\n{chunk_text}\n[END SECTION]\n\n"
             f"{build_lexicon_block(wiki_root)}\n"
+            f"{build_ambiguous_terms_block(str(Path(wiki_root).parent / 'registry' / 'entity_aliases.json'))}\n"
             f"Source UUID: {source_uuid}\n"
             f"Source path: {source_rel_path}\n"
             f"Source type: {source_type}\n"

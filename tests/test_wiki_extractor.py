@@ -252,6 +252,47 @@ def test_extract_wiki_pages_from_chunk_includes_lexicon_in_prompt(mock_chat, tmp
 
 
 @patch("pipeline.pass2b_extract.chat")
+def test_extract_wiki_pages_from_chunk_includes_ambiguous_terms_in_prompt(mock_chat, tmp_path):
+    """registry/entity_aliases.json's _ambiguous_terms list must reach the
+    chunk-extraction prompt so the LLM's type judgment has the same
+    disambiguation candidates the resolution layer uses."""
+    mock_chat.return_value = json.dumps([])
+    root = tmp_path / "wiki"
+    root.mkdir()
+    (tmp_path / "registry").mkdir()
+    (tmp_path / "registry" / "entity_aliases.json").write_text(
+        json.dumps({
+            "_ambiguous_terms": [
+                {
+                    "aliases": ["Ann Arbor"],
+                    "candidates": [
+                        {"type": "location", "canonical": "locations/ann-arbor"},
+                        {"type": "actor", "canonical": "actors/city-of-ann-arbor"},
+                    ],
+                    "default": "locations/ann-arbor",
+                },
+            ],
+        }),
+        encoding="utf-8",
+    )
+
+    from pipeline.pass2b_extract import extract_wiki_pages_from_chunk
+    extract_wiki_pages_from_chunk(
+        chunk_text=SAMPLE_CHUNK,
+        source_uuid="cap-2020",
+        source_rel_path="sources/cap/cap-2020",
+        context_header="[DOCUMENT CONTEXT]\nDocument: Test CAP\n[END CONTEXT]",
+        source_type="cap",
+        wiki_root=str(root),
+        run_date="2026-06-22",
+    )
+
+    prompt = mock_chat.call_args.kwargs["messages"][0]["content"]
+    assert "[AMBIGUOUS NAMES" in prompt
+    assert "Ann Arbor" in prompt
+
+
+@patch("pipeline.pass2b_extract.chat")
 def test_extract_wiki_pages_from_chunk_calls_llm(mock_chat, tmp_path):
     mock_chat.return_value = json.dumps(MOCK_PAGES)
 

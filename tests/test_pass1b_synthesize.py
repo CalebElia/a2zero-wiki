@@ -106,6 +106,65 @@ def test_relationship_lexicon_injected_into_writer_prompt(mock_stream_chat, tmp_
     assert "[RELATIONSHIP LEXICON]" in text
 
 
+@patch("pipeline.pass1b_synthesize.stream_chat")
+def test_ambiguous_terms_injected_into_writer_prompt(mock_stream_chat, tmp_path):
+    """registry/entity_aliases.json's _ambiguous_terms list must reach the
+    Writer prompt so the LLM's type judgment has the same disambiguation
+    candidates the resolution layer (pipeline/_aliases.py) uses."""
+    wiki_root = tmp_path / "wiki"
+    (wiki_root / "strategies").mkdir(parents=True)
+    (wiki_root / "overviews").mkdir()
+    (wiki_root / "sources" / "test").mkdir(parents=True)
+    aliases_path = tmp_path / "custom_aliases.json"
+    aliases_path.write_text(
+        json.dumps({
+            "_ambiguous_terms": [
+                {
+                    "aliases": ["Ann Arbor"],
+                    "candidates": [
+                        {"type": "location", "canonical": "locations/ann-arbor"},
+                        {"type": "actor", "canonical": "actors/city-of-ann-arbor"},
+                    ],
+                    "default": "locations/ann-arbor",
+                },
+            ],
+        }),
+        encoding="utf-8",
+    )
+
+    writer_draft = {
+        "overview": {
+            "slug": "overviews/test",
+            "frontmatter": {"type": "overview", "title": "T", "source-ref": "[[sources/test/test]]"},
+            "body": "Overview body",
+        },
+        "strategy_bodies": [],
+        "stub_pages": [],
+        "log_summary": "ok",
+    }
+    mock_stream_chat.side_effect = [
+        json.dumps(writer_draft),
+        json.dumps({"proceed_to_edit": True, "overall_score": 9}),
+        json.dumps(writer_draft),
+    ]
+
+    import pipeline.pass1b_synthesize as pass1b
+    with patch.object(pass1b, "alias_registry_path", str(aliases_path)):
+        pass1b.synthesize_source(
+            source_content="---\nuuid: test\n---\nSource body",
+            source_uuid="test",
+            source_rel_path="sources/test/test",
+            source_type="test",
+            wiki_root=str(wiki_root),
+            run_date="2026-07-03",
+        )
+
+    first_call_user_content = mock_stream_chat.call_args_list[0].kwargs["messages"][0]["content"]
+    text = first_call_user_content[0]["text"] if isinstance(first_call_user_content, list) else first_call_user_content
+    assert "[AMBIGUOUS NAMES" in text
+    assert "Ann Arbor" in text
+
+
 @patch("pipeline.pass1b_synthesize.append_query_log_entry")
 @patch("pipeline.pass1b_synthesize.stream_chat")
 def test_topic_candidates_route_to_query_log_not_topic_candidates_file(mock_stream_chat, mock_append_query_log, tmp_path):
