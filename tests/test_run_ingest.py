@@ -128,6 +128,135 @@ def test_run_source_ingest_calls_comprehend_when_digest_exists(
 
 
 @patch("pipeline.orchestrator.synthesize_source")
+@patch("pipeline.orchestrator.run_ldp_ingest")
+@patch("pipeline.orchestrator.extract_quads_from_source")
+@patch("pipeline.orchestrator.rebuild_index")
+@patch("pipeline.orchestrator.wiki_append_log")
+@patch("pipeline.orchestrator.run_post_ingest")
+@patch("pipeline.pass1a_comprehend.chat")
+def test_integration_plan_gains_scan_flagged_entities(
+    mock_comprehend_chat, mock_post, mock_log, mock_rebuild, mock_extract, mock_ldp, mock_synth, tmp_path
+):
+    """An existing entity named in the source but absent from the Comprehend
+    plan must appear in the written plan's scan-flagged list and
+    retrieve-for-context — the Bryant regression."""
+    import json as _json
+
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    (wiki / "digest.md").write_text("---\nlast-rebuilt: '2026-06-29'\n---\n# Digest\nBody.\n", encoding="utf-8")
+    (tmp_path / "meta").mkdir()
+    (tmp_path / "registry").mkdir()
+    (tmp_path / "registry" / "entity_aliases.json").write_text("{}", encoding="utf-8")
+    (wiki / "initiatives").mkdir(parents=True)
+    (wiki / "initiatives" / "bryant-neighborhood-decarbonization.md").write_text(
+        "---\ntype: initiative\ntitle: Bryant Neighborhood Decarbonization\n---\n\nBody.\n",
+        encoding="utf-8",
+    )
+    (wiki / "sources" / "annual-reports").mkdir(parents=True)
+    src_path = wiki / "sources" / "annual-reports" / "test.md"
+    src_path.write_text(
+        "---\nuuid: test\nsource_type: annual-report\n---\n"
+        "Bryant Neighborhood Decarbonization made progress this year.\n",
+        encoding="utf-8",
+    )
+
+    # Mock Comprehend to return a plan WITHOUT bryant
+    mock_comprehend_chat.return_value = _json.dumps({
+        "strategies-touched": ["strategies/strategy-1-renewable-grid"],
+        "extends": [],
+        "new-entities": [],
+        "retrieve-for-context": [],
+        "theme-connections": [],
+    })
+    mock_synth.return_value = {"stub_pages": []}
+    mock_extract.return_value = []
+    mock_post.return_value = type("R", (), {"total_quads": 0, "schema_errors": [], "dark_matter_ids": []})()
+
+    from pipeline.orchestrator import run_source_ingest
+    with patch("pipeline.pass2b_extract.chat", return_value="[]"):
+        run_source_ingest(
+            source_path=str(src_path),
+            uuid="test",
+            title="Test",
+            quads_path=str(tmp_path / "quads.jsonl"),
+            wiki_root=str(wiki),
+            review_queue_path=str(tmp_path / "queue.md"),
+            run_date="2026-06-29",
+        )
+
+    plan = _json.loads((tmp_path / "integration-plans" / "test.json").read_text())
+    flagged = [e["slug"] for e in plan["scan-flagged"]]
+    assert "initiatives/bryant-neighborhood-decarbonization" in flagged
+    assert "initiatives/bryant-neighborhood-decarbonization" in plan["retrieve-for-context"]
+    assert plan["context-dropped"] == []
+
+
+@patch("pipeline.orchestrator.synthesize_source")
+@patch("pipeline.orchestrator.run_ldp_ingest")
+@patch("pipeline.orchestrator.extract_quads_from_source")
+@patch("pipeline.orchestrator.rebuild_index")
+@patch("pipeline.orchestrator.wiki_append_log")
+@patch("pipeline.orchestrator.run_post_ingest")
+@patch("pipeline.pass1a_comprehend.chat")
+def test_context_dropped_recorded_when_budget_too_small(
+    mock_comprehend_chat, mock_post, mock_log, mock_rebuild, mock_extract, mock_ldp, mock_synth, tmp_path, monkeypatch
+):
+    """When RETRIEVE_TOKEN_BUDGET is too small to hold a retrieved body, the
+    dropped slug must be recorded in the plan's context-dropped field (loud,
+    not silent) rather than merely absent from retrieved_bodies."""
+    import json as _json
+    import pipeline.pass1a_comprehend as pass1a_comprehend
+
+    monkeypatch.setattr(pass1a_comprehend, "RETRIEVE_TOKEN_BUDGET", 1)
+
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    (wiki / "digest.md").write_text("---\nlast-rebuilt: '2026-06-29'\n---\n# Digest\nBody.\n", encoding="utf-8")
+    (tmp_path / "meta").mkdir()
+    (tmp_path / "registry").mkdir()
+    (tmp_path / "registry" / "entity_aliases.json").write_text("{}", encoding="utf-8")
+    (wiki / "initiatives").mkdir(parents=True)
+    (wiki / "initiatives" / "bryant-neighborhood-decarbonization.md").write_text(
+        "---\ntype: initiative\ntitle: Bryant Neighborhood Decarbonization\n---\n\nBody.\n",
+        encoding="utf-8",
+    )
+    (wiki / "sources" / "annual-reports").mkdir(parents=True)
+    src_path = wiki / "sources" / "annual-reports" / "test.md"
+    src_path.write_text(
+        "---\nuuid: test\nsource_type: annual-report\n---\n"
+        "Bryant Neighborhood Decarbonization made progress this year.\n",
+        encoding="utf-8",
+    )
+
+    mock_comprehend_chat.return_value = _json.dumps({
+        "strategies-touched": [],
+        "extends": [],
+        "new-entities": [],
+        "retrieve-for-context": [],
+        "theme-connections": [],
+    })
+    mock_synth.return_value = {"stub_pages": []}
+    mock_extract.return_value = []
+    mock_post.return_value = type("R", (), {"total_quads": 0, "schema_errors": [], "dark_matter_ids": []})()
+
+    from pipeline.orchestrator import run_source_ingest
+    with patch("pipeline.pass2b_extract.chat", return_value="[]"):
+        run_source_ingest(
+            source_path=str(src_path),
+            uuid="test",
+            title="Test",
+            quads_path=str(tmp_path / "quads.jsonl"),
+            wiki_root=str(wiki),
+            review_queue_path=str(tmp_path / "queue.md"),
+            run_date="2026-06-29",
+        )
+
+    plan = _json.loads((tmp_path / "integration-plans" / "test.json").read_text())
+    assert "initiatives/bryant-neighborhood-decarbonization" in plan["context-dropped"]
+
+
+@patch("pipeline.orchestrator.synthesize_source")
 @patch("pipeline.orchestrator.rebuild_index")
 @patch("pipeline.orchestrator.wiki_append_log")
 @patch("pipeline.orchestrator.run_post_ingest")

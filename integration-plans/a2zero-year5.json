@@ -1,0 +1,282 @@
+{
+  "source-uuid": "a2zero-year5",
+  "generated-at": "2026-07-02T21:19:50.984845+00:00",
+  "digest-rebuilt": "2026-07-02",
+  "strategies-touched": [
+    "strategies/strategy-1-renewable-grid",
+    "strategies/strategy-2-electrification",
+    "strategies/strategy-3-building-efficiency",
+    "strategies/strategy-4-vmt-reduction",
+    "strategies/strategy-5-materials-waste",
+    "strategies/strategy-6-resilience",
+    "strategies/strategy-7-engagement"
+  ],
+  "extends": [
+    {
+      "slug": "initiatives/solarize-ann-arbor",
+      "new-data": "Year 5 reports Solarize reached 5.4 MW installed, expanded statewide, and generated updated savings and installation metrics."
+    },
+    {
+      "slug": "initiatives/sustainable-energy-utility",
+      "new-data": "Voters authorized the SEU in November 2024, launch work began immediately, a waitlist was created, and $5 million was secured for startup."
+    },
+    {
+      "slug": "actors/dte-energy",
+      "new-data": "The source adds DTE fuel-mix context, describes the new heating franchise and climate agreement with the city, and notes continued MPSC gas-case interventions."
+    },
+    {
+      "slug": "initiatives/geothermal-districts",
+      "new-data": "Year 5 adds a DOE-backed Bryant neighborhood networked geothermal project, a citywide geothermal feasibility study with Stantec, and Catherine Street/Bryant installations."
+    },
+    {
+      "slug": "initiatives/affordable-housing-net-zero-energy",
+      "new-data": "The source adds sustainability and geothermal integration details for affordable housing projects at Catherine Street and support for Stimson Apartments."
+    },
+    {
+      "slug": "initiatives/home-energy-rebate-program",
+      "new-data": "Ann Arbor's Home Energy Rebates launched with over 650 claimed rebates covering weatherization, appliances, batteries, electrical upgrades, and e-bikes."
+    },
+    {
+      "slug": "initiatives/home-and-business-electrification",
+      "new-data": "Year 5 adds the A2ZERO Heat Pump Concierge, contractor education, and broader residential electrification support infrastructure."
+    },
+    {
+      "slug": "initiatives/electrify-city-fleet",
+      "new-data": "The city reports over 40% EV adoption in the light-duty fleet and nearly 30% electrification across the total city fleet."
+    },
+    {
+      "slug": "initiatives/expand-ev-charging-infrastructure",
+      "new-data": "The source adds a commercial EV charger giveaway program and a $2.8 million federal grant to expand public charging."
+    },
+    {
+      "slug": "initiatives/electric-refuse-truck-program",
+      "new-data": "Year 5 reports two additional electric refuse trucks purchased, four total on order, and grant support from the American Lung Association."
+    },
+    {
+      "slug": "initiatives/electrify-buses",
+      "new-data": "OSI supported TheRide's successful $25 million federal grant application for zero-emission buses and refueling stations."
+    },
+    {
+      "slug": "initiatives/green-rental-housing",
+      "new-data": "The city brought the Green Rental Housing ordinance forward for council consideration as a minimum health, comfort, and efficiency standard."
+    },
+    {
+      "slug": "initiatives/benchmark-and-disclose-energy-usage",
+      "new-data": "Benchmarking implementation continued with buildings over 20,000 square feet working toward compliance through collaboration with the 2030 District."
+    },
+    {
+      "slug": "initiatives/expand-weatherization-program",
+      "new-data": "OSI funded county service expansion and secured Bryant-focused MPSC funding for weatherization, electrification, and decarbonization upgrades."
+    },
+    {
+      "slug": "initiatives/green-business-challenge",
+      "new-data": "The A2ZERO Green Business Challenge expanded with Fresh Coast Climate Solutions support, interns, and plans to scale to 50 businesses."
+    },
+    {
+      "slug": "initiatives/comprehensive-plan-update",
+      "new-data": "Strategy 4 work in year 5 centered heavily on supporting the draft Comprehensive Land Use Plan with sustainability as a core pillar."
+    },
+    {
+      "slug": "initiatives/non-motorized-transportation-plan",
+      "new-data": "The source adds bike lane, bike parking, crosswalk, lighting, cargo-bike, and dashboard progress updates plus new walk/bike recognitions."
+    },
+    {
+      "slug": "initiatives/local-food-production-expansion",
+      "new-data": "Year 5 highlights the Local Food Fest, a draft Sustainable Food Framework, and continued local food-system engagement."
+    },
+    {
+      "slug": "initiatives/support-plant-rich-diet",
+      "new-data": "VegMichigan collaboration reached over 1,700 residents and more than 400 first-time participants through the Plant-Based Pledge."
+    },
+    {
+      "slug": "initiatives/circular-economy-strategy",
+      "new-data": "The source adds grant-funded action-plan development, resident advisory engagement, business-planning RFPs, and year 6 priority to co-design the strategy."
+    },
+    {
+      "slug": "initiatives/commercial-recycling",
+      "new-data": "Public Works received support for staffing expansion while developing broader commercial recycling and compost service strategies."
+    },
+    {
+      "slug": "initiatives/composting-expansion",
+      "new-data": "The source notes Public Works is developing a strategy to expand compost services citywide."
+    },
+    {
+      "slug": "initiatives/enhance-refrigerant-recycling-reuse-program",
+      "new-data": "OSI received EPA funding for a small food retailer refrigerant management program targeting at least 75 businesses and major emissions reductions."
+    },
+    {
+      "slug": "initiatives/preserve-and-enhance-local-tree-canopy",
+      "new-data": "Ann Arbor surpassed 10,000 trees planted, distributed over 11,000 total trees, and won a $1 million American Forests grant for tree equity work."
+    },
+    {
+      "slug": "initiatives/a2zero-ambassadors-program",
+      "new-data": "Year 5 adds cohort growth to 118 trained ambassadors, recruitment events, a StoryMap, and an annual Ambassador Summit."
+    },
+    {
+      "slug": "initiatives/emergency-preparedness-kits",
+      "new-data": "The source adds preparedness seminars, emergency-kit distributions, ward-party outreach, and plans to scale household preparedness programming."
+    },
+    {
+      "slug": "initiatives/environmental-sensors-monitoring",
+      "new-data": "Eight additional air-quality monitors were installed, bringing the network total to ten with live dashboard data."
+    },
+    {
+      "slug": "initiatives/resilience-hubs",
+      "new-data": "Year 5 adds Green Baxter Court solar-plus-storage procurement, Peace Neighborhood Center upgrades, and resilience-network coordination work."
+    },
+    {
+      "slug": "initiatives/community-climate-action-millage",
+      "new-data": "The report shows continued millage-like implementation capacity through rebates, neighborhood decarbonization support, and broad cross-strategy program delivery."
+    },
+    {
+      "slug": "initiatives/sustaining-ann-arbor-together-grant-program",
+      "new-data": "The source notes a Sustaining Ann Arbor Together grant award to SunBundle."
+    }
+  ],
+  "new-entities": [
+    {
+      "slug": "funding-events/ann-arbor-seu-startup-funding-2025",
+      "type": "funding-event",
+      "title": "Ann Arbor SEU Startup Funding",
+      "rationale": "Major $5 million award to launch the SEU."
+    },
+    {
+      "slug": "political-events/ann-arbor-seu-authorization-vote-2024",
+      "type": "political-event",
+      "title": "Ann Arbor SEU Authorization Vote 2024",
+      "rationale": "Historic city vote formally authorized SEU creation."
+    },
+    {
+      "slug": "initiatives/a2zero-heat-pump-concierge",
+      "type": "initiative",
+      "title": "A2ZERO Heat Pump Concierge",
+      "rationale": "Distinct new electrification service for household heat-pump adoption."
+    },
+    {
+      "slug": "initiatives/commercial-ev-charger-program",
+      "type": "initiative",
+      "title": "Commercial EV Charger Program",
+      "rationale": "New charger incentive program for commercial and multifamily properties."
+    },
+    {
+      "slug": "funding-events/ann-arbor-cfi-grant-2025",
+      "type": "funding-event",
+      "title": "Ann Arbor CFI Grant 2025",
+      "rationale": "Large federal charging grant expands public EV infrastructure."
+    },
+    {
+      "slug": "political-events/ann-arbor-dte-heating-franchise-arca-2025",
+      "type": "political-event",
+      "title": "Ann Arbor-DTE Heating Franchise and ARCA 2025",
+      "rationale": "Landmark franchise embeds climate commitments and joint work planning."
+    },
+    {
+      "slug": "funding-events/theride-zero-emission-bus-grant-2025",
+      "type": "funding-event",
+      "title": "TheRide Zero-Emission Bus Grant 2025",
+      "rationale": "Major transit electrification funding with regional significance."
+    },
+    {
+      "slug": "initiatives/home-energy-rating-disclosure-ordinance",
+      "type": "initiative",
+      "title": "Home Energy Rating Disclosure Ordinance",
+      "rationale": "Year 5 shows substantial implementation with 700 scored homes."
+    },
+    {
+      "slug": "funding-events/bryant-neighborhood-mpsc-grant-2025",
+      "type": "funding-event",
+      "title": "Bryant Neighborhood MPSC Grant 2025",
+      "rationale": "Large state grant supports Bryant efficiency and electrification upgrades."
+    },
+    {
+      "slug": "initiatives/borrow-a-cargo-bike-a2",
+      "type": "initiative",
+      "title": "Borrow a Cargo Bike A2",
+      "rationale": "New mobility program supports low-car transportation behavior change."
+    },
+    {
+      "slug": "initiatives/a2zero-food-waste-challenge",
+      "type": "initiative",
+      "title": "A2ZERO Food Waste Challenge",
+      "rationale": "Named community program with measurable resident participation."
+    },
+    {
+      "slug": "initiatives/ann-arbor-sustainable-food-framework",
+      "type": "initiative",
+      "title": "Ann Arbor Sustainable Food Framework",
+      "rationale": "Formal city food-policy framework draft warrants dedicated tracking."
+    },
+    {
+      "slug": "funding-events/epa-small-food-retailer-refrigerant-grant-2025",
+      "type": "funding-event",
+      "title": "EPA Small Food Retailer Refrigerant Grant 2025",
+      "rationale": "Significant emissions-focused grant for retailer refrigerant management."
+    },
+    {
+      "slug": "initiatives/neighborhood-swap-day-events",
+      "type": "initiative",
+      "title": "Neighborhood Swap Day Events",
+      "rationale": "Recurring reuse program diverted large volumes from landfill."
+    },
+    {
+      "slug": "initiatives/electronics-collection-events",
+      "type": "initiative",
+      "title": "Electronics Collection Events",
+      "rationale": "New recurring collection service with substantial material recovery."
+    },
+    {
+      "slug": "initiatives/move-out-ann-arbor-coalition",
+      "type": "initiative",
+      "title": "Move Out Ann Arbor Coalition",
+      "rationale": "New coalition diverted 34 tons during student move-out."
+    },
+    {
+      "slug": "technology/sesame-solar-unit",
+      "type": "technology",
+      "title": "Sesame Solar Unit",
+      "rationale": "Mobile nanogrid adds a notable resilience technology asset."
+    },
+    {
+      "slug": "initiatives/washtenaw-county-resilience-network",
+      "type": "initiative",
+      "title": "Washtenaw County Resilience Network",
+      "rationale": "Regional resilience coordination body appears newly significant."
+    },
+    {
+      "slug": "initiatives/ann-arbor-climate-corps",
+      "type": "initiative",
+      "title": "Ann Arbor Climate Corps",
+      "rationale": "AmeriCorps-backed staffing program materially supports OSI delivery."
+    },
+    {
+      "slug": "initiatives/youth-now-climate-action",
+      "type": "initiative",
+      "title": "Youth Now Climate Action",
+      "rationale": "New youth climate engagement group with local institutional partners."
+    }
+  ],
+  "retrieve-for-context": [
+    "strategies/strategy-1-renewable-grid",
+    "strategies/strategy-2-electrification",
+    "strategies/strategy-3-building-efficiency",
+    "strategies/strategy-5-materials-waste",
+    "strategies/strategy-6-resilience",
+    "strategies/strategy-7-engagement",
+    "actors/dte-energy",
+    "initiatives/sustainable-energy-utility",
+    "initiatives/solarize-ann-arbor",
+    "initiatives/geothermal-districts",
+    "initiatives/home-energy-rebate-program",
+    "initiatives/green-rental-housing",
+    "initiatives/benchmark-and-disclose-energy-usage",
+    "initiatives/resilience-hubs",
+    "initiatives/a2zero-ambassadors-program"
+  ],
+  "theme-connections": [
+    "Source ties SEU authorization, utility advocacy, and geothermal deployment into a broader local energy-system transition.",
+    "Year 5 shows rebates and grant funding acting as cross-strategy implementation engines across buildings, mobility, and resilience.",
+    "Bryant neighborhood emerges as a multi-strategy decarbonization district linking affordability, geothermal, weatherization, and engagement.",
+    "Resilience work increasingly overlaps with energy infrastructure through solar-plus-storage, nanogrids, air monitoring, and preparedness.",
+    "Food systems and circular economy efforts are becoming more formalized through frameworks, coalitions, and measurable diversion programs."
+  ]
+}

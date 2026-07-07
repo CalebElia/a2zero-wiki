@@ -54,6 +54,9 @@ _SEMANTIC_SECTION_RE = re.compile(
 _BACKLINK_SECTION_RE = re.compile(
     r"\n## Backlink Lint —[^\n]*\n.*?(?=\n## |\Z)", re.DOTALL
 )
+_STALENESS_SECTION_RE = re.compile(
+    r"\n## Staleness Lint —[^\n]*\n.*?(?=\n## |\Z)", re.DOTALL
+)
 
 # Directories scanned for entity catalogue (all typed entity pages)
 _ENTITY_DIRS = frozenset({
@@ -447,6 +450,106 @@ def write_structural_findings(wiki_root: str, findings: list[dict]) -> None:
         print(f"[lint_wiki:structural] {len(findings)} findings written to review-queue.md")
     else:
         print("[lint_wiki:structural] No issues found.")
+
+
+def _resolve_last_ingest_uuid(wiki_root: str) -> str | None:
+    """Return the source-uuid of the last line of meta/ingest-stats.jsonl, or None."""
+    stats_path = Path(wiki_root).parent / "meta" / "ingest-stats.jsonl"
+    if not stats_path.exists():
+        return None
+    lines = stats_path.read_text(encoding="utf-8").strip().splitlines()
+    if not lines:
+        return None
+    try:
+        return json.loads(lines[-1]).get("source-uuid")
+    except json.JSONDecodeError:
+        return None
+
+
+def staleness_lint(wiki_root: str, source_uuid: str | None = None) -> list[dict]:
+    """Flag entity pages the given source names (title/alias, word-boundary)
+    that gained no citation to that source — the silent-staleness failure.
+
+    Informational findings for human triage: a mention can legitimately go
+    uncited when the source merely repeats an already-recorded fact.
+    """
+    from pipeline.recall_scan import build_entity_name_index, scan_source_for_known_entities
+
+    root = Path(wiki_root)
+    if source_uuid is None:
+        source_uuid = _resolve_last_ingest_uuid(wiki_root)
+        if source_uuid is None:
+            print("[lint_wiki:staleness] no source-uuid given and no ingest-stats.jsonl — nothing to check")
+            return []
+
+    matches = sorted((root / "sources").rglob(f"{source_uuid}.md"))
+    if not matches:
+        print(f"[lint_wiki:staleness] source {source_uuid!r} not found under wiki/sources/")
+        return []
+    source_text = matches[0].read_text(encoding="utf-8")
+
+    index = build_entity_name_index(wiki_root)
+    hits = scan_source_for_known_entities(source_text, index)
+
+    # Context-dropped slugs from this ingest's integration plan — the
+    # knowingly-deprioritized tail (RETRIEVE_TOKEN_BUDGET overflow). Humans
+    # should triage these first. Guard against a missing/malformed plan file;
+    # the finding itself is never skipped, only the annotation.
+    context_dropped: set[str] = set()
+    plan_path = root.parent / "integration-plans" / f"{source_uuid}.json"
+    if plan_path.exists():
+        try:
+            plan = json.loads(plan_path.read_text(encoding="utf-8"))
+            context_dropped = set(plan.get("context-dropped") or [])
+        except (OSError, json.JSONDecodeError):
+            pass
+
+    findings = []
+    for slug in sorted(hits):
+        page_path = root / f"{slug}.md"
+        if not page_path.exists():
+            continue
+        body = page_path.read_text(encoding="utf-8")
+        if f"/{source_uuid}" in body or f"{source_uuid}]]" in body:
+            continue  # page cites this source somewhere — not stale
+        names = ", ".join(hits[slug]["matched-names"][:3])
+        detail = (
+            f"source {source_uuid} mentions this entity "
+            f"({hits[slug]['mentions']}× as: {names}) but the page has no "
+            f"{source_uuid} citation — possible missed update"
+        )
+        if slug in context_dropped:
+            detail += " [context-dropped at ingest]"
+        findings.append({
+            "type": "STALE_ENTITY",
+            "page": f"{slug}.md",
+            "detail": detail,
+        })
+    return findings
+
+
+def write_staleness_findings(wiki_root: str, findings: list[dict], source_uuid: str) -> None:
+    """Write staleness findings to review-queue.md, replacing any prior staleness section."""
+    rq_path = Path(wiki_root).parent / "review-queue.md"
+    today = date.today().isoformat()
+
+    if findings:
+        lines = [f"\n## Staleness Lint — {today} (source: {source_uuid})\n"]
+        for f in findings:
+            lines.append(f"- [{f['type']}] `{f['page']}` — {f['detail']}")
+        lines.append("")
+        new_section = "\n".join(lines)
+    else:
+        new_section = ""
+
+    if rq_path.exists():
+        text = _STALENESS_SECTION_RE.sub("", rq_path.read_text(encoding="utf-8"))
+        rq_path.write_text(text.rstrip() + new_section, encoding="utf-8")
+    elif new_section:
+        rq_path.write_text(new_section.lstrip(), encoding="utf-8")
+
+    print(f"[lint_wiki:staleness] {len(findings)} findings written to review-queue.md"
+          if findings else "[lint_wiki:staleness] No stale entities found.")
 
 
 SEMANTIC_VERDICT_SYSTEM = """You are comparing two wiki page entries to determine if they refer to the same real-world entity.
@@ -945,6 +1048,10 @@ if __name__ == "__main__":
     parser.add_argument("--scope", nargs="+", default=None,
                         metavar="DIR",
                         help="Directories to scan for backlink lint (default: strategies overviews)")
+    parser.add_argument("--staleness", action="store_true",
+                        help="Flag entity pages a given source names but never cites (STALE_ENTITY)")
+    parser.add_argument("--source-uuid", default=None,
+                        help="Source UUID for --staleness (default: last entry in meta/ingest-stats.jsonl)")
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--aliases-path", default="registry/entity_aliases.json")
     parser.add_argument("--merge-log", default="registry/merge-log.jsonl")
@@ -962,8 +1069,13 @@ if __name__ == "__main__":
         bl_proposals = backlink_lint(args.wiki_root, scope=args.scope)
         write_backlink_proposals(args.wiki_root, bl_proposals)
 
+    if args.staleness:
+        resolved_uuid = args.source_uuid or _resolve_last_ingest_uuid(args.wiki_root) or "unknown"
+        st_findings = staleness_lint(args.wiki_root, source_uuid=args.source_uuid)
+        write_staleness_findings(args.wiki_root, st_findings, resolved_uuid)
+
     if args.apply:
         apply_proposals(args.wiki_root, args.aliases_path, args.merge_log)
 
-    if not any([args.structural, args.semantic, args.backlink, args.apply]):
-        print("Specify at least one mode: --structural, --semantic, --backlink, --apply")
+    if not any([args.structural, args.semantic, args.backlink, args.staleness, args.apply]):
+        print("Specify at least one mode: --structural, --semantic, --backlink, --staleness, --apply")

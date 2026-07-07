@@ -87,7 +87,7 @@ If `source` runs without an approved map and `--auto-approve` is not passed, it 
 
 **Pass 0 (copy + YAML inject):** Source file copied from `prepared/<type>/<uuid>.md` → `wiki/sources/<type>/<uuid>.md`. If the prepared file has no YAML frontmatter, one is injected (`uuid`, `source_type` inferred from directory, `title`, `ingest_date`).
 
-**Pass 1A (Comprehend):** Reads `wiki/digest.md` plus the source and produces a structured integration plan saved to `integration-plans/<source-uuid>.json`. The plan (5 fields: `strategies-touched`, `extends`, `new-entities`, `retrieve-for-context`, `theme-connections`) flows downstream into both the holistic Writer (Pass 1B) and the LDP chunk extraction (Pass 2), informing which entities to extend vs. create and which existing page bodies to pre-load as integration context. Hard-fails when digest exists but the LLM call errors. Graceful fallback (no LLM call, empty plan) when no digest exists yet (first-ingest path). Per-ingest telemetry lands in `meta/ingest-stats.jsonl`. See `docs/architecture/comprehend-plan-write.md`.
+**Pass 1A (Comprehend):** Reads `wiki/digest.md` plus the source and produces a structured integration plan saved to `integration-plans/<source-uuid>.json`. The plan (5 fields: `strategies-touched`, `extends`, `new-entities`, `retrieve-for-context`, `theme-connections`) flows downstream into both the holistic Writer (Pass 1B) and the LDP chunk extraction (Pass 2), informing which entities to extend vs. create and which existing page bodies to pre-load as integration context. Hard-fails when digest exists but the LLM call errors. Graceful fallback (no LLM call, empty plan) when no digest exists yet (first-ingest path). After Comprehend, a deterministic name-index scan augments the plan with `scan-flagged` entities the LLM missed and records budget-dropped bodies in `context-dropped`; both fields persist in `integration-plans/<uuid>.json` alongside the LLM-produced fields. Per-ingest telemetry lands in `meta/ingest-stats.jsonl`. See `docs/architecture/comprehend-plan-write.md` and `docs/architecture/deterministic-recall-floor.md`.
 
 **Pass 1B (holistic synthesis):** Full-document read. Writer → Evaluator → Editor loop, now informed by the integration plan + digest. Produces: overview page, strategy body text, stub pages for all entities mentioned in the document. Uses streaming API (`max_tokens=64000`).
 
@@ -97,8 +97,9 @@ If `source` runs without an approved map and `--auto-approve` is not passed, it 
 
 **Pass 3 (finalize):** Rebuilds `index.md`, seals `log.md`, overwrites `hot.md`.
 
-Post-ingest linting (on-demand). **Recommended order: semantic → backlink → structural**, not independent/arbitrary order. Structural's `BROKEN_LINK` repair (redirect a stale slug vs. create a new stub) requires the entity graph to already be stable — semantic merges can rename or delete a page after the fact, invalidating a broken-link fix made against it. Backlink only adds links to entities that already have pages, so it benefits from semantic running first for the same reason but doesn't block structural. Re-run `--structural` after each of the other two passes' `--apply` to get a clean picture, since merges/links can shift which links are actually broken:
+Post-ingest linting (on-demand). **Recommended order: semantic → backlink → structural**, not independent/arbitrary order. Structural's `BROKEN_LINK` repair (redirect a stale slug vs. create a new stub) requires the entity graph to already be stable — semantic merges can rename or delete a page after the fact, invalidating a broken-link fix made against it. Backlink only adds links to entities that already have pages, so it benefits from semantic running first for the same reason but doesn't block structural. Re-run `--structural` after each of the other two passes' `--apply` to get a clean picture, since merges/links can shift which links are actually broken. `--staleness` is per-ingest (not part of this state-scoped ordering) and complements structural — run it after each ingest, independent of the semantic/backlink/structural cycle:
 ```
+python -m pipeline.phase_b_lint --wiki-root wiki --staleness     # flag entities the new source mentions but whose pages gained no citation; run after each ingest (optional --source-uuid)
 python -m pipeline.phase_b_lint --wiki-root wiki --semantic      # near-duplicate detection (LLM); apply first
 python -m pipeline.phase_b_lint --wiki-root wiki --backlink      # find missed entity mentions in strategy/overview bodies; apply next
 python -m pipeline.phase_b_lint --wiki-root wiki --structural    # broken links, orphans; run last, after the entity graph is stable
@@ -125,6 +126,7 @@ The synthesizer runs each LLM output through a deterministic validator that chec
 |---|---|
 | `orchestrator.py` | CLI entry point + three-pass orchestration |
 | `pass1a_comprehend.py` | Pass 1A Comprehend: read digest + source → integration plan |
+| `recall_scan.py` | Deterministic recall floor: entity name index + source scan + plan augmentation |
 | `pass2a_pre_chunking.py` | HITL chunking gate: preflight + approve subcommands |
 | `pass1b_synthesize.py` | Pass 1B Writer→Evaluator→Editor loop |
 | `pass2a_chunk_loop.py` | Long-document chunk loop with section maps |

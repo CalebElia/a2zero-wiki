@@ -224,7 +224,9 @@ def validate_plan_slugs(plan: dict, wiki_root: str, aliases: dict) -> dict:
     return cleaned
 
 
-RETRIEVE_TOKEN_BUDGET = 30000  # ~4 chars/token heuristic → ~120k chars
+RETRIEVE_TOKEN_BUDGET = 60000  # raised from 30000 for the deterministic recall floor —
+# scan-flagged bodies share this budget below LLM-flagged entities; drops are
+# recorded in the plan's context-dropped field, never silent.
 _CHARS_PER_TOKEN = 4
 
 
@@ -291,6 +293,7 @@ def log_ingest_stats(
     new_entities_count: int,
     retrieve_count: int,
     retrieved_chars: int,
+    scan_flagged_count: int = 0,
 ) -> None:
     """Append one JSON line of per-ingest stats. Cheap monitoring for ingest health."""
     entry = {
@@ -302,6 +305,7 @@ def log_ingest_stats(
         "new-entities-count": new_entities_count,
         "retrieve-count": retrieve_count,
         "retrieved-chars": retrieved_chars,
+        "scan-flagged-count": scan_flagged_count,
     }
     p = Path(log_path)
     p.parent.mkdir(parents=True, exist_ok=True)

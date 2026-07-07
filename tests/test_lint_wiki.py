@@ -625,3 +625,69 @@ def test_rewrite_inbound_links(tmp_path):
     content = (wiki / "actors" / "page.md").read_text()
     assert "actors/new-slug" in content
     assert "actors/old-slug" not in content
+
+
+def _staleness_fixture(tmp_path):
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    (wiki / "sources" / "annual-reports").mkdir(parents=True)
+    (tmp_path / "registry").mkdir()
+    (tmp_path / "registry" / "entity_aliases.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "meta").mkdir()
+    # stale page: named in source, no year9 citation
+    (wiki / "initiatives" / "old-program.md").write_text(
+        "---\ntype: initiative\ntitle: Old Program\n---\n\n"
+        "Body cites ([[sources/annual-reports/a2zero-year1|a2zero-year1]]).\n",
+        encoding="utf-8",
+    )
+    # fresh page: named in source AND cites it
+    (wiki / "initiatives" / "fresh-program.md").write_text(
+        "---\ntype: initiative\ntitle: Fresh Program\n---\n\n"
+        "Updated ([[sources/annual-reports/a2zero-year9|a2zero-year9]]).\n",
+        encoding="utf-8",
+    )
+    (wiki / "sources" / "annual-reports" / "a2zero-year9.md").write_text(
+        "---\nuuid: a2zero-year9\n---\n\n"
+        "The Old Program expanded. Fresh Program also grew.\n",
+        encoding="utf-8",
+    )
+    return wiki
+
+
+def test_staleness_lint_flags_mentioned_but_uncited_entities(tmp_path):
+    from pipeline.phase_b_lint import staleness_lint
+    wiki = _staleness_fixture(tmp_path)
+    findings = staleness_lint(str(wiki), source_uuid="a2zero-year9")
+    assert len(findings) == 1
+    f = findings[0]
+    assert f["type"] == "STALE_ENTITY"
+    assert f["page"] == "initiatives/old-program.md"
+    assert "a2zero-year9" in f["detail"]
+
+
+def test_staleness_lint_defaults_to_last_ingest_stats_entry(tmp_path):
+    import json as _json
+    from pipeline.phase_b_lint import staleness_lint
+    wiki = _staleness_fixture(tmp_path)
+    stats = tmp_path / "meta" / "ingest-stats.jsonl"
+    stats.write_text(
+        _json.dumps({"source-uuid": "a2zero-year9", "run-date": "2026-07-06"}) + "\n",
+        encoding="utf-8",
+    )
+    findings = staleness_lint(str(wiki))  # no source_uuid → read stats
+    assert [f["page"] for f in findings] == ["initiatives/old-program.md"]
+
+
+def test_staleness_lint_annotates_context_dropped_entities(tmp_path):
+    import json as _json
+    from pipeline.phase_b_lint import staleness_lint
+    wiki = _staleness_fixture(tmp_path)
+    plans_dir = tmp_path / "integration-plans"
+    plans_dir.mkdir()
+    (plans_dir / "a2zero-year9.json").write_text(
+        _json.dumps({"context-dropped": ["initiatives/old-program"]}),
+        encoding="utf-8",
+    )
+    findings = staleness_lint(str(wiki), source_uuid="a2zero-year9")
+    assert len(findings) == 1
+    assert "context-dropped at ingest" in findings[0]["detail"]

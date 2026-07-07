@@ -246,3 +246,13 @@ def test_write_synthesis_updates_progress_preserves_foundation(tmp_path):
     )
     assert foundation == "Original CAP-2020 target text."
     assert progress == "New progress text, building on the old."
+
+
+def test_writer_prompt_requires_preserving_existing_wikilinks():
+    """Task 121: the wikilink rule must cover entities already linked in
+    EXISTING PROGRESS SYNTHESIS and entities in the integration plan — not
+    only this run's stub_pages. Otherwise mature entities silently lose
+    their links on every rewrite and backlink lint re-finds them yearly."""
+    from pipeline.pass1b_synthesize import HOLISTIC_WRITER_SYSTEM
+    assert "PRESERVE every [[...]] wikilink" in HOLISTIC_WRITER_SYSTEM
+    assert "scan-flagged" in HOLISTIC_WRITER_SYSTEM
