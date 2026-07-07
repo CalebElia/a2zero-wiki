@@ -28,6 +28,23 @@ _MIN_NAME_LEN = 4
 
 _TITLE_RE = re.compile(r"^title:\s*['\"]?(.+?)['\"]?\s*$", re.MULTILINE)
 
+# Scan-only exclusions: names too generic for mechanical string matching to be
+# useful, even though they're legitimate for Pass 1.5's ingest-time entity
+# resolution (registry/entity_aliases.json — untouched, loaded separately by
+# pipeline/_aliases.py). "the City" and bare "A2Zero" are the plan's own
+# brand name and its most-mentioned actor; scanning for them produces
+# saturating false-positive noise (confirmed empirically: 107 mentions for
+# actors/city-of-ann-arbor and 56 for actors/office-of-sustainability-and-
+# innovations in the Year 5 source alone) with near-zero recall value. Filed
+# as review-queue Task #128, 2026-07-06.
+_SCAN_STOPLIST = frozenset({
+    "the city",
+    "a2zero",
+    "a2zero program",
+    "a2zero office",
+    "a²zero",
+})
+
 
 def build_entity_name_index(wiki_root: str, aliases_path: str | None = None) -> dict[str, str]:
     """Return {lowercased name: canonical slug} for every entity page.
@@ -46,7 +63,7 @@ def build_entity_name_index(wiki_root: str, aliases_path: str | None = None) -> 
 
     def _add(name: str, slug: str) -> None:
         name = name.strip()
-        if len(name) >= _MIN_NAME_LEN:
+        if len(name) >= _MIN_NAME_LEN and name.lower() not in _SCAN_STOPLIST:
             index[name.lower()] = slug
 
     for type_dir in ENTITY_DIRS:

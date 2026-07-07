@@ -133,3 +133,48 @@ def test_augment_handles_empty_hits():
     out = augment_integration_plan(plan, {})
     assert out["scan-flagged"] == []
     assert out["retrieve-for-context"] == ["a/b"]
+
+
+def test_stoplisted_generic_aliases_excluded_from_index(tmp_path):
+    """'the City' and bare 'A2Zero' are curated Pass-1.5 aliases for
+    high-frequency actors, but scanning for them produces saturating false
+    positives (confirmed on real data: 107 mentions/source). They must never
+    reach the scan index, even though they stay in the registry file
+    untouched for ingest-time resolution."""
+    from pipeline.recall_scan import build_entity_name_index
+    wiki = _make_wiki(tmp_path)
+    registry_path = wiki.parent / "registry" / "entity_aliases.json"
+    aliases = json.loads(registry_path.read_text(encoding="utf-8"))
+    aliases["city-of-ann-arbor"] = {
+        "canonical": "actors/dte-energy", "type": "actor",
+        "aliases": ["the City", "A2Zero", "A2Zero Program"], "relationship": "name-variant",
+    }
+    registry_path.write_text(json.dumps(aliases), encoding="utf-8")
+
+    index = build_entity_name_index(str(wiki))
+    assert "the city" not in index
+    assert "a2zero" not in index
+    assert "a2zero program" not in index
+    # a legitimate, non-generic alias on the same entry still gets indexed
+    assert index["detroit edison"] == "actors/dte-energy"
+
+
+def test_stoplist_does_not_shadow_a_distinct_entitys_own_title(tmp_path):
+    """The bug this stoplist grew out of: a generic alias for one entity
+    silently shadowing a DIFFERENT entity that legitimately owns that exact
+    title (bare "Ann Arbor" pointed at the actor page while
+    locations/ann-arbor.md owns that title outright). The registry fix for
+    that lives in entity_aliases.json itself; this test guards the general
+    principle at the index level using a stoplisted name as the stand-in."""
+    from pipeline.recall_scan import build_entity_name_index
+    wiki = _make_wiki(tmp_path)
+    (wiki / "locations").mkdir()
+    (wiki / "locations" / "ann-arbor.md").write_text(
+        "---\ntype: location\ntitle: A2Zero\n---\n\nBody.\n",
+        encoding="utf-8",
+    )
+    index = build_entity_name_index(str(wiki))
+    # neither the stoplisted alias NOR the colliding title resolves to the
+    # actor — the stoplist keeps the generic name out of the index entirely
+    # rather than letting either entity win a collision it shouldn't have.
+    assert "a2zero" not in index

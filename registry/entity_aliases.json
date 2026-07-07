@@ -154,7 +154,6 @@
     "aliases": [
       "City of Ann Arbor",
       "the City",
-      "Ann Arbor",
       "city government"
     ],
     "relationship": "name-variant"
@@ -331,7 +330,6 @@
     "canonical": "actors/city-of-ann-arbor",
     "type": "actor",
     "aliases": [
-      "Ann Arbor",
       "the City of Ann Arbor"
     ],
     "relationship": "name-variant"
