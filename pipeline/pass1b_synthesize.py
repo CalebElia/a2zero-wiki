@@ -72,6 +72,12 @@ STRATEGY BODY RULES:
   Example: "the Solarize program ([[initiatives/solarize-ann-arbor]]) installed..."
   Example: "[[actors/office-of-sustainability-and-innovations|OSI]] led outreach..."
   Do NOT name an entity in strategy bodies without linking it.
+- PRESERVE every [[...]] wikilink already present in [EXISTING PROGRESS SYNTHESIS]:
+  when you restate or paraphrase a fact that carried a wikilink, the entity keeps
+  its wikilink in your output. Dropping an existing link is a validation failure.
+- Entities listed in the integration plan (extends, retrieve-for-context, or
+  scan-flagged) already have wiki pages — link their first mention using the
+  plan's slug. The stub_pages rule above covers only NEW entities you create.
 - Include all 7 strategy slugs in strategy_bodies, even if coverage is thin
 - Your response body is PLAIN PROSE ONLY — never emit a markdown heading (a line
   starting with "##") inside strategy_bodies[].body. The pipeline adds section
