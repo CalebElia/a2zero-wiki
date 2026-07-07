@@ -2,9 +2,9 @@
 active-years:
 - 2022
 actor-type: government-office
-affiliation: null
+affiliation: '[[actors/state-of-michigan]]'
 elected: false
-last-updated: '2026-06-26'
+last-updated: '2026-07-07'
 programs-involved:
 - '[[initiatives/contractor-electrification-education-badging]]'
 - '[[initiatives/utility-pole-ev-charging-pilot]]'

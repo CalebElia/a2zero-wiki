@@ -1,9 +1,10 @@
 ---
 title: 'Michigan Public Service Commission'
 type: 'actor'
-last-updated: '2026-07-02'
-source-first-seen: [[sources/annual-reports/a2zero-year2]]
+last-updated: '2026-07-07'
+source-first-seen: '[[sources/annual-reports/a2zero-year2]]'
 actor-type: 'government-agency'
+affiliation: '[[actors/state-of-michigan]]'
 tags:
 - state-government
 - utility-regulation

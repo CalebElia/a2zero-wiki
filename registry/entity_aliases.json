@@ -69,7 +69,7 @@
         }
       ],
       "default": "locations/michigan",
-      "notes": "locations/michigan.md and actors/state-of-michigan.md currently share the literal title 'State of Michigan'."
+      "notes": "locations/michigan.md is titled Michigan (the place); actors/state-of-michigan.md is titled State of Michigan (the government, now a sub-index over its own agencies via sub-bodies). Title collision fixed 2026-07-07."
     }
   ],
   "bryant-neighborhood-decarbonization": {
