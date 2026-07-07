@@ -242,6 +242,7 @@ def extract_quads_chunked(
     # Function-level import to avoid circular-import risk at module load time.
     from pipeline.pass2b_extract import extract_wiki_pages_from_chunk
     from pipeline._aliases import load_aliases as _load_aliases
+    from pipeline.recall_scan import build_entity_name_index, scan_source_for_known_entities
 
     if run_date is None:
         run_date = _date.today().isoformat()
@@ -256,20 +257,27 @@ def extract_quads_chunked(
     if quads_only:
         aliases = {}
 
+    # [INTEGRATION PLAN] stays doc-wide — it is small (~3k tokens) and carries
+    # the uncapped scan-flagged awareness entries every chunk needs regardless
+    # of whether that chunk's own text mentions the entity (design decision 1c).
+    # This block is the STABLE PREFIX for provider prefix caching: it must be
+    # byte-identical across every chunk call and precede anything chunk-specific
+    # (design decision 1d).
     plan_context = ""
-    if integration_plan or retrieved_bodies:
+    if integration_plan:
         import json as _json
-        lines = []
-        if integration_plan:
-            lines.append("\n[INTEGRATION PLAN — Comprehend pass output]")
-            lines.append(_json.dumps(integration_plan, indent=2))
-            lines.append("[END INTEGRATION PLAN]\n")
-        if retrieved_bodies:
-            lines.append("\n[RETRIEVED ENTITY PAGES — integrate new findings into these]")
-            for slug, body in retrieved_bodies.items():
-                lines.append(f"\n--- {slug} ---\n{body}")
-            lines.append("\n[END RETRIEVED ENTITY PAGES]\n")
-        plan_context = "\n".join(lines)
+        plan_context = (
+            "\n[INTEGRATION PLAN — Comprehend pass output]\n"
+            + _json.dumps(integration_plan, indent=2)
+            + "\n[END INTEGRATION PLAN]\n"
+        )
+
+    # Retrieved bodies are per-chunk scoped (design decision 1b): re-scan each
+    # chunk's own text and inject only the bodies of entities that chunk
+    # actually mentions, rather than broadcasting every retrieved body into
+    # every chunk prompt. Rebuild the name index once here (cheap filesystem
+    # read) rather than threading it down from the orchestrator.
+    name_index = build_entity_name_index(wiki_root) if retrieved_bodies else {}
 
     for i, chunk in enumerate(chunks):
         parent_title = _find_parent_title(chunk, section_map["sections"])
@@ -306,7 +314,23 @@ def extract_quads_chunked(
         # Pass 3: wiki pages — skip when quads_only.
         if quads_only:
             continue
-        combined_context = (entity_context or "") + (plan_context or "") + context_header
+
+        body_context = ""
+        if retrieved_bodies:
+            chunk_hits = scan_source_for_known_entities(chunk_text, name_index)
+            chunk_bodies = {s: b for s, b in retrieved_bodies.items() if s in chunk_hits}
+            if chunk_bodies:
+                body_lines = ["\n[RETRIEVED ENTITY PAGES — integrate new findings into these]"]
+                for _s, _b in chunk_bodies.items():
+                    body_lines.append(f"\n--- {_s} ---\n{_b}")
+                body_lines.append("\n[END RETRIEVED ENTITY PAGES]\n")
+                body_context = "\n".join(body_lines)
+
+        # Ordering is a cache constraint, not a style choice (design decision
+        # 1d): stable doc-wide prefix (entity_context, plan_context) first,
+        # then per-chunk material (retrieved bodies, then the chunk's own
+        # context header/content).
+        combined_context = (entity_context or "") + (plan_context or "") + body_context + context_header
         pages_written = extract_wiki_pages_from_chunk(
             chunk_text=chunk_text,
             source_uuid=source_uuid,

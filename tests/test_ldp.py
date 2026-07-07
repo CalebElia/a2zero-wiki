@@ -188,13 +188,23 @@ def test_extract_quads_chunked_calls_llm_per_chunk(mock_chat, mock_wiki_writer_e
 @patch("pipeline.pass2b_extract.extract_wiki_pages_from_chunk")
 @patch("pipeline.pass2a_chunk_loop.chat")
 def test_extract_quads_chunked_passes_plan_context_to_writer(mock_chat, mock_wiki_writer_extract, tmp_path):
-    """When integration_plan + retrieved_bodies are supplied, they appear in the chunk's context_header."""
+    """When integration_plan + retrieved_bodies are supplied, the plan appears
+    doc-wide and the retrieved body appears per-chunk, scoped to chunks whose
+    own text mentions that entity (design decisions 1b/1c)."""
+    wiki_root = tmp_path / "wiki"
+    (wiki_root / "initiatives").mkdir(parents=True)
+    (wiki_root / "initiatives" / "x.md").write_text(
+        "---\ntype: initiative\ntitle: Widget X\n---\n\nBody.\n", encoding="utf-8",
+    )
+    (tmp_path / "registry").mkdir()
+    (tmp_path / "registry" / "entity_aliases.json").write_text("{}", encoding="utf-8")
+
     section_map = {
         "uuid": "test", "sections": [
             {"id": "strategy-1", "depth": 1, "title": "Strategy 1", "line_start": 1, "line_end": 5, "section_num": "1"}
         ]
     }
-    source = "# Strategy 1\nSome chunk content.\n"
+    source = "# Strategy 1\nWidget X made progress this year.\n"
     mock_chat.return_value = "[]"
     mock_wiki_writer_extract.return_value = []
 
@@ -206,7 +216,7 @@ def test_extract_quads_chunked_passes_plan_context_to_writer(mock_chat, mock_wik
         source_content=source,
         section_map=section_map,
         source_uuid="test", document_title="T",
-        wiki_root=str(tmp_path),
+        wiki_root=str(wiki_root),
         run_date="2026-06-29",
         integration_plan=plan,
         retrieved_bodies=bodies,
@@ -216,6 +226,58 @@ def test_extract_quads_chunked_passes_plan_context_to_writer(mock_chat, mock_wik
     context_header = mock_wiki_writer_extract.call_args.kwargs["context_header"]
     assert "INTEGRATION PLAN" in context_header
     assert "Existing body text for X" in context_header
+
+
+@patch("pipeline.pass2b_extract.extract_wiki_pages_from_chunk")
+@patch("pipeline.pass2a_chunk_loop.chat")
+def test_retrieved_bodies_are_scoped_per_chunk(mock_chat, mock_wiki_writer_extract, tmp_path):
+    """Design decisions 1b/1d: retrieved entity bodies must be injected only
+    into chunks whose own text mentions that entity, while the doc-wide
+    [INTEGRATION PLAN] block appears in every chunk regardless."""
+    wiki_root = tmp_path / "wiki"
+    (wiki_root / "initiatives").mkdir(parents=True)
+    (wiki_root / "initiatives" / "x.md").write_text(
+        "---\ntype: initiative\ntitle: Widget X\n---\n\nBody.\n", encoding="utf-8",
+    )
+    (tmp_path / "registry").mkdir()
+    (tmp_path / "registry" / "entity_aliases.json").write_text("{}", encoding="utf-8")
+
+    section_map = {
+        "uuid": "test", "sections": [
+            {"id": "strategy-1", "depth": 1, "title": "Strategy 1", "line_start": 1, "line_end": 2, "section_num": "1"},
+            {"id": "strategy-2", "depth": 1, "title": "Strategy 2", "line_start": 3, "line_end": 4, "section_num": "2"},
+        ]
+    }
+    source = (
+        "# Strategy 1\nWidget X made progress this year.\n"
+        "# Strategy 2\nUnrelated content with no entity mention.\n"
+    )
+    mock_chat.return_value = "[]"
+    mock_wiki_writer_extract.return_value = []
+
+    plan = {"strategies-touched": [], "extends": [{"slug": "initiatives/x", "new-data": "y"}],
+            "new-entities": [], "retrieve-for-context": ["initiatives/x"], "theme-connections": []}
+    bodies = {"initiatives/x": "Existing body text for X"}
+
+    from pipeline.pass2a_chunk_loop import extract_quads_chunked
+    extract_quads_chunked(
+        source_content=source,
+        section_map=section_map,
+        source_uuid="test", document_title="T",
+        wiki_root=str(wiki_root),
+        run_date="2026-06-29",
+        integration_plan=plan,
+        retrieved_bodies=bodies,
+    )
+
+    assert mock_wiki_writer_extract.call_count == 2
+    header_a = mock_wiki_writer_extract.call_args_list[0].kwargs["context_header"]
+    header_b = mock_wiki_writer_extract.call_args_list[1].kwargs["context_header"]
+
+    assert "INTEGRATION PLAN" in header_a
+    assert "INTEGRATION PLAN" in header_b
+    assert "Existing body text for X" in header_a
+    assert "Existing body text for X" not in header_b
 
 
 def test_run_source_ingest_routes_to_ldp_when_flagged(tmp_path):

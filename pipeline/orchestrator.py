@@ -181,12 +181,44 @@ def run_source_ingest(
         # Strip ghost slugs (reuses synthesis_validation machinery)
         _aliases = load_aliases("registry/entity_aliases.json")
         integration_plan = validate_plan_slugs(integration_plan, wiki_root, _aliases)
+
+        # Deterministic recall floor: string-scan the source against every
+        # known entity name so the plan is guaranteed to surface existing
+        # entities the source mentions — independent of digest compression
+        # and Comprehend judgment. See docs/architecture/deterministic-recall-floor.md.
+        from pipeline.recall_scan import (
+            build_entity_name_index,
+            scan_source_for_known_entities,
+            augment_integration_plan,
+        )
+        name_index = build_entity_name_index(wiki_root)
+        scan_hits = scan_source_for_known_entities(source_content, name_index)
+        integration_plan = augment_integration_plan(integration_plan, scan_hits)
+        n_flagged = len(integration_plan.get("scan-flagged", []))
+        if n_flagged:
+            print(f"[ingest] {uuid}: recall scan flagged {n_flagged} existing "
+                  f"entit{'y' if n_flagged == 1 else 'ies'} the Comprehend plan missed")
+
+        # Pre-load entity bodies for retrieve-for-context (token-budget capped)
+        # BEFORE persisting the plan, so any budget-driven drop can be recorded
+        # in the audit-trail file itself rather than silently absent.
+        retrieved_bodies = load_retrieved_bodies(integration_plan, wiki_root)
+        # Loud accounting: any retrieve-for-context slug whose page exists but
+        # whose body didn't fit the budget. Never silent — recorded in the plan
+        # and checked first by the staleness lint.
+        dropped = [
+            s for s in integration_plan.get("retrieve-for-context", [])
+            if s not in retrieved_bodies and (Path(wiki_root) / f"{s}.md").exists()
+        ]
+        integration_plan["context-dropped"] = dropped
+        if dropped:
+            print(f"[ingest] {uuid}: WARNING — {len(dropped)} entity bodies exceeded "
+                  f"RETRIEVE_TOKEN_BUDGET and were not injected: {dropped}")
+
         # Persist plan for audit trail and for LDP to consume
         plans_dir = Path(wiki_root).parent / "integration-plans"
         plan_path = write_integration_plan(integration_plan, str(plans_dir))
         print(f"[ingest] {uuid}: integration plan written → {plan_path}")
-        # Pre-load entity bodies for retrieve-for-context (token-budget capped)
-        retrieved_bodies = load_retrieved_bodies(integration_plan, wiki_root)
         # Telemetry: per-ingest stats
         stats_path = Path(wiki_root).parent / "meta" / "ingest-stats.jsonl"
         log_ingest_stats(
@@ -199,6 +231,7 @@ def run_source_ingest(
             new_entities_count=len(integration_plan.get("new-entities", [])),
             retrieve_count=len(integration_plan.get("retrieve-for-context", [])),
             retrieved_chars=sum(len(b) for b in retrieved_bodies.values()),
+            scan_flagged_count=n_flagged,
         )
         print(f"[ingest] {uuid}: comprehend took {_time.time() - comprehend_start:.1f}s "
               f"(extends={len(integration_plan.get('extends', []))}, "
