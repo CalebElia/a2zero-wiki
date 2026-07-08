@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-26'
+last-updated: '2026-07-07'
 launched: null
 locations:
 - '[[locations/ann-arbor]]'
@@ -29,4 +29,4 @@ title: Ann Arbor Solar Stories
 type: initiative
 ---
 
-Ann Arbor Solar Stories is a community engagement initiative launched in partnership with the [[actors/great-lakes-renewable-energy-association|Great Lakes Renewable Energy Association (GLREA)]] to enable Ann Arbor residents to share their experiences with residential solar and spread awareness of its value ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). The initiative was launched in Year 2 as a peer-to-peer outreach mechanism complementing the [[initiatives/solarize-ann-arbor|Ann Arbor Solarize Program]] ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).
+Ann Arbor Solar Stories is a community engagement initiative launched in partnership with the [[actors/great-lakes-renewable-energy-association|Great Lakes Renewable Energy Association (GLREA)]] to enable Ann Arbor residents to share their experiences with residential solar and spread awareness of its value ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). The initiative was launched in Year 2 as a peer-to-peer outreach mechanism complementing the [[initiatives/solarize-ann-arbor|Ann Arbor Solarize Program]] ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). By Year Four, hosting had shifted to the [[initiatives/green-energy-neighbors|Green Energy Neighbors]] initiative, which continues to host Ann Arbor Solar Stories alongside local Climate Reality Project meetings ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).

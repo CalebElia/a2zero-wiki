@@ -2,7 +2,7 @@
 funding-events:
 - '[[funding-events/state-michigan-circular-economy-2023]]'
 - '[[funding-events/usdn-circular-economy-2023]]'
-last-updated: '2026-06-26'
+last-updated: '2026-07-07'
 launched: null
 locations:
 - '[[locations/ann-arbor]]'
@@ -16,7 +16,7 @@ partners: []
 party-responsible: '[[actors/city-of-ann-arbor]]'
 related-strategies:
 - '[[strategies/strategy-5-materials-waste]]'
-source-first-seen: '[[sources/annual-reports/a2zero-year2]]'
+source-first-seen: '[[sources/cap/cap-2020]]'
 status: planned
 tags:
 - circular-economy
@@ -28,7 +28,7 @@ title: Circular Economy Strategy
 type: initiative
 ---
 
-Ann Arbor's Circular Economy Strategy is a planned initiative to develop a comprehensive approach to reducing material waste through reuse, repair, and recycling systems. ([[sources/annual-reports/a2zero-year2|a2zero-year2]]) Creating this strategy was identified as a Year 3 priority in the A2Zero Year 2 Annual Report. ([[sources/annual-reports/a2zero-year2|a2zero-year2]]) The strategy is being produced by the [[initiatives/circular-economy-working-group|Circular Economy Working Group]], the standing body the City launched to develop it.
+Ann Arbor's Circular Economy Strategy is a planned initiative to develop a comprehensive approach to reducing material waste through reuse, repair, and recycling systems. ([[sources/annual-reports/a2zero-year2|a2zero-year2]]) Creating this strategy was identified as a Year 3 priority in the A2Zero Year 2 Annual Report. ([[sources/annual-reports/a2zero-year2|a2zero-year2]]) The strategy is being produced by the [[initiatives/circular-economy-working-group|Circular Economy Working Group]], the standing body the City launched to develop it. CAP-2020's original design targeted finalization and integration into other planning initiatives by 2022 ([[sources/cap/cap-2020|cap-2020]]) — a target the strategy has not met: as of Year Five it remained in the action-planning phase rather than finalized (see below).
 
 The strategy advanced significantly in Year 3, with OSI describing "circularity" as the word of the year. ([[sources/annual-reports/a2zero-year3|a2zero-year3]]) Three working sessions were held with a broad cross-section of Ann Arbor residents to build trust and gain insight on how all residents interact with the circular economy. ([[sources/annual-reports/a2zero-year3|a2zero-year3]]) The circular economy GIS map was updated to highlight businesses and organizations in Ann Arbor working to advance the circular economy, and a new video series called "Making the Old New: Stories of Circularity" was launched. ([[sources/annual-reports/a2zero-year3|a2zero-year3]]) The Sustainability Forum series in Year 3 also included a community presentation on the circular economy as part of broader public education efforts. ([[sources/annual-reports/a2zero-year3|a2zero-year3]]) A University of Michigan policy student group developed an initial framework for reducing embodied carbon in buildings as part of the broader circular economy work. ([[sources/annual-reports/a2zero-year3|a2zero-year3]]) Three neighborhood swap days were hosted and a replication guide was created so others can host swap days in their neighborhoods or organizations. ([[sources/annual-reports/a2zero-year3|a2zero-year3]])
 

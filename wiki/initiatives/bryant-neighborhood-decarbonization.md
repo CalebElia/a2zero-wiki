@@ -6,7 +6,7 @@ funding-events:
 - '[[funding-events/doe-geothermal-planning-grant-2023]]'
 - '[[funding-events/eecbg-bryant-community-center-2023]]'
 - '[[funding-events/mi-hope-bryant-2023]]'
-last-updated: '2026-06-26'
+last-updated: '2026-07-07'
 launched: 2021
 locations:
 - '[[locations/bryant-neighborhood]]'
@@ -62,3 +62,5 @@ Funding secured by the end of Year Two includes $25,000 from the U.S. EPA ([[fun
 In Year Three, the initiative achieved significant implementation milestones: a $500,000 MI-HOPE grant was won by the City and Community Action Network to advance neighborhood decarbonization, helping 19 households make health, safety, and quality of life improvements ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). A $580,000 U.S. Department of Energy Community Geothermal Planning Grant was awarded to design a district geothermal loop in the neighborhood, and a $180,000 Energy Efficiency and Conservation Block Grant was secured to make the [[locations/bryant-neighborhood-community-center|Bryant Community Center]] a carbon-negative building and living demonstration site ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The initiative consolidates multiple strategy threads — geothermal, carbon-negative building, weatherization, and resilience hub — into a single replicable decarbonization model ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).
 
 Looking ahead, Year Four priorities include securing funding to help 20 homes become fully carbon neutral and making the [[locations/bryant-neighborhood-community-center|Bryant Community Center]] the City's living, learning laboratory for climate action ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). Year 5 priorities call for continued fundraising and improvements to make Bryant the nation's first carbon neutral existing neighborhood, for beginning work with a second interested neighborhood, and for making [[locations/bryant-neighborhood-community-center|Bryant Community Center]] a carbon neutral or ideally carbon negative living laboratory ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). The initiative spans Strategies 2, 3, and 6, and is co-listed under community engagement as a flagship place-based equity project.
+
+Year Five delivered on that continued-fundraising priority: OSI and Community Action Network secured continuing operational support from the McKnight Foundation to sustain the project ([[sources/annual-reports/a2zero-year5|a2zero-year5]]).
