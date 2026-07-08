@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-25'
+last-updated: '2026-07-07'
 launched: 2021
 locations: []
 milestones:
@@ -27,3 +27,5 @@ type: initiative
 ---
 
 Ann Arbor developed and implemented an EV Readiness Ordinance during Year One of A2ZERO, requiring new developments to include EV charging infrastructure in site planning ([[sources/annual-reports/a2zero-year1|a2zero-year1]]). This regulatory measure embeds electric vehicle readiness into the development approval process to ensure future-proofing of new construction ([[sources/annual-reports/a2zero-year1|a2zero-year1]]).
+
+Implementation and monitoring continued in Year Four, alongside a new EV charger discount program designed for multi-family and commercial property owners, targeted to launch in summer 2024 ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).

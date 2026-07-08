@@ -1,7 +1,7 @@
 ---
 funding-events:
 - '[[funding-events/michigan-electrification-expo-2022]]'
-last-updated: '2026-06-26'
+last-updated: '2026-07-07'
 launched: null
 locations:
 - '[[locations/ann-arbor-farmers-market]]'
@@ -30,4 +30,4 @@ type: initiative
 
 The Electrification Expo, also referred to as the Home Electrification Expo, is a resident-facing education and engagement initiative under A2Zero's electrification work in Ann Arbor ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). It was initially planned for July 15 from 5–9pm at the Ann Arbor Farmer's Market as part of A2Zero's Year Two electrification outreach efforts ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). The event was designed to educate residents about building and transportation electrification options, bringing together vendors, local businesses, live music, and food trucks in support of electrification ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). A grant of $2,500 from the State of Michigan was secured to support the expo ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).
 
-The Annual Electrification Expo became a recurring public event launched in Year Three of A2ZERO to promote home electrification to Ann Arbor residents and businesses ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The first Expo featured 25 vendors and drew approximately 450 attendees, providing an opportunity for residents to learn about electrification products, incentives, and contractors ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The city hosted its 2nd Annual Home Electrification Expo during Year Four and reported that it was actively planning the 3rd annual Expo ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). A second annual Expo was planned for August 2023, indicating the event is intended to become a recurring community fixture ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).
+The Annual Electrification Expo became a recurring public event launched in Year Three of A2ZERO to promote home electrification to Ann Arbor residents and businesses ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The first Expo featured 25 vendors and drew approximately 450 attendees, providing an opportunity for residents to learn about electrification products, incentives, and contractors ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The city hosted its 2nd Annual Home Electrification Expo during Year Four and reported that it was actively planning the 3rd annual Expo ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). A second annual Expo was planned for August 2023, indicating the event is intended to become a recurring community fixture ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The 3rd Annual Home Electrification Expo took place at the Farmer's Market in Year Five, and a 4th annual expo was planned for the 2025 Green Fair on September 19 ([[sources/annual-reports/a2zero-year5|a2zero-year5]]).

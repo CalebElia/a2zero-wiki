@@ -1,6 +1,6 @@
 # Wiki Index
 
-_518 pages — last updated 2026-07-07_
+_516 pages — last updated 2026-07-08_
 
 ## actor
 
@@ -275,7 +275,6 @@ _518 pages — last updated 2026-07-07_
 - [[initiatives/comprehensive-plan-update|Comprehensive Plan Update (Carbon Neutrality and Equity Focus)]]
 - [[initiatives/asset-and-needs-mapping-of-neighborhoods|Conduct Asset and Needs Mapping of Neighborhoods]]
 - [[initiatives/contractor-electrification-education-badging|Contractor Education and Badging Program on Electrification]]
-- [[initiatives/energy-concierge-service|County/City Energy Efficiency and Renewable Energy Concierge Service]]
 - [[initiatives/financing-loan-loss-reserve|Create Financing Opportunities and Loan Loss Reserve]]
 - [[initiatives/microgrid-creation|Create Microgrids]]
 - [[initiatives/solar-zoning-opportunities|Create More Zoning Opportunities for Solar]]
@@ -305,7 +304,6 @@ _518 pages — last updated 2026-07-07_
 - [[initiatives/electrify-private-fleets|Electrify Private Fleets]]
 - [[initiatives/electronics-collection-events|Electronics Collection Events]]
 - [[initiatives/emergency-preparedness-outreach|Emergency Preparedness Outreach]]
-- [[initiatives/energy-concierge|Energy Concierge]]
 - [[initiatives/energy-concierge-and-community-engagement-program|Energy Concierge and Community Engagement Program]]
 - [[initiatives/energy-disclosure-policies|Energy Disclosure Policies for Rental, Single Family, and Commercial Buildings]]
 - [[initiatives/enhance-refrigerant-recycling-reuse-program|Enhance Refrigerant Recycling and Reuse Program]]

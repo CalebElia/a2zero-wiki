@@ -1960,12 +1960,13 @@
     "relationship": "name-variant"
   },
   "energy-concierge-service": {
-    "canonical": "initiatives/energy-concierge-service",
+    "canonical": "initiatives/energy-concierge-and-community-engagement-program",
     "type": "initiative",
     "aliases": [
       "County/City Energy Efficiency and Renewable Energy Concierge Service"
     ],
-    "relationship": "name-variant"
+    "relationship": "name-variant",
+    "notes": "Merged 2026-07-07 -- duplicate wiki page for the same CAP-2020 concept as energy-concierge-and-community-engagement-program."
   },
   "enhance-refrigerant-recycling-reuse-program": {
     "canonical": "initiatives/enhance-refrigerant-recycling-reuse-program",
@@ -3072,12 +3073,13 @@
     "relationship": "name-variant"
   },
   "energy-concierge": {
-    "canonical": "initiatives/energy-concierge",
+    "canonical": "initiatives/energy-concierge-and-community-engagement-program",
     "type": "initiative",
     "aliases": [
       "Energy Concierge"
     ],
-    "relationship": "name-variant"
+    "relationship": "name-variant",
+    "notes": "Merged 2026-07-07 -- duplicate wiki page for the same CAP-2020 concept as energy-concierge-and-community-engagement-program."
   },
   "sustainable-food-framework": {
     "canonical": "initiatives/ann-arbor-sustainable-food-framework",

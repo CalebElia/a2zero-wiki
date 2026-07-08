@@ -38,7 +38,7 @@ synthesis:
   - initiatives/grid-capacity-expansion-electrification
   - initiatives/[[technology/microgrid|microgrid]]-creation
   - initiatives/carbon-neutral-districts
-  - initiatives/energy-concierge-service
+  - initiatives/energy-concierge-and-community-engagement-program
   - initiatives/on-bill-financing-renewables-efficiency
   core-target: CAP-2020 set Strategy 1 to cut community-wide greenhouse gas emissions
     by 41% at a cost of just over $4,100,000, centered on 100% renewable electricity
