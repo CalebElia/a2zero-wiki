@@ -1,6 +1,6 @@
 # Wiki Index
 
-_515 pages — last updated 2026-07-08_
+_514 pages — last updated 2026-07-08_
 
 ## actor
 
@@ -404,7 +404,6 @@ _515 pages — last updated 2026-07-08_
 - [[initiatives/sustainable-food-purchasing-policy|Sustainable Food Purchasing Policy]]
 - [[initiatives/sustainable-food-working-group|Sustainable Food Working Group]]
 - [[initiatives/sustainable-purchasing-policy|Sustainable Purchasing Policy and Carbon Pricing on Products]]
-- [[initiatives/sustaining-ann-arbor-together-grant-program|Sustaining Ann Arbor Together Grant Program]]
 - [[initiatives/sustaining-ann-arbor-together-grants|Sustaining Ann Arbor Together Grant Program]]
 - [[initiatives/high-energy-district-targeting|Target High-Energy Districts with Renewables, Efficiency, and Electrification]]
 - [[initiatives/future-is-electric-campaign|The Future is Electric Campaign]]

@@ -11,3 +11,4 @@
 - [STALE_ENTITY] `locations/michigan.md` — source a2zero-year5 mentions this entity (22× as: michigan, state of michigan) but the page has no a2zero-year5 citation — possible missed update [ambiguous — verify against source: also matches actors/state-of-michigan]
 - [STALE_ENTITY] `locations/washtenaw-community-college.md` — source a2zero-year5 mentions this entity (1× as: washtenaw community college) but the page has no a2zero-year5 citation — possible missed update
 - [STALE_ENTITY] `technology/led-lighting.md` — source a2zero-year5 mentions this entity (1× as: led lighting) but the page has no a2zero-year5 citation — possible missed update
+## Backlink Lint — 2026-07-07
