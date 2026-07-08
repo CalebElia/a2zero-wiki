@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-24'
+last-updated: '2026-07-07'
 launched: 2020
 locations: []
 milestones:
@@ -43,4 +43,4 @@ title: Advance Equity Programs
 type: initiative
 ---
 
-The Advance Equity Programs initiative commits the [[actors/office-of-sustainability-and-innovations|Office of Sustainability and Innovations]] to embedding equity across all of its climate programs, ensuring that climate protection and mitigation work improves the lives of historically underrepresented and under-resourced Ann Arbor residents ([[sources/cap/cap-2020|cap-2020]]). The initiative targets Ann Arbor city employees, staff of allied organizations, residents of color, and low-income residents and workers ([[sources/cap/cap-2020|cap-2020]]). Key early actions include hiring an equity fellow, conducting baseline equity trainings with the Energy and Environmental Commissioners, and forming an OSI Equity Advisory Commission by 2021 ([[sources/cap/cap-2020|cap-2020]]). The 10-year estimated cost is $200,000, and greenhouse gas reduction potential was not calculated for this initiative ([[sources/cap/cap-2020|cap-2020]]).
+The Advance Equity Programs initiative commits the [[actors/office-of-sustainability-and-innovations|Office of Sustainability and Innovations]] to embedding equity across all of its climate programs, ensuring that climate protection and mitigation work improves the lives of historically underrepresented and under-resourced Ann Arbor residents ([[sources/cap/cap-2020|cap-2020]]). The initiative targets Ann Arbor city employees, staff of allied organizations, residents of color, and low-income residents and workers ([[sources/cap/cap-2020|cap-2020]]). Key early actions include hiring an equity fellow, conducting baseline equity trainings with the Energy and Environmental Commissioners, and forming an OSI Equity Advisory Commission by 2021 ([[sources/cap/cap-2020|cap-2020]]). The 10-year estimated cost is $200,000, and greenhouse gas reduction potential was not calculated for this initiative ([[sources/cap/cap-2020|cap-2020]]). Co-benefits include local energy production, resilience, and equity benefits for the most vulnerable community members ([[sources/cap/cap-2020|cap-2020]]).

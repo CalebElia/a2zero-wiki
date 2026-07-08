@@ -2121,12 +2121,13 @@
     "relationship": "name-variant"
   },
   "equity-programs": {
-    "canonical": "initiatives/equity-programs",
+    "canonical": "initiatives/advance-equity-programs",
     "type": "initiative",
     "aliases": [
       "Equity Programs"
     ],
-    "relationship": "name-variant"
+    "relationship": "name-variant",
+    "notes": "Merged into advance-equity-programs 2026-07-07 — both described the same CAP-2020 $200,000 equity line item; equity-programs.md was the thinner of the two pages."
   },
   "dte-on-bill-financing-efficiency": {
     "canonical": "initiatives/dte-on-bill-financing-efficiency",

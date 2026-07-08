@@ -1,6 +1,6 @@
 # Wiki Index
 
-_516 pages — last updated 2026-07-08_
+_515 pages — last updated 2026-07-08_
 
 ## actor
 
@@ -308,7 +308,6 @@ _516 pages — last updated 2026-07-08_
 - [[initiatives/energy-disclosure-policies|Energy Disclosure Policies for Rental, Single Family, and Commercial Buildings]]
 - [[initiatives/enhance-refrigerant-recycling-reuse-program|Enhance Refrigerant Recycling and Reuse Program]]
 - [[initiatives/environmental-monitoring-sensors|Environmental Monitoring via Sensors and Data]]
-- [[initiatives/equity-programs|Equity Programs]]
 - [[initiatives/internal-carbon-price|Establish Internal Carbon Price]]
 - [[initiatives/loan-loss-reserve|Establish Loan Loss Reserve]]
 - [[initiatives/tiered-parking-rates|Establish Tiered Parking Rates]]
