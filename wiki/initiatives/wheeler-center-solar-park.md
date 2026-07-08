@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-26'
+last-updated: '2026-07-07'
 launched: null
 locations:
 - '[[locations/wheeler-center]]'
@@ -34,4 +34,4 @@ title: Wheeler Center Solar Park
 type: initiative
 ---
 
-The Wheeler Center Solar Park is a planned 20MW solar installation sited at the former Ann Arbor landfill and surrounding areas ([[sources/annual-reports/a2zero-year2|a2zero-year2]]), identified as a key A2Zero initiative for expanding Ann Arbor's renewable energy generation ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). In Year 2, the City advanced design work and finalized the layout of the solar field ([[sources/annual-reports/a2zero-year2|a2zero-year2]]), with breaking ground on the project listed as a Year 3 priority in the A2Zero Year 2 Annual Report ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). Through a settlement in utility case U-20713, the City secured the creation of the first community solar offering in [[actors/dte-energy|DTE Energy]]'s service territory, to be hosted at the Wheeler Center Solar Park ([[sources/annual-reports/a2zero-year2|a2zero-year2]]).
+The Wheeler Center Solar Park is a planned 20MW solar installation sited at the former Ann Arbor landfill and surrounding areas ([[sources/annual-reports/a2zero-year2|a2zero-year2]]), identified as a key A2Zero initiative for expanding Ann Arbor's renewable energy generation ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). In Year 2, the City advanced design work and finalized the layout of the solar field ([[sources/annual-reports/a2zero-year2|a2zero-year2]]), with breaking ground on the project listed as a Year 3 priority in the A2Zero Year 2 Annual Report ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). Through a settlement in utility case U-20713, the City secured the creation of the first community solar offering in [[actors/dte-energy|DTE Energy]]'s service territory, to be hosted at the Wheeler Center Solar Park ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). Although breaking ground was identified as a Year 3 priority, the project had not yet broken ground by Year Four; the City reported it "continued strategizing" on the project's development during Year Four instead ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). Also in Year Four, the project was awarded $5,000,000 in funding ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).
