@@ -1,7 +1,7 @@
 ---
 initiatives:
 - '[[initiatives/arpa-city-facilities-solar]]'
-last-updated: '2026-07-02'
+last-updated: '2026-07-07'
 location-type: municipal-facility
 owned-by: city
 parent-location: '[[locations/ann-arbor]]'
@@ -14,4 +14,4 @@ title: Water Resource Recovery Facility
 type: location
 ---
 
-The Water Resource Recovery Facility is a City of Ann Arbor water/wastewater treatment facility. By Year Four, active design work was underway for nearly 4 MW of additional solar at the facility and several other city sites, as part of the [[initiatives/arpa-city-facilities-solar|ARPA City Facilities Solar]] deployment, with construction expected in Year Five. The city also reported work on a 500 kW battery at the facility paired with rooftop solar ([[sources/annual-reports/a2zero-year4|a2zero-year4]]).
+The Water Resource Recovery Facility is a City of Ann Arbor water/wastewater treatment facility. By Year Four, active design work was underway for nearly 4 MW of additional solar at the facility and several other city sites, as part of the [[initiatives/arpa-city-facilities-solar|ARPA City Facilities Solar]] deployment, with construction expected in Year Five. The city also reported work on a 500 kW battery at the facility paired with rooftop solar ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). By Year Five, this installation had not yet occurred; the Year Five report re-listed the facility among the city sites where solar has been newly designed and is now planned for installation in Year Six, while battery storage work at the facility continued to advance, with a goal of having it installed within the coming year ([[sources/annual-reports/a2zero-year5|a2zero-year5]]).
