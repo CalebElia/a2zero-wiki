@@ -15,36 +15,33 @@ synthesis:
   - initiatives/onsite-renewables-bulk-buy
   - initiatives/community-solar-pilot
   - initiatives/landfill-solar-project
-  - initiatives/100-renewable-energy-pathways-study
   - initiatives/sustainable-energy-utility
-  - initiatives/solarize-ann-arbor
+  - initiatives/100-renewable-energy-pathways-study
+  - initiatives/commercial-solar-program
+  - initiatives/grid-capacity-expansion-electrification
   core-actors:
   - actors/dte-energy
-  year-over-year-arc: Baseline established in cap-2020 on 2026-06-24 around four pillars—CCA,
-    onsite solar/storage, community solar, and landfill solar; by a2zero-year1 (2026-06-25)
-    through a2zero-year4 (2026-07-01), the strategy appears to broaden from the original
-    CCA-centered design toward multiple implementation pathways including Solarize/bulk-buy
-    deployment, community-solar pilots, utility interventions, and SEU/renewable-pathways
-    exploration.
+  year-over-year-arc: Baseline set in cap-2020 on 2026-06-24 around four pillars led
+    by Community Choice Aggregation; across a2zero-year1 through a2zero-year5 (2026-06-25
+    to 2026-07-02), implementation appears to broaden from concept and feasibility
+    work into a more diversified portfolio of local solar, utility engagement, and
+    enabling studies rather than a completed 100% renewable grid transition.
   open-questions:
-  - Whether enabling state legislation will allow [[initiatives/community-choice-aggregation|Community Choice Aggregation]]
-  - Whether the [[initiatives/landfill-solar-project|landfill solar project]] will advance from feasibility to full development
-    with DTE
-  - 'Which long-term delivery model will prevail: CCA, SEU, municipalization, or bulk
-    renewable procurement'
-  - How quickly local solar and storage deployment can scale to 2030 targets
+  - Whether state-enabling conditions for CCA will materialize
+  - Status and delivery timeline of the landfill solar project
+  - How much local solar capacity has actually been installed versus 2030 targets
+  - What governance and financing model will carry long-term renewable procurement
   cross-strategy-links:
-  - initiatives/community-climate-action-millage-rebates
+  - initiatives/sustainable-energy-utility
   - initiatives/grid-capacity-expansion-electrification
-  - initiatives/[[technology/microgrid|microgrid]]-creation
-  - initiatives/carbon-neutral-districts
-  - initiatives/energy-concierge-and-community-engagement-program
-  - initiatives/on-bill-financing-renewables-efficiency
-  core-target: CAP-2020 set Strategy 1 to cut community-wide greenhouse gas emissions
-    by 41% at a cost of just over $4,100,000, centered on 100% renewable electricity
-    plus 78 MW of onsite solar/storage, 11 MW of community solar, and a 24 MW landfill
-    solar project by 2030.
-  last-rebuilt: '2026-07-02'
+  - initiatives/microgrid-creation
+  - initiatives/community-climate-action-millage-rebates
+  - initiatives/commercial-solar-program
+  core-target: CAP-2020 set this strategy's target at a 41% reduction in community-wide
+    greenhouse gas emissions for just over $4,100,000, centered on 100% renewable
+    electricity plus 78 MW of onsite renewables, 11 MW of community solar, and a 24
+    MW landfill solar project by 2030.
+  last-rebuilt: '2026-07-07'
 ---
 
 ## Foundation

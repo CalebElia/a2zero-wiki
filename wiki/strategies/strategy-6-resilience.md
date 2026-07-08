@@ -10,34 +10,34 @@ last-updated: 2026-06-22
 synthesis:
   core-initiatives:
   - initiatives/resilience-hubs
-  - initiatives/northside-resilience-hub
-  - initiatives/a2zero-ambassadors-program
   - initiatives/preserve-and-enhance-local-tree-canopy
   - initiatives/asset-and-needs-mapping-of-neighborhoods
   - initiatives/emergency-preparedness-kits
   - initiatives/environmental-sensors-monitoring
+  - initiatives/a2zero-ambassadors-program
+  - initiatives/10000-trees-initiative
   - initiatives/decentralized-energy-microgrids
   core-actors: []
   year-over-year-arc: Baseline resilience framework was set in cap-2020 on 2026-06-24;
-    by a2zero-year1 (2026-06-25) and a2zero-year2 (2026-06-26) implementation centered
-    on hubs, ambassadors, preparedness, and canopy work, with a2zero-year3 (2026-06-30)
-    and a2zero-year4 (2026-07-01) showing expansion into site-specific hub/microgrid
-    projects and broader monitoring and neighborhood resilience infrastructure.
+    by a2zero-year1 (2026-06-25) through a2zero-year5 (2026-07-02), implementation
+    appears to broaden from planned hubs, canopy, mapping, kits, and sensors into
+    place-based projects such as the Northside resilience hub, AQMesh monitoring,
+    tree planting, ambassador/youth engagement, and microgrid-linked resilience efforts.
   open-questions:
-  - Which [[initiatives/resilience-hubs|resilience hubs]] will be fully built out and funded long term?
-  - How will neighborhood asset-and-needs mapping be updated and operationalized?
-  - What measurable resilience outcomes will be tracked beyond GHG impacts?
-  - How will sensor, microgrid, and preparedness efforts be coordinated across neighborhoods?
+  - How many resilience hubs are fully operational versus planned?
+  - What measurable resilience outcomes have been achieved in priority neighborhoods?
+  - How are equity criteria guiding tree planting, preparedness, and hub investments?
+  - Which sensor and microgrid pilots will scale citywide or regionally?
   cross-strategy-links:
-  - initiatives/preserve-and-enhance-local-tree-canopy
   - initiatives/decentralized-energy-microgrids
-  - initiatives/fire-station-3-veterans-park-microgrid
+  - initiatives/microgrid-creation
   - initiatives/affordable-housing-net-zero-energy
   - initiatives/green-streets-program
   - initiatives/a2zero-ambassadors-program
-  core-target: Strategy 6 of CAP-2020 targeted a combined 0.1% reduction in community-wide
-    greenhouse gas emissions at an estimated total cost of approximately $7,500,000.
-  last-rebuilt: '2026-07-02'
+  - initiatives/tree-canopy
+  core-target: CAP-2020 set Strategy 6 at a combined 0.1% reduction in community-wide
+    greenhouse gas emissions with an estimated total cost of about $7,500,000.
+  last-rebuilt: '2026-07-07'
 ---
 
 ## Foundation

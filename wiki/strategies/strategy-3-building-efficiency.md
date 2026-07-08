@@ -15,35 +15,31 @@ synthesis:
   - initiatives/update-building-codes
   - initiatives/benchmark-and-disclose-energy-usage
   - initiatives/energy-concierge-and-community-engagement-program
-  - initiatives/expand-weatherization-program
   - initiatives/green-rental-housing
+  - initiatives/expand-weatherization-program
   - initiatives/loan-loss-reserve
   - initiatives/affordable-housing-net-zero-energy
   core-actors: []
-  year-over-year-arc: Baseline strategy and 11-action design were established in cap-2020
-    on 2026-06-24; by a2zero-year1 through a2zero-year4 (2026-06-25 to 2026-07-01),
-    the portfolio appears to have broadened from core efficiency, codes, disclosure,
-    financing, and weatherization actions into implementation vehicles such as home
-    energy advising, rebates, benchmarking ordinances, affordable housing upgrades,
-    and district/neighborhood decarbonization efforts.
+  year-over-year-arc: Baseline set by CAP-2020 on 2026-06-24 with an 11-action building-efficiency
+    package; across A2ZERO Year 1–5 sources ingested 2026-06-25 through 2026-07-02,
+    the strategy appears to broaden from foundational policy and program design into
+    implementation via rebates, concierge/advisor services, benchmarking/disclosure,
+    weatherization, and affordable-housing decarbonization pilots.
   open-questions:
-  - Which duplicate or renamed programs became the official implementation pathway?
-  - What measurable emissions reductions have been achieved by each building-efficiency
-    initiative?
-  - How far have code, disclosure, and rental-housing policies progressed from design
-    to enforcement?
-  - What long-term financing model will sustain rebates, weatherization, and affordable-housing
-    retrofits?
+  - Which disclosure and benchmarking requirements became mandatory versus voluntary
+  - How much emissions reduction has been achieved by rental and affordable-housing
+    upgrades
+  - Whether financing tools like loan-loss reserve and on-bill financing reached scale
+  - How building-code updates align with state authority and enforcement
   cross-strategy-links:
+  - initiatives/energy-concierge-and-community-engagement-program
   - initiatives/affordable-housing-net-zero-energy
-  - initiatives/led-street-lighting-and-traffic-signals
+  - initiatives/community-climate-action-millage-rebates
   - initiatives/solarize-ann-arbor
   - initiatives/geothermal-districts
-  - initiatives/carbon-neutral-districts
-  - initiatives/community-climate-action-millage-rebates
   core-target: Strategy 3 originally targeted a 13.4% reduction in community-wide
     greenhouse gas emissions at a cost of just over $14,500,000.
-  last-rebuilt: '2026-07-02'
+  last-rebuilt: '2026-07-07'
 ---
 
 ## Foundation

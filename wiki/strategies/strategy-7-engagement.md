@@ -13,39 +13,35 @@ synthesis:
   core-initiatives:
   - initiatives/advance-equity-programs
   - initiatives/sustaining-ann-arbor-together-grants
+  - initiatives/sa2t-grant-program
+  - initiatives/a2zero-ambassadors-program
+  - initiatives/deepen-community-engagement-underrepresented-communities
+  - initiatives/neighborhood-resiliency-plans
   - initiatives/internal-carbon-price
   - initiatives/offset-greenhouse-gas-emissions
-  - initiatives/deepen-community-engagement-underrepresented-communities
-  - initiatives/a2zero-ambassadors-program
-  - initiatives/a2zero-pledge
-  - initiatives/community-climate-action-millage
   core-actors: []
-  year-over-year-arc: Baseline set in cap-2020 on 2026-06-24 around four pillars—equity
-    programs, SA2T grants, internal carbon pricing, and [[initiatives/carbon-offsets|offsets]]—and across a2zero-year1
-    through a2zero-year4 (2026-06-25 to 2026-07-01) the strategy appears to broaden
-    from plan intent into community-facing engagement infrastructure and equity-centered
-    implementation, but the ingested inventory provides no consistent year-by-year
-    quantitative progress markers.
+  year-over-year-arc: Baseline set in cap-2020 on 2026-06-24 around equity programs,
+    SA2T grants, internal carbon pricing, and offsets; by a2zero-year1 through a2zero-year5
+    (2026-06-25 to 2026-07-02), the strategy broadened into sustained community-facing
+    engagement infrastructure including ambassadors, underrepresented-community outreach,
+    neighborhood resiliency planning, and grant-supported participation while the
+    original pricing/offset tools remained part of the design intent.
   open-questions:
-  - How much of the original emissions-gap closure is still expected to come from
-    offsets versus direct community action?
+  - How much funding and participation has the SA2T grant program sustained year to
+    year?
   - Was an internal carbon price formally adopted and at what level?
-  - Which engagement programs produced measurable participation or equity outcomes
-    by year 4?
-  - How are duplicate or overlapping grant and equity initiatives being consolidated
-    in implementation?
+  - To what extent are offsets still expected versus direct community reductions?
+  - How are equity outcomes being measured across engagement programs?
   cross-strategy-links:
-  - initiatives/community-climate-action-millage
-  - initiatives/net-zero-energy-affordable-housing
-  - initiatives/home-energy-rebate-program
-  - initiatives/comprehensive-plan-update
-  - initiatives/sustainable-purchasing-policy
-  - initiatives/tree-planting-underserved-areas
+  - initiatives/advance-equity-programs
+  - initiatives/sustaining-ann-arbor-together-grants
+  - initiatives/sa2t-grant-program
+  - initiatives/neighborhood-resiliency-plans
+  - initiatives/internal-carbon-price
+  - initiatives/offset-greenhouse-gas-emissions
   core-target: CAP-2020 estimated this strategy’s four actions would deliver just
-    under 14% of community-wide emissions reductions at a cost of just under $6,000,000,
-    with offsets and renewable energy credits serving as the dominant gap-closing
-    mechanism.
-  last-rebuilt: '2026-07-02'
+    under 14% of community-wide emissions reductions at a cost of just under $6,000,000.
+  last-rebuilt: '2026-07-07'
 ---
 
 ## Foundation

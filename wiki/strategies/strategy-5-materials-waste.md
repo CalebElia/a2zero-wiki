@@ -19,28 +19,25 @@ synthesis:
   - initiatives/zero-waste-plan
   - initiatives/circular-economy-strategy
   core-actors: []
-  year-over-year-arc: Baseline set in cap-2020 on 2026-06-24 around six waste-and-materials
-    actions; by a2zero-year1 through a2zero-year4 (2026-06-25 to 2026-07-01), the
-    portfolio appears to broaden into implementation-oriented composting, commercial
-    recycling, circular economy, zero-waste, and plant-based food programs, but the
-    ingested inventory does not provide clear year-by-year quantitative progress markers.
+  year-over-year-arc: Baseline strategy was set in cap-2020 on 2026-06-24 around six
+    actions; by a2zero-year1 through a2zero-year5 (2026-06-25 to 2026-07-02), implementation
+    appears to broaden into operational programs for composting, circular economy,
+    food systems, and zero-waste behavior change, but the ingested inventory does
+    not provide clear year-by-year quantitative outcome changes.
   open-questions:
-  - Which initiatives moved from planning to funded implementation by year4?
-  - What measurable diversion or emissions reductions were achieved from composting
-    and commercial recycling?
-  - How will sustainable materials requirements be enforced in developments?
-  - Are upstream consumption emissions now being tracked beyond disposal-phase waste
-    emissions?
+  - Which actions have measurable diversion or emissions results by year?
+  - Has commercial recycling moved from enforcement concept to broad compliance?
+  - What sustainable materials requirements were actually adopted for developments?
+  - How are upstream material emissions being tracked beyond disposal-phase impacts?
   cross-strategy-links:
   - initiatives/sustainable-purchasing-policy
-  - initiatives/sustainable-food-purchasing-policy
-  - initiatives/local-food-production-expansion
   - initiatives/green-business-challenge
-  - initiatives/waste-truck-fleet-electrification
-  - initiatives/electric-refuse-truck-program
-  core-target: CAP-2020 set Strategy 5's original target as a 0.3% reduction in baseline
-    community-wide greenhouse gas emissions at a cost of just over $45,000,000.
-  last-rebuilt: '2026-07-02'
+  - initiatives/local-food-production-expansion
+  - initiatives/ann-arbor-sustainable-food-framework
+  core-target: CAP-2020 set Strategy 5's original target at a 0.3% reduction in baseline
+    community-wide greenhouse gas emissions for just over $45,000,000 in combined
+    action costs.
+  last-rebuilt: '2026-07-07'
 ---
 
 ## Foundation

@@ -11,8 +11,8 @@ tags:
 last-updated: 2026-06-22
 synthesis:
   core-initiatives:
-  - initiatives/expand-improve-local-transit
   - initiatives/non-motorized-transportation-plan
+  - initiatives/expand-improve-local-transit
   - initiatives/expand-improve-regional-transit
   - initiatives/park-and-ride-expansion
   - initiatives/develop-mixed-use-neighborhoods
@@ -20,27 +20,29 @@ synthesis:
   - initiatives/tiered-parking-rates
   - initiatives/transit-oriented-development-zoning
   core-actors: []
-  year-over-year-arc: Baseline established in cap-2020 on 2026-06-24 around a 50%
-    VMT-reduction vision; by a2zero-year1 through a2zero-year4 (2026-06-25 to 2026-07-01),
-    the strategy appears to broaden from foundational transit, biking, land-use, and
-    parking actions into implementation-oriented programs such as mobility hubs, Go-Pass
-    expansion, protected bike lanes, and zoning/parking reforms.
+  year-over-year-arc: Baseline strategy and targets were established in cap-2020 on
+    2026-06-24; across a2zero-year1 through a2zero-year5 (2026-06-25 to 2026-07-02),
+    the portfolio appears to broaden from foundational transit, biking, land-use,
+    and parking actions into implementation-oriented programs such as mobility hubs,
+    Go-Pass expansion, protected bike lanes, and zoning integration, but the ingested
+    inventory does not provide year-specific quantitative VMT reduction results.
   open-questions:
-  - Which VMT actions have quantified mode-shift or VMT reductions by year4?
-  - How much of local transit expansion has been delivered versus planned?
-  - Will parking reform and tiered pricing be fully implemented citywide?
-  - How are land-use changes being tied to transit-oriented development outcomes?
+  - What measured VMT reduction has been achieved versus the 50% target?
+  - Which transit expansions are funded and on what timeline?
+  - How will parking pricing and parking minimum reforms be coordinated?
+  - How much emissions impact is attributable to land-use changes versus mode shift
+    programs?
   cross-strategy-links:
-  - initiatives/increase-diversity-of-housing
-  - initiatives/develop-mixed-use-neighborhoods
-  - initiatives/transit-oriented-development-zoning
+  - initiatives/expand-improve-local-transit
+  - initiatives/expand-improve-regional-transit
   - initiatives/electrify-buses
-  - initiatives/ghg-inventory
-  - initiatives/a2zero-carbon-neutrality-plan
+  - initiatives/transit-oriented-development-zoning
+  - initiatives/increase-diversity-of-housing
+  - initiatives/a2zero-unified-development-code-integration
   core-target: CAP-2020 set a target of reducing vehicle miles traveled by at least
-    50%, with the seven actions projected to cut just over 8% of community-wide emissions
-    at a cost of just over $901,000,000.
-  last-rebuilt: '2026-07-02'
+    50%, with the seven-action package projected to cut just over 8% of community-wide
+    emissions at a cost of just over $901,000,000.
+  last-rebuilt: '2026-07-07'
 ---
 
 ## Foundation
