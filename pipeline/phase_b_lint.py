@@ -36,6 +36,7 @@ _LINK_HEADER_RE = re.compile(
     r"### \[LINK_PROPOSED\] (.+?) ← (.+)"
 )
 _DISPLAY_TEXT_RE = re.compile(r'^- Display text: "(.+)"')
+_CONTEXT_RE = re.compile(r"^- Context: (.+)")
 
 # Patterns for approved/resolved actions
 _RESOLVED_RE = re.compile(
@@ -843,6 +844,7 @@ def _parse_approved_proposals(review_queue_path: str) -> list[dict]:
                 "page": link_m.group(1).strip(),
                 "slug": link_m.group(2).strip(),
                 "display_text": "",  # filled below
+                "context": "",  # filled below
             }
             continue
 
@@ -853,6 +855,12 @@ def _parse_approved_proposals(review_queue_path: str) -> list[dict]:
         dt_m = _DISPLAY_TEXT_RE.match(stripped)
         if dt_m and current.get("type") == "LINK_PROPOSED":
             current["display_text"] = dt_m.group(1)
+            continue
+
+        # --- capture context for LINK proposals, used to anchor --apply ---
+        ctx_m = _CONTEXT_RE.match(stripped)
+        if ctx_m and current.get("type") == "LINK_PROPOSED":
+            current["context"] = ctx_m.group(1)
             continue
 
         # --- detect approval action ---
@@ -937,6 +945,11 @@ def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> N
                 continue
 
             content = page_path.read_text(encoding="utf-8")
+            # Body-only search: a match inside YAML frontmatter (e.g. the same
+            # word appearing incidentally in an auto-generated synthesis field)
+            # must never be linked — only the markdown body is fair game.
+            fm_m = FRONTMATTER_RE.match(content)
+            body_start = fm_m.end() if fm_m else 0
             # Existing wikilink spans — a candidate match anywhere inside one of
             # these (not just immediately after "[[") must be skipped. A naive
             # boundary-only lookbehind/lookahead can match display_text as a
@@ -945,12 +958,33 @@ def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> N
             # producing nested/corrupted brackets like "[[actors/[[actors/...".
             existing_link_spans = [m.span() for m in WIKILINK_RE.finditer(content)]
             plain_pattern = re.compile(re.escape(display_text), re.IGNORECASE)
+            body_candidates = [
+                candidate
+                for candidate in plain_pattern.finditer(content)
+                if candidate.start() >= body_start
+                and not any(start <= candidate.start() < end for start, end in existing_link_spans)
+            ]
+
+            # Anchor to the exact occurrence the original proposal quoted, when
+            # available, rather than always taking the first body match — this
+            # keeps re-applied proposals (and pages with a repeated display
+            # string) pointed at the location the human actually reviewed.
             match = None
-            for candidate in plain_pattern.finditer(content):
-                if any(start <= candidate.start() < end for start, end in existing_link_spans):
-                    continue
-                match = candidate
-                break
+            context = p.get("context", "")
+            context_core = context.strip().strip("…").strip()
+            if context_core:
+                context_pattern = re.compile(
+                    r"\s+".join(re.escape(tok) for tok in context_core.split()),
+                    re.IGNORECASE,
+                )
+                ctx_m = context_pattern.search(content, body_start)
+                if ctx_m:
+                    for candidate in body_candidates:
+                        if ctx_m.start() <= candidate.start() < ctx_m.end():
+                            match = candidate
+                            break
+            if match is None and body_candidates:
+                match = body_candidates[0]
             if match:
                 actual_text = match.group(0)
                 wikilink = f"[[{entity_slug}|{actual_text}]]"

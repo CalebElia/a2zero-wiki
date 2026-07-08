@@ -240,6 +240,77 @@ def test_apply_proposals_link_skips_matches_inside_existing_wikilinks(tmp_path):
     assert content.count("[[actors/vegmichigan") == 2
 
 
+def test_find_unlinked_candidates_ignores_frontmatter_text(tmp_path):
+    """Regression: backlink_lint only ever passes the stripped markdown body to
+    the candidate scanner — a mention that only occurs in YAML frontmatter
+    (e.g. an auto-generated synthesis narrative) must never surface as a
+    LINK_PROPOSED candidate, since frontmatter is never rendered/linkable."""
+    from pipeline.phase_b_lint import backlink_lint
+
+    wiki = tmp_path / "wiki"
+    (wiki / "strategies").mkdir(parents=True)
+    (wiki / "initiatives").mkdir()
+    (wiki / "initiatives" / "carbon-offsets.md").write_text(
+        "---\ntype: initiative\ntitle: Carbon Offsets\n---\nBody.\n", encoding="utf-8"
+    )
+    (wiki / "strategies" / "strategy-7.md").write_text(
+        "---\n"
+        "type: strategy\n"
+        "synthesis:\n"
+        '  year-over-year-arc: "Year 4 introduced Carbon Offsets as a bridging mechanism."\n'
+        "---\n\n"
+        "This page never mentions the phrase in its body prose.\n",
+        encoding="utf-8",
+    )
+
+    proposals = backlink_lint(str(wiki), scope=["strategies"])
+    assert not [p for p in proposals if p["entity_slug"] == "initiatives/carbon-offsets"]
+
+
+def test_apply_proposals_link_only_touches_body_not_frontmatter(tmp_path):
+    """Regression: a LINK proposal's display_text ('offsets') also appears,
+    unlinked, inside an auto-generated YAML frontmatter field
+    (synthesis.year-over-year-arc). --apply's naive first-match-in-file
+    replace previously landed the wikilink inside the frontmatter string
+    instead of the body prose the proposal's context actually quoted,
+    corrupting the frontmatter and leaving the real body mention unlinked
+    (which then kept getting re-proposed on every subsequent scan)."""
+    from pipeline.phase_b_lint import apply_proposals
+
+    root = tmp_path / "project"
+    wiki = root / "wiki"
+    (wiki / "strategies").mkdir(parents=True)
+    (wiki / "strategies" / "strategy-7.md").write_text(
+        "---\n"
+        "type: strategy\n"
+        "synthesis:\n"
+        '  year-over-year-arc: "Year 4 introduced offsets as a bridging mechanism."\n'
+        "---\n\n"
+        "The strategy notes greenhouse gas emissions offsets to close remaining gaps.\n",
+        encoding="utf-8",
+    )
+    (root / "review-queue.md").write_text(
+        "## Backlink Lint — 2026-07-07\n\n"
+        "### [LINK_PROPOSED] strategies/strategy-7.md ← initiatives/carbon-offsets\n"
+        '- Display text: "offsets"\n'
+        "- Context: …The strategy notes greenhouse gas emissions offsets to close "
+        "remaining gaps.…\n"
+        "- Action: [x] APPROVE_LINK  [ ] KEEP_UNLINKED  [ ] DEFER\n",
+        encoding="utf-8",
+    )
+
+    apply_proposals(
+        wiki_root=str(wiki),
+        aliases_path=str(tmp_path / "aliases.json"),
+        merge_log_path=str(tmp_path / "merge-log.jsonl"),
+    )
+
+    content = (wiki / "strategies" / "strategy-7.md").read_text(encoding="utf-8")
+    assert 'year-over-year-arc: "Year 4 introduced offsets as a bridging mechanism."' in content
+    assert "[[initiatives/carbon-offsets|offsets]] to close remaining gaps" in content
+    assert content.count("[[initiatives/carbon-offsets") == 1
+
+
 def test_apply_proposals_also_resolves_checked_schema_drift_entries(tmp_path, monkeypatch):
     """--apply is one command for 'process what I just checked boxes on' —
     schema-drift.md approvals ride the same invocation as review-queue.md ones."""
