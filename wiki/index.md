@@ -1,6 +1,6 @@
 # Wiki Index
 
-_511 pages — last updated 2026-07-09_
+_509 pages — last updated 2026-07-09_
 
 ## actor
 
@@ -325,7 +325,6 @@ _511 pages — last updated 2026-07-09_
 - [[initiatives/green-energy-neighbors|Green Energy Neighbors]]
 - [[initiatives/green-light-media-program|Green Light Media Program]]
 - [[initiatives/green-rental-housing-program|Green Rental Housing Program]]
-- [[initiatives/green-rental-housing|Green Rental Housing Program]]
 - [[initiatives/green-streets-program|Green Streets Program]]
 - [[initiatives/heat-pump-replacement-campaign|Heat Pump Replacement Campaign]]
 - [[initiatives/home-and-business-electrification|Home & Business Electrification]]
@@ -343,7 +342,6 @@ _511 pages — last updated 2026-07-09_
 - [[initiatives/landfill-solar-feasibility|Landfill Solar Feasibility Study]]
 - [[initiatives/landfill-solar-project|Landfill Solar Project]]
 - [[initiatives/local-food-production-expansion|Local Food Production and Distribution Expansion]]
-- [[initiatives/local-and-regional-transit|Local and Regional Transit]]
 - [[initiatives/lmi-solar-access-program|Low-to-Moderate Income Solar Access Program]]
 - [[initiatives/master-rain-gardener-training|Master Rain Gardener Training]]
 - [[initiatives/materials-recovery-facility-renovation|Materials Recovery Facility Renovation or Development]]
