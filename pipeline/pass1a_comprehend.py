@@ -82,6 +82,14 @@ conventions (e.g. `initiatives/electrification-expo-2023`). Do not over-constrai
 to only entities already in the digest — surfacing genuinely new entities is part of \
 your job.
 
+If the digest includes a "## Pending events" section, those are political-event pages \
+whose outcome hadn't been reported as of prior sources (status: anticipated). Check \
+whether the new source reports the outcome of any of them (a vote happened, a decision \
+was made). If so, put that event's existing slug in `extends` with new-data describing \
+the outcome — NEVER propose it as a `new-entities` slug, even under a different date or \
+name. Creating a second page for an event already listed in "Pending events" is the exact \
+duplicate-page bug this field exists to prevent.
+
 Return ONLY the JSON object. No preamble, no code fences, no commentary.
 """
 
