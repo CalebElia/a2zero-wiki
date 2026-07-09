@@ -210,7 +210,6 @@ _509 pages — last updated 2026-07-09_
 - [[initiatives/home-energy-advisor-program|A2ZERO Home Energy Advisor Program]]
 - [[initiatives/plant-based-challenge|A2ZERO Plant-Based Challenge]]
 - [[initiatives/a2zero-unified-development-code-integration|A2Zero Integration into Unified Development Code]]
-- [[initiatives/a2zero-carbon-neutrality-plan|A2Zero Living Carbon Neutrality Plan]]
 - [[initiatives/a2zero-planning-process|A2Zero Planning Process]]
 - [[initiatives/a2zero-public-engagement-process|A2Zero Public Engagement Process]]
 - [[initiatives/a2zero-technical-advisory-committees|A2Zero Technical Advisory Committees]]
@@ -490,6 +489,10 @@ _509 pages — last updated 2026-07-09_
 - [[overviews/a2zero-year2|A2Zero Annual Report 2021–2022 (Year 2)]]
 - [[overviews/a2zero-year3|A2Zero Year Three Annual Report (July 2022 – June 2023)]]
 - [[overviews/cap-2020|A²ZERO Living Carbon Neutrality Plan (April 2020)]]
+
+## plan
+
+- [[plans/a2zero-carbon-neutrality-plan|A2Zero Living Carbon Neutrality Plan]]
 
 ## political-event
 

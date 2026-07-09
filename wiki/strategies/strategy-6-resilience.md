@@ -2,6 +2,7 @@
 type: strategy
 title: 'Strategy 6: Community Resilience'
 strategy-number: 6
+parent-plan: '[[plans/a2zero-carbon-neutrality-plan]]'
 tags:
 - resilience
 - equity

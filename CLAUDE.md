@@ -18,6 +18,7 @@ prepared/             ← Cleaned markdown, reviewed, awaiting ingest (HITL gate
   annual-reports/       ← year1..5.md (year1 ingested, year2..5 awaiting ingest)
 wiki/                 ← Obsidian vault (everything here is intentionally ingested)
   sources/              ← Source documents copied here by ingest step 0
+  plans/                ← One per city's climate action plan; parent of its strategy set (added 2026-07-09)
   strategies/           ← 7 strategy pages (strategy-1 through strategy-7)
   overviews/            ← One per source document
   actors/               ← Organizations, agencies, commissions, people
@@ -256,6 +257,17 @@ Every strategy page body now has two `##` sections:
 - **`## Progress Synthesis`** — LLM-regenerated each ingest. Pass 1B now always injects the FULL existing Progress Synthesis text into the Writer prompt (not gated on digest absence, per the bug above) so facts accumulate instead of compressing.
 
 Helpers: `_split_strategy_sections(body)` / `_assemble_strategy_body(foundation, progress)` in `pipeline/pass1b_synthesize.py`. Phase C's `build_strategy_synthesis` also now receives `foundation_text` and full `ingest_history` (via `extract_ingest_history`), so the `synthesis.core-target` field and `year-over-year-arc` cite real Foundation figures and real ingest dates instead of boilerplate.
+
+## Ontology Nesting Model — Plan → Strategy → Initiative → sub-initiative
+
+**Read `docs/architecture/ontology-nesting-model.md` before adding new relationship fields or touching `pipeline/phase_c_synthesize.py`'s `_load_strategies_from_plan`/`ALL_STRATEGIES`.**
+
+A 2026-07-09 review-queue session found that semantic lint kept misreading genuine containment relationships (a longstanding program vs. a specific pilot spun off from it) as either duplicates or supersessions, because no frontmatter field existed to express "this initiative is a specific instantiation of that ongoing one." The same review surfaced that the canonical "A2Zero" plan page was itself mistyped as an `initiative` nested *under* one of its own child strategies — backwards from the real hierarchy.
+
+Fixed 2026-07-09:
+- New `plan` page type (`wiki/plans/<slug>.md`) sits above `strategy`. `strategies:` on the plan page lists its children; `parent-plan:` on each strategy page points up. `_load_strategies_from_plan()` reads this as the source of truth for which strategies to rebuild in Phase C, falling back to the hardcoded `ALL_STRATEGIES` constant only when no `plans/` page exists — this is what lets a second city's plan, with a different strategy count, work without a pipeline code change.
+- New `part-of` / `sub-initiatives` field pair for strict initiative-to-initiative containment (program ⊃ pilot), distinct from the many-to-many `related-strategies` tagging. See `meta/relationship-lexicon.md` for the full field documentation and the extraction-failure pattern this fixes.
+- A body that *produces* a deliverable (a working group writing a strategy document) is a different pattern from program/pilot containment and is NOT modeled with `part-of` — see the lexicon for why, and how that case is handled with prose cross-links instead.
 
 ## GitHub
 

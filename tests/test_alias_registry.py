@@ -276,7 +276,7 @@ def test_ann_arbor_resolves_by_proposed_type_real_registry():
 
 def test_a2zero_resolves_by_proposed_type_real_registry():
     aliases = load_aliases(REAL_ALIASES_PATH)
-    assert resolve_slug_for_title("A2Zero", aliases, proposed_type="initiative") == "initiatives/a2zero-carbon-neutrality-plan"
+    assert resolve_slug_for_title("A2Zero", aliases, proposed_type="plan") == "plans/a2zero-carbon-neutrality-plan"
     assert resolve_slug_for_title("A2Zero", aliases, proposed_type="actor") == "actors/office-of-sustainability-and-innovations"
 
 

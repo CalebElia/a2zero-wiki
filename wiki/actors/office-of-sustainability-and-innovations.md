@@ -11,7 +11,7 @@ key-personnel:
 - '[[actors/julie-roth]]'
 last-updated: '2026-07-07'
 programs-involved:
-- '[[initiatives/a2zero-carbon-neutrality-plan]]'
+- '[[plans/a2zero-carbon-neutrality-plan]]'
 role: Lead city office responsible for launching and implementing the A2Zero carbon
   neutrality initiative
 source-first-seen: '[[sources/cap/cap-2020]]'

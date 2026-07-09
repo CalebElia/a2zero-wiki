@@ -336,6 +336,9 @@ proposing additions.
 **Pass 1 (holistic synthesizer only):**
 `overview`, `strategy`
 
+**One per city, human-migrated today (see `docs/architecture/ontology-nesting-model.md`):**
+`plan`
+
 **Human-curated or post-ingest synthesis only:**
 `topic` (Pass 1 surfaces candidates; human promotes),
 `synthesis`,
@@ -427,6 +430,42 @@ backlink to the source file's frontmatter, making the link bidirectional:
 wiki-overview: "[[overviews/cap-2020]]"
 ```
 
+### plan (one per city, added 2026-07-09)
+
+Path: `wiki/plans/<slug>.md`
+
+The city's climate action plan itself — the document/policy artifact that defines
+the strategy set, one level *above* `strategy` in the ontology. Sits at the root of
+the nesting hierarchy: Plan → Strategy → Initiative → sub-initiative. Not written by
+the automated pipeline today (there's exactly one, migrated by hand from its prior
+`initiative`-typed page on 2026-07-09 — see `docs/architecture/ontology-nesting-model.md`
+for why it needed its own type rather than staying an initiative with a corrected
+`parent-strategy` pointer). Expected to become pipeline-written once a second city's
+plan is ingested.
+
+```yaml
+---
+type: plan
+title: "A2Zero Living Carbon Neutrality Plan"
+launched: 2020
+status: active
+strategies:
+  - "[[strategies/strategy-1-renewable-grid]]"
+  - "[[strategies/strategy-2-electrification]]"
+  # ... one entry per strategy this plan defines
+party-responsible: "[[actors/ann-arbor-city-council]]"
+source-first-seen: "[[sources/cap/cap-2020]]"
+last-updated: 2026-07-09
+---
+```
+
+`strategies:` is the inverse of the strategy page's `parent-plan:` field, and is the
+generalizable source of truth for "which strategies does this plan define" —
+`pipeline/phase_c_synthesize.py::_load_strategies_from_plan` reads it directly,
+falling back to the hardcoded `ALL_STRATEGIES` constant only if no `plans/` page
+exists yet. This is what lets a second city's plan, with its own strategy count,
+work without a pipeline code change.
+
 ### strategy (Pass 1 only)
 
 Path: `wiki/strategies/<slug>.md`
@@ -441,6 +480,7 @@ type: strategy
 uuid: "b7d1e4..."
 title: "Strategy 1: 100% Renewable Energy Grid"
 strategy-number: 1
+parent-plan: "[[plans/a2zero-carbon-neutrality-plan]]"
 projections:
   - value: "40% of total A2Zero community GHG reduction by 2030"
     date: 2020-04
@@ -480,6 +520,9 @@ slug: community-choice-aggregation
 parent-strategy: strategy-1-renewable-grid
 status: planned
 launched: null
+part-of: null            # set if this initiative is a specific instantiation of an
+                          # ongoing parent initiative (e.g. a pilot under a program)
+sub-initiatives: []       # inverse of part-of — direct children only, keep it a tree
 projections:
   - value: "22% of community GHG reduction contribution by 2030"
     date: 2020-04
@@ -495,6 +538,14 @@ last-updated: 2026-06-23
 ```
 
 `status` values: `planned`, `active`, `completed`, `stalled`, `unknown`.
+
+`part-of` / `sub-initiatives` (added 2026-07-09) — strict containment, distinct from
+the many-to-many `related-strategies` tagging: use these when one initiative is a
+specific instantiation spun off from an ongoing parent (a pilot under a program, a
+project under a longstanding effort), NOT when a governing body simply produces a
+deliverable (model that with prose cross-links instead — see
+`meta/relationship-lexicon.md` for the full distinction and the extraction-failure
+pattern this fixes).
 
 `projections:` — quantitative targets from planning documents. Each entry: `value`
 (string), `date` (YYYY or YYYY-MM), `source` (wikilink string). Populated by the

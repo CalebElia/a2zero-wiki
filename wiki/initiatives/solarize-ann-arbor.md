@@ -41,6 +41,8 @@ related-strategies:
 - '[[strategies/strategy-3-building-efficiency]]'
 source-first-seen: '[[sources/annual-reports/a2zero-year1]]'
 status: active
+sub-initiatives:
+- '[[initiatives/commercial-solarize-pilot]]'
 tags:
 - residential-solar
 - solarize

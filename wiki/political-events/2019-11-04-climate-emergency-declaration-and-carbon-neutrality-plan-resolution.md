@@ -20,7 +20,7 @@ legal-effect: Declared a climate emergency, directed City Administration to deve
 margin: null
 outcome: passed
 programs-authorized:
-- '[[initiatives/a2zero-carbon-neutrality-plan]]'
+- '[[plans/a2zero-carbon-neutrality-plan]]'
 source-first-seen: '[[sources/cap/cap-2020]]'
 tags:
 - climate-emergency

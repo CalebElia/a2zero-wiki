@@ -2,9 +2,9 @@
 active-years:
 - 2022
 actor-type: person
-affiliation: '[[actors/city-of-ann-arbor]]'
+affiliation: '[[actors/office-of-sustainability-and-innovations]]'
 elected: false
-last-updated: '2026-07-07'
+last-updated: '2026-07-09'
 programs-involved: []
 role: City of Ann Arbor sustainability staff recognized as an electric vehicle champion
 source-first-seen: '[[sources/annual-reports/a2zero-year2]]'

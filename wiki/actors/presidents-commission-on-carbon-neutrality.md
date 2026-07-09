@@ -7,7 +7,7 @@ affiliation: '[[actors/university-of-michigan]]'
 elected: false
 last-updated: '2026-06-24'
 programs-involved:
-- '[[initiatives/a2zero-carbon-neutrality-plan]]'
+- '[[plans/a2zero-carbon-neutrality-plan]]'
 role: University of Michigan body convened to work with community and regional partners
   toward shared carbon neutrality goals
 source-first-seen: '[[sources/cap/cap-2020]]'

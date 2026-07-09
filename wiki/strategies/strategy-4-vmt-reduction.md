@@ -2,6 +2,7 @@
 type: strategy
 title: 'Strategy 4: Vehicle Miles Traveled Reduction'
 strategy-number: 4
+parent-plan: '[[plans/a2zero-carbon-neutrality-plan]]'
 tags:
 - transportation
 - ev

@@ -2,6 +2,7 @@
 type: strategy
 title: 'Strategy 3: Building Energy Efficiency'
 strategy-number: 3
+parent-plan: '[[plans/a2zero-carbon-neutrality-plan]]'
 tags:
 - efficiency
 - buildings
