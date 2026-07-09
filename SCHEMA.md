@@ -623,6 +623,27 @@ before ingest begins.
 | `political-event` | `wiki/political-events/<slug>.md` | Votes, elections, legislative milestones |
 | `funding-event` | `wiki/funding-events/<slug>.md` | Specific grant awards or appropriations with a date, dollar amount, source, and recipient |
 
+### `political-event` lifecycle — `status: anticipated | occurred`
+
+Sources routinely describe a vote or decision before it happens (an annual report
+says "voters will decide in November...") and a later source describes the same
+event's outcome. These are ONE real-world event at two points in its lifecycle,
+not two pages. Every `political-event` page carries:
+
+- `status: anticipated` — a source describes a future vote/decision not yet
+  resolved as of that source's own `covers-period`. `outcome: pending`, `margin: null`.
+- `status: occurred` — any source describes the actual result. `outcome` and
+  `margin` are filled in; the body gets a preceding paragraph carrying forward
+  the earlier anticipatory language (cited to its own source) so the page reads
+  as one continuous account instead of losing the "this was expected" framing.
+
+Pass 2 extraction checks `retrieve-for-context`/`KNOWN ENTITIES` for an existing
+`anticipated` page on the same event before writing a new one; if found, it
+updates that page in place rather than creating a second. See
+`docs/action-plan-2026-07-09.md` Item 2 for the incident (three separate pages
+existed for one SEU authorization vote) and `pipeline/pass2b_extract.py`'s
+POLITICAL-EVENT prompt block for the exact instructions given to the model.
+
 ---
 
 ## Wikilink & Citation Conventions
