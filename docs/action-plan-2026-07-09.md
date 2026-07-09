@@ -24,15 +24,15 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ---
 
-## Next — Item 2: Anticipated-event lifecycle & duplicate resolution
+## Item 2: Anticipated-event lifecycle & duplicate resolution — DONE (2026-07-09, `feat/event-dedup`)
 
 **Why:** Three pages currently exist for one event (the SEU authorization vote) plus a duplicated 2020-03-20 meeting across two directories — a structural pattern (annual reports announce future events, next report describes them happening) that will get worse once council minutes and news are ingested.
 
-- [ ] **2.1 — Manual cleanup now.** Merge `wiki/political-events/2024-11-01-ann-arbor-seu-authorization-vote.md` and `2024-11-05-ann-arbor-seu-authorization-vote.md` into one page (keep the more complete 11-05 version, redirect/alias the 11-01 slug); decide whether `november-2024-seu-ballot-question.md` (the anticipatory year4 page) should be merged in or marked superseded via the alias registry. Resolve the 2020-03-20 meetings/political-events duplicate the same way.
-- [ ] **2.2 — Add `status: anticipated | occurred` to the political-event schema** (`SCHEMA.md` + `_pages.py`/`_models.py` validation) so forward-looking mentions ("voters will decide in November 2024...") are marked distinctly from confirmed outcomes.
-- [ ] **2.3 — Add a "resolve-pending" field to the Comprehend integration plan** (`pass1a_comprehend.py`) so next-year ingests can look up prior `anticipated` events and update them in place instead of creating new pages.
-- [ ] **2.4 — Add a semantic-lint heuristic** in `phase_b_lint.py --semantic`: same `event-type` + overlapping `programs-authorized` + dates within ~60 days ⇒ propose merge (currently semantic lint likely relies on title/body fuzzy matching, which date-prefixed slugs defeat).
-- [ ] **2.5 — Regression test** covering the merge heuristic against the exact SEU-vote fixture pattern.
+- [x] **2.1 — Manual cleanup now.** Merge `wiki/political-events/2024-11-01-ann-arbor-seu-authorization-vote.md` and `2024-11-05-ann-arbor-seu-authorization-vote.md` into one page (keep the more complete 11-05 version, redirect/alias the 11-01 slug); decide whether `november-2024-seu-ballot-question.md` (the anticipatory year4 page) should be merged in or marked superseded via the alias registry. Resolve the 2020-03-20 meetings/political-events duplicate the same way.
+- [x] **2.2 — Add `status: anticipated | occurred` to the political-event schema** (`SCHEMA.md` + `_pages.py`/`_models.py` validation) so forward-looking mentions ("voters will decide in November 2024...") are marked distinctly from confirmed outcomes.
+- [x] **2.3 — Add a "resolve-pending" field to the Comprehend integration plan** (`pass1a_comprehend.py`) so next-year ingests can look up prior `anticipated` events and update them in place instead of creating new pages.
+- [x] **2.4 — Add a semantic-lint heuristic** in `phase_b_lint.py --semantic`: same `event-type` + overlapping `programs-authorized` + dates within ~60 days ⇒ propose merge (currently semantic lint likely relies on title/body fuzzy matching, which date-prefixed slugs defeat).
+- [x] **2.5 — Regression test** covering the merge heuristic against the exact SEU-vote fixture pattern.
 
 ---
 
