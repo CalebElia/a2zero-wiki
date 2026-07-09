@@ -14,34 +14,33 @@ synthesis:
   - initiatives/advance-equity-programs
   - initiatives/sustaining-ann-arbor-together-grants
   - initiatives/sa2t-grant-program
-  - initiatives/a2zero-ambassadors-program
   - initiatives/deepen-community-engagement-underrepresented-communities
-  - initiatives/neighborhood-resiliency-plans
+  - initiatives/a2zero-ambassadors-program
+  - initiatives/a2zero-collaborators-network
   - initiatives/internal-carbon-price
   - initiatives/offset-greenhouse-gas-emissions
   core-actors: []
-  year-over-year-arc: Baseline set in cap-2020 on 2026-06-24 around equity programs,
-    SA2T grants, internal carbon pricing, and offsets; by a2zero-year1 through a2zero-year5
-    (2026-06-25 to 2026-07-02), the strategy broadened into sustained community-facing
-    engagement infrastructure including ambassadors, underrepresented-community outreach,
-    neighborhood resiliency planning, and grant-supported participation while the
-    original pricing/offset tools remained part of the design intent.
+  year-over-year-arc: Baseline set by cap-2020 (2020-04) around equity programs, grants,
+    internal carbon pricing, and offsets; across a2zero-year1 (2020-07 to 2021-06)
+    through a2zero-year5 (2024-06 to 2025-05), the strategy appears to broaden from
+    plan-level gap-closing tools into sustained community-facing engagement and equity
+    implementation through ambassador, collaborator, and neighborhood-focused programs.
   open-questions:
-  - How much funding and participation has the SA2T grant program sustained year to
-    year?
-  - Was an internal carbon price formally adopted and at what level?
-  - To what extent are offsets still expected versus direct community reductions?
-  - How are equity outcomes being measured across engagement programs?
+  - How much of the original offsets/internal-carbon-price design was actually implemented?
+  - Which engagement programs produced measurable emissions reductions versus awareness
+    gains?
+  - How are equity outcomes being tracked across grants and neighborhood initiatives?
+  - Did SA2T evolve into a broader long-term funding pipeline?
   cross-strategy-links:
-  - initiatives/advance-equity-programs
-  - initiatives/sustaining-ann-arbor-together-grants
-  - initiatives/sa2t-grant-program
+  - initiatives/community-climate-action-millage
+  - initiatives/comprehensive-plan-update
+  - initiatives/net-zero-energy-affordable-housing
+  - initiatives/home-energy-rebate-program
+  - initiatives/electrification-campaign
   - initiatives/neighborhood-resiliency-plans
-  - initiatives/internal-carbon-price
-  - initiatives/offset-greenhouse-gas-emissions
   core-target: CAP-2020 estimated this strategy’s four actions would deliver just
     under 14% of community-wide emissions reductions at a cost of just under $6,000,000.
-  last-rebuilt: '2026-07-07'
+  last-rebuilt: '2026-07-09'
 ---
 
 ## Foundation

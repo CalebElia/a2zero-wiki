@@ -19,25 +19,27 @@ synthesis:
   - initiatives/a2zero-heat-pump-concierge
   - initiatives/community-climate-action-millage-rebates
   core-actors: []
-  year-over-year-arc: Baseline set in cap-2020 on 2026-06-24 around six electrification
-    actions; across a2zero-year1 through a2zero-year5 (2026-06-25 to 2026-07-02),
-    the strategy appears to broaden from plan-level commitments into implementation
-    via home electrification support, fleet and bus conversion, and expanding EV charging
-    and rebate programs.
+  year-over-year-arc: From the cap-2020 baseline in 2020-04, Building Electrification
+    progressed through 2020-07 to 2025-05 from planning around home/building, fleet,
+    bus, and charging electrification to broader implementation via heat-pump and
+    rebate programs, city and transit fleet conversion efforts, and expanding EV charging
+    deployment.
   open-questions:
-  - Pace of private building electrification adoption
-  - Funding sufficiency for large-scale retrofits and fleet turnover
-  - Grid capacity and utility readiness for added electric load
-  - Scale and timing of EV charging buildout citywide
+  - How quickly can residential and commercial fossil-fuel equipment be replaced at
+    scale?
+  - Will grid-capacity and utility coordination keep pace with rising electrification
+    demand?
+  - How fast can private fleets and multifamily/rental properties electrify?
+  - What level of charging buildout is sufficient for citywide EV adoption?
   cross-strategy-links:
   - initiatives/community-ev-solar-bulk-buy
   - initiatives/expand-ev-charging-infrastructure
-  - initiatives/grid-capacity-expansion-electrification
   - initiatives/sustainable-energy-utility
+  - initiatives/grid-capacity-expansion-electrification
   - initiatives/community-climate-action-millage-rebates
   core-target: CAP-2020 set Strategy 2 at a 23% reduction in community-wide greenhouse
-    gas emissions at a cost of just over $143,000,000.
-  last-rebuilt: '2026-07-07'
+    gas emissions for just over $143,000,000.
+  last-rebuilt: '2026-07-09'
 ---
 
 ## Foundation

@@ -3,6 +3,8 @@ uuid: a2zero-year5
 source_type: annual-report
 title: "A2ZERO Annual Report Year Five"
 ingest_date: "2026-07-02"
+covers-period-start: "2024-06"
+covers-period-end: "2025-05"
 ---
 
 

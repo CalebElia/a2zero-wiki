@@ -17,29 +17,31 @@ synthesis:
   - initiatives/energy-concierge-and-community-engagement-program
   - initiatives/green-rental-housing
   - initiatives/expand-weatherization-program
-  - initiatives/loan-loss-reserve
-  - initiatives/affordable-housing-net-zero-energy
-  core-actors: []
-  year-over-year-arc: Baseline set by CAP-2020 on 2026-06-24 with an 11-action building-efficiency
-    package; across A2ZERO Year 1–5 sources ingested 2026-06-25 through 2026-07-02,
-    the strategy appears to broaden from foundational policy and program design into
-    implementation via rebates, concierge/advisor services, benchmarking/disclosure,
-    weatherization, and affordable-housing decarbonization pilots.
-  open-questions:
-  - Which disclosure and benchmarking requirements became mandatory versus voluntary
-  - How much emissions reduction has been achieved by rental and affordable-housing
-    upgrades
-  - Whether financing tools like loan-loss reserve and on-bill financing reached scale
-  - How building-code updates align with state authority and enforcement
-  cross-strategy-links:
-  - initiatives/energy-concierge-and-community-engagement-program
   - initiatives/affordable-housing-net-zero-energy
   - initiatives/community-climate-action-millage-rebates
-  - initiatives/solarize-ann-arbor
+  core-actors: []
+  year-over-year-arc: From the cap-2020 baseline in 2020-04, Strategy 3 broadened
+    from a code-and-program design for efficiency upgrades into a multi-year implementation
+    portfolio spanning home energy advising, rebates and concierge support, rental
+    and commercial energy disclosure, weatherization, and affordable-housing decarbonization
+    through a2zero-year1 (2020-07 to 2021-06) to a2zero-year5 (2024-06 to 2025-05).
+  open-questions:
+  - Which disclosure and benchmarking requirements became mandatory versus voluntary
+  - How much measured GHG reduction has come from rebates, weatherization, and concierge
+    programs
+  - Whether green rental housing and code updates are strong enough to drive existing-building
+    retrofits at scale
+  - How financing tools like loan-loss reserve or on-bill financing were ultimately
+    deployed
+  cross-strategy-links:
+  - initiatives/affordable-housing-net-zero-energy
+  - initiatives/community-climate-action-millage-rebates
   - initiatives/geothermal-districts
-  core-target: Strategy 3 originally targeted a 13.4% reduction in community-wide
+  - initiatives/solarize-ann-arbor
+  - initiatives/arpa-city-facilities-solar
+  core-target: Strategy 3 of CAP-2020 targeted a 13.4% reduction in community-wide
     greenhouse gas emissions at a cost of just over $14,500,000.
-  last-rebuilt: '2026-07-07'
+  last-rebuilt: '2026-07-09'
 ---
 
 ## Foundation

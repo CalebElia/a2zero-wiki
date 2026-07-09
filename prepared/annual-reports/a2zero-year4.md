@@ -1,4 +1,10 @@
-
+---
+uuid: a2zero-year4
+source_type: annual-report
+title: "A2ZERO Year Four Annual Report"
+covers-period-start: "2023-07"
+covers-period-end: "2024-06"
+---
 
 A2ZERO YEAR FOUR ANNUAL REPORT JULY 1, 2023 - JUNE 3, 2024
 

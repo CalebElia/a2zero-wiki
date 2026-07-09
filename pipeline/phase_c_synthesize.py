@@ -78,16 +78,43 @@ def extract_recent_delta(log_path: str) -> dict:
     return {"date": date, "source_uuid": source_uuid.strip()}
 
 
-def extract_ingest_history(log_path: str) -> list[dict]:
-    """Return [{date, source_uuid}, ...] for every ingest in log.md, chronological."""
+def _source_period(wiki_root: str, source_uuid: str) -> str:
+    """Return a human-readable real-world period label for a source, e.g. '2022-07 to 2023-06'.
+
+    Reads covers-period-start/-end from the source's own frontmatter in
+    wiki/sources/**/<uuid>.md — NOT the ingest date, which only records when the
+    pipeline happened to run. Falls back to '—' if the source or fields are missing
+    (older sources ingested before this field existed).
+    """
+    for page in (Path(wiki_root) / "sources").rglob(f"{source_uuid}.md"):
+        fm = _parse_frontmatter(page.read_text(encoding="utf-8", errors="replace"))
+        start = fm.get("covers-period-start")
+        end = fm.get("covers-period-end")
+        if start and end:
+            return start if start == end else f"{start} to {end}"
+        break
+    return "—"
+
+
+def extract_ingest_history(log_path: str, wiki_root: str | None = None) -> list[dict]:
+    """Return [{date, source_uuid, period}, ...] for every ingest in log.md, chronological.
+
+    `date` is the pipeline ingest run date (bookkeeping only). `period` is the
+    source's real-world covers-period, looked up from its frontmatter when
+    wiki_root is given — this is what should drive year-over-year narration.
+    """
     try:
         text = Path(log_path).read_text(encoding="utf-8")
     except FileNotFoundError:
         return []
-    return [
+    history = [
         {"date": date, "source_uuid": uuid.strip()}
         for date, uuid in _LOG_ENTRY_RE.findall(text)
     ]
+    if wiki_root:
+        for entry in history:
+            entry["period"] = _source_period(wiki_root, entry["source_uuid"])
+    return history
 
 
 def _entities_touched_this_ingest(wiki_root: str, source_uuid: str | None) -> list[str]:
@@ -136,12 +163,16 @@ FOUNDATION block is provided, return the literal string "—".
 You may be given two additional optional context blocks:
 - [FOUNDATION]: the strategy's original design intent from CAP-2020 (frozen, for \
 reference only — never overwritten). Use it only to write `core-target`.
-- [INGEST HISTORY]: the chronological list of sources ingested so far, with dates. \
-When this is provided, use the specific dates and source names to write a REAL \
-`year-over-year-arc` describing an actual trajectory across those sources (e.g. \
-"Baseline established 2026-06-01 (a2zero-year1); residential solar grew 31% by \
-2026-06-30 (a2zero-year3)") instead of generic boilerplate. If no history is \
-provided, describe the baseline state from the entity inventory alone.
+- [INGEST HISTORY]: the chronological list of sources ingested so far, each with the \
+REAL-WORLD period it covers (e.g. "2022-07 to 2023-06"), not the date it happened to \
+be ingested. When this is provided, use those real periods and source names to write \
+a REAL `year-over-year-arc` describing an actual trajectory across those sources \
+(e.g. "Baseline set by cap-2020 (Apr 2020); residential solar grew 31% by the a2zero-year3 \
+report (2022-07 to 2023-06)") instead of generic boilerplate. NEVER cite the date a \
+source was ingested into the pipeline — only the real-world period it covers. If a \
+source's period shows as "—", its covers-period frontmatter is missing; refer to it by \
+name only and do not invent a date for it. If no history is provided, describe the \
+baseline state from the entity inventory alone.
 
 Return ONLY the JSON object. Slugs use the form `actors/foo` or `initiatives/bar` — \
 the same format as the inputs.
@@ -181,7 +212,7 @@ def build_strategy_synthesis(
         for e in entities
     )
     history_lines = "\n".join(
-        f"- {h['date']}: {h['source_uuid']}" for h in (ingest_history or [])
+        f"- {h['source_uuid']} ({h.get('period', '—')})" for h in (ingest_history or [])
     )
     user_msg = (
         f"Strategy: {strategy_title} ({strategy_slug})\n\n"
@@ -436,7 +467,9 @@ def synthesize_wiki(
                 from pipeline.pass1b_synthesize import _split_strategy_sections
                 foundation, _ = _split_strategy_sections(body)
                 foundation_text = foundation or ""
-            ingest_history = extract_ingest_history(str(Path(wiki_root) / "log.md"))
+            ingest_history = extract_ingest_history(
+                str(Path(wiki_root) / "log.md"), wiki_root=wiki_root
+            )
 
             synthesis = build_strategy_synthesis(
                 strategy_slug=strategy_slug,

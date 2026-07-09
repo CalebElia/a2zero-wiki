@@ -1,4 +1,10 @@
-
+---
+uuid: a2zero-year5
+source_type: annual-report
+title: "A2ZERO Annual Report Year Five"
+covers-period-start: "2024-06"
+covers-period-end: "2025-05"
+---
 
 ## A2ZERO Annual Report Year Five
 June 1, 2024 - May 31, 2025

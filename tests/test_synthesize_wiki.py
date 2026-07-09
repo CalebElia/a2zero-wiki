@@ -99,6 +99,52 @@ def test_extract_ingest_history_handles_missing_log(tmp_path):
     assert extract_ingest_history(str(tmp_path / "nope.md")) == []
 
 
+def test_extract_ingest_history_looks_up_real_world_period_when_wiki_root_given(tmp_path):
+    """year-over-year narration must be grounded in each source's real covers-period,
+    not the date the pipeline happened to ingest it — see docs/action-plan-2026-07-09.md
+    Item 1 (world-time grounding)."""
+    from pipeline.phase_c_synthesize import extract_ingest_history
+
+    wiki_root = tmp_path / "wiki"
+    sources_dir = wiki_root / "sources" / "annual-reports"
+    sources_dir.mkdir(parents=True)
+    (sources_dir / "a2zero-year3.md").write_text(
+        "---\n"
+        "uuid: a2zero-year3\n"
+        'covers-period-start: "2022-07"\n'
+        'covers-period-end: "2023-06"\n'
+        "---\n\nbody\n",
+        encoding="utf-8",
+    )
+
+    log_path = tmp_path / "log.md"
+    log_path.write_text("## [2026-06-30 | a2zero-year3]\nsome entry\n", encoding="utf-8")
+
+    history = extract_ingest_history(str(log_path), wiki_root=str(wiki_root))
+    assert history == [
+        {"date": "2026-06-30", "source_uuid": "a2zero-year3", "period": "2022-07 to 2023-06"}
+    ]
+    # The ingest date must never be mistaken for the real-world period.
+    assert history[0]["period"] != history[0]["date"]
+
+
+def test_extract_ingest_history_period_falls_back_when_source_missing_covers_period(tmp_path):
+    from pipeline.phase_c_synthesize import extract_ingest_history
+
+    wiki_root = tmp_path / "wiki"
+    sources_dir = wiki_root / "sources" / "cap"
+    sources_dir.mkdir(parents=True)
+    (sources_dir / "cap-2020.md").write_text(
+        "---\nuuid: cap-2020\n---\n\nbody\n", encoding="utf-8"
+    )
+
+    log_path = tmp_path / "log.md"
+    log_path.write_text("## [2026-06-24 | cap-2020]\nsome entry\n", encoding="utf-8")
+
+    history = extract_ingest_history(str(log_path), wiki_root=str(wiki_root))
+    assert history[0]["period"] == "—"
+
+
 def test_build_strategy_synthesis_prompt_includes_foundation_and_history(monkeypatch):
     from pipeline import phase_c_synthesize as mod
     captured = {}
@@ -118,13 +164,16 @@ def test_build_strategy_synthesis_prompt_includes_foundation_and_history(monkeyp
         entities=[],
         foundation_text="CAP-2020 target: 41% reduction.",
         ingest_history=[
-            {"date": "2026-06-01", "source_uuid": "a2zero-year1"},
-            {"date": "2026-06-30", "source_uuid": "a2zero-year3"},
+            {"date": "2026-06-01", "source_uuid": "a2zero-year1", "period": "2020-07 to 2021-06"},
+            {"date": "2026-06-30", "source_uuid": "a2zero-year3", "period": "2022-07 to 2023-06"},
         ],
     )
     assert "CAP-2020 target: 41% reduction." in captured["user_msg"]
-    assert "2026-06-01" in captured["user_msg"]
+    # Real-world periods drive the prompt, not the pipeline's ingest dates.
+    assert "2020-07 to 2021-06" in captured["user_msg"]
     assert "a2zero-year3" in captured["user_msg"]
+    assert "2026-06-01" not in captured["user_msg"]
+    assert "2026-06-30" not in captured["user_msg"]
 
 
 def test_build_strategy_synthesis_omits_blocks_when_not_provided(monkeypatch):

@@ -1,4 +1,10 @@
-
+---
+uuid: a2zero-year3
+source_type: annual-report
+title: "A2ZERO Year Three Annual Report"
+covers-period-start: "2022-07"
+covers-period-end: "2023-06"
+---
 
 # YEAR THREE ANNUAL REPORT JULY 1, 2022-JUNE 3, 2023
 
