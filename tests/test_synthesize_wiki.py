@@ -395,6 +395,66 @@ def test_assemble_digest_combines_all_sections():
     assert "a2zero-year2" in text
 
 
+def test_assemble_digest_omits_pending_events_section_when_none(tmp_path=None):
+    from pipeline.phase_c_synthesize import assemble_digest
+    text = assemble_digest(
+        narrative="## Cross-strategy synthesis\n\nStrategy 1 ...\n",
+        strategies_data=SAMPLE_STRATEGIES_DATA,
+        delta={"date": "2026-06-26", "source_uuid": "a2zero-year2"},
+        run_date="2026-06-26",
+        sources_count=3,
+        entity_count=399,
+    )
+    assert "## Pending events" not in text
+
+
+def test_assemble_digest_includes_pending_events_when_present():
+    from pipeline.phase_c_synthesize import assemble_digest
+    text = assemble_digest(
+        narrative="## Cross-strategy synthesis\n\nStrategy 1 ...\n",
+        strategies_data=SAMPLE_STRATEGIES_DATA,
+        delta={"date": "2026-06-26", "source_uuid": "a2zero-year2"},
+        run_date="2026-06-26",
+        sources_count=3,
+        entity_count=399,
+        pending_events=[
+            {"slug": "political-events/2024-11-05-example-vote", "title": "Example Vote", "date": "2024-11-05"},
+        ],
+    )
+    assert "## Pending events" in text
+    assert "[[political-events/2024-11-05-example-vote|Example Vote]]" in text
+    assert "(2024-11-05)" in text
+
+
+def test_gather_pending_political_events_filters_by_status(tmp_path):
+    from pipeline.phase_c_synthesize import gather_pending_political_events
+
+    events_dir = tmp_path / "wiki" / "political-events"
+    events_dir.mkdir(parents=True)
+    (events_dir / "2024-11-05-anticipated-vote.md").write_text(
+        "---\ntitle: Anticipated Vote\ndate: '2024-11-05'\nstatus: anticipated\n---\n\nbody\n",
+        encoding="utf-8",
+    )
+    (events_dir / "2020-01-01-occurred-vote.md").write_text(
+        "---\ntitle: Occurred Vote\ndate: '2020-01-01'\nstatus: occurred\n---\n\nbody\n",
+        encoding="utf-8",
+    )
+    (events_dir / "no-status-vote.md").write_text(
+        "---\ntitle: No Status Vote\ndate: '2019-01-01'\n---\n\nbody\n",
+        encoding="utf-8",
+    )
+
+    result = gather_pending_political_events(str(tmp_path / "wiki"))
+    assert result == [
+        {"slug": "political-events/2024-11-05-anticipated-vote", "title": "Anticipated Vote", "date": "2024-11-05"},
+    ]
+
+
+def test_gather_pending_political_events_handles_missing_dir(tmp_path):
+    from pipeline.phase_c_synthesize import gather_pending_political_events
+    assert gather_pending_political_events(str(tmp_path / "wiki")) == []
+
+
 def test_write_digest_writes_to_vault_root(tmp_path):
     from pipeline.phase_c_synthesize import write_digest
     (tmp_path / "wiki").mkdir()

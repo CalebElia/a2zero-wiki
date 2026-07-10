@@ -10,6 +10,7 @@ Usage:
 import re
 import json
 import argparse
+import yaml
 from datetime import date
 from pathlib import Path
 from pipeline._llm import chat
@@ -598,6 +599,59 @@ def _read_frontmatter_date(md_path: Path) -> str | None:
     return None
 
 
+def _read_frontmatter(md_path: Path) -> dict:
+    """Return the full YAML frontmatter as a dict, or {} if missing/invalid."""
+    text = md_path.read_text(encoding="utf-8", errors="replace")
+    m = re.match(r"^---\n(.*?)\n---\n", text, re.DOTALL)
+    if not m:
+        return {}
+    try:
+        return yaml.safe_load(m.group(1)) or {}
+    except yaml.YAMLError:
+        return {}
+
+
+def _political_event_structural_pairs(
+    pages: list[Path], max_days_apart: int = 60
+) -> list[tuple[Path, Path]]:
+    """Pair political-event pages sharing event-type and an overlapping
+    programs-authorized entity, dated within max_days_apart of each other.
+
+    Fuzzy title matching misses the "anticipated announcement vs. reported
+    outcome" duplicate pattern because the two pages are often titled very
+    differently ("November 2024 SEU Ballot Question" vs "Ann Arbor voter
+    authorization of the Sustainable Energy Utility") despite describing the
+    same real-world vote. This structural signal catches that pattern
+    regardless of title similarity. See docs/action-plan-2026-07-09.md Item 2.4.
+    """
+    parsed = []
+    for page in pages:
+        fm = _read_frontmatter(page)
+        date_str = fm.get("date")
+        try:
+            d = date.fromisoformat(str(date_str)) if date_str else None
+        except ValueError:
+            d = None
+        programs = set(fm.get("programs-authorized") or [])
+        parsed.append((page, fm.get("event-type"), programs, d))
+
+    pairs: list[tuple[Path, Path]] = []
+    for i in range(len(parsed)):
+        page_a, type_a, programs_a, date_a = parsed[i]
+        if not type_a or not programs_a or not date_a:
+            continue
+        for j in range(i + 1, len(parsed)):
+            page_b, type_b, programs_b, date_b = parsed[j]
+            if not type_b or not programs_b or not date_b:
+                continue
+            if type_a != type_b or not (programs_a & programs_b):
+                continue
+            if abs((date_a - date_b).days) > max_days_apart:
+                continue
+            pairs.append((page_a, page_b))
+    return pairs
+
+
 def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[dict]:
     """Stage 1 fuzzy + Stage 2 LLM near-duplicate detection.
 
@@ -638,24 +692,72 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
         if len(pages) < 2:
             continue
 
-        title_map: dict[str, Path] = {}
+        title_map: dict[str, list[Path]] = {}
         for page in pages:
             title, _ = _get_page_title_and_excerpt(page)
-            title_map[title] = page
+            title_map.setdefault(title, []).append(page)
 
         titles = list(title_map.keys())
         seen_pairs: set[frozenset] = set()
 
+        # Identical titles within the same type directory are an unambiguous
+        # duplicate signal — surface them directly without an LLM call. Before
+        # this, title_map was title -> single Path, so a second page sharing an
+        # exact title silently overwrote the first in the dict and was NEVER
+        # compared to anything (the two SEU-vote pages that prompted this fix
+        # shared the literal title "Ann Arbor voter authorization of the
+        # Sustainable Energy Utility" and were invisible to this lint pass as a
+        # result). See docs/action-plan-2026-07-09.md Item 2.4.
+        for title, dup_pages in title_map.items():
+            if len(dup_pages) < 2:
+                continue
+            for k in range(len(dup_pages)):
+                for l in range(k + 1, len(dup_pages)):
+                    page_a, page_b = dup_pages[k], dup_pages[l]
+                    if type_dir == "meetings":
+                        date_a = _read_frontmatter_date(page_a)
+                        date_b = _read_frontmatter_date(page_b)
+                        if date_a and date_b and date_a != date_b:
+                            continue
+                    pair = frozenset({str(page_a), str(page_b)})
+                    if pair in seen_pairs:
+                        continue
+                    seen_pairs.add(pair)
+                    proposals.append({
+                        "type": "MERGE_PROPOSED",
+                        "page_a": str(page_a.relative_to(root)),
+                        "page_b": str(page_b.relative_to(root)),
+                        "confidence": 1.0,
+                        "reasoning": "Identical page title within the same type directory.",
+                    })
+
+        # political-events: fuzzy title matching misses the "anticipated
+        # announcement vs. reported outcome" pattern because the two pages are
+        # often titled very differently despite describing the same real-world
+        # vote. Add structural candidates (same event-type, overlapping
+        # programs-authorized, dates within 60 days) to the title-pair queue so
+        # they get the same LLM verdict check as fuzzy-title matches.
+        structural_extra: dict[str, set[str]] = {}
+        if type_dir == "political-events":
+            path_to_title = {p: t for t, ps in title_map.items() for p in ps}
+            representative_pages = [ps[0] for ps in title_map.values()]
+            for page_a, page_b in _political_event_structural_pairs(representative_pages):
+                title_a, title_b = path_to_title[page_a], path_to_title[page_b]
+                if title_a == title_b:
+                    continue  # already handled by the exact-title pass above
+                structural_extra.setdefault(title_a, set()).add(title_b)
+
         for i, title_a in enumerate(titles):
-            candidates = fuzzy_candidates(title_a, titles[i + 1:], threshold=0.65)
+            candidates = set(fuzzy_candidates(title_a, titles[i + 1:], threshold=0.65))
+            candidates |= structural_extra.get(title_a, set())
             for title_b in candidates:
                 pair = frozenset({title_a, title_b})
                 if pair in seen_pairs:
                     continue
                 seen_pairs.add(pair)
 
-                path_a = title_map[title_a]
-                path_b = title_map[title_b]
+                path_a = title_map[title_a][0]
+                path_b = title_map[title_b][0]
 
                 # Meetings are point-in-time events, not renamable entities — a
                 # differing date: frontmatter value conclusively proves two

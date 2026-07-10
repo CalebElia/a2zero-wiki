@@ -2827,10 +2827,10 @@
     "relationship": "name-variant"
   },
   "green-rental-housing": {
-    "canonical": "initiatives/green-rental-housing",
+    "canonical": "initiatives/green-rental-housing-program",
     "type": "initiative",
     "aliases": [
-      "Green Rental Housing Program"
+      "Green Rental Housing"
     ],
     "relationship": "name-variant"
   },

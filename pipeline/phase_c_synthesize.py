@@ -327,6 +327,7 @@ def assemble_digest(
     run_date: str,
     sources_count: int,
     entity_count: int,
+    pending_events: list[dict] | None = None,
 ) -> str:
     """Combine narrative + entity map + recent delta into the digest.md body."""
     parts = [
@@ -363,6 +364,19 @@ def assemble_digest(
             parts.append(f"- **cross-strategy links:** {xs}")
         parts.append("")
 
+    if pending_events:
+        parts.append("## Pending events")
+        parts.append(
+            "_Political events reported as anticipated (not yet resolved as of the "
+            "sources ingested so far). If a new source reports the outcome of one of "
+            "these, UPDATE the existing page (status → occurred) instead of creating "
+            "a new one — see SCHEMA.md's political-event lifecycle section._"
+        )
+        for ev in pending_events:
+            date_part = f" ({ev['date']})" if ev.get("date") else ""
+            parts.append(f"- [[{ev['slug']}|{ev['title']}]]{date_part}")
+        parts.append("")
+
     parts.append("## Recent delta")
     if delta:
         parts.append(f"**Last ingest:** `{delta['source_uuid']}` ({delta['date']}).")
@@ -397,6 +411,32 @@ def _read_strategy_title(wiki_root: str, strategy_slug: str) -> str:
         return strategy_slug
     fm = _parse_frontmatter(page.read_text(encoding="utf-8"))
     return fm.get("title", strategy_slug)
+
+
+def gather_pending_political_events(wiki_root: str) -> list[dict]:
+    """Return {slug, title, date} for every political-event page with status:
+    anticipated — deterministic, not LLM-derived, since these pages don't carry
+    `related-strategies:` and so never surface via gather_strategy_entities().
+
+    Feeds the digest's "Pending events" section so a future Comprehend pass can
+    find an anticipated event and extend it in place (status → occurred) instead
+    of writing a duplicate page when the outcome is reported — see
+    docs/action-plan-2026-07-09.md Item 2 for the incident this closes.
+    """
+    root = Path(wiki_root) / "political-events"
+    if not root.exists():
+        return []
+    out: list[dict] = []
+    for page in sorted(root.glob("*.md")):
+        fm = _parse_frontmatter(page.read_text(encoding="utf-8", errors="replace"))
+        if fm.get("status") != "anticipated":
+            continue
+        out.append({
+            "slug": f"political-events/{page.stem}",
+            "title": fm.get("title", page.stem),
+            "date": fm.get("date", ""),
+        })
+    return out
 
 
 def _count_entities(wiki_root: str) -> int:
@@ -543,6 +583,7 @@ def synthesize_wiki(
         run_date=run_date,
         sources_count=_count_sources(wiki_root),
         entity_count=_count_entities(wiki_root),
+        pending_events=gather_pending_political_events(wiki_root),
     )
     digest_path = write_digest(wiki_root=wiki_root, content=digest_text)
 

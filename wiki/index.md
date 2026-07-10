@@ -1,6 +1,6 @@
 # Wiki Index
 
-_514 pages — last updated 2026-07-08_
+_509 pages — last updated 2026-07-09_
 
 ## actor
 
@@ -325,7 +325,6 @@ _514 pages — last updated 2026-07-08_
 - [[initiatives/green-energy-neighbors|Green Energy Neighbors]]
 - [[initiatives/green-light-media-program|Green Light Media Program]]
 - [[initiatives/green-rental-housing-program|Green Rental Housing Program]]
-- [[initiatives/green-rental-housing|Green Rental Housing Program]]
 - [[initiatives/green-streets-program|Green Streets Program]]
 - [[initiatives/heat-pump-replacement-campaign|Heat Pump Replacement Campaign]]
 - [[initiatives/home-and-business-electrification|Home & Business Electrification]]
@@ -343,7 +342,6 @@ _514 pages — last updated 2026-07-08_
 - [[initiatives/landfill-solar-feasibility|Landfill Solar Feasibility Study]]
 - [[initiatives/landfill-solar-project|Landfill Solar Project]]
 - [[initiatives/local-food-production-expansion|Local Food Production and Distribution Expansion]]
-- [[initiatives/local-and-regional-transit|Local and Regional Transit]]
 - [[initiatives/lmi-solar-access-program|Low-to-Moderate Income Solar Access Program]]
 - [[initiatives/master-rain-gardener-training|Master Rain Gardener Training]]
 - [[initiatives/materials-recovery-facility-renovation|Materials Recovery Facility Renovation or Development]]
@@ -500,13 +498,10 @@ _514 pages — last updated 2026-07-08_
 - [[political-events/2022-commercial-benchmarking-ordinance-ann-arbor|Ann Arbor City Council — Commercial Benchmarking Ordinance Passed (Michigan's First)]]
 - [[political-events/2017-06-01-green-fleets-policy-resolution|Ann Arbor City Council — Resolution R-17-237 (Green Fleets Policy Update)]]
 - [[political-events/2025-04-22-ann-arbor-dte-heating-franchise-arca|Ann Arbor and DTE Heating Franchise and ARCA Approval]]
-- [[political-events/2024-11-01-ann-arbor-seu-authorization-vote|Ann Arbor voter authorization of the Sustainable Energy Utility]]
 - [[political-events/2024-11-05-ann-arbor-seu-authorization-vote|Ann Arbor voter authorization of the Sustainable Energy Utility]]
-- [[political-events/2020-03-20-a2zero-partners-strategy-unveiling|A²ZERO Partners Strategy Unveiling (2020-03-20)]]
 - [[political-events/2022-11-community-climate-action-millage|Community Climate Action Millage — November 2022 (Passed)]]
 - [[political-events/2025-01-01-epa-resilience-grant-termination|EPA termination of Ann Arbor Environmental Justice resilience grant]]
 - [[political-events/michigan-clean-energy-bill-package-2023|Michigan Clean Energy Bill Package of 2023]]
-- [[political-events/november-2024-seu-ballot-question|November 2024 SEU Ballot Question]]
 
 ## strategy
 

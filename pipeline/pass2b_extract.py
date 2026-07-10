@@ -269,13 +269,27 @@ PAGE TYPES TO CREATE:
 9. POLITICAL-EVENT — a discrete political outcome with lasting legal or political effect.
    Create for council resolutions, referendums, elections, key appointments.
    Slug: "political-events/YYYY-MM-DD-{slug}"
+
+   ANTICIPATED VS OCCURRED — sources routinely describe a vote/decision before it
+   happens ("voters will decide in November...") and a later source describes the
+   same event's outcome. These are ONE real-world event at two points in its
+   lifecycle, not two events — always check retrieve-for-context / KNOWN ENTITIES
+   for an existing anticipated page on this event before creating a new one.
+   If found, UPDATE it in place (set status: occurred, fill in outcome/margin/
+   legal-effect, prepend the earlier anticipatory language to the body as a
+   preceding paragraph) rather than writing a second page.
    Frontmatter:
      type: political-event
      title: (descriptive title including body and outcome)
-     date: (YYYY-MM-DD)
+     date: (YYYY-MM-DD — the vote/decision date. Use the date already on an
+       anticipated page you're updating; don't reissue a new date.)
      event-type: (referendum | council-resolution | election | appointment | legal-ruling | regulatory-decision)
-     outcome: (passed | failed | approved | rejected | appointed | other)
-     margin: (vote margin string, or null)
+     status: (anticipated | occurred — "anticipated" only when the source describes
+       a future vote/decision that hasn't happened yet as of that source's own
+       covers-period; "occurred" once any source describes the actual result)
+     outcome: (pending | passed | failed | approved | rejected | appointed | other —
+       use "pending" only when status is anticipated)
+     margin: (vote margin string, or null — null while status is anticipated)
      legal-effect: (1-sentence description of what this authorizes or prohibits, or null)
      programs-authorized: ["[[initiatives/{slug}]]"]
      actors: ["[[actors/{slug}]]"]

@@ -154,6 +154,110 @@ def test_semantic_lint_still_compares_meetings_with_same_date(tmp_path):
     mock_chat.assert_called_once()
 
 
+def test_semantic_lint_flags_identical_titles_without_calling_llm(tmp_path):
+    """Regression: two pages sharing an exact title within the same type
+    directory must be flagged directly. Before this fix, title_map was
+    title -> single Path, so a second page with an identical title silently
+    overwrote the first and was never compared to anything — the exact bug
+    that let three duplicate political-event pages for the same SEU vote go
+    undetected (see docs/action-plan-2026-07-09.md Item 2.4)."""
+    from unittest.mock import patch
+
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    events = wiki / "political-events"
+    events.mkdir()
+
+    same_title = "Ann Arbor voter authorization of the Sustainable Energy Utility"
+    (events / "2024-11-01-vote.md").write_text(
+        f"---\ntype: political-event\ntitle: {same_title}\ndate: '2024-11-01'\n---\nEarly report.\n"
+    )
+    (events / "2024-11-05-vote.md").write_text(
+        f"---\ntype: political-event\ntitle: {same_title}\ndate: '2024-11-05'\n---\nCorrected date.\n"
+    )
+
+    with patch("pipeline.phase_b_lint.chat") as mock_chat:
+        from pipeline.phase_b_lint import semantic_lint
+        proposals = semantic_lint(str(wiki))
+
+    assert len(proposals) == 1
+    assert proposals[0]["type"] == "MERGE_PROPOSED"
+    assert proposals[0]["confidence"] == 1.0
+    mock_chat.assert_not_called()
+
+
+def test_semantic_lint_flags_structurally_similar_political_events(tmp_path):
+    """An anticipated-announcement page and a reported-outcome page for the
+    same vote often have very different titles ('November 2024 SEU Ballot
+    Question' vs 'Ann Arbor voter authorization...') so fuzzy title matching
+    alone misses them. Same event-type + overlapping programs-authorized +
+    dates within 60 days should still reach the LLM verdict."""
+    import json
+    from unittest.mock import patch
+
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    events = wiki / "political-events"
+    events.mkdir()
+
+    (events / "november-2024-seu-ballot-question.md").write_text(
+        "---\ntype: political-event\ntitle: November 2024 SEU Ballot Question\n"
+        "date: '2024-11-01'\nevent-type: referendum\noutcome: pending\n"
+        "programs-authorized: ['[[initiatives/sustainable-energy-utility]]']\n---\n"
+        "Voters will decide in November.\n"
+    )
+    (events / "2024-11-05-seu-vote.md").write_text(
+        "---\ntype: political-event\ntitle: Ann Arbor voter authorization of the Sustainable Energy Utility\n"
+        "date: '2024-11-05'\nevent-type: referendum\noutcome: approved\n"
+        "programs-authorized: ['[[initiatives/sustainable-energy-utility]]']\n---\n"
+        "Voters authorized the SEU with 79% of the vote.\n"
+    )
+
+    verdict = {"relationship": "same", "confidence": 0.95, "reasoning": "Same vote, announced then resolved."}
+    with patch("pipeline.phase_b_lint.chat") as mock_chat:
+        mock_chat.return_value = json.dumps(verdict)
+        from pipeline.phase_b_lint import semantic_lint
+        proposals = semantic_lint(str(wiki))
+
+    assert len(proposals) == 1
+    assert proposals[0]["type"] == "MERGE_PROPOSED"
+    mock_chat.assert_called_once()
+
+
+def test_political_event_structural_pairs_requires_overlap_and_date_window(tmp_path):
+    from pipeline.phase_b_lint import _political_event_structural_pairs
+
+    events = tmp_path / "political-events"
+    events.mkdir()
+
+    a = events / "a.md"
+    a.write_text(
+        "---\ndate: '2024-11-05'\nevent-type: referendum\n"
+        "programs-authorized: ['[[initiatives/sustainable-energy-utility]]']\n---\nbody\n"
+    )
+    # Same event-type + overlapping program, within 60 days -> pairs with a
+    b = events / "b.md"
+    b.write_text(
+        "---\ndate: '2024-11-01'\nevent-type: referendum\n"
+        "programs-authorized: ['[[initiatives/sustainable-energy-utility]]']\n---\nbody\n"
+    )
+    # Different program -> no pair
+    c = events / "c.md"
+    c.write_text(
+        "---\ndate: '2024-11-02'\nevent-type: referendum\n"
+        "programs-authorized: ['[[initiatives/some-other-initiative]]']\n---\nbody\n"
+    )
+    # Same program, but >60 days away -> no pair
+    d = events / "d.md"
+    d.write_text(
+        "---\ndate: '2025-06-01'\nevent-type: referendum\n"
+        "programs-authorized: ['[[initiatives/sustainable-energy-utility]]']\n---\nbody\n"
+    )
+
+    pairs = _political_event_structural_pairs([a, b, c, d])
+    assert pairs == [(a, b)]
+
+
 def test_parse_approved_proposals_finds_checked_merge(tmp_path):
     from pipeline.phase_b_lint import _parse_approved_proposals
     rq = tmp_path / "review-queue.md"
