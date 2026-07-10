@@ -1,6 +1,6 @@
 # Wiki Index
 
-_509 pages — last updated 2026-07-09_
+_511 pages — last updated 2026-07-10_
 
 ## actor
 
@@ -158,6 +158,11 @@ _509 pages — last updated 2026-07-09_
 - [[actors/zachary-smith|Zachary Smith]]
 - [[actors/zerowaste-org|ZeroWaste.Org]]
 - [[actors/zingermans-next-door-cafe|Zingerman's Next Door Café]]
+
+## contradiction
+
+- [[contradictions/solarize-mw-scope|Solar MW figures differ within Year 5: 5.4MW (Solarize) vs 6.5MW (since A2ZERO) vs 11.88MW (dashboard)]]
+- [[contradictions/wheeler-center-mw-discrepancy|Wheeler Center Solar Park capacity: 24MW (CAP-2020, Year 1) vs 20MW (Years 2-5)]]
 
 ## funding-event
 
