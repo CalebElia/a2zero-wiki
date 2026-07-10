@@ -2,6 +2,7 @@
 type: strategy
 title: 'Strategy 7: Community Engagement & Equity'
 strategy-number: 7
+parent-plan: '[[plans/a2zero-carbon-neutrality-plan]]'
 tags:
 - community-engagement
 - equity

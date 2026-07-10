@@ -11,6 +11,7 @@ milestones:
     with accessing solar
   year: 2022
 parent-strategy: '[[strategies/strategy-1-renewable-grid]]'
+part-of: '[[initiatives/solarize-ann-arbor]]'
 partners:
 - '[[actors/ann-arbor-washtenaw-2030-district]]'
 party-responsible: '[[actors/city-of-ann-arbor]]'

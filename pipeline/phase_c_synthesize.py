@@ -405,6 +405,27 @@ ALL_STRATEGIES = [
 ]
 
 
+def _load_strategies_from_plan(wiki_root: str) -> list[str] | None:
+    """Read the `strategies:` frontmatter list from wiki/plans/*.md, if present.
+
+    The Plan page's own `strategies:` field is the generalizable source of truth
+    for "which strategies does this city's plan define" — ALL_STRATEGIES above is
+    a hardcoded fallback for wikis with no plans/ page yet (or none with the field
+    populated), not a hard requirement. This is what lets a second city's plan
+    with a different strategy count work without touching this module — see
+    docs/architecture/ontology-nesting-model.md.
+    """
+    plans_dir = Path(wiki_root) / "plans"
+    if not plans_dir.exists():
+        return None
+    for page in sorted(plans_dir.glob("*.md")):
+        fm = _parse_frontmatter(page.read_text(encoding="utf-8", errors="replace"))
+        raw = fm.get("strategies")
+        if raw:
+            return [re.sub(r"^\[\[(.+?)\]\]$", r"\1", s).strip() for s in raw]
+    return None
+
+
 def _read_strategy_title(wiki_root: str, strategy_slug: str) -> str:
     page = Path(wiki_root) / (strategy_slug + ".md")
     if not page.exists():
@@ -479,7 +500,7 @@ def synthesize_wiki(
     import copy
     from datetime import date
     run_date = date.today().isoformat()
-    targets = strategies or ALL_STRATEGIES
+    targets = strategies or _load_strategies_from_plan(wiki_root) or ALL_STRATEGIES
     aliases = load_aliases(aliases_path)
 
     strategies_data: dict = {}

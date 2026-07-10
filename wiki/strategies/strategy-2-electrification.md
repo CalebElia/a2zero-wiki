@@ -2,6 +2,7 @@
 type: strategy
 title: 'Strategy 2: Building Electrification'
 strategy-number: 2
+parent-plan: '[[plans/a2zero-carbon-neutrality-plan]]'
 tags:
 - electrification
 - heat-pumps

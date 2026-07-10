@@ -12,6 +12,8 @@ related-strategies:
 - '[[strategies/strategy-1-renewable-grid]]'
 source-first-seen: '[[sources/cap/cap-2020]]'
 status: planned
+sub-initiatives:
+- '[[initiatives/community-solar-pilot]]'
 tags:
 - solar
 - community-solar

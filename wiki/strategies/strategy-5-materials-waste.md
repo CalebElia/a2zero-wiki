@@ -2,6 +2,7 @@
 type: strategy
 title: 'Strategy 5: Materials & Waste'
 strategy-number: 5
+parent-plan: '[[plans/a2zero-carbon-neutrality-plan]]'
 tags:
 - waste
 - materials
@@ -36,7 +37,7 @@ synthesis:
   - initiatives/local-food-production-expansion
   - initiatives/sustainable-food-purchasing-policy
   - initiatives/ghg-inventory
-  - initiatives/a2zero-carbon-neutrality-plan
+  - plans/a2zero-carbon-neutrality-plan
   core-target: CAP-2020 set Strategy 5's original target as a combined 0.3% reduction
     in baseline community-wide greenhouse gas emissions at a cost of just over $45,000,000.
   last-rebuilt: '2026-07-09'

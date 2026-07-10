@@ -10,6 +10,44 @@ def test_module_imports():
     assert len(phase_c_synthesize.ALL_STRATEGIES) == 7
 
 
+def test_load_strategies_from_plan_reads_plan_page(tmp_path):
+    """The Plan page's own `strategies:` list is the generalizable source of
+    truth (e.g. a second city's plan with a different strategy count), not the
+    hardcoded ALL_STRATEGIES constant — see docs/architecture/ontology-nesting-model.md."""
+    from pipeline.phase_c_synthesize import _load_strategies_from_plan
+
+    wiki_root = tmp_path / "wiki"
+    plans_dir = wiki_root / "plans"
+    plans_dir.mkdir(parents=True)
+    (plans_dir / "some-city-plan.md").write_text(
+        "---\ntitle: Some City Plan\nstrategies:\n"
+        "- '[[strategies/strategy-1-foo]]'\n"
+        "- '[[strategies/strategy-2-bar]]'\n---\n\nbody\n",
+        encoding="utf-8",
+    )
+
+    result = _load_strategies_from_plan(str(wiki_root))
+    assert result == ["strategies/strategy-1-foo", "strategies/strategy-2-bar"]
+
+
+def test_load_strategies_from_plan_returns_none_without_plans_dir(tmp_path):
+    from pipeline.phase_c_synthesize import _load_strategies_from_plan
+    assert _load_strategies_from_plan(str(tmp_path / "wiki")) is None
+
+
+def test_load_strategies_from_plan_returns_none_when_field_empty(tmp_path):
+    from pipeline.phase_c_synthesize import _load_strategies_from_plan
+
+    wiki_root = tmp_path / "wiki"
+    plans_dir = wiki_root / "plans"
+    plans_dir.mkdir(parents=True)
+    (plans_dir / "some-city-plan.md").write_text(
+        "---\ntitle: Some City Plan\n---\n\nbody\n", encoding="utf-8"
+    )
+
+    assert _load_strategies_from_plan(str(wiki_root)) is None
+
+
 def test_gather_strategy_entities_filters_by_strategy(tmp_path):
     """Returns only entities tagged to the given strategy."""
     import shutil

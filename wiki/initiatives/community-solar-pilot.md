@@ -9,6 +9,7 @@ milestones:
   target: Launch community solar pilot
   year: 2022
 parent-strategy: '[[strategies/strategy-1-renewable-grid]]'
+part-of: '[[initiatives/community-solar-program]]'
 partners: []
 party-responsible: '[[actors/office-of-sustainability-and-innovations]]'
 related-strategies:

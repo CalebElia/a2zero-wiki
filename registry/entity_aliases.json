@@ -26,16 +26,16 @@
       ],
       "candidates": [
         {
-          "type": "initiative",
-          "canonical": "initiatives/a2zero-carbon-neutrality-plan"
+          "type": "plan",
+          "canonical": "plans/a2zero-carbon-neutrality-plan"
         },
         {
           "type": "actor",
           "canonical": "actors/office-of-sustainability-and-innovations"
         }
       ],
-      "default": "initiatives/a2zero-carbon-neutrality-plan",
-      "notes": "A2Zero is both the plan's own brand name and loose shorthand for its administering office (OSI). Longer unambiguous phrases ('A2Zero Office', 'A2Zero Program') already route to OSI via their own untouched entries."
+      "default": "plans/a2zero-carbon-neutrality-plan",
+      "notes": "A2Zero is both the plan's own brand name and loose shorthand for its administering office (OSI). Longer unambiguous phrases ('A2Zero Office', 'A2Zero Program') already route to OSI via their own untouched entries. Retyped from initiative to plan on 2026-07-09 — see docs/architecture/ontology-nesting-model.md."
     },
     {
       "aliases": [

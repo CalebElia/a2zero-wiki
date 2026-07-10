@@ -2,6 +2,7 @@
 type: strategy
 title: 'Strategy 1: 100% Renewable Energy Grid'
 strategy-number: 1
+parent-plan: '[[plans/a2zero-carbon-neutrality-plan]]'
 tags:
 - renewable-energy
 - solar
