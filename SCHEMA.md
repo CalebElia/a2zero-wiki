@@ -355,6 +355,33 @@ All pages have a `uuid:` field in frontmatter — SHA-256 of `(type + normalized
 generated once at creation. The slug is for navigation; the UUID is the stable
 identity across re-runs and slug changes.
 
+### source (Pass 0)
+
+Path: `wiki/sources/<type>/<uuid>.md`. Copied verbatim from `prepared/<type>/<uuid>.md`
+by Pass 0; frontmatter is injected if the prepared file doesn't already have it.
+
+```yaml
+---
+uuid: a2zero-year3
+source_type: annual-report
+title: "A2ZERO Year Three Annual Report"
+ingest_date: "2026-06-30"          # when the PIPELINE ran — bookkeeping only
+covers-period-start: "2022-07"     # when the SOURCE DOCUMENT's real-world period begins
+covers-period-end: "2023-06"       # when it ends (same value as start for a point-in-time doc, e.g. a plan)
+---
+```
+
+`covers-period-start`/`covers-period-end` (`YYYY-MM`) must never be confused with
+`ingest_date`. `ingest_date` is pipeline metadata; `covers-period-*` is the actual
+program chronology the source describes (an annual report's fiscal year, a plan's
+publication date). `pipeline/phase_c_synthesize.py::extract_ingest_history` reads
+`covers-period-*` to ground `synthesis.year-over-year-arc` and the digest's
+cross-strategy narrative in real dates instead of ingest bookkeeping — see
+`docs/action-plan-2026-07-09.md` Item 1 for why this matters and
+`docs/project-evaluation-2026-07-09.md` for the underlying audit. Always pass
+`--covers-period-start`/`--covers-period-end` on `orchestrator.py source` when
+ingesting a new source that has no pre-existing frontmatter.
+
 ### overview (Pass 1 only)
 
 Path: `wiki/overviews/<source-uuid>.md`

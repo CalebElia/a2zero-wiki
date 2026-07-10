@@ -15,34 +15,34 @@ synthesis:
   - initiatives/expand-improve-local-transit
   - initiatives/expand-improve-regional-transit
   - initiatives/park-and-ride-expansion
-  - initiatives/develop-mixed-use-neighborhoods
   - initiatives/increase-diversity-of-housing
+  - initiatives/develop-mixed-use-neighborhoods
   - initiatives/tiered-parking-rates
   - initiatives/transit-oriented-development-zoning
   core-actors: []
-  year-over-year-arc: Baseline strategy and targets were established in cap-2020 on
-    2026-06-24; across a2zero-year1 through a2zero-year5 (2026-06-25 to 2026-07-02),
-    the portfolio appears to broaden from foundational transit, biking, land-use,
-    and parking actions into implementation-oriented programs such as mobility hubs,
-    Go-Pass expansion, protected bike lanes, and zoning integration, but the ingested
-    inventory does not provide year-specific quantitative VMT reduction results.
+  year-over-year-arc: From the cap-2020 baseline (2020-04), sources through a2zero-year1
+    (2020-07 to 2021-06) to a2zero-year5 (2024-06 to 2025-05) show the strategy broadening
+    from planned VMT reduction levers into implementation via active transportation
+    projects, transit access and electrification programs, zoning and parking reforms,
+    and mobility pilots, but the inventory here does not provide a quantified year-over-year
+    VMT outcome.
   open-questions:
-  - What measured VMT reduction has been achieved versus the 50% target?
-  - Which transit expansions are funded and on what timeline?
-  - How will parking pricing and parking minimum reforms be coordinated?
-  - How much emissions impact is attributable to land-use changes versus mode shift
-    programs?
+  - Was community-wide VMT reduced measurably against the 50% target?
+  - How much mode shift came from transit, biking, walking, and land-use changes respectively?
+  - Were tiered parking rates and park-and-ride expansion implemented at meaningful
+    scale?
+  - How were local transit improvements coordinated with regional transit expansion?
   cross-strategy-links:
-  - initiatives/expand-improve-local-transit
-  - initiatives/expand-improve-regional-transit
-  - initiatives/electrify-buses
-  - initiatives/transit-oriented-development-zoning
   - initiatives/increase-diversity-of-housing
+  - initiatives/develop-mixed-use-neighborhoods
+  - initiatives/transit-oriented-development-zoning
   - initiatives/a2zero-unified-development-code-integration
+  - initiatives/parking-minimum-removal
+  - initiatives/expand-improve-local-transit
   core-target: CAP-2020 set a target of reducing vehicle miles traveled by at least
-    50%, with the seven-action package projected to cut just over 8% of community-wide
-    emissions at a cost of just over $901,000,000.
-  last-rebuilt: '2026-07-07'
+    50%, with the seven actions projected to cut just over 8% of community-wide emissions
+    at a cost of just over $901,000,000.
+  last-rebuilt: '2026-07-09'
 ---
 
 ## Foundation

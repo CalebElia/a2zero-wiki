@@ -3,6 +3,8 @@ uuid: a2zero-year2
 source_type: annual-report
 title: "A2Zero Annual Report: Year 2 (2021–2022)"
 ingest_date: "2026-06-26"
+covers-period-start: "2021-07"
+covers-period-end: "2022-06"
 ---
 
 City of Ann Arbor

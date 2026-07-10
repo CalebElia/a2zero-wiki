@@ -1,3 +1,11 @@
+---
+uuid: a2zero-year1
+source_type: annual-report
+title: "A2Zero Year One Progress Report"
+covers-period-start: "2020-07"
+covers-period-end: "2021-06"
+---
+
 ## One Year of A2ZERO
 
 ## Overview

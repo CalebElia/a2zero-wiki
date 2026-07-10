@@ -16,32 +16,35 @@ synthesis:
   - initiatives/community-solar-pilot
   - initiatives/landfill-solar-project
   - initiatives/sustainable-energy-utility
-  - initiatives/100-renewable-energy-pathways-study
-  - initiatives/commercial-solar-program
-  - initiatives/grid-capacity-expansion-electrification
+  - initiatives/solarize-ann-arbor
+  - initiatives/wheeler-center-solar-park
   core-actors:
   - actors/dte-energy
-  year-over-year-arc: Baseline set in cap-2020 on 2026-06-24 around four pillars led
-    by Community Choice Aggregation; across a2zero-year1 through a2zero-year5 (2026-06-25
-    to 2026-07-02), implementation appears to broaden from concept and feasibility
-    work into a more diversified portfolio of local solar, utility engagement, and
-    enabling studies rather than a completed 100% renewable grid transition.
+  year-over-year-arc: Baseline set by cap-2020 (2020-04) around CCA plus local solar/storage,
+    then across a2zero-year1 through a2zero-year5 (2020-07 to 2025-05) the strategy
+    appears to have shifted from a state-enabled CCA concept toward incremental local
+    deployment via Solarize/bulk-buy, community-solar pilots, municipal and Wheeler
+    solar projects, and SEU/pathways exploration while utility partnership and regulatory
+    constraints remained central.
   open-questions:
-  - Whether state-enabling conditions for CCA will materialize
-  - Status and delivery timeline of the landfill solar project
-  - How much local solar capacity has actually been installed versus 2030 targets
-  - What governance and financing model will carry long-term renewable procurement
+  - Whether enabling conditions for full Community Choice Aggregation will materialize
+  - How much community-solar capacity beyond pilot scale will actually be built
+  - Whether the landfill solar concept advances to full development and at what scale
+  - How grid-capacity and utility interconnection constraints will affect local renewable
+    buildout
   cross-strategy-links:
   - initiatives/sustainable-energy-utility
   - initiatives/grid-capacity-expansion-electrification
-  - initiatives/microgrid-creation
   - initiatives/community-climate-action-millage-rebates
-  - initiatives/commercial-solar-program
-  core-target: CAP-2020 set this strategy's target at a 41% reduction in community-wide
-    greenhouse gas emissions for just over $4,100,000, centered on 100% renewable
-    electricity plus 78 MW of onsite renewables, 11 MW of community solar, and a 24
-    MW landfill solar project by 2030.
-  last-rebuilt: '2026-07-07'
+  - initiatives/carbon-neutral-districts
+  - initiatives/microgrid-creation
+  - initiatives/whole-home-decarbonization-assessment
+  core-target: CAP-2020 set this strategy's target at powering Ann Arbor's grid with
+    100% renewable energy through four actions projected to cut community-wide emissions
+    by 41% at a cost of just over $4,100,000, including targets of 78 MW of onsite
+    solar/storage, 11 MW of community solar, and a 24 MW landfill solar project by
+    2030.
+  last-rebuilt: '2026-07-09'
 ---
 
 ## Foundation

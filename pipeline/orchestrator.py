@@ -38,6 +38,8 @@ def run_source_ingest(
     wiki_only: bool = False,
     quads_only: bool = False,
     auto_approve_chunks: bool = False,
+    covers_period_start: str | None = None,
+    covers_period_end: str | None = None,
 ):
     """Ingest a source markdown file through the three-pass wiki pipeline.
 
@@ -73,13 +75,23 @@ def run_source_ingest(
                 "research": "research",
             }
             _inferred_type = _source_type_map.get(_type_dir, _type_dir.rstrip("s"))
+            if not covers_period_start or not covers_period_end:
+                print(
+                    f"[ingest] WARNING: {uuid} has no --covers-period-start/--covers-period-end. "
+                    "The wiki digest and strategy synthesis narrate this source's real-world "
+                    "period, not its ingest date — set these flags (or add covers-period-start/"
+                    "-end directly to the prepared/ source's frontmatter) so downstream "
+                    "synthesis has real chronology to work with."
+                )
             _injected = (
                 f"---\n"
                 f"uuid: {uuid}\n"
                 f"source_type: {_inferred_type}\n"
                 f'title: "{title}"\n'
                 f'ingest_date: "{run_date}"\n'
-                f"---\n\n"
+                + (f'covers-period-start: "{covers_period_start}"\n' if covers_period_start else "")
+                + (f'covers-period-end: "{covers_period_end}"\n' if covers_period_end else "")
+                + f"---\n\n"
             )
             _dest.write_text(_injected + _copied, encoding="utf-8")
 
@@ -439,6 +451,18 @@ if __name__ == "__main__":
         action="store_true",
         help="Bypass the chunking-gate human review; generate section map mechanically",
     )
+    p_source.add_argument(
+        "--covers-period-start",
+        default=None,
+        help="Real-world period this source covers, start (YYYY-MM). Only used when the "
+             "prepared/ source has no frontmatter yet — injected alongside ingest_date so "
+             "synthesis narrates real chronology instead of ingest dates.",
+    )
+    p_source.add_argument(
+        "--covers-period-end",
+        default=None,
+        help="Real-world period this source covers, end (YYYY-MM). See --covers-period-start.",
+    )
 
     # preflight subcommand
     p_preflight = sub.add_parser(
@@ -534,6 +558,8 @@ if __name__ == "__main__":
             wiki_only=not args.include_quads and not args.quads_only,
             quads_only=args.quads_only,
             auto_approve_chunks=args.auto_approve,
+            covers_period_start=args.covers_period_start,
+            covers_period_end=args.covers_period_end,
         )
     elif args.command == "log-query":
         from pipeline.topic_synthesize import append_query_log_entry

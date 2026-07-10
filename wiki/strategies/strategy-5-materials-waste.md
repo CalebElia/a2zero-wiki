@@ -12,32 +12,34 @@ synthesis:
   core-initiatives:
   - initiatives/composting-expansion
   - initiatives/commercial-recycling
-  - initiatives/require-sustainable-materials-in-developments
   - initiatives/move-toward-circular-economy
+  - initiatives/require-sustainable-materials-in-developments
   - initiatives/support-plant-rich-diet
   - initiatives/enhance-refrigerant-recycling-reuse-program
   - initiatives/zero-waste-plan
   - initiatives/circular-economy-strategy
   core-actors: []
-  year-over-year-arc: Baseline strategy was set in cap-2020 on 2026-06-24 around six
-    actions; by a2zero-year1 through a2zero-year5 (2026-06-25 to 2026-07-02), implementation
-    appears to broaden into operational programs for composting, circular economy,
-    food systems, and zero-waste behavior change, but the ingested inventory does
-    not provide clear year-by-year quantitative outcome changes.
+  year-over-year-arc: From the cap-2020 baseline (2020-04), Strategy 5 progressed
+    through 2020-07 to 2025-05 from a six-action waste-and-materials concept centered
+    on composting, commercial recycling, circular economy, sustainable materials,
+    plant-rich diets, and refrigerant recovery into a broader zero-waste/circular-economy
+    portfolio with food-system, reuse, and business-facing programs, while the inventory
+    does not provide a single consistent quantitative year-over-year outcome metric.
   open-questions:
-  - Which actions have measurable diversion or emissions results by year?
-  - Has commercial recycling moved from enforcement concept to broad compliance?
-  - What sustainable materials requirements were actually adopted for developments?
-  - How are upstream material emissions being tracked beyond disposal-phase impacts?
+  - Which initiatives delivered measurable waste or GHG reductions year to year?
+  - Whether sustainable materials requirements were formally adopted for developments
+  - How far commercial recycling enforcement and service expansion reached
+  - What quantified impact plant-rich diet and refrigerant programs achieved
   cross-strategy-links:
-  - initiatives/sustainable-purchasing-policy
   - initiatives/green-business-challenge
+  - initiatives/sustainable-purchasing-policy
   - initiatives/local-food-production-expansion
-  - initiatives/ann-arbor-sustainable-food-framework
-  core-target: CAP-2020 set Strategy 5's original target at a 0.3% reduction in baseline
-    community-wide greenhouse gas emissions for just over $45,000,000 in combined
-    action costs.
-  last-rebuilt: '2026-07-07'
+  - initiatives/sustainable-food-purchasing-policy
+  - initiatives/ghg-inventory
+  - initiatives/a2zero-carbon-neutrality-plan
+  core-target: CAP-2020 set Strategy 5's original target as a combined 0.3% reduction
+    in baseline community-wide greenhouse gas emissions at a cost of just over $45,000,000.
+  last-rebuilt: '2026-07-09'
 ---
 
 ## Foundation
