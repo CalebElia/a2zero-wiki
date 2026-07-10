@@ -2,6 +2,7 @@
 import json
 import pytest
 from pathlib import Path
+from unittest.mock import patch
 
 
 def _make_wiki(tmp_path: Path) -> Path:
@@ -910,3 +911,407 @@ def test_staleness_lint_annotates_ambiguous_entities(tmp_path):
     assert "ambiguous — verify against source" in by_page["locations/ann-arbor.md"]["detail"]
     assert "actors/city-of-ann-arbor" in by_page["locations/ann-arbor.md"]["detail"]
     assert "ambiguous — verify against source" in by_page["actors/city-of-ann-arbor.md"]["detail"]
+
+
+# ── Contradiction sweep (Item 3 / docs/contradiction-tracking-assessment-2026-07-10.md) ──
+
+def _make_contradiction_sweep_wiki(tmp_path):
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    (wiki / "sources" / "cap").mkdir(parents=True)
+    (wiki / "sources" / "annual-reports").mkdir(parents=True)
+
+    (wiki / "sources" / "cap" / "cap-2020.md").write_text(
+        "---\nuuid: cap-2020\n---\n\n"
+        "By the end of 2023, a 24MW solar installation is fully operational at the "
+        "former Ann Arbor landfill.\n",
+        encoding="utf-8",
+    )
+    (wiki / "sources" / "annual-reports" / "a2zero-year2.md").write_text(
+        "---\nuuid: a2zero-year2\n---\n\n"
+        "Final design for a 20MW solar field on our capped landfill was completed.\n",
+        encoding="utf-8",
+    )
+    (wiki / "initiatives" / "wheeler-center-solar-park.md").write_text(
+        "---\ntype: initiative\ntitle: Wheeler Center Solar Park\ntags: [solar, landfill]\n"
+        "---\n\n"
+        "The Wheeler Center Solar Park is a planned 20MW solar installation "
+        "([[sources/annual-reports/a2zero-year2|a2zero-year2]]) targeting 20MW capacity "
+        "and $5,000,000 in funding ([[sources/cap/cap-2020|cap-2020]]).\n",
+        encoding="utf-8",
+    )
+    return wiki
+
+
+def test_numeric_density_candidates_finds_multi_source_numeric_page(tmp_path):
+    from pipeline.phase_b_lint import _numeric_density_candidates
+    wiki = _make_contradiction_sweep_wiki(tmp_path)
+    candidates = _numeric_density_candidates(str(wiki), min_claims=2, min_sources=2)
+    slugs = [c["slug"] for c in candidates]
+    assert "initiatives/wheeler-center-solar-park" in slugs
+
+
+def test_numeric_density_candidates_excludes_pages_below_threshold(tmp_path):
+    from pipeline.phase_b_lint import _numeric_density_candidates
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    (wiki / "initiatives" / "quiet-initiative.md").write_text(
+        "---\ntype: initiative\ntitle: Quiet Initiative\n---\n\n"
+        "This initiative has no numeric claims at all, just prose.\n",
+        encoding="utf-8",
+    )
+    candidates = _numeric_density_candidates(str(wiki))
+    assert candidates == []
+
+
+def test_gather_source_excerpts_greps_relevant_numeric_lines(tmp_path):
+    from pipeline.phase_b_lint import _gather_source_excerpts
+    wiki = _make_contradiction_sweep_wiki(tmp_path)
+    excerpts = _gather_source_excerpts(
+        str(wiki), "Wheeler Center Solar Park",
+        ["sources/cap/cap-2020", "sources/annual-reports/a2zero-year2"],
+    )
+    assert "24MW" in excerpts["sources/cap/cap-2020"]
+    assert "20MW" in excerpts["sources/annual-reports/a2zero-year2"]
+
+
+def test_open_question_boost_slugs_matches_scale_language(tmp_path):
+    from pipeline.phase_b_lint import _open_question_boost_slugs
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    (wiki / "digest.md").write_text(
+        "## Strategy entity map\n\n"
+        "### [[strategies/strategy-1-renewable-grid|Strategy 1]]\n"
+        "- **core initiatives:** [[initiatives/wheeler-center-solar-park|Wheeler Center Solar Park]], [[initiatives/other-thing|Other Thing]]\n"
+        "- **open:** Whether the landfill solar concept advances to full development and at what scale\n",
+        encoding="utf-8",
+    )
+    boosted = _open_question_boost_slugs(str(wiki))
+    assert "initiatives/wheeler-center-solar-park" in boosted
+    assert "initiatives/other-thing" in boosted
+
+
+def test_open_question_boost_slugs_ignores_purely_qualitative_open_questions(tmp_path):
+    from pipeline.phase_b_lint import _open_question_boost_slugs
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    (wiki / "digest.md").write_text(
+        "### [[strategies/strategy-2-electrification|Strategy 2]]\n"
+        "- **core initiatives:** [[initiatives/some-program|Some Program]]\n"
+        "- **open:** Whether financing tools were ultimately deployed\n",
+        encoding="utf-8",
+    )
+    boosted = _open_question_boost_slugs(str(wiki))
+    assert boosted == set()
+
+
+def test_build_contradiction_page_assembles_expected_frontmatter_and_body():
+    from pipeline.phase_b_lint import _build_contradiction_page
+    candidate = {"slug": "initiatives/wheeler-center-solar-park", "tags": ["solar", "landfill"]}
+    verdict = {
+        "title": "Wheeler Center Solar Park capacity: 24MW vs 20MW",
+        "cross_source": True,
+        "claims": [
+            {"source": "sources/cap/cap-2020", "quote": "24MW solar installation fully operational"},
+            {"source": "sources/annual-reports/a2zero-year2", "quote": "Final design for a 20MW solar field"},
+        ],
+        "why_it_matters": "Affects assessed progress toward the 78MW target.",
+        "best_guess_explanation": "The 20MW figure is likely the right-sized final design.",
+    }
+    slug, content = _build_contradiction_page(candidate, verdict, "2026-07-10")
+    assert slug == "contradictions/wheeler-center-solar-park-capacity-24mw-vs-20mw"
+    assert "type: contradiction" in content
+    assert "cross-source: true" in content
+    assert "'[[initiatives/wheeler-center-solar-park]]'" in content
+    assert "24MW solar installation" in content
+    assert "20MW solar field" in content
+    assert "## Why it matters" in content
+    assert "## Best-guess explanation" in content
+
+
+@patch("pipeline.phase_b_lint.chat")
+def test_contradiction_sweep_produces_proposal_for_real_conflict(mock_chat, tmp_path):
+    import json as _json
+    wiki = _make_contradiction_sweep_wiki(tmp_path)
+    mock_chat.return_value = _json.dumps({
+        "contradiction_found": True,
+        "confidence": 0.9,
+        "title": "Wheeler Center capacity 24MW vs 20MW",
+        "cross_source": True,
+        "claims": [
+            {"source": "sources/cap/cap-2020", "quote": "24MW"},
+            {"source": "sources/annual-reports/a2zero-year2", "quote": "20MW"},
+        ],
+        "why_it_matters": "Matters for tracking the 78MW goal.",
+        "best_guess_explanation": "Unknown",
+    })
+    from pipeline.phase_b_lint import contradiction_sweep
+    proposals = contradiction_sweep(str(wiki), max_candidates=5)
+    assert len(proposals) == 1
+    assert proposals[0]["related_initiative"] == "initiatives/wheeler-center-solar-park"
+    assert "type: contradiction" in proposals[0]["content"]
+
+
+@patch("pipeline.phase_b_lint.chat")
+def test_contradiction_sweep_skips_when_llm_finds_no_conflict(mock_chat, tmp_path):
+    import json as _json
+    wiki = _make_contradiction_sweep_wiki(tmp_path)
+    mock_chat.return_value = _json.dumps({"contradiction_found": False, "confidence": 0.1})
+    from pipeline.phase_b_lint import contradiction_sweep
+    proposals = contradiction_sweep(str(wiki), max_candidates=5)
+    assert proposals == []
+
+
+@patch("pipeline.phase_b_lint.chat")
+def test_contradiction_sweep_skips_low_confidence(mock_chat, tmp_path):
+    import json as _json
+    wiki = _make_contradiction_sweep_wiki(tmp_path)
+    mock_chat.return_value = _json.dumps({
+        "contradiction_found": True,
+        "confidence": 0.3,
+        "title": "x", "cross_source": True,
+        "claims": [{"source": "sources/cap/cap-2020", "quote": "a"},
+                   {"source": "sources/annual-reports/a2zero-year2", "quote": "b"}],
+        "why_it_matters": "x", "best_guess_explanation": "x",
+    })
+    from pipeline.phase_b_lint import contradiction_sweep
+    proposals = contradiction_sweep(str(wiki), max_candidates=5, confidence_threshold=0.6)
+    assert proposals == []
+
+
+@patch("pipeline.phase_b_lint.chat")
+def test_contradiction_sweep_skips_already_backfilled_slug(mock_chat, tmp_path):
+    import json as _json
+    wiki = _make_contradiction_sweep_wiki(tmp_path)
+    (wiki / "contradictions").mkdir(parents=True)
+    (wiki / "contradictions" / "wheeler-capacity-conflict.md").write_text(
+        "---\ntype: contradiction\ntitle: already here\n---\n\nAlready backfilled.\n",
+        encoding="utf-8",
+    )
+    mock_chat.return_value = _json.dumps({
+        "contradiction_found": True,
+        "confidence": 0.9,
+        "title": "Wheeler capacity conflict",
+        "cross_source": True,
+        "claims": [{"source": "sources/cap/cap-2020", "quote": "24MW"},
+                   {"source": "sources/annual-reports/a2zero-year2", "quote": "20MW"}],
+        "why_it_matters": "x", "best_guess_explanation": "x",
+    })
+    from pipeline.phase_b_lint import contradiction_sweep
+    proposals = contradiction_sweep(str(wiki), max_candidates=5)
+    assert proposals == []
+
+
+def test_write_contradiction_proposals_writes_fenced_content(tmp_path):
+    from pipeline.phase_b_lint import write_contradiction_proposals
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    proposals = [{
+        "slug": "contradictions/example-conflict",
+        "content": "---\ntype: contradiction\ntitle: Example\n---\n\n## Conflicting claims\n\nBody.\n",
+        "confidence": 0.85,
+        "reasoning": "Two figures disagree.",
+        "related_initiative": "initiatives/example",
+    }]
+    write_contradiction_proposals(str(wiki), proposals)
+    rq = (tmp_path / "review-queue.md").read_text(encoding="utf-8")
+    assert "### [CONTRADICTION_PROPOSED] contradictions/example-conflict" in rq
+    assert "- Action: [ ] APPROVE_CREATE  [ ] DISMISS  [ ] DEFER" in rq
+    assert "```markdown" in rq
+    assert "## Conflicting claims" in rq
+
+
+def test_parse_approved_proposals_extracts_fenced_contradiction_content(tmp_path):
+    from pipeline.phase_b_lint import _parse_approved_proposals
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "## Contradiction Sweep — 2026-07-10\n\n"
+        "### [CONTRADICTION_PROPOSED] contradictions/example-conflict\n"
+        "- Related initiative: [[initiatives/example]]\n"
+        "- Confidence: 0.85\n"
+        "- Reasoning: Two figures disagree.\n"
+        "- Action: [x] APPROVE_CREATE  [ ] DISMISS  [ ] DEFER\n"
+        "- Notes: looks right\n\n"
+        "```markdown\n"
+        "---\n"
+        "type: contradiction\n"
+        "title: Example\n"
+        "---\n\n"
+        "## Conflicting claims\n\n"
+        "Body text.\n"
+        "```\n",
+        encoding="utf-8",
+    )
+    proposals = _parse_approved_proposals(str(rq))
+    assert len(proposals) == 1
+    p = proposals[0]
+    assert p["approved_action"] == "CREATE_CONTRADICTION"
+    assert p["slug"] == "contradictions/example-conflict"
+    assert "## Conflicting claims" in p["content"]
+    assert "type: contradiction" in p["content"]
+
+
+def test_parse_approved_proposals_ignores_unapproved_contradiction(tmp_path):
+    from pipeline.phase_b_lint import _parse_approved_proposals
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "### [CONTRADICTION_PROPOSED] contradictions/example-conflict\n"
+        "- Action: [ ] APPROVE_CREATE  [ ] DISMISS  [ ] DEFER\n\n"
+        "```markdown\n---\ntype: contradiction\n---\n\nBody.\n```\n",
+        encoding="utf-8",
+    )
+    assert _parse_approved_proposals(str(rq)) == []
+
+
+def test_apply_proposals_creates_contradiction_page_from_approved_content(tmp_path):
+    from pipeline.phase_b_lint import apply_proposals
+    wiki = tmp_path / "wiki"
+    wiki.mkdir()
+    (tmp_path / "registry").mkdir()
+    (tmp_path / "registry" / "entity_aliases.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "registry" / "merge-log.jsonl").write_text("", encoding="utf-8")
+    (tmp_path / "review-queue.md").write_text(
+        "### [CONTRADICTION_PROPOSED] contradictions/example-conflict\n"
+        "- Action: [x] APPROVE_CREATE  [ ] DISMISS  [ ] DEFER\n\n"
+        "```markdown\n"
+        "---\ntype: contradiction\ntitle: Example\n---\n\n"
+        "## Conflicting claims\n\nBody text.\n"
+        "```\n",
+        encoding="utf-8",
+    )
+    apply_proposals(
+        str(wiki),
+        str(tmp_path / "registry" / "entity_aliases.json"),
+        str(tmp_path / "registry" / "merge-log.jsonl"),
+    )
+    out = wiki / "contradictions" / "example-conflict.md"
+    assert out.exists()
+    content = out.read_text(encoding="utf-8")
+    assert "type: contradiction" in content
+    assert "## Conflicting claims" in content
+
+
+def test_cleanup_review_queue_ignores_headers_inside_contradiction_fence(tmp_path):
+    """Regression: a contradiction proposal's fenced page content contains its
+    own '## Conflicting claims' / '## Why it matters' headers — the cleanup
+    pass must not mistake those for review-queue.md section boundaries and
+    truncate the block early."""
+    from pipeline.phase_b_lint import _parse_approved_proposals, _cleanup_review_queue
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "## Contradiction Sweep — 2026-07-10\n\n"
+        "### [CONTRADICTION_PROPOSED] contradictions/example-conflict\n"
+        "- Action: [x] APPROVE_CREATE  [ ] DISMISS  [ ] DEFER\n\n"
+        "```markdown\n"
+        "---\ntype: contradiction\ntitle: Example\n---\n\n"
+        "## Conflicting claims\n\nFirst claim.\n\n"
+        "## Why it matters\n\nIt matters.\n"
+        "```\n\n"
+        "## Semantic Lint — 2026-07-10\n\n"
+        "### [MERGE_PROPOSED] initiatives/a.md + initiatives/b.md\n"
+        "- Action: [ ] APPROVE_MERGE  [ ] KEEP_SEPARATE  [ ] DEFER\n",
+        encoding="utf-8",
+    )
+    _cleanup_review_queue(str(rq))
+    remaining = rq.read_text(encoding="utf-8")
+    # The approved contradiction block is dropped (resolved)...
+    assert "CONTRADICTION_PROPOSED" not in remaining
+    # ...but the unrelated, still-pending MERGE block below it survives intact.
+    assert "[MERGE_PROPOSED] initiatives/a.md + initiatives/b.md" in remaining
+
+
+@patch("pipeline.phase_b_lint.chat")
+def test_contradiction_sweep_dedupes_against_existing_page_by_source_overlap(mock_chat, tmp_path):
+    """Regression: the same real-world conflict gets independently
+    rediscovered once per initiative page that cites the same two sources,
+    and the LLM titles/slugs it differently each time — an exact-slug check
+    alone doesn't catch this. A live sweep against the real wiki produced 5
+    near-duplicate Wheeler Center MW proposals before this fix (2026-07-10)."""
+    import json as _json
+    wiki = _make_contradiction_sweep_wiki(tmp_path)
+    # A second initiative page that independently cites the same two sources.
+    (wiki / "initiatives" / "landfill-solar-project.md").write_text(
+        "---\ntype: initiative\ntitle: Landfill Solar Project\ntags: [solar]\n---\n\n"
+        "The landfill solar project targets 20MW capacity "
+        "([[sources/annual-reports/a2zero-year2|a2zero-year2]]) versus an original "
+        "24MW figure ([[sources/cap/cap-2020|cap-2020]]).\n",
+        encoding="utf-8",
+    )
+    # Already backfilled by hand under a completely different slug/title wording.
+    (wiki / "contradictions").mkdir(parents=True)
+    (wiki / "contradictions" / "wheeler-center-mw-discrepancy.md").write_text(
+        "---\ntype: contradiction\ntitle: Existing\n"
+        "sources:\n- '[[sources/cap/cap-2020]]'\n- '[[sources/annual-reports/a2zero-year2]]'\n"
+        "---\n\nAlready here.\n",
+        encoding="utf-8",
+    )
+    mock_chat.return_value = _json.dumps({
+        "contradiction_found": True,
+        "confidence": 0.9,
+        "title": "A totally differently worded title each time",
+        "cross_source": True,
+        "claims": [
+            {"source": "sources/cap/cap-2020", "quote": "24MW"},
+            {"source": "sources/annual-reports/a2zero-year2", "quote": "20MW"},
+        ],
+        "why_it_matters": "x", "best_guess_explanation": "x",
+    })
+    from pipeline.phase_b_lint import contradiction_sweep
+    proposals = contradiction_sweep(str(wiki), max_candidates=5)
+    assert proposals == []
+
+
+@patch("pipeline.phase_b_lint.chat")
+def test_contradiction_sweep_dedupes_within_same_run_across_candidates(mock_chat, tmp_path):
+    """Same as above but with no pre-existing contradiction page — two
+    candidates discovered IN THE SAME sweep run, citing the same two
+    sources, must still only produce one proposal."""
+    import json as _json
+    wiki = _make_contradiction_sweep_wiki(tmp_path)
+    (wiki / "initiatives" / "landfill-solar-project.md").write_text(
+        "---\ntype: initiative\ntitle: Landfill Solar Project\ntags: [solar]\n---\n\n"
+        "The landfill solar project targets 20MW capacity "
+        "([[sources/annual-reports/a2zero-year2|a2zero-year2]]) versus an original "
+        "24MW figure ([[sources/cap/cap-2020|cap-2020]]).\n",
+        encoding="utf-8",
+    )
+    mock_chat.return_value = _json.dumps({
+        "contradiction_found": True,
+        "confidence": 0.9,
+        "title": "Different title each call",
+        "cross_source": True,
+        "claims": [
+            {"source": "sources/cap/cap-2020", "quote": "24MW"},
+            {"source": "sources/annual-reports/a2zero-year2", "quote": "20MW"},
+        ],
+        "why_it_matters": "x", "best_guess_explanation": "x",
+    })
+    from pipeline.phase_b_lint import contradiction_sweep
+    proposals = contradiction_sweep(str(wiki), max_candidates=5)
+    assert len(proposals) == 1
+
+
+@patch("pipeline.phase_b_lint.chat")
+def test_contradiction_sweep_drops_candidate_with_invented_source(mock_chat, tmp_path):
+    """Regression: a live sweep run produced a claim citing the initiative
+    page itself as a 'source' (not a real sources/ document) and another with
+    a parenthetical LLM annotation baked into what should have been a plain
+    slug — either would write a malformed wikilink or a schema-violating
+    sources: entry straight into review-queue.md. Every claims[].source must
+    be validated against the actual excerpt slugs shown to the model."""
+    import json as _json
+    wiki = _make_contradiction_sweep_wiki(tmp_path)
+    mock_chat.return_value = _json.dumps({
+        "contradiction_found": True,
+        "confidence": 0.9,
+        "title": "x",
+        "cross_source": True,
+        "claims": [
+            {"source": "sources/cap/cap-2020", "quote": "24MW"},
+            {"source": "initiatives/wheeler-center-solar-park (page body)", "quote": "20MW"},
+        ],
+        "why_it_matters": "x", "best_guess_explanation": "x",
+    })
+    from pipeline.phase_b_lint import contradiction_sweep
+    proposals = contradiction_sweep(str(wiki), max_candidates=5)
+    assert proposals == []

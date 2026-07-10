@@ -26,7 +26,7 @@ WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)(?:\|[^\]]*)?\]\]")
 # Matches the start of any proposal block header — used as a block-boundary detector.
 # Specialised header regexes below handle per-type parsing.
 PROPOSAL_HEADER_RE = re.compile(
-    r"### \[(MERGE_PROPOSED|TEMPORAL_SUCCESSION_PROPOSED|LINK_PROPOSED)\] (.+)"
+    r"### \[(MERGE_PROPOSED|TEMPORAL_SUCCESSION_PROPOSED|LINK_PROPOSED|CONTRADICTION_PROPOSED)\] (.+)"
 )
 
 # Per-type proposal header parsers
@@ -36,12 +36,16 @@ _MERGE_HEADER_RE = re.compile(
 _LINK_HEADER_RE = re.compile(
     r"### \[LINK_PROPOSED\] (.+?) ← (.+)"
 )
+_CONTRADICTION_HEADER_RE = re.compile(
+    r"### \[CONTRADICTION_PROPOSED\] (.+)"
+)
 _DISPLAY_TEXT_RE = re.compile(r'^- Display text: "(.+)"')
 _CONTEXT_RE = re.compile(r"^- Context: (.+)")
 
 # Patterns for approved/resolved actions
 _RESOLVED_RE = re.compile(
-    r"\[x\]\s+(?:APPROVE_MERGE|APPROVE_TEMPORAL_SUCCESSION|KEEP_SEPARATE|APPROVE_LINK|KEEP_UNLINKED)",
+    r"\[x\]\s+(?:APPROVE_MERGE|APPROVE_TEMPORAL_SUCCESSION|KEEP_SEPARATE|APPROVE_LINK|KEEP_UNLINKED"
+    r"|APPROVE_CREATE|DISMISS)",
     re.IGNORECASE,
 )
 _DEFER_RE = re.compile(r"\[x\]\s+DEFER", re.IGNORECASE)
@@ -52,6 +56,9 @@ _STRUCTURAL_SECTION_RE = re.compile(
 )
 _SEMANTIC_SECTION_RE = re.compile(
     r"\n## Semantic Lint —[^\n]*\n.*?(?=\n## |\Z)", re.DOTALL
+)
+_CONTRADICTION_SWEEP_SECTION_RE = re.compile(
+    r"\n## Contradiction Sweep —[^\n]*\n.*?(?=\n## |\Z)", re.DOTALL
 )
 _BACKLINK_SECTION_RE = re.compile(
     r"\n## Backlink Lint —[^\n]*\n.*?(?=\n## |\Z)", re.DOTALL
@@ -860,6 +867,392 @@ def write_semantic_proposals(wiki_root: str, proposals: list[dict]) -> None:
     print(f"[lint_wiki:semantic] {len(proposals)} proposals written to review-queue.md")
 
 
+# ─────────────────────────────────────────────────────────────────────────
+# Contradiction sweep — one-time backward pass over already-ingested content.
+#
+# The `contradiction` page type has been fully specified in the schema and
+# the Pass 2 extraction prompt since early in the project, but zero pages
+# existed after 6 ingests — the READ-UNDERSTAND-INTEGRATE instruction that
+# governs merging a new source's claims against an existing page body was
+# telling the model prior facts were "still valid" with no branch for a
+# genuine numeric conflict, so real discrepancies (a project's MW figure
+# changing between annual reports) got silently smoothed into one number
+# instead of flagged. That prompt is fixed (see WIKI_PAGES_SYSTEM), which
+# stops this from recurring on FUTURE ingests. This sweep is the one-time
+# backfill mechanism for the 6 sources already ingested before the fix.
+# See docs/contradiction-tracking-assessment-2026-07-10.md.
+# ─────────────────────────────────────────────────────────────────────────
+
+_NUMERIC_CLAIM_RE = re.compile(
+    r"\d[\d,]*(?:\.\d+)?\s?(?:MW|GWh|kWh|%|percent|metric tons?|tons?|households?|homes?"
+    r"|installations?|MTCO2e|MTCO₂e|facilities|buildings)\b"
+    r"|\$[\d,]+(?:\.\d+)?(?:\s?(?:million|thousand|M|K))?",
+    re.IGNORECASE,
+)
+
+
+def _numeric_density_candidates(
+    wiki_root: str, min_claims: int = 3, min_sources: int = 2
+) -> list[dict]:
+    """Deterministically rank initiative pages by how many distinct numeric
+    claims they cite across how many distinct sources — the shape most at
+    risk from the silent-merge failure mode this sweep exists to catch.
+    Every known real contradiction (Wheeler Center MW, Solarize MW scope)
+    has this shape: a multi-year quantitative figure cited from 2+ sources.
+    """
+    root = Path(wiki_root) / "initiatives"
+    if not root.exists():
+        return []
+    candidates = []
+    for page in sorted(root.glob("*.md")):
+        text = page.read_text(encoding="utf-8", errors="replace")
+        fm = _read_frontmatter(page)
+        body = re.sub(r"^---\n.*?\n---\n", "", text, flags=re.DOTALL)
+        claims = _NUMERIC_CLAIM_RE.findall(body)
+        sources = sorted(set(re.findall(r"\[\[(sources/[^\]|]+)", body)))
+        if len(claims) >= min_claims and len(sources) >= min_sources:
+            candidates.append({
+                "slug": f"initiatives/{page.stem}",
+                "title": fm.get("title", page.stem),
+                "tags": (fm.get("tags") or [])[:4],
+                "claim_count": len(claims),
+                "sources": sources,
+                "boosted": False,
+            })
+    candidates.sort(key=lambda c: (c["claim_count"], len(c["sources"])), reverse=True)
+    return candidates
+
+
+def _open_question_boost_slugs(wiki_root: str) -> set[str]:
+    """Return initiative slugs whose digest open-questions phrasing suggests
+    an unresolved specific (dates, scale, "advances to... at what scale",
+    "how much... actually") rather than a purely qualitative gap.
+
+    These are cases where the synthesis layer is already circling something
+    concrete without landing on it — e.g. Strategy 1's real open-question
+    "Whether the landfill solar concept advances to full development and at
+    what scale" is the Wheeler Center MW discrepancy, sensed but unflagged.
+    Used to boost candidate priority, not as a standalone detection path.
+    """
+    digest_path = Path(wiki_root) / "digest.md"
+    if not digest_path.exists():
+        return set()
+    text = digest_path.read_text(encoding="utf-8", errors="replace")
+
+    boost_markers = (
+        "at what scale", "how much", "how many", "whether the", "actually",
+        "measurable", "quantified", "reconcile",
+    )
+    boosted: set[str] = set()
+    # Each "### [[strategies/...]]" block's core-initiatives + open line share
+    # one strategy section; associate any open-question with boost language
+    # to every core-initiative slug listed just above it in the same block.
+    for block in re.split(r"\n### ", text)[1:]:
+        core_m = re.search(r"\*\*core initiatives:\*\*(.+)", block)
+        open_m = re.search(r"\*\*open:\*\*(.+)", block)
+        if not core_m or not open_m:
+            continue
+        if not any(marker in open_m.group(1).lower() for marker in boost_markers):
+            continue
+        boosted.update(re.findall(r"\[\[(initiatives/[^\]|]+)", core_m.group(1)))
+    return boosted
+
+
+_CONTRADICTION_SWEEP_SYSTEM = """You are reviewing one A2Zero wiki initiative page against \
+excerpts from the source documents it cites, looking for a genuine unreconciled numeric \
+contradiction — a discrepancy that already survived on the page's own timeline, likely because \
+an earlier extraction pass silently picked one figure instead of flagging both.
+
+Return ONLY valid JSON with this exact structure:
+{
+  "contradiction_found": true|false,
+  "confidence": 0.0,
+  "title": "brief description of the conflict, e.g. 'Wheeler Center Solar Park capacity: 24MW vs 20MW'",
+  "cross_source": true|false,
+  "claims": [
+    {"source": "sources/cap/cap-2020", "quote": "exact or close paraphrase of the conflicting figure and its context"},
+    {"source": "sources/annual-reports/a2zero-year2", "quote": "..."}
+  ],
+  "why_it_matters": "1-2 sentences on the concrete stakes (e.g. affects assessed progress toward a stated target)",
+  "best_guess_explanation": "1-2 sentences, or the literal string 'Unknown' if no source-supported explanation exists"
+}
+
+Rules:
+- Only flag a REAL numeric disagreement about the SAME fact (same project, same metric, same
+  scope) — not two different metrics, not a figure that grew because the underlying quantity
+  legitimately grew over time (e.g. cumulative solar installed increasing year over year is
+  growth, not a contradiction).
+- "claims" must cite at least 2 sources with the literal or closely-paraphrased conflicting text.
+- Every claims[].source value MUST be EXACTLY one of the slugs shown as a "--- slug ---" header
+  in [SOURCE EXCERPTS] below — copy it verbatim, character for character. NEVER invent a source
+  value, NEVER use the initiative page itself as a "source" (if the page body misquotes or
+  overstates a source excerpt, that IS a valid contradiction — cite the source excerpt as one
+  claim and quote the page body's conflicting text as the OTHER claim's "quote" field, but its
+  "source" value must still be that same real source slug, describing what the page claims that
+  source says vs. what the excerpt actually says).
+- If the sources actually agree, or the excerpts don't contain enough to judge, set
+  contradiction_found: false and confidence low — do not force a finding.
+- Return ONLY the JSON object. No preamble, no code fences, no commentary.
+"""
+
+
+def _gather_source_excerpts(
+    wiki_root: str, title: str, sources: list[str], max_lines_per_source: int = 20
+) -> dict[str, str]:
+    """Grep each cited source for lines relevant to this initiative's title,
+    capped per source. Loading full sources (CAP-2020 alone is 4000+ lines)
+    would blow the context budget for a bounded sweep; a keyword grep is the
+    same technique used to manually verify the two backfilled cases in
+    docs/contradiction-tracking-assessment-2026-07-10.md.
+    """
+    keywords = [w.lower() for w in re.findall(r"[A-Za-z]{4,}", title)]
+    excerpts: dict[str, str] = {}
+    for source_slug in sources:
+        source_path = Path(wiki_root) / f"{source_slug}.md"
+        if not source_path.exists():
+            continue
+        lines = source_path.read_text(encoding="utf-8", errors="replace").splitlines()
+        hits = [
+            line.strip() for line in lines
+            if any(kw in line.lower() for kw in keywords) and _NUMERIC_CLAIM_RE.search(line)
+        ][:max_lines_per_source]
+        if hits:
+            excerpts[source_slug] = "\n".join(hits)
+    return excerpts
+
+
+def _slugify_title(title: str) -> str:
+    text = re.sub(r"[^a-z0-9\s-]", "", title.strip().lower())
+    text = re.sub(r"[\s_]+", "-", text).strip("-")
+    return "-".join(text.split("-")[:10])
+
+
+def _build_contradiction_page(candidate: dict, verdict: dict, run_date: str) -> tuple[str, str]:
+    """Deterministically assemble the contradiction page markdown from a
+    structured LLM verdict. Returns (slug, full_file_content)."""
+    slug = "contradictions/" + _slugify_title(verdict["title"])
+    claims = verdict.get("claims", [])
+    source_slugs = sorted({c["source"] for c in claims if c.get("source")})
+
+    fm_lines = [
+        "---",
+        "type: contradiction",
+        f'title: "{verdict["title"]}"',
+        "sources:",
+    ]
+    fm_lines += [f"- '[[{s}]]'" for s in source_slugs]
+    fm_lines += [
+        f"cross-source: {'true' if verdict.get('cross_source') else 'false'}",
+        "status: unresolved",
+        "related-initiatives:",
+        f"- '[[{candidate['slug']}]]'",
+        "tags:",
+    ]
+    fm_lines += [f"- {t}" for t in candidate.get("tags") or ["contradiction-sweep"]]
+    fm_lines += [
+        f"source-first-seen: '[[{source_slugs[0]}]]'" if source_slugs else "source-first-seen: null",
+        f"last-updated: '{run_date}'",
+        "---",
+        "",
+        "## Conflicting claims",
+        "",
+    ]
+    for c in claims:
+        src = c.get("source", "")
+        label = src.split("/")[-1]
+        fm_lines.append(f"**{label}:** \"{c.get('quote', '')}\" ([[{src}|{label}]])")
+        fm_lines.append("")
+    fm_lines += [
+        "## Why it matters",
+        "",
+        verdict.get("why_it_matters", ""),
+        "",
+        "## Best-guess explanation",
+        "",
+        verdict.get("best_guess_explanation", "Unknown"),
+        "",
+        f"_Surfaced by a contradiction sweep against {candidate['slug']} — human review required before this page is considered final; see docs/contradiction-tracking-assessment-2026-07-10.md for the mechanism._",
+        "",
+    ]
+    return slug, "\n".join(fm_lines)
+
+
+def _existing_contradiction_source_sets(wiki_root: str) -> list[frozenset]:
+    """Return the `sources:` set of every existing wiki/contradictions/*.md
+    page. Used to dedupe sweep candidates against already-backfilled pages
+    by WHAT THEY'RE ABOUT (overlapping source citations), not by slug —
+    the same real-world conflict (e.g. Wheeler Center's 24MW-vs-20MW figure)
+    gets independently rediscovered once per initiative page that happens to
+    cite it, and the LLM picks a different title/slug wording each time, so
+    an exact-slug check alone misses the duplication entirely.
+    """
+    root = Path(wiki_root) / "contradictions"
+    if not root.exists():
+        return []
+    out = []
+    for page in root.glob("*.md"):
+        fm = _read_frontmatter(page)
+        sources = fm.get("sources") or []
+        stripped = {re.sub(r"^\[\[|\]\]$", "", s) for s in sources}
+        if stripped:
+            out.append(frozenset(stripped))
+    return out
+
+
+def contradiction_sweep(
+    wiki_root: str,
+    max_candidates: int = 20,
+    confidence_threshold: float = 0.6,
+) -> list[dict]:
+    """One-time backward sweep: rank initiative pages by numeric-claim density
+    (boosted by digest open-questions that already smell like an unresolved
+    specific), re-check the top N against fresh source excerpts via LLM
+    verdict, and return proposal dicts ready for write_contradiction_proposals.
+
+    Returns list of {slug, content, confidence, reasoning, related_initiative}.
+    """
+    candidates = _numeric_density_candidates(wiki_root)
+    boosted_slugs = _open_question_boost_slugs(wiki_root)
+    for c in candidates:
+        c["boosted"] = c["slug"] in boosted_slugs
+    candidates.sort(key=lambda c: (c["boosted"], c["claim_count"], len(c["sources"])), reverse=True)
+
+    existing_source_sets = _existing_contradiction_source_sets(wiki_root)
+    proposed_source_sets: list[frozenset] = []
+
+    run_date = date.today().isoformat()
+    proposals = []
+    for candidate in candidates[:max_candidates]:
+        excerpts = _gather_source_excerpts(wiki_root, candidate["title"], candidate["sources"])
+        if len(excerpts) < 2:
+            continue  # need at least 2 sources' worth of excerpts to compare
+
+        page_body = re.sub(
+            r"^---\n.*?\n---\n", "",
+            (Path(wiki_root) / f"{candidate['slug']}.md").read_text(encoding="utf-8", errors="replace"),
+            flags=re.DOTALL,
+        )
+        excerpt_block = "\n\n".join(f"--- {s} ---\n{t}" for s, t in excerpts.items())
+        prompt = (
+            f"Initiative: {candidate['title']} ({candidate['slug']})\n\n"
+            f"[CURRENT PAGE BODY]\n{page_body}\n[END CURRENT PAGE BODY]\n\n"
+            f"[SOURCE EXCERPTS]\n{excerpt_block}\n[END SOURCE EXCERPTS]\n\n"
+            "Assess for a genuine unreconciled numeric contradiction now."
+        )
+        try:
+            raw = chat(
+                system=_CONTRADICTION_SWEEP_SYSTEM,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=1024,
+                model_hint="extraction",
+                temperature=0.0,
+            )
+            raw = re.sub(r"^```(?:json)?\s*", "", raw.strip())
+            raw = re.sub(r"\s*```$", "", raw)
+            verdict = json.loads(raw)
+        except Exception as e:
+            print(f"[lint_wiki:contradiction-sweep] WARNING: verdict failed for {candidate['slug']!r}: {e}")
+            continue
+
+        if not verdict.get("contradiction_found") or float(verdict.get("confidence", 0)) < confidence_threshold:
+            continue
+        claims = verdict.get("claims", [])
+        if len(claims) < 2:
+            continue
+
+        # Deterministic validation: every claim's source must be exactly one
+        # of the real source slugs we actually showed the model — never trust
+        # an LLM-emitted "source" value verbatim into a wikilink. Without
+        # this, a real sweep run produced a claim citing the initiative page
+        # itself as a "source" and another with "(page body)" appended
+        # straight into what should have been a slug, which would have
+        # written a malformed [[...]] link and a schema-violating sources:
+        # entry straight into review-queue.md.
+        if not all(c.get("source") in excerpts for c in claims):
+            print(
+                f"[lint_wiki:contradiction-sweep] WARNING: dropped candidate for "
+                f"{candidate['slug']!r} — claim cited a source outside the given excerpts"
+            )
+            continue
+
+        # Dedupe by WHAT this candidate is about (overlapping source
+        # citations), not by slug — the same real-world conflict gets
+        # independently rediscovered once per initiative page that cites it,
+        # and the LLM titles it differently each time.
+        claim_sources = frozenset(c["source"] for c in claims if c.get("source"))
+        already_covered = any(
+            len(claim_sources & existing) >= 2 for existing in existing_source_sets
+        ) or any(
+            len(claim_sources & proposed) >= 2 for proposed in proposed_source_sets
+        )
+        if already_covered:
+            continue
+        proposed_source_sets.append(claim_sources)
+
+        slug, content = _build_contradiction_page(candidate, verdict, run_date)
+        page_path = Path(wiki_root) / f"{slug}.md"
+        if page_path.exists():
+            continue  # already backfilled (slug happened to match too)
+
+        reasoning = verdict.get("why_it_matters", "") or "Numeric conflict detected."
+        if candidate["boosted"]:
+            reasoning = "[digest open-question match] " + reasoning
+        proposals.append({
+            "slug": slug,
+            "content": content,
+            "confidence": float(verdict.get("confidence", 0)),
+            "reasoning": reasoning,
+            "related_initiative": candidate["slug"],
+        })
+
+    return proposals
+
+
+def write_contradiction_proposals(wiki_root: str, proposals: list[dict]) -> None:
+    """Write contradiction-sweep proposals to review-queue.md, replacing any
+    unannotated Contradiction Sweep section (same pattern as semantic lint)."""
+    if not proposals:
+        print("[lint_wiki:contradiction-sweep] No contradiction candidates found.")
+        return
+
+    rq_path = Path(wiki_root).parent / "review-queue.md"
+    today = date.today().isoformat()
+
+    lines = [f"\n## Contradiction Sweep — {today}\n"]
+    for p in proposals:
+        lines.append(f"### [CONTRADICTION_PROPOSED] {p['slug']}")
+        lines.append(f"- Related initiative: [[{p['related_initiative']}]]")
+        lines.append(f"- Confidence: {p['confidence']:.2f}")
+        lines.append(f"- Reasoning: {p['reasoning']}")
+        lines.append("- Action: [ ] APPROVE_CREATE  [ ] DISMISS  [ ] DEFER")
+        lines.append("- Notes: _Add any notes before approving_")
+        lines.append("")
+        lines.append("```markdown")
+        lines.append(p["content"].rstrip())
+        lines.append("```")
+        lines.append("")
+    new_section = "\n".join(lines)
+
+    if rq_path.exists():
+        text = rq_path.read_text(encoding="utf-8")
+        m = _CONTRADICTION_SWEEP_SECTION_RE.search(text)
+        if m:
+            existing_block = m.group(0)
+            if re.search(r"\[x\]", existing_block, re.IGNORECASE):
+                print("[lint_wiki:contradiction-sweep] WARNING: existing section has annotations — appending new proposals.")
+                text = text.rstrip() + new_section
+            else:
+                text = _CONTRADICTION_SWEEP_SECTION_RE.sub("", text)
+                text = text.rstrip() + new_section
+        else:
+            text = text.rstrip() + new_section
+        rq_path.write_text(text, encoding="utf-8")
+    else:
+        rq_path.write_text(new_section.lstrip(), encoding="utf-8")
+
+    print(f"[lint_wiki:contradiction-sweep] {len(proposals)} proposals written to review-queue.md")
+
+
 def _cleanup_review_queue(rq_path_str: str) -> None:
     """Remove resolved proposal blocks from review-queue.md after apply.
 
@@ -876,11 +1269,22 @@ def _cleanup_review_queue(rq_path_str: str) -> None:
     while i < len(lines):
         line = lines[i]
         if PROPOSAL_HEADER_RE.match(line.strip()):
-            # Collect the entire proposal block (until next proposal header, section header, or EOF)
+            # Collect the entire proposal block (until next proposal header, section
+            # header, or EOF). A CONTRADICTION_PROPOSED block embeds the proposed
+            # page's own markdown inside a ```markdown fence — that page body has
+            # its own "## Conflicting claims" headers, which must NOT be mistaken
+            # for a review-queue.md section boundary while inside the fence.
             block: list[str] = [line]
             i += 1
+            in_fence = False
             while i < len(lines):
-                if PROPOSAL_HEADER_RE.match(lines[i].strip()) or lines[i].startswith("## "):
+                stripped = lines[i].strip()
+                if stripped.startswith("```"):
+                    in_fence = not in_fence
+                    block.append(lines[i])
+                    i += 1
+                    continue
+                if not in_fence and (PROPOSAL_HEADER_RE.match(stripped) or lines[i].startswith("## ")):
                     break
                 block.append(lines[i])
                 i += 1
@@ -896,13 +1300,15 @@ def _cleanup_review_queue(rq_path_str: str) -> None:
             i += 1
 
     output = "".join(result)
-    # Remove empty semantic lint section headers left behind when all proposals were cleared
-    output = re.sub(
-        r"\n## Semantic Lint — [^\n]+\n\s*(?=\n## |\Z)",
-        "\n",
-        output,
-        flags=re.DOTALL,
-    )
+    # Remove empty section headers left behind when all proposals in that
+    # section were cleared.
+    for header in ("Semantic Lint", "Contradiction Sweep"):
+        output = re.sub(
+            rf"\n## {re.escape(header)} — [^\n]+\n\s*(?=\n## |\Z)",
+            "\n",
+            output,
+            flags=re.DOTALL,
+        )
     path.write_text(output, encoding="utf-8")
 
 
@@ -917,9 +1323,14 @@ def _replace_wiki_page_body(page_path: str, new_body: str) -> None:
 def _parse_approved_proposals(review_queue_path: str) -> list[dict]:
     """Parse review-queue.md for checked (approved) proposals.
 
-    Handles three proposal types:
+    Handles four proposal types:
       MERGE / TEMPORAL_SUCCESSION — header: ### [TYPE] page_a + page_b
       LINK                        — header: ### [LINK_PROPOSED] page ← slug
+      CONTRADICTION               — header: ### [CONTRADICTION_PROPOSED] slug,
+                                     body is a fenced ```markdown block (the
+                                     full proposed page content) rather than
+                                     an existing file reference — the target
+                                     page doesn't exist yet.
     """
     text = Path(review_queue_path).read_text(encoding="utf-8", errors="replace")
     proposals = []
@@ -928,9 +1339,32 @@ def _parse_approved_proposals(review_queue_path: str) -> list[dict]:
     for line in text.splitlines():
         stripped = line.strip()
 
+        # --- CONTRADICTION_PROPOSED: fenced content spans multiple lines and
+        # must be consumed before any other pattern below gets a chance to
+        # match text inside the fence (e.g. the fenced page's own "## ..."
+        # headers or "- " bullets must never be mistaken for queue metadata). ---
+        if current is not None and current.get("type") == "CONTRADICTION_PROPOSED":
+            if stripped == "```markdown":
+                current["_in_fence"] = True
+                continue
+            if stripped == "```" and current.get("_in_fence"):
+                current["_in_fence"] = False
+                current["content"] = "\n".join(current.pop("_fence_lines", []))
+                if current.get("approved_action"):
+                    proposals.append({k: v for k, v in current.items() if not k.startswith("_")})
+                current = None
+                continue
+            if current.get("_in_fence"):
+                current.setdefault("_fence_lines", []).append(line)
+                continue
+            if re.search(r"\[x\]\s+APPROVE_CREATE", line, re.IGNORECASE):
+                current["approved_action"] = "CREATE_CONTRADICTION"
+            continue
+
         # --- detect proposal header ---
         merge_m = _MERGE_HEADER_RE.match(stripped)
         link_m = _LINK_HEADER_RE.match(stripped)
+        contradiction_m = _CONTRADICTION_HEADER_RE.match(stripped)
 
         if merge_m:
             current = {
@@ -947,6 +1381,16 @@ def _parse_approved_proposals(review_queue_path: str) -> list[dict]:
                 "slug": link_m.group(2).strip(),
                 "display_text": "",  # filled below
                 "context": "",  # filled below
+            }
+            continue
+
+        if contradiction_m:
+            current = {
+                "type": "CONTRADICTION_PROPOSED",
+                "slug": contradiction_m.group(1).strip(),
+                "content": "",
+                "approved_action": None,
+                "_in_fence": False,
             }
             continue
 
@@ -1097,6 +1541,20 @@ def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> N
                 print(f"[lint_wiki:apply] WARNING: display text not found in {page_rel}: '{display_text}'")
             continue
 
+        if p["approved_action"] == "CREATE_CONTRADICTION":
+            slug = p["slug"]
+            page_path = root / f"{slug}.md"
+            if page_path.exists():
+                print(f"[lint_wiki:apply] WARNING: contradiction page already exists, skipping: {slug}")
+                continue
+            if not p.get("content", "").strip():
+                print(f"[lint_wiki:apply] WARNING: empty content for approved contradiction: {slug}")
+                continue
+            page_path.parent.mkdir(parents=True, exist_ok=True)
+            page_path.write_text(p["content"].strip() + "\n", encoding="utf-8")
+            print(f"[lint_wiki:apply] CREATED contradiction page: {slug}")
+            continue
+
         page_a_rel = p["page_a"]
         page_b_rel = p["page_b"]
         path_a = root / page_a_rel
@@ -1194,6 +1652,11 @@ if __name__ == "__main__":
                         help="Flag entity pages a given source names but never cites (STALE_ENTITY)")
     parser.add_argument("--source-uuid", default=None,
                         help="Source UUID for --staleness (default: last entry in meta/ingest-stats.jsonl)")
+    parser.add_argument("--contradiction-sweep", action="store_true",
+                        help="One-time backward sweep for unreconciled numeric conflicts in "
+                             "already-ingested content — see docs/contradiction-tracking-assessment-2026-07-10.md")
+    parser.add_argument("--max-candidates", type=int, default=20,
+                        help="Cap on candidate pages re-checked per --contradiction-sweep run")
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--aliases-path", default="registry/entity_aliases.json")
     parser.add_argument("--merge-log", default="registry/merge-log.jsonl")
@@ -1216,8 +1679,14 @@ if __name__ == "__main__":
         st_findings = staleness_lint(args.wiki_root, source_uuid=args.source_uuid)
         write_staleness_findings(args.wiki_root, st_findings, resolved_uuid)
 
+    if args.contradiction_sweep:
+        cs_proposals = contradiction_sweep(args.wiki_root, max_candidates=args.max_candidates)
+        write_contradiction_proposals(args.wiki_root, cs_proposals)
+
     if args.apply:
         apply_proposals(args.wiki_root, args.aliases_path, args.merge_log)
 
-    if not any([args.structural, args.semantic, args.backlink, args.staleness, args.apply]):
-        print("Specify at least one mode: --structural, --semantic, --backlink, --staleness, --apply")
+    if not any([args.structural, args.semantic, args.backlink, args.staleness,
+                args.contradiction_sweep, args.apply]):
+        print("Specify at least one mode: --structural, --semantic, --backlink, --staleness, "
+              "--contradiction-sweep, --apply")
