@@ -36,11 +36,25 @@ for entities mentioned in the section.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 READ-UNDERSTAND-INTEGRATE:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-If EXISTING PAGE CONTENT is shown below in [EXISTING: slug] blocks, those pages
-already exist in the wiki from a prior source ingest.
+If EXISTING PAGE CONTENT is shown below in [EXISTING: slug] blocks (or in a
+[RETRIEVED ENTITY PAGES] block), those pages already exist in the wiki from a
+prior source ingest.
+  - BEFORE merging, compare every specific number in the existing body (MW, dollar
+    amount, percentage, count, date) against the equivalent number in THIS chunk,
+    where both describe the same fact. "Are still valid" below means the OLD FACT
+    ITSELF is still true and worth keeping — it does NOT mean a new, different
+    number for the same fact silently overrides it as if nothing changed.
+  - If a number for the same fact conflicts (e.g. existing body says a project is
+    24MW, this chunk says 20MW; existing body says a program reached 5.4MW, this
+    chunk's source also states a different figure for an overlapping scope) —
+    do NOT silently pick one. Keep BOTH figures in the integrated body, each with
+    its own citation, AND additionally emit a `contradiction` page (see type 6
+    below) citing both. This is the single most common way real tension in the
+    source record gets lost — treat it as failure to flag, not a merge success.
   - Produce an INTEGRATED body for that page — one that a reader who has never seen
     the prior version would find fully coherent and complete
-  - Preserve all prior facts (they came from earlier sources and are still valid)
+  - Preserve all prior facts (they came from earlier sources and are still valid,
+    per the conflict check above)
   - Add new depth, evidence, and nuance from THIS chunk only
   - Do NOT duplicate paragraphs that already make the same point
   - Your body content REPLACES the existing body — write a complete whole, not an appendage
@@ -220,6 +234,9 @@ PAGE TYPES TO CREATE:
 6. CONTRADICTION — conflicting claims about the same fact, broadly interpreted.
    Create when numbers, dates, status claims, targets, costs, or actor roles conflict within or
    across sources. Do NOT silently resolve conflicts — surface them here for human review.
+   THIS IS THE PAGE TYPE THE READ-UNDERSTAND-INTEGRATE CONFLICT CHECK ABOVE PRODUCES —
+   whenever that check finds a number mismatch for the same fact, create one of these,
+   in the SAME response as the integrated entity page, not as a separate follow-up pass.
    Slug: "contradictions/{kebab-brief-description}"
    Frontmatter:
      type: contradiction

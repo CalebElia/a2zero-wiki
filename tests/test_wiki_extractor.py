@@ -155,6 +155,48 @@ def test_validate_page_spec_accepts_all_llm_writable_types():
         assert type_errors == [], f"Unexpected type error for {pt!r}: {type_errors}"
 
 
+def test_wiki_pages_system_instructs_numeric_conflict_check_before_merging():
+    """Regression: READ-UNDERSTAND-INTEGRATE previously told the model prior
+    facts were 'still valid' and the new body 'REPLACES' the old one, with no
+    branch for a genuine numeric conflict (e.g. an initiative's MW figure
+    changing between annual reports) — the model would silently pick the new
+    number instead of keeping both and flagging a contradiction page. See
+    docs/contradiction-tracking-assessment-2026-07-10.md for the real,
+    currently-unflagged examples (Wheeler Center 24MW vs 20MW; Solarize
+    5.4/6.5/11.88 MW) this fixes."""
+    from pipeline.pass2b_extract import WIKI_PAGES_SYSTEM
+    assert "do NOT silently pick one" in WIKI_PAGES_SYSTEM
+    assert "emit a `contradiction` page" in WIKI_PAGES_SYSTEM
+    # The CONTRADICTION type definition must point back to the conflict check,
+    # not sit disconnected from the one place a contradiction actually surfaces.
+    assert "READ-UNDERSTAND-INTEGRATE CONFLICT CHECK" in WIKI_PAGES_SYSTEM
+
+
+def test_write_or_append_page_creates_new_contradiction_page(tmp_path):
+    """A contradiction page spec (as the fixed prompt now instructs the model
+    to emit alongside an integrated entity page) writes through the same
+    generic path as any other type — no special-casing needed or missing."""
+    from pipeline.pass2b_extract import write_or_append_page
+    spec = {
+        "page_type": "contradiction",
+        "slug": "contradictions/wheeler-center-mw-discrepancy",
+        "frontmatter": {
+            "type": "contradiction",
+            "title": "Wheeler Center Solar Park capacity: 24MW vs 20MW",
+            "sources": ["[[sources/cap/cap-2020]]", "[[sources/annual-reports/a2zero-year2]]"],
+            "cross-source": True,
+            "status": "unresolved",
+        },
+        "body": "CAP-2020 and Year 1 state 24MW; Year 2 onward states 20MW. ([[sources/cap/cap-2020|cap-2020]])",
+    }
+    write_or_append_page(spec, wiki_root=str(tmp_path), source_uuid="cap-2020")
+    out = tmp_path / "contradictions" / "wheeler-center-mw-discrepancy.md"
+    assert out.exists()
+    content = out.read_text()
+    assert "type: contradiction" in content
+    assert "24MW" in content and "20MW" in content
+
+
 def test_validate_page_spec_rejects_strategy_and_commitment_types():
     """strategy and commitment are forbidden in Pass 2."""
     from pipeline.pass2b_extract import validate_page_spec
