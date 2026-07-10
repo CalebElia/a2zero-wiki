@@ -38,14 +38,16 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ---
 
-## Next — Item 3: Resurrect contradiction tracking
+## Item 3: Resurrect contradiction tracking — DONE (2026-07-10, `feat/contradiction-tracking`)
 
-**Why:** `contradicts` already exists in the integration-plan schema and is unsurfaced; wiki-v1 had 3 real contradiction pages, current wiki has 0 after 6 sources. This is the highest-value content type for a replication-playbook product and the plumbing is 90% built.
+**Why:** wiki-v1 had 3 real contradiction pages, current wiki had 0 after 6 sources despite the `contradiction` type being fully specified in schema and prompt. Pre-implementation investigation (`docs/contradiction-tracking-assessment-2026-07-10.md`) found the original 3.1 premise wrong — the `contradicts` field described in `docs/architecture/knowledge-synthesis-architecture.md` was never actually implemented in `pass1a_comprehend.py`; the real root cause was the Pass 2 READ-UNDERSTAND-INTEGRATE instruction telling the model prior facts were "still valid" with no branch for a genuine numeric conflict. Scope below reflects what was actually built, not the original guess.
 
-- [ ] **3.1 — Surface non-empty `contradicts` entries** from the integration plan into `review-queue.md` as a new lint-queue section (extend `phase_b_lint.py`).
-- [ ] **3.2 — On human approval, write `wiki/contradictions/<slug>.md`** following the schema already defined in `SCHEMA.md`, citing both conflicting sources.
-- [ ] **3.3 — Backfill the 3 known v1 contradictions** (Wheeler MW discrepancy, Solarize MW scope, facility audit counts) by porting them from `archive/wiki-v1/wiki/contradictions/` and re-verifying against current entity pages/sources.
-- [ ] **3.4 — Sweep current digest `open-questions`** for latent contradictions already noted in prose (e.g. numbers that don't reconcile across annual reports) and promote the clearest 2–3 to formal contradiction pages as a proof of the pipeline.
+- [x] **3.1 — Fix the actual root cause**: added an explicit numeric-conflict check to `pass2b_extract.py`'s READ-UNDERSTAND-INTEGRATE instruction (`WIKI_PAGES_SYSTEM`), cross-referenced to the `CONTRADICTION` type definition, so future ingests keep both conflicting numbers with citations and emit a contradiction page instead of silently picking one.
+- [x] **3.2 — Backfilled all 3 known v1 cases**, re-verified against current sources (Wheeler MW discrepancy, Solarize MW scope, facility audit count — all confirmed still live/unresolved as of Year 5). The facility-audit case was initially spawned as a separate follow-up task because it looked like a pure recall gap (Year 1's "6 facilities" claim was absent from any page); the follow-up investigation (`task_64c7698a`, run 2026-07-10 in a parallel worktree) confirmed the recall gap (Year 1 predates `recall_scan.py` by 11 days) but also found it's genuinely unresolvable which building set each year's count refers to — so it's both a recall gap (now fixed, the fact is cited) and a contradiction (now tracked, `wiki/contradictions/city-facility-audit-count.md`).
+- [x] **3.3 — Built `phase_b_lint.py --contradiction-sweep`**: deterministic numeric-density candidate ranking + scoped LLM verdict + human-reviewed `review-queue.md` proposals (new `CONTRADICTION_PROPOSED` format, since the target page doesn't exist yet unlike MERGE proposals). Ran once against the real wiki; found and fixed two real bugs in the process (cross-candidate duplicate detection by source overlap, not slug; deterministic validation that LLM-emitted "source" values are real excerpt slugs, not invented values) — 3 clean proposals now sitting in `review-queue.md` for review.
+- [x] **3.4 — `_open_question_boost_slugs()`**: cross-references digest.md's `open-questions` phrasing against sweep candidates, boosting priority when the synthesis layer is already circling something concrete without landing on it.
+
+**Follow-ups spawned, not blocking this item:** Year 1 facility-audit recall gap; possible duplicate between `initiatives/landfill-solar-project.md` and `initiatives/wheeler-center-solar-park.md` (surfaced by the sweep finding the same Wheeler conflict via both pages).
 
 ---
 
