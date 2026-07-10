@@ -1,6 +1,6 @@
 ---
 funding-events: []
-last-updated: '2026-06-30'
+last-updated: '2026-07-10'
 launched: 2023
 locations:
 - '[[locations/ann-arbor]]'
@@ -33,3 +33,5 @@ type: initiative
 ---
 
 In Year 3 of A2ZERO, the City began decarbonization audits with a local engineering team at four municipal buildings, with the goal of fully decarbonizing these buildings by 2025 ([[sources/annual-reports/a2zero-year3|a2zero-year3]]). The City Buildings Decarbonization initiative aims to eliminate fossil fuel use in Ann Arbor's municipal building stock, and a Year 3 priority was to create a decarbonization plan and begin implementation across these four city buildings ([[sources/annual-reports/a2zero-year2|a2zero-year2]]). These audits are intended to identify pathways to eliminate fossil fuel use in city-owned facilities, supporting both the A2ZERO carbon neutrality goal and the broader strategy of leading by example in government building performance ([[sources/annual-reports/a2zero-year3|a2zero-year3]]).
+
+This effort has an earlier and later data point that don't cleanly reconcile with the four-building Year 2/3 figure above. In Year 1, the City reported completing energy audits of 6 City facilities under the same Strategy 3 building-efficiency work, with no buildings named ([[sources/annual-reports/a2zero-year1|a2zero-year1]]) — before the decarbonization-specific pilot described above was named or scoped. In Year 4, the City reported conducting decarbonization assessments at six municipal facilities and developing plans to make them carbon neutral, while separately initiating decarbonization work at the City's new election center ([[sources/annual-reports/a2zero-year4|a2zero-year4]]). Whether the Year 1 six, the Year 2/3 four, and the Year 4 six describe the same, overlapping, or entirely distinct sets of buildings is not stated in any source. See [[contradictions/city-facility-audit-count|the tracked ambiguity]] for the full analysis across all four reports.

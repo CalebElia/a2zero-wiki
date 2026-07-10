@@ -1,6 +1,6 @@
 # Wiki Index
 
-_511 pages — last updated 2026-07-10_
+_512 pages — last updated 2026-07-10_
 
 ## actor
 
@@ -161,6 +161,7 @@ _511 pages — last updated 2026-07-10_
 
 ## contradiction
 
+- [[contradictions/city-facility-audit-count|City facility energy/decarbonization audit count: 6 (Year 1) vs 4 (Year 2-3) vs 6 (Year 4)]]
 - [[contradictions/solarize-mw-scope|Solar MW figures differ within Year 5: 5.4MW (Solarize) vs 6.5MW (since A2ZERO) vs 11.88MW (dashboard)]]
 - [[contradictions/wheeler-center-mw-discrepancy|Wheeler Center Solar Park capacity: 24MW (CAP-2020, Year 1) vs 20MW (Years 2-5)]]
 
