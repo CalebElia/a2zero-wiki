@@ -34,6 +34,8 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` done
 - [x] **2.4 — Add a semantic-lint heuristic** in `phase_b_lint.py --semantic`: same `event-type` + overlapping `programs-authorized` + dates within ~60 days ⇒ propose merge (currently semantic lint likely relies on title/body fuzzy matching, which date-prefixed slugs defeat).
 - [x] **2.5 — Regression test** covering the merge heuristic against the exact SEU-vote fixture pattern.
 
+**Follow-on (not in the original scope, done 2026-07-09 on `feat/ontology-nesting`):** the same review session surfaced a broader ontology-nesting gap (Plan→Strategy→Initiative→sub-initiative containment) — see `docs/architecture/ontology-nesting-model.md`.
+
 ---
 
 ## Next — Item 3: Resurrect contradiction tracking
