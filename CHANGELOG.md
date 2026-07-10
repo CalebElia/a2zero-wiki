@@ -5,6 +5,22 @@ Format: reverse-chronological. Each entry covers a working session or meaningful
 
 ---
 
+## 2026-07-10 — Rename detection, safe redirect, keep-separate cycling fix
+
+**What changed:**
+- **`--alias-phrases` rename scanner** (`pipeline/phase_b_lint.py::alias_phrase_lint`) — closes a structural blind spot in semantic lint: title-similarity gating (`fuzzy_candidates`, 0.65) never sends a genuine rename-drift pair to the LLM verdict. `initiatives/landfill-solar-project.md` and `initiatives/wheeler-center-solar-park.md` are the same project but their titles score 0.47 — yet `landfill-solar-project.md`'s own body already narrated the rename in prose (*"also referred to as … and later the Wheeler Center Solar Park"*). The scanner harvests that: regex over page bodies for rename cue phrases, captures the title-case name after each cue (splitting chained "X and later Y" into both), fuzzy-matches (0.75) against other same-directory titles, emits `ALIAS_DETECTED` proposals with the source sentence as evidence. **No per-candidate LLM call.** Run against the live wiki: exactly one proposal (landfill→wheeler), zero false positives across 229 initiatives.
+- **Corrected capture** — the pre-implementation draft's greedy `([^,.;()]+)` capture grabbed the whole chained clause as one blob (0.47 fuzzy), *missing its own motivating example*; title-case anchoring + conjunction-splitting yields `"Wheeler Center Solar Park"` → 1.00.
+- **Safe REDIRECT apply action + deterministic content safeguard** (`apply_proposals`) — an approved `APPROVE_REDIRECT` deletes the old-name stub, rewrites inbound links, and registers a `name-variant` alias with **no LLM call** — but only when a deterministic containment check finds every substantive sentence of the old page already present in the canonical page (wikilinks/citations stripped so differing citations don't mask shared facts). If the old page has unique facts, it falls back automatically to the full LLM merge (`pass2c_merge.merge_pages`), never a silent delete. Errs toward merge on any doubt.
+- **Durable KEEP_SEPARATE memory** (`_load_keep_separate_pairs`, `_parse_approved_proposals`, `apply_proposals`) — fixes a confirmed live cycling bug: `KEEP_SEPARATE`/`DISMISS` were not parsed and left no durable trace, so `semantic_lint` (which re-derives candidates from raw page state every run) re-proposed a rejected pair indefinitely. Approving KEEP_SEPARATE now writes a `KEEP_SEPARATE` action to `registry/merge-log.jsonl` (slug-keyed, survives future renames); `semantic_lint` and `alias_phrase_lint` load and skip decided pairs before the LLM verdict / before emitting.
+- **Proposal 1 (tag-token structural pairing) dropped** — measured at ~330–449 net-new LLM verdict calls per `--semantic` run (~99% net-new, grows with corpus) to catch cases the rename scanner already catches for ~zero cost; documented embeddings as the correct future breadth play with the cost comparison, rather than silently dropping it.
+- **392 passed, 1 skipped.** Structural lint clean (0 broken/orphan) on the live wiki.
+
+**Why:** A contradiction sweep surfaced that two pages for the same landfill-solar project had drifted apart in name across CAP-2020→annual-report ingests and were invisible to duplicate detection because the check only compares titles. The rename was already written into the wiki in prose; nothing consumed it. Fixing that surfaced two adjacent gaps — every merge paid a full LLM body-merge even for a trivial stub, and a KEEP_SEPARATE decision had no memory so the review queue cycled — both fixed here so the new candidate path doesn't worsen an already-broken loop.
+
+**Spec:** `docs/architecture/semantic-lint-structural-candidates.md`. **Branch:** `feat/rename-detection-lint`.
+
+---
+
 ## 2026-07-06 — Deterministic recall floor + staleness lint
 
 **What changed:**

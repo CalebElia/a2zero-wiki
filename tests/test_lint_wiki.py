@@ -1315,3 +1315,258 @@ def test_contradiction_sweep_drops_candidate_with_invented_source(mock_chat, tmp
     from pipeline.phase_b_lint import contradiction_sweep
     proposals = contradiction_sweep(str(wiki), max_candidates=5)
     assert proposals == []
+
+
+# ── Rename-phrase scanner + safe redirect + keep-separate memory ──
+# (docs/architecture/semantic-lint-structural-candidates.md)
+
+def test_extract_rename_candidates_splits_chained_clause():
+    """The spec's own regex captured the whole chained clause as one blob
+    ('the Wheeler Center Landfill Solar Project and later the Wheeler Center
+    Solar Park') → 0.47 fuzzy, missing its own motivating example. The
+    corrected capture yields each name separately."""
+    from pipeline.phase_b_lint import _extract_rename_candidates
+    body = ("The Landfill Solar Project, also referred to as the Wheeler Center "
+            "Landfill Solar Project and later the Wheeler Center Solar Park, was "
+            "proposed in CAP 2020 as a utility-scale solar installation.")
+    names = [n for n, _ in _extract_rename_candidates(body)]
+    assert "Wheeler Center Solar Park" in names
+    assert "Wheeler Center Landfill Solar Project" in names
+
+
+def test_alias_phrase_lint_emits_for_real_rename(tmp_path):
+    from pipeline.phase_b_lint import alias_phrase_lint
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    (wiki / "initiatives" / "landfill-solar-project.md").write_text(
+        "---\ntype: initiative\ntitle: Landfill Solar Project\n---\n\n"
+        "The Landfill Solar Project, later the Wheeler Center Solar Park, was "
+        "proposed in CAP 2020.\n",
+        encoding="utf-8",
+    )
+    (wiki / "initiatives" / "wheeler-center-solar-park.md").write_text(
+        "---\ntype: initiative\ntitle: Wheeler Center Solar Park\n---\n\n"
+        "A 20MW solar installation.\n",
+        encoding="utf-8",
+    )
+    proposals = alias_phrase_lint(str(wiki))
+    assert len(proposals) == 1
+    p = proposals[0]
+    assert p["old"] == "initiatives/landfill-solar-project"
+    assert p["canonical"] == "initiatives/wheeler-center-solar-park"
+    assert p["score"] >= 0.99
+
+
+def test_alias_phrase_lint_filters_non_rename_construction(tmp_path):
+    """'also referred to as a pilot program' is a description, not a name —
+    the title-case anchor rejects it (lowercase 'a')."""
+    from pipeline.phase_b_lint import alias_phrase_lint
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    (wiki / "initiatives" / "foo.md").write_text(
+        "---\ntype: initiative\ntitle: Foo Program\n---\n\n"
+        "The Foo Program, also referred to as a pilot program, launched in 2022.\n",
+        encoding="utf-8",
+    )
+    (wiki / "initiatives" / "bar.md").write_text(
+        "---\ntype: initiative\ntitle: Bar Program\n---\n\nUnrelated.\n",
+        encoding="utf-8",
+    )
+    assert alias_phrase_lint(str(wiki)) == []
+
+
+def test_alias_phrase_lint_no_proposal_when_name_matches_no_page(tmp_path):
+    from pipeline.phase_b_lint import alias_phrase_lint
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    (wiki / "initiatives" / "foo.md").write_text(
+        "---\ntype: initiative\ntitle: Foo Program\n---\n\n"
+        "The Foo Program, later the Nonexistent Phantom Initiative, ended.\n",
+        encoding="utf-8",
+    )
+    (wiki / "initiatives" / "bar.md").write_text(
+        "---\ntype: initiative\ntitle: Bar Program\n---\n\nUnrelated.\n",
+        encoding="utf-8",
+    )
+    assert alias_phrase_lint(str(wiki)) == []
+
+
+def test_alias_phrase_lint_skips_keep_separate_pair(tmp_path):
+    from pipeline.phase_b_lint import alias_phrase_lint
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    (tmp_path / "registry").mkdir()
+    (tmp_path / "registry" / "merge-log.jsonl").write_text(
+        json.dumps({"action": "KEEP_SEPARATE",
+                    "pages": ["initiatives/landfill-solar-project",
+                              "initiatives/wheeler-center-solar-park"]}) + "\n",
+        encoding="utf-8",
+    )
+    (wiki / "initiatives" / "landfill-solar-project.md").write_text(
+        "---\ntype: initiative\ntitle: Landfill Solar Project\n---\n\n"
+        "The Landfill Solar Project, later the Wheeler Center Solar Park, proposed.\n",
+        encoding="utf-8",
+    )
+    (wiki / "initiatives" / "wheeler-center-solar-park.md").write_text(
+        "---\ntype: initiative\ntitle: Wheeler Center Solar Park\n---\n\nA solar installation.\n",
+        encoding="utf-8",
+    )
+    assert alias_phrase_lint(str(wiki)) == []
+
+
+def test_load_keep_separate_pairs_reads_log(tmp_path):
+    from pipeline.phase_b_lint import _load_keep_separate_pairs
+    log = tmp_path / "merge-log.jsonl"
+    log.write_text(
+        json.dumps({"action": "MERGE", "from": "a.md", "into": "b.md"}) + "\n"
+        + json.dumps({"action": "KEEP_SEPARATE",
+                      "pages": ["initiatives/x.md", "initiatives/y"]}) + "\n",
+        encoding="utf-8",
+    )
+    pairs = _load_keep_separate_pairs(str(log))
+    assert frozenset({"initiatives/x", "initiatives/y"}) in pairs
+    assert len(pairs) == 1  # the MERGE entry is not a keep-separate record
+
+
+def test_parse_approved_proposals_recognizes_alias_redirect(tmp_path):
+    from pipeline.phase_b_lint import _parse_approved_proposals
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "## Alias/Rename Detection — 2026-07-10\n\n"
+        "### [ALIAS_DETECTED] initiatives/landfill-solar-project → initiatives/wheeler-center-solar-park\n"
+        "- Evidence: \"...\"\n"
+        "- Matched: \"Wheeler Center Solar Park\" (fuzzy 1.00)\n"
+        "- Action: [x] APPROVE_REDIRECT  [ ] KEEP_SEPARATE  [ ] DEFER\n",
+        encoding="utf-8",
+    )
+    proposals = _parse_approved_proposals(str(rq))
+    assert len(proposals) == 1
+    p = proposals[0]
+    assert p["approved_action"] == "REDIRECT"
+    assert p["old_slug"] == "initiatives/landfill-solar-project"
+    assert p["canonical_slug"] == "initiatives/wheeler-center-solar-park"
+
+
+def test_parse_approved_proposals_recognizes_keep_separate_pair(tmp_path):
+    from pipeline.phase_b_lint import _parse_approved_proposals
+    rq = tmp_path / "review-queue.md"
+    rq.write_text(
+        "### [MERGE_PROPOSED] initiatives/a.md + initiatives/b.md\n"
+        "- Action: [ ] APPROVE_MERGE  [x] KEEP_SEPARATE  [ ] DEFER\n",
+        encoding="utf-8",
+    )
+    proposals = _parse_approved_proposals(str(rq))
+    assert len(proposals) == 1
+    p = proposals[0]
+    assert p["approved_action"] == "KEEP_SEPARATE"
+    assert set(p["pages"]) == {"initiatives/a.md", "initiatives/b.md"}
+
+
+def _redirect_wiki(tmp_path, old_body: str):
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    (tmp_path / "registry").mkdir()
+    (tmp_path / "registry" / "entity_aliases.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "registry" / "merge-log.jsonl").write_text("", encoding="utf-8")
+    (wiki / "initiatives" / "landfill-solar-project.md").write_text(
+        "---\ntype: initiative\ntitle: Landfill Solar Project\n---\n\n" + old_body,
+        encoding="utf-8",
+    )
+    (wiki / "initiatives" / "wheeler-center-solar-park.md").write_text(
+        "---\ntype: initiative\ntitle: Wheeler Center Solar Park\n---\n\n"
+        "The Wheeler Center Solar Park is a 20MW solar installation on the capped landfill.\n",
+        encoding="utf-8",
+    )
+    # A page that links to the old slug, to verify inbound-link rewrite.
+    (wiki / "initiatives" / "linker.md").write_text(
+        "---\ntype: initiative\ntitle: Linker\n---\n\nSee [[initiatives/landfill-solar-project]].\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "review-queue.md").write_text(
+        "### [ALIAS_DETECTED] initiatives/landfill-solar-project → initiatives/wheeler-center-solar-park\n"
+        "- Action: [x] APPROVE_REDIRECT  [ ] KEEP_SEPARATE  [ ] DEFER\n",
+        encoding="utf-8",
+    )
+    return wiki
+
+
+def test_apply_redirect_safe_stub_no_llm_call(tmp_path):
+    """Old page is a thin stub (no substantive sentences not in canonical) →
+    safe REDIRECT: delete + rewrite links + alias, and NEVER an LLM merge."""
+    from unittest.mock import patch, MagicMock
+    from pipeline.phase_b_lint import apply_proposals
+    wiki = _redirect_wiki(tmp_path, "The Landfill Solar Project. See the newer page.\n")
+
+    with patch("pipeline.pass2c_merge.merge_pages", MagicMock()) as mock_merge:
+        apply_proposals(str(wiki),
+                        str(tmp_path / "registry" / "entity_aliases.json"),
+                        str(tmp_path / "registry" / "merge-log.jsonl"))
+    mock_merge.assert_not_called()
+    assert not (wiki / "initiatives" / "landfill-solar-project.md").exists()
+    # inbound link rewritten
+    linker = (wiki / "initiatives" / "linker.md").read_text(encoding="utf-8")
+    assert "[[initiatives/wheeler-center-solar-park]]" in linker
+    # alias registered
+    aliases = json.loads((tmp_path / "registry" / "entity_aliases.json").read_text())
+    assert "landfill-solar-project" in aliases
+    assert aliases["landfill-solar-project"]["canonical"] == "initiatives/wheeler-center-solar-park"
+    # merge-log records a REDIRECT
+    log = (tmp_path / "registry" / "merge-log.jsonl").read_text()
+    assert '"action": "REDIRECT"' in log
+
+
+def test_apply_redirect_falls_back_to_merge_when_old_has_unique_content(tmp_path):
+    """Old page has a substantive fact not in canonical → route to the full
+    LLM merge (content-preservation safeguard), never a silent delete."""
+    from unittest.mock import patch
+    from pipeline.phase_b_lint import apply_proposals
+    unique = ("The Landfill Solar Project originally targeted twenty four megawatts "
+              "of capacity and included a floating solar pilot on a retention pond.\n")
+    wiki = _redirect_wiki(tmp_path, unique)
+
+    with patch("pipeline.pass2c_merge.merge_pages", return_value="MERGED BODY") as mock_merge:
+        apply_proposals(str(wiki),
+                        str(tmp_path / "registry" / "entity_aliases.json"),
+                        str(tmp_path / "registry" / "merge-log.jsonl"))
+    mock_merge.assert_called_once()
+    # old page still deleted, canonical got the merged body
+    assert not (wiki / "initiatives" / "landfill-solar-project.md").exists()
+    canonical = (wiki / "initiatives" / "wheeler-center-solar-park.md").read_text(encoding="utf-8")
+    assert "MERGED BODY" in canonical
+    log = (tmp_path / "registry" / "merge-log.jsonl").read_text()
+    assert '"action": "REDIRECT_MERGE"' in log
+
+
+def test_apply_keep_separate_writes_log_and_semantic_lint_then_skips(tmp_path):
+    """End-to-end cycling fix: approving KEEP_SEPARATE writes a durable log
+    entry, and a subsequent semantic_lint run no longer proposes that pair —
+    even two identical-titled pages, which normally emit at confidence 1.0."""
+    from pipeline.phase_b_lint import apply_proposals, semantic_lint
+    wiki = tmp_path / "wiki"
+    (wiki / "initiatives").mkdir(parents=True)
+    (tmp_path / "registry").mkdir()
+    (tmp_path / "registry" / "entity_aliases.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "registry" / "merge-log.jsonl").write_text("", encoding="utf-8")
+    # Two pages with an identical title — normally an instant MERGE_PROPOSED (conf 1.0).
+    (wiki / "initiatives" / "a.md").write_text(
+        "---\ntype: initiative\ntitle: Shared Title\n---\n\nBody A.\n", encoding="utf-8")
+    (wiki / "initiatives" / "b.md").write_text(
+        "---\ntype: initiative\ntitle: Shared Title\n---\n\nBody B.\n", encoding="utf-8")
+
+    # Before: semantic_lint proposes the identical-title pair.
+    assert any(p["type"] == "MERGE_PROPOSED" for p in semantic_lint(str(wiki)))
+
+    # Human marks KEEP_SEPARATE and applies.
+    (tmp_path / "review-queue.md").write_text(
+        "### [MERGE_PROPOSED] initiatives/a.md + initiatives/b.md\n"
+        "- Action: [ ] APPROVE_MERGE  [x] KEEP_SEPARATE  [ ] DEFER\n",
+        encoding="utf-8",
+    )
+    apply_proposals(str(wiki),
+                    str(tmp_path / "registry" / "entity_aliases.json"),
+                    str(tmp_path / "registry" / "merge-log.jsonl"))
+    log = (tmp_path / "registry" / "merge-log.jsonl").read_text()
+    assert '"action": "KEEP_SEPARATE"' in log
+
+    # After: the same pair is no longer proposed.
+    assert not any(p["type"] == "MERGE_PROPOSED" for p in semantic_lint(str(wiki)))

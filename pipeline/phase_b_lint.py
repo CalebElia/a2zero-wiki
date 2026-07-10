@@ -3,6 +3,7 @@ On-demand post-ingest wiki linter.
 
 Usage:
   python -m pipeline.phase_b_lint --wiki-root wiki --structural
+  python -m pipeline.phase_b_lint --wiki-root wiki --alias-phrases
   python -m pipeline.phase_b_lint --wiki-root wiki --semantic
   python -m pipeline.phase_b_lint --wiki-root wiki --backlink [--scope strategies overviews]
   python -m pipeline.phase_b_lint --wiki-root wiki --apply
@@ -26,7 +27,8 @@ WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)(?:\|[^\]]*)?\]\]")
 # Matches the start of any proposal block header — used as a block-boundary detector.
 # Specialised header regexes below handle per-type parsing.
 PROPOSAL_HEADER_RE = re.compile(
-    r"### \[(MERGE_PROPOSED|TEMPORAL_SUCCESSION_PROPOSED|LINK_PROPOSED|CONTRADICTION_PROPOSED)\] (.+)"
+    r"### \[(MERGE_PROPOSED|TEMPORAL_SUCCESSION_PROPOSED|LINK_PROPOSED|CONTRADICTION_PROPOSED"
+    r"|ALIAS_DETECTED)\] (.+)"
 )
 
 # Per-type proposal header parsers
@@ -39,13 +41,19 @@ _LINK_HEADER_RE = re.compile(
 _CONTRADICTION_HEADER_RE = re.compile(
     r"### \[CONTRADICTION_PROPOSED\] (.+)"
 )
+# ALIAS_DETECTED header: "### [ALIAS_DETECTED] <old-slug> → <canonical-slug>"
+# The phrase-containing page is the old name (redirect source); the matched
+# page is canonical (survivor).
+_ALIAS_HEADER_RE = re.compile(
+    r"### \[ALIAS_DETECTED\] (.+?) → (.+)"
+)
 _DISPLAY_TEXT_RE = re.compile(r'^- Display text: "(.+)"')
 _CONTEXT_RE = re.compile(r"^- Context: (.+)")
 
 # Patterns for approved/resolved actions
 _RESOLVED_RE = re.compile(
     r"\[x\]\s+(?:APPROVE_MERGE|APPROVE_TEMPORAL_SUCCESSION|KEEP_SEPARATE|APPROVE_LINK|KEEP_UNLINKED"
-    r"|APPROVE_CREATE|DISMISS)",
+    r"|APPROVE_CREATE|APPROVE_REDIRECT|DISMISS)",
     re.IGNORECASE,
 )
 _DEFER_RE = re.compile(r"\[x\]\s+DEFER", re.IGNORECASE)
@@ -56,6 +64,9 @@ _STRUCTURAL_SECTION_RE = re.compile(
 )
 _SEMANTIC_SECTION_RE = re.compile(
     r"\n## Semantic Lint —[^\n]*\n.*?(?=\n## |\Z)", re.DOTALL
+)
+_ALIAS_SECTION_RE = re.compile(
+    r"\n## Alias/Rename Detection —[^\n]*\n.*?(?=\n## |\Z)", re.DOTALL
 )
 _CONTRADICTION_SWEEP_SECTION_RE = re.compile(
     r"\n## Contradiction Sweep —[^\n]*\n.*?(?=\n## |\Z)", re.DOTALL
@@ -670,6 +681,19 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
     root = Path(wiki_root)
     proposals = []
 
+    # Durable memory of pairs a human previously marked KEEP_SEPARATE — skip
+    # them so a rejected pair is never re-proposed run after run (the live
+    # cycling bug this closes). Slug-keyed so it survives future renames.
+    _keep_separate = _load_keep_separate_pairs(
+        str(Path(wiki_root).parent / "registry" / "merge-log.jsonl")
+    )
+
+    def _is_kept_separate(pa: Path, pb: Path) -> bool:
+        return frozenset({
+            _slug_without_ext(str(pa.relative_to(root))),
+            _slug_without_ext(str(pb.relative_to(root))),
+        }) in _keep_separate
+
     # Collect misrouted pages from topics/ that have a non-topic type frontmatter.
     # These are pooled into the comparison group for their declared type so they
     # can be detected as duplicates of correctly-routed pages.
@@ -730,6 +754,8 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
                     if pair in seen_pairs:
                         continue
                     seen_pairs.add(pair)
+                    if _is_kept_separate(page_a, page_b):
+                        continue
                     proposals.append({
                         "type": "MERGE_PROPOSED",
                         "page_a": str(page_a.relative_to(root)),
@@ -765,6 +791,11 @@ def semantic_lint(wiki_root: str, confidence_threshold: float = 0.75) -> list[di
 
                 path_a = title_map[title_a][0]
                 path_b = title_map[title_b][0]
+
+                # Skip pairs a human already resolved as KEEP_SEPARATE, before
+                # spending an LLM verdict call on them.
+                if _is_kept_separate(path_a, path_b):
+                    continue
 
                 # Meetings are point-in-time events, not renamable entities — a
                 # differing date: frontmatter value conclusively proves two
@@ -865,6 +896,178 @@ def write_semantic_proposals(wiki_root: str, proposals: list[dict]) -> None:
         rq_path.write_text(new_section.lstrip(), encoding="utf-8")
 
     print(f"[lint_wiki:semantic] {len(proposals)} proposals written to review-queue.md")
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# Alias/rename-phrase scanner — harvest rename statements synthesis already
+# wrote into page bodies. Title-similarity gating (fuzzy_candidates, 0.65) is
+# blind to rename drift: a page whose title changes entirely as a project
+# moves proposal→implementation never reaches the LLM verdict. Example
+# (2026-07-10): initiatives/landfill-solar-project.md and
+# initiatives/wheeler-center-solar-park.md are the same project (titles score
+# 0.47), and landfill-solar-project.md's own body already says so in prose:
+# "also referred to as ... and later the Wheeler Center Solar Park." A prior
+# synthesis pass wrote the answer down; nothing consumed it. This scanner does,
+# for ~zero LLM cost (regex + stdlib fuzzy match, no per-candidate verdict).
+# See docs/architecture/semantic-lint-structural-candidates.md.
+# ─────────────────────────────────────────────────────────────────────────
+
+# Cue phrases anchored on a title-case proper-noun run. Anchoring on [A-Z]
+# (not a greedy delimiter-bounded capture) is the fix for the spec's own
+# regex, which captured the whole chained clause "the Wheeler Center Landfill
+# Solar Project and later the Wheeler Center Solar Park" as one blob → 0.47
+# fuzzy score, missing its own motivating example. Each pattern stops at a
+# chaining conjunction or delimiter so a chained "X and later Y" yields both
+# X and Y as separate candidates. Title-case anchoring also rejects non-name
+# constructions ("also referred to as a pilot program" — lowercase 'a').
+_RENAME_CUE_PATTERNS = [
+    re.compile(r"\balso (?:referred to|known) as (?:the )?([A-Z][^,.;()]*?)(?= and | later | now |,|\.|;|\)|\Z)"),
+    re.compile(r"\b(?:and )?later (?:the |called |known as |renamed to |renamed as )([A-Z][^,.;()]+)"),
+    re.compile(r"\bnow (?:called|known as|referred to as) (?:the )?([A-Z][^,.;()]+)"),
+    re.compile(r"\brenamed (?:to |as )(?:the )?([A-Z][^,.;()]+)"),
+]
+
+
+def _sentence_around(text: str, pos: int, max_len: int = 300) -> str:
+    """Return the sentence-ish span containing character offset `pos`, for
+    human-readable evidence. Bounded by nearest newline/period on each side,
+    with wikilink/citation markup stripped and capped at a word boundary so
+    the snippet never truncates mid-`[[...]]`."""
+    left = max(text.rfind("\n", 0, pos), text.rfind(". ", 0, pos))
+    start = 0 if left == -1 else left + 1
+    right_nl = text.find("\n", pos)
+    right_dot = text.find(". ", pos)
+    ends = [e for e in (right_nl, right_dot) if e != -1]
+    end = (min(ends) + 1) if ends else len(text)
+    span = text[start:end]
+    span = re.sub(r"\s*\(\[\[[^\]]*\]\]\)", "", span)          # ([[citation]]) groups
+    span = re.sub(r"\[\[[^\]|]*\|([^\]]*)\]\]", r"\1", span)   # [[slug|display]] → display
+    span = re.sub(r"\[\[([^\]]*)\]\]", r"\1", span)            # [[slug]] → slug
+    span = re.sub(r"\s+", " ", span).strip()
+    if len(span) > max_len:
+        span = span[:max_len].rsplit(" ", 1)[0] + "…"
+    return span
+
+
+def _extract_rename_candidates(body: str) -> list[tuple[str, str]]:
+    """Return (candidate_name, evidence_sentence) for each rename cue hit in a body."""
+    out: list[tuple[str, str]] = []
+    for pat in _RENAME_CUE_PATTERNS:
+        for m in pat.finditer(body):
+            name = m.group(1).strip()
+            name = re.sub(r"^the\s+", "", name, flags=re.IGNORECASE).strip()
+            name = re.sub(r"\s+and\s*$", "", name).strip()
+            if len(name.split()) < 2:
+                continue  # single tokens are too noisy; renames are multi-word names
+            out.append((name, _sentence_around(body, m.start())))
+    return out
+
+
+def alias_phrase_lint(wiki_root: str) -> list[dict]:
+    """Scan page bodies for rename statements and match the named target against
+    an existing page's title. Emits ALIAS_DETECTED proposals — no LLM call.
+
+    Returns list of dicts: {old, canonical, matched_name, score, evidence}.
+    The phrase-containing page is the old name (redirect source); the matched
+    page is canonical (survivor).
+    """
+    from pipeline._aliases import fuzzy_candidates
+    import difflib
+
+    root = Path(wiki_root)
+    keep_separate = _load_keep_separate_pairs(
+        str(Path(wiki_root).parent / "registry" / "merge-log.jsonl")
+    )
+    proposals: list[dict] = []
+    seen: set[frozenset] = set()
+
+    for type_dir in ["actors", "initiatives", "locations", "political-events",
+                     "technology", "funding-events", "meetings", "plans"]:
+        dir_path = root / type_dir
+        if not dir_path.exists():
+            continue
+        pages = list(dir_path.glob("*.md"))
+        if len(pages) < 2:
+            continue
+
+        title_to_page: dict[str, Path] = {}
+        for page in pages:
+            title, _ = _get_page_title_and_excerpt(page)
+            title_to_page.setdefault(title, page)
+        titles = list(title_to_page.keys())
+
+        for page in pages:
+            body = re.sub(r"^---\n.*?\n---\n", "",
+                          page.read_text(encoding="utf-8", errors="replace"), flags=re.DOTALL)
+            page_title, _ = _get_page_title_and_excerpt(page)
+            for name, evidence in _extract_rename_candidates(body):
+                matches = fuzzy_candidates(name, titles, threshold=0.75)
+                # Best match by score; must be a DIFFERENT page than the one the
+                # phrase lives on.
+                best_title, best_score = None, 0.0
+                for cand_title in matches:
+                    if cand_title == page_title:
+                        continue
+                    score = difflib.SequenceMatcher(None, name.lower(), cand_title.lower()).ratio()
+                    if score > best_score:
+                        best_title, best_score = cand_title, score
+                if not best_title:
+                    continue
+                canonical_page = title_to_page[best_title]
+                if canonical_page == page:
+                    continue
+                old_slug = str(page.relative_to(root)).removesuffix(".md")
+                canonical_slug = str(canonical_page.relative_to(root)).removesuffix(".md")
+                pair = frozenset({old_slug, canonical_slug})
+                if pair in seen or pair in keep_separate:
+                    continue
+                seen.add(pair)
+                proposals.append({
+                    "old": old_slug,
+                    "canonical": canonical_slug,
+                    "matched_name": best_title,
+                    "score": best_score,
+                    "evidence": evidence,
+                })
+    return proposals
+
+
+def write_alias_proposals(wiki_root: str, proposals: list[dict]) -> None:
+    """Write ALIAS_DETECTED proposals to review-queue.md, mirroring
+    write_semantic_proposals' replace-unless-annotated logic."""
+    if not proposals:
+        print("[lint_wiki:alias-phrases] No rename statements matched an existing page.")
+        return
+
+    rq_path = Path(wiki_root).parent / "review-queue.md"
+    today = date.today().isoformat()
+
+    lines = [f"\n## Alias/Rename Detection — {today}\n"]
+    for p in proposals:
+        lines.append(f"### [ALIAS_DETECTED] {p['old']} → {p['canonical']}")
+        lines.append(f"- Evidence: \"{p['evidence']}\"")
+        lines.append(f"- Matched: \"{p['matched_name']}\" (fuzzy {p['score']:.2f})")
+        lines.append("- Action: [ ] APPROVE_REDIRECT  [ ] KEEP_SEPARATE  [ ] DEFER")
+        lines.append("- Notes: _Add any notes before approving_\n")
+    new_section = "\n".join(lines)
+
+    if rq_path.exists():
+        text = rq_path.read_text(encoding="utf-8")
+        m = _ALIAS_SECTION_RE.search(text)
+        if m:
+            if re.search(r"\[x\]", m.group(0), re.IGNORECASE):
+                print("[lint_wiki:alias-phrases] WARNING: existing section has annotations — appending new proposals.")
+                text = text.rstrip() + new_section
+            else:
+                text = _ALIAS_SECTION_RE.sub("", text)
+                text = text.rstrip() + new_section
+        else:
+            text = text.rstrip() + new_section
+        rq_path.write_text(text, encoding="utf-8")
+    else:
+        rq_path.write_text(new_section.lstrip(), encoding="utf-8")
+
+    print(f"[lint_wiki:alias-phrases] {len(proposals)} proposals written to review-queue.md")
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -1302,7 +1505,7 @@ def _cleanup_review_queue(rq_path_str: str) -> None:
     output = "".join(result)
     # Remove empty section headers left behind when all proposals in that
     # section were cleared.
-    for header in ("Semantic Lint", "Contradiction Sweep"):
+    for header in ("Semantic Lint", "Alias/Rename Detection", "Contradiction Sweep"):
         output = re.sub(
             rf"\n## {re.escape(header)} — [^\n]+\n\s*(?=\n## |\Z)",
             "\n",
@@ -1365,12 +1568,21 @@ def _parse_approved_proposals(review_queue_path: str) -> list[dict]:
         merge_m = _MERGE_HEADER_RE.match(stripped)
         link_m = _LINK_HEADER_RE.match(stripped)
         contradiction_m = _CONTRADICTION_HEADER_RE.match(stripped)
+        alias_m = _ALIAS_HEADER_RE.match(stripped)
 
         if merge_m:
             current = {
                 "type": merge_m.group(1),
                 "page_a": merge_m.group(2).strip(),
                 "page_b": merge_m.group(3).strip(),
+            }
+            continue
+
+        if alias_m:
+            current = {
+                "type": "ALIAS_DETECTED",
+                "old_slug": alias_m.group(1).strip(),
+                "canonical_slug": alias_m.group(2).strip(),
             }
             continue
 
@@ -1419,6 +1631,28 @@ def _parse_approved_proposals(review_queue_path: str) -> list[dict]:
         elif re.search(r"\[x\] APPROVE_LINK", line, re.IGNORECASE):
             proposals.append({**current, "approved_action": "LINK"})
             current = None
+        elif re.search(r"\[x\] APPROVE_REDIRECT", line, re.IGNORECASE):
+            proposals.append({**current, "approved_action": "REDIRECT"})
+            current = None
+        elif re.search(r"\[x\] KEEP_SEPARATE", line, re.IGNORECASE):
+            # Durable negative decision — carries the two page slugs so
+            # apply_proposals can record it in the merge log and future lint
+            # runs stop re-proposing this pair. Applies to MERGE /
+            # TEMPORAL_SUCCESSION (page_a/page_b) and ALIAS_DETECTED
+            # (old_slug/canonical_slug); LINK proposals use KEEP_UNLINKED, not
+            # this, and are left alone.
+            pair = None
+            if current.get("type") == "ALIAS_DETECTED":
+                pair = [current["old_slug"], current["canonical_slug"]]
+            elif "page_a" in current and "page_b" in current:
+                pair = [current["page_a"], current["page_b"]]
+            if pair:
+                proposals.append({
+                    "type": current["type"],
+                    "approved_action": "KEEP_SEPARATE",
+                    "pages": pair,
+                })
+            current = None
 
     return proposals
 
@@ -1445,6 +1679,84 @@ def _append_merge_log(merge_log_path: str, entry: dict) -> None:
     """Append one JSON entry to registry/merge-log.jsonl."""
     with open(merge_log_path, "a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+
+def _slug_without_ext(page_ref: str) -> str:
+    """Normalize a page reference to a bare vault-relative slug (no .md)."""
+    return page_ref.strip().removesuffix(".md")
+
+
+def _load_keep_separate_pairs(merge_log_path: str) -> set[frozenset]:
+    """Return the set of page-pairs a human has durably marked KEEP_SEPARATE.
+
+    The merge log is the append-only audit trail for lint decisions. Before
+    this, it recorded only POSITIVE actions (MERGE / TEMPORAL_SUCCESSION) —
+    a KEEP_SEPARATE decision left no durable trace, so semantic_lint (which
+    re-derives candidates from raw page state every run) would re-propose the
+    same rejected pair indefinitely. Loading these lets the candidate passes
+    skip already-decided pairs. Pairs are slug-keyed (not title-keyed) so the
+    suppression survives a later rename of either page.
+    """
+    pairs: set[frozenset] = set()
+    p = Path(merge_log_path)
+    if not p.exists():
+        return pairs
+    for line in p.read_text(encoding="utf-8", errors="replace").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            entry = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if entry.get("action") == "KEEP_SEPARATE":
+            slugs = [_slug_without_ext(s) for s in entry.get("pages", []) if s]
+            if len(slugs) == 2:
+                pairs.add(frozenset(slugs))
+    return pairs
+
+
+def _norm_text_for_containment(body: str) -> str:
+    """Lowercase, strip frontmatter/comments/wikilinks/punctuation → whitespace-
+    collapsed word stream. Used to test whether one page's substantive content
+    already lives in another."""
+    t = re.sub(r"^---\n.*?\n---\n", "", body, flags=re.DOTALL)
+    t = re.sub(r"<!--.*?-->", " ", t, flags=re.DOTALL)
+    t = re.sub(r"\[\[[^\]|]*\|([^\]]*)\]\]", r"\1", t)  # [[slug|display]] → display
+    t = re.sub(r"\[\[([^\]]*)\]\]", r"\1", t)           # [[slug]] → slug
+    t = re.sub(r"[^a-z0-9\s]", " ", t.lower())
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def _substantive_sentences(body: str) -> list[str]:
+    """Return normalized substantive (>=5-word) sentences from a page body,
+    with wikilinks/citations stripped so differing citations between two pages
+    don't make otherwise-shared facts look unique."""
+    t = re.sub(r"^---\n.*?\n---\n", "", body, flags=re.DOTALL)
+    t = re.sub(r"<!--.*?-->", " ", t, flags=re.DOTALL)
+    t = re.sub(r"\(\[\[[^\]]*\]\]\)", " ", t)            # ([[citation]]) groups
+    t = re.sub(r"\[\[[^\]|]*\|([^\]]*)\]\]", r"\1", t)
+    t = re.sub(r"\[\[([^\]]*)\]\]", r"\1", t)
+    out = []
+    for s in re.split(r"(?<=[.!?])\s+", t):
+        norm = re.sub(r"[^a-z0-9\s]", " ", s.lower())
+        norm = re.sub(r"\s+", " ", norm).strip()
+        if len(norm.split()) >= 5:
+            out.append(norm)
+    return out
+
+
+def _old_body_contained(old_body: str, canonical_body: str) -> bool:
+    """True iff every substantive sentence of the old page already appears
+    (normalized) in the canonical page. The content-preservation safeguard for
+    REDIRECT: returns True only when a redirect would lose nothing. Errs toward
+    False (→ full MERGE) on any doubt — a false MERGE costs one LLM call, a
+    false REDIRECT loses content, so the conservative bias is correct."""
+    canon = _norm_text_for_containment(canonical_body)
+    sents = _substantive_sentences(old_body)
+    if not sents:
+        return True  # empty / pure-stub old page — nothing to lose
+    return all(s in canon for s in sents)
 
 
 def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> None:
@@ -1555,6 +1867,70 @@ def apply_proposals(wiki_root: str, aliases_path: str, merge_log_path: str) -> N
             print(f"[lint_wiki:apply] CREATED contradiction page: {slug}")
             continue
 
+        if p["approved_action"] == "KEEP_SEPARATE":
+            pages = [_slug_without_ext(s) for s in p.get("pages", [])]
+            if len(pages) == 2:
+                _append_merge_log(merge_log_path, {
+                    "date": today,
+                    "action": "KEEP_SEPARATE",
+                    "pages": pages,
+                    "approved-by": "manual",
+                })
+                print(f"[lint_wiki:apply] KEEP_SEPARATE recorded (won't re-propose): {pages[0]} / {pages[1]}")
+            continue
+
+        if p["approved_action"] == "REDIRECT":
+            old_slug = _slug_without_ext(p["old_slug"])
+            canonical_slug = _slug_without_ext(p["canonical_slug"])
+            old_path = root / f"{old_slug}.md"
+            canonical_path = root / f"{canonical_slug}.md"
+            if old_slug == canonical_slug:
+                print(f"[lint_wiki:apply] WARNING: redirect old==canonical, skipping: {old_slug}")
+                continue
+            if not old_path.exists() or not canonical_path.exists():
+                print(f"[lint_wiki:apply] WARNING: page not found for redirect: {old_slug} → {canonical_slug}")
+                continue
+
+            old_body = re.sub(r"^---\n.*?\n---\n", "", old_path.read_text(encoding="utf-8"), flags=re.DOTALL).strip()
+            canonical_body = re.sub(r"^---\n.*?\n---\n", "", canonical_path.read_text(encoding="utf-8"), flags=re.DOTALL).strip()
+
+            if _old_body_contained(old_body, canonical_body):
+                action = "REDIRECT"
+                print(f"[lint_wiki:apply] REDIRECT (safe, no content loss): {old_slug} → {canonical_slug}")
+            else:
+                # Safeguard: old page has unique facts — full LLM merge into
+                # canonical, never a silent delete.
+                merged = _merge_pages(
+                    canonical_slug=canonical_slug,
+                    existing_body=canonical_body,
+                    new_body=old_body,
+                    source_uuid="lint-redirect-merge",
+                )
+                _replace_wiki_page_body(str(canonical_path), merged)
+                action = "REDIRECT_MERGE"
+                print(f"[lint_wiki:apply] REDIRECT (old page had unique facts — merged into canonical): {old_slug} → {canonical_slug}")
+
+            old_label = old_path.stem.replace("-", " ").title()
+            old_path.unlink()
+            n = _rewrite_inbound_links(wiki_root, old_slug, canonical_slug)
+            add_alias(
+                slug=old_slug.split("/")[-1],
+                canonical=canonical_slug,
+                entity_type=canonical_slug.split("/")[0].rstrip("s"),
+                alias_labels=[old_label],
+                relationship="name-variant",
+                aliases_path=aliases_path,
+            )
+            _append_merge_log(merge_log_path, {
+                "date": today,
+                "action": action,
+                "from": f"{old_slug}.md",
+                "into": f"{canonical_slug}.md",
+                "approved-by": "manual",
+            })
+            print(f"[lint_wiki:apply]   {n} inbound links rewritten")
+            continue
+
         page_a_rel = p["page_a"]
         page_b_rel = p["page_b"]
         path_a = root / page_a_rel
@@ -1652,6 +2028,10 @@ if __name__ == "__main__":
                         help="Flag entity pages a given source names but never cites (STALE_ENTITY)")
     parser.add_argument("--source-uuid", default=None,
                         help="Source UUID for --staleness (default: last entry in meta/ingest-stats.jsonl)")
+    parser.add_argument("--alias-phrases", action="store_true",
+                        help="Scan page bodies for rename statements ('later the X') and match "
+                             "the named target to an existing page — catches rename drift title "
+                             "similarity misses. See docs/architecture/semantic-lint-structural-candidates.md")
     parser.add_argument("--contradiction-sweep", action="store_true",
                         help="One-time backward sweep for unreconciled numeric conflicts in "
                              "already-ingested content — see docs/contradiction-tracking-assessment-2026-07-10.md")
@@ -1665,6 +2045,10 @@ if __name__ == "__main__":
     if args.structural:
         findings = structural_lint(args.wiki_root)
         write_structural_findings(args.wiki_root, findings)
+
+    if args.alias_phrases:
+        al_proposals = alias_phrase_lint(args.wiki_root)
+        write_alias_proposals(args.wiki_root, al_proposals)
 
     if args.semantic:
         proposals = semantic_lint(args.wiki_root)
@@ -1687,6 +2071,6 @@ if __name__ == "__main__":
         apply_proposals(args.wiki_root, args.aliases_path, args.merge_log)
 
     if not any([args.structural, args.semantic, args.backlink, args.staleness,
-                args.contradiction_sweep, args.apply]):
-        print("Specify at least one mode: --structural, --semantic, --backlink, --staleness, "
-              "--contradiction-sweep, --apply")
+                args.alias_phrases, args.contradiction_sweep, args.apply]):
+        print("Specify at least one mode: --structural, --alias-phrases, --semantic, --backlink, "
+              "--staleness, --contradiction-sweep, --apply")
