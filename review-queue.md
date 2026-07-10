@@ -133,3 +133,10 @@ The page author likely added 'over' to hedge or approximate, but the source exce
 
 _Surfaced by a contradiction sweep against initiatives/net-zero-energy-affordable-housing — human review required before this page is considered final; see docs/contradiction-tracking-assessment-2026-07-10.md for the mechanism._
 ```
+## Alias/Rename Detection — 2026-07-10
+
+### [ALIAS_DETECTED] initiatives/landfill-solar-project → initiatives/wheeler-center-solar-park
+- Evidence: "The Landfill Solar Project, also referred to as the Wheeler Center Landfill Solar Project and later the Wheeler Center Solar Park, was proposed in CAP 2020 as a utility-scale solar installation on the City of Ann Arbor's capped landfill, developed in partnership with DTE Energy, with the goal of…"
+- Matched: "Wheeler Center Solar Park" (fuzzy 1.00)
+- Action: [ ] APPROVE_REDIRECT  [ ] KEEP_SEPARATE  [ ] DEFER
+- Notes: _Add any notes before approving_

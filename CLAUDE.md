@@ -100,14 +100,16 @@ If `source` runs without an approved map and `--auto-approve` is not passed, it 
 
 **Pass 3 (finalize):** Rebuilds `index.md`, seals `log.md`, overwrites `hot.md`.
 
-Post-ingest linting (on-demand). **Recommended order: semantic → backlink → structural**, not independent/arbitrary order. Structural's `BROKEN_LINK` repair (redirect a stale slug vs. create a new stub) requires the entity graph to already be stable — semantic merges can rename or delete a page after the fact, invalidating a broken-link fix made against it. Backlink only adds links to entities that already have pages, so it benefits from semantic running first for the same reason but doesn't block structural. Re-run `--structural` after each of the other two passes' `--apply` to get a clean picture, since merges/links can shift which links are actually broken. `--staleness` is per-ingest (not part of this state-scoped ordering) and complements structural — run it after each ingest, independent of the semantic/backlink/structural cycle:
+Post-ingest linting (on-demand). **Recommended order: alias-phrases → semantic → backlink → structural**, not independent/arbitrary order. `--alias-phrases` runs first because it's the cheapest, highest-precision, evidence-based signal (a rename sentence a human reads in one glance, no LLM call) — resolving those before `--semantic` shrinks the page set it compares. Structural's `BROKEN_LINK` repair (redirect a stale slug vs. create a new stub) requires the entity graph to already be stable — semantic merges/redirects can rename or delete a page after the fact, invalidating a broken-link fix made against it. Backlink only adds links to entities that already have pages, so it benefits from semantic running first for the same reason but doesn't block structural. Re-run `--structural` after each of the other passes' `--apply` to get a clean picture, since merges/links can shift which links are actually broken. `--staleness` is per-ingest (not part of this state-scoped ordering) and complements structural — run it after each ingest, independent of the alias/semantic/backlink/structural cycle:
 ```
-python -m pipeline.phase_b_lint --wiki-root wiki --staleness     # flag entities the new source mentions but whose pages gained no citation; run after each ingest (optional --source-uuid)
-python -m pipeline.phase_b_lint --wiki-root wiki --semantic      # near-duplicate detection (LLM); apply first
-python -m pipeline.phase_b_lint --wiki-root wiki --backlink      # find missed entity mentions in strategy/overview bodies; apply next
-python -m pipeline.phase_b_lint --wiki-root wiki --structural    # broken links, orphans; run last, after the entity graph is stable
-python -m pipeline.phase_b_lint --wiki-root wiki --apply         # execute approved proposals from review-queue.md
+python -m pipeline.phase_b_lint --wiki-root wiki --staleness      # flag entities the new source mentions but whose pages gained no citation; run after each ingest (optional --source-uuid)
+python -m pipeline.phase_b_lint --wiki-root wiki --alias-phrases  # rename-drift detection: harvest "later the X" rename statements from page bodies (no LLM); apply first
+python -m pipeline.phase_b_lint --wiki-root wiki --semantic       # near-duplicate detection (LLM); apply next
+python -m pipeline.phase_b_lint --wiki-root wiki --backlink       # find missed entity mentions in strategy/overview bodies; apply next
+python -m pipeline.phase_b_lint --wiki-root wiki --structural     # broken links, orphans; run last, after the entity graph is stable
+python -m pipeline.phase_b_lint --wiki-root wiki --apply          # execute approved proposals from review-queue.md
 ```
+An approved `ALIAS_DETECTED` rename resolves via a safe REDIRECT (delete old-name stub, rewrite inbound links, register a `name-variant` alias) — but only when the old page's content is already contained in the canonical page; if the old page has unique facts, `--apply` automatically falls back to a full LLM merge so nothing is lost. Marking `KEEP_SEPARATE` on any semantic/alias proposal is now durable: it's recorded in `registry/merge-log.jsonl` as a `KEEP_SEPARATE` action so the pair is never re-proposed (previously a KEEP_SEPARATE decision left no trace and the pair re-surfaced every run).
 
 One-time enrichment (rarely needed; used after prompt changes):
 ```
@@ -169,7 +171,7 @@ The synthesizer runs each LLM output through a deterministic validator that chec
 
 **Program-produced collectives (working groups, ambassador corps, volunteer cohorts) stay typed `initiative`, not `actor`, even when cited as a partner/collaborator elsewhere.** `partners:` is a general related-entity field (initiative slugs already appear inside it dozens of times), not actor-only. Don't spawn a subsidiary `actor/` page for an initiative's own output — that recreates the exact "two pages, one concept" duplication semantic lint exists to catch. Redirect any actor-shaped mention to the initiative's canonical page and seed an alias-registry entry (e.g. `a2zero-ambassadors` → `initiatives/a2zero-ambassadors-program`) so future ingests resolve it the same way automatically.
 
-**Merge log:** `registry/merge-log.jsonl` — append-only audit trail for every approved entity merge or temporal succession. Each entry: `date`, `action`, `from`/`into` (or `predecessor`/`successor`), `approved-by`. Use `git show <hash>:wiki/<path>.md` to recover any deleted page from git history.
+**Merge log:** `registry/merge-log.jsonl` — append-only audit trail for lint decisions. Actions: `MERGE`/`TEMPORAL_SUCCESSION` (entry has `from`/`into` or `predecessor`/`successor`), `REDIRECT`/`REDIRECT_MERGE` (rename resolution, `from`/`into`), and `KEEP_SEPARATE` (a durable *negative* decision — `pages: [slug_a, slug_b]` — recorded so semantic/alias lint never re-proposes a pair a human already rejected). Every entry has `date`, `action`, `approved-by`. Use `git show <hash>:wiki/<path>.md` to recover any deleted page from git history.
 
 **Review queue:** `review-queue.md` is a live inbox, not an append log. Each lint pass (`--structural`, `--semantic`, `--backlink`) replaces its own section. Annotated proposals (`[x] APPROVE_...` / `[x] KEEP_SEPARATE`) are cleared by `--apply`; unactioned and `DEFER`'d proposals stay.
 
